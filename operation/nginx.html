@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>nginx | NorthUnicorn</title>
+    <meta name="description" content="">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.d4311df0.css" as="style"><link rel="preload" href="/assets/js/app.c4cf2eda.js" as="script"><link rel="preload" href="/assets/js/20.628ecc9a.js" as="script"><link rel="prefetch" href="/assets/js/10.6cd71b79.js"><link rel="prefetch" href="/assets/js/11.422b6fcc.js"><link rel="prefetch" href="/assets/js/12.98e6e0fd.js"><link rel="prefetch" href="/assets/js/13.50517f5f.js"><link rel="prefetch" href="/assets/js/14.706f6f8f.js"><link rel="prefetch" href="/assets/js/15.6aeae412.js"><link rel="prefetch" href="/assets/js/16.6f9f8d7c.js"><link rel="prefetch" href="/assets/js/17.4a939374.js"><link rel="prefetch" href="/assets/js/18.8ca9d15a.js"><link rel="prefetch" href="/assets/js/19.0379ebaf.js"><link rel="prefetch" href="/assets/js/2.e27297f7.js"><link rel="prefetch" href="/assets/js/21.00910530.js"><link rel="prefetch" href="/assets/js/22.2b1e5011.js"><link rel="prefetch" href="/assets/js/23.8097ecb2.js"><link rel="prefetch" href="/assets/js/24.f22c2e26.js"><link rel="prefetch" href="/assets/js/25.7f3808a6.js"><link rel="prefetch" href="/assets/js/26.99a7eac6.js"><link rel="prefetch" href="/assets/js/27.a13d7bf0.js"><link rel="prefetch" href="/assets/js/3.3d37efe5.js"><link rel="prefetch" href="/assets/js/4.2b055829.js"><link rel="prefetch" href="/assets/js/5.a49d4744.js"><link rel="prefetch" href="/assets/js/6.fbe1d0e6.js"><link rel="prefetch" href="/assets/js/7.b5e36c76.js"><link rel="prefetch" href="/assets/js/8.9a129d08.js"><link rel="prefetch" href="/assets/js/9.c45149f5.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d4311df0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">NorthUnicorn</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/qianduan/" class="nav-link">前端</a></div><div class="nav-item"><a href="/houduan/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link router-link-active">运维</a></div><div class="nav-item"><a href="/foundation/" class="nav-link">内功</a></div><div class="nav-item"><a href="https://github.com/xiaoqi7777" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/qianduan/" class="nav-link">前端</a></div><div class="nav-item"><a href="/houduan/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link router-link-active">运维</a></div><div class="nav-item"><a href="/foundation/" class="nav-link">内功</a></div><div class="nav-item"><a href="https://github.com/xiaoqi7777" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first"><p class="sidebar-heading open"><span>运维</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/operation/git.html" class="sidebar-link">git</a></li><li><a href="/operation/nginx.html" class="active sidebar-link">nginx</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/operation/nginx.html#安装" class="sidebar-link">安装</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#centos下yum安装" class="sidebar-link">CentOS下YUM安装</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#nginx-命令" class="sidebar-link">nginx 命令</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#etc-nginx-nginx-conf-默认配置" class="sidebar-link">/etc/nginx/nginx.conf 默认配置</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#default-conf-默认配置" class="sidebar-link">default.conf 默认配置</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#启动和重新加载" class="sidebar-link">启动和重新加载</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#内置变量" class="sidebar-link">内置变量</a></li><li class="sidebar-sub-header"><a href="/operation/nginx.html#实战" class="sidebar-link">实战</a></li></ul></li><li><a href="/operation/linux.html" class="sidebar-link">linux</a></li><li><a href="/operation/docker.html" class="sidebar-link">docker</a></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="nginx"><a href="#nginx" aria-hidden="true" class="header-anchor">#</a> nginx</h1> <p></p><div class="table-of-contents"><ul><li><a href="#安装">安装</a></li><li><a href="#centos下yum安装">CentOS下YUM安装</a></li><li><a href="#nginx-命令">nginx 命令</a></li><li><a href="#etc-nginx-nginx-conf-默认配置">/etc/nginx/nginx.conf 默认配置</a></li><li><a href="#default-conf-默认配置">default.conf 默认配置</a></li><li><a href="#启动和重新加载">启动和重新加载</a></li><li><a href="#内置变量">内置变量</a></li><li><a href="#实战">实战</a><ul><li><a href="#基本设置">基本设置</a></li><li><a href="#负载均衡-反向代理">负载均衡&amp;&amp; 反向代理</a></li><li><a href="#缓存">缓存</a></li></ul></li></ul></div><p></p> <h2 id="安装"><a href="#安装" aria-hidden="true" class="header-anchor">#</a> 安装</h2> <ul><li>安装模块</li> <li>yum  -y install gcc gcc-c++ autoconf pcre pcre-devel make automake</li> <li>yum  -y install wget httpd-tools vim</li> <li><a href="http://nginx.org/en/linux_packages.html#stable" target="_blank" rel="noopener noreferrer">nginx安装文档<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul> <h2 id="centos下yum安装"><a href="#centos下yum安装" aria-hidden="true" class="header-anchor">#</a> CentOS下YUM安装</h2> <div class="language-js extra-class"><pre class="language-js"><code>vim 
+    <span class="token operator">/</span>etc<span class="token operator">/</span>yum<span class="token punctuation">.</span>repos<span class="token punctuation">.</span>d<span class="token operator">/</span>nginx<span class="token punctuation">.</span>repo
+
+写入<span class="token punctuation">:</span>
+    <span class="token punctuation">[</span>nginx<span class="token punctuation">]</span>
+    name<span class="token operator">=</span>nginx repo
+    baseurl<span class="token operator">=</span>http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>nginx<span class="token punctuation">.</span>org<span class="token operator">/</span>packages<span class="token operator">/</span>centos<span class="token operator">/</span><span class="token number">7</span><span class="token operator">/</span>$basearch<span class="token operator">/</span>
+    gpgcheck<span class="token operator">=</span><span class="token number">0</span>
+    enabled<span class="token operator">=</span><span class="token number">1</span>
+
+运行
+    yum install nginx <span class="token operator">-</span>y
+    nginx <span class="token operator">-</span>v
+</code></pre></div><h2 id="nginx-命令"><a href="#nginx-命令" aria-hidden="true" class="header-anchor">#</a> nginx 命令</h2> <ul><li>rpm -ql nginx  查看所有目录</li> <li>文件配置目录
+<ul><li>/etc/nginx/nginx.conf</li> <li>/etc/nginx/conf.d/*.conf /etc/nginx/conf.d/default.conf</li></ul></li></ul> <h2 id="etc-nginx-nginx-conf-默认配置"><a href="#etc-nginx-nginx-conf-默认配置" aria-hidden="true" class="header-anchor">#</a> /etc/nginx/nginx.conf 默认配置</h2> <div class="language-js extra-class"><pre class="language-js"><code>user  nginx<span class="token punctuation">;</span>   设置nginx服务的系统使用用户  
+worker_processes  <span class="token number">1</span><span class="token punctuation">;</span>  工作进程数<span class="token punctuation">,</span>一般和<span class="token constant">CPU</span>数量相同 
+
+error_log  <span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>log<span class="token operator">/</span>nginx<span class="token operator">/</span>error<span class="token punctuation">.</span>log warn<span class="token punctuation">;</span>   nginx的错误日志  
+pid        <span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>run<span class="token operator">/</span>nginx<span class="token punctuation">.</span>pid<span class="token punctuation">;</span>   nginx服务启动时的pid
+
+events <span class="token punctuation">{</span>
+    worker_connections  <span class="token number">1024</span><span class="token punctuation">;</span>每个进程允许的最大连接数 <span class="token number">10000</span>
+<span class="token punctuation">}</span>
+
+http <span class="token punctuation">{</span>
+    include       <span class="token operator">/</span>etc<span class="token operator">/</span>nginx<span class="token operator">/</span>mime<span class="token punctuation">.</span>types<span class="token punctuation">;</span><span class="token comment">//文件后缀和类型类型的对应关系</span>
+    default_type  application<span class="token operator">/</span>octet<span class="token operator">-</span>stream<span class="token punctuation">;</span><span class="token comment">//默认content-type</span>
+
+    log_format  main  <span class="token string">'$remote_addr - $remote_user [$time_local] &quot;$request&quot; '</span>
+                      <span class="token string">'$status $body_bytes_sent &quot;$http_referer&quot; '</span>
+                      <span class="token string">'&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;'</span><span class="token punctuation">;</span>  <span class="token comment">//日志记录格式</span>
+
+    access_log  <span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>log<span class="token operator">/</span>nginx<span class="token operator">/</span>access<span class="token punctuation">.</span>log  main<span class="token punctuation">;</span><span class="token comment">//默认访问日志</span>
+
+    sendfile        on<span class="token punctuation">;</span><span class="token comment">//启用sendfile</span>
+    #tcp_nopush     on<span class="token punctuation">;</span><span class="token comment">//懒发送</span>
+
+    keepalive_timeout  <span class="token number">65</span><span class="token punctuation">;</span><span class="token comment">//超时时间是65秒</span>
+
+    #gzip  on<span class="token punctuation">;</span>gzip压缩
+
+    include <span class="token operator">/</span>etc<span class="token operator">/</span>nginx<span class="token operator">/</span>conf<span class="token punctuation">.</span>d<span class="token comment">/*.conf;//包含的子配置文件
+}
+
+</span></code></pre></div><h2 id="default-conf-默认配置"><a href="#default-conf-默认配置" aria-hidden="true" class="header-anchor">#</a> default.conf 默认配置</h2> <blockquote><p>两种方法增加配置 default.conf 里面在下一个server  或者 创建一个xx.conf的文件写server</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code>server <span class="token punctuation">{</span>
+    listen       <span class="token number">80</span><span class="token punctuation">;</span>  <span class="token comment">//监听的端口号</span>
+    server_name  localhost<span class="token punctuation">;</span>  <span class="token comment">//用域名方式访问的地址</span>
+
+    #charset koi8<span class="token operator">-</span>r<span class="token punctuation">;</span> <span class="token comment">//编码</span>
+    #access_log  <span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>log<span class="token operator">/</span>nginx<span class="token operator">/</span>host<span class="token punctuation">.</span>access<span class="token punctuation">.</span>log  main<span class="token punctuation">;</span>  <span class="token comment">//访问日志文件和名称</span>
+
+    location <span class="token operator">/</span> <span class="token punctuation">{</span>
+        root   <span class="token operator">/</span>usr<span class="token operator">/</span>share<span class="token operator">/</span>nginx<span class="token operator">/</span>html<span class="token punctuation">;</span>  <span class="token comment">//静态文件根目录</span>
+        index  index<span class="token punctuation">.</span>html index<span class="token punctuation">.</span>htm<span class="token punctuation">;</span>  <span class="token comment">//首页的索引文件</span>
+    <span class="token punctuation">}</span>
+
+    #error_page  <span class="token number">404</span>              <span class="token operator">/</span><span class="token number">404.</span>html<span class="token punctuation">;</span>  <span class="token comment">//指定错误页面</span>
+
+    # 把后台错误重定向到静态的<span class="token number">50</span>x<span class="token punctuation">.</span>html页面
+    error_page   <span class="token number">500</span> <span class="token number">502</span> <span class="token number">503</span> <span class="token number">504</span>  <span class="token operator">/</span><span class="token number">50</span>x<span class="token punctuation">.</span>html<span class="token punctuation">;</span> 
+    location <span class="token operator">=</span> <span class="token operator">/</span><span class="token number">50</span>x<span class="token punctuation">.</span>html <span class="token punctuation">{</span>
+        root   <span class="token operator">/</span>usr<span class="token operator">/</span>share<span class="token operator">/</span>nginx<span class="token operator">/</span>html<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    # 代理<span class="token constant">PHP</span>脚本到<span class="token number">80</span>端口上的apache服务器
+    #location <span class="token operator">~</span> \<span class="token punctuation">.</span>php$ <span class="token punctuation">{</span>
+    #    proxy_pass   http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token punctuation">;</span>
+    #<span class="token punctuation">}</span>
+
+
+    # 不允许访问<span class="token punctuation">.</span>htaccess文件
+    #location <span class="token operator">~</span> <span class="token operator">/</span>\<span class="token punctuation">.</span>ht <span class="token punctuation">{</span>
+    #    deny  all<span class="token punctuation">;</span>
+    #<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="启动和重新加载"><a href="#启动和重新加载" aria-hidden="true" class="header-anchor">#</a> 启动和重新加载</h2> <ul><li>systemctl restart nginx.service</li> <li>systemctl reload nginx.service</li> <li>nginx -s reload</li></ul> <h2 id="内置变量"><a href="#内置变量" aria-hidden="true" class="header-anchor">#</a> 内置变量</h2> <table><thead><tr><th>名称</th> <th style="text-align:left">含义</th></tr></thead> <tbody><tr><td>$remote_addr</td> <td style="text-align:left">客户端地址</td></tr> <tr><td>$remote_user</td> <td style="text-align:left">客户端用户名称</td></tr> <tr><td>$time_local</td> <td style="text-align:left">访问时间和时区</td></tr> <tr><td>$request</td> <td style="text-align:left">请求的URI和HTTP协议</td></tr> <tr><td>$http_host</td> <td style="text-align:left">请求地址，即浏览器中你输入的地址（IP或域名）</td></tr> <tr><td>$status</td> <td style="text-align:left">HTTP请求状态</td></tr> <tr><td>$body_bytes_sent</td> <td style="text-align:left">发送给客户端文件内容大小</td></tr></tbody></table> <h2 id="实战"><a href="#实战" aria-hidden="true" class="header-anchor">#</a> 实战</h2> <h3 id="基本设置"><a href="#基本设置" aria-hidden="true" class="header-anchor">#</a> 基本设置</h3> <table><thead><tr><th>语法</th> <th style="text-align:center">作用</th> <th style="text-align:left">上下文</th></tr></thead> <tbody><tr><td>sendfile&gt;on/off</td> <td style="text-align:center">不经过用户内核发送文件</td> <td style="text-align:left">http,server,location,if in location</td></tr> <tr><td>tcp_nopush&gt;on/off</td> <td style="text-align:center">在sendfile开启的情况 下，提高网络包的传输效率</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>tcp_nodelay&gt;on/off</td> <td style="text-align:center">在keepalive连接下，提高网络包的传输实时性</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>gzip&gt;on/off</td> <td style="text-align:center">压缩文件可以节约带宽和提高网络传输效率</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>gzip_comp_level&gt;level</td> <td style="text-align:center">压缩比率越高，文件被压缩的体积越小</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>gzip_http_version&gt;1.0/1.1</td> <td style="text-align:center">压缩HTTP版本</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>gzip_static&gt;on/off</td> <td style="text-align:center">先找磁盘上找同名的.gz这个文件是否存在,节约CPU的压缩时间和性能损耗</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>expires&gt;time</td> <td style="text-align:center">添加Cache-Control、Expires头</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>add_header&gt;name value</td> <td style="text-align:center">增加请求头</td> <td style="text-align:left">http,server,location</td></tr> <tr><td>valid_referers&gt;none block	server_names</td> <td style="text-align:center">使用http_refer防盗链</td> <td style="text-align:left">server,location</td></tr></tbody></table> <div class="language-js extra-class"><pre class="language-js"><code>server <span class="token punctuation">{</span>
+    listen       <span class="token number">80</span><span class="token punctuation">;</span>  <span class="token comment">//监听的端口号</span>
+    server_name  localhost<span class="token punctuation">;</span>  <span class="token comment">//用域名方式访问的地址</span>
+
+    # 图片处理
+    location <span class="token operator">~</span> <span class="token punctuation">.</span><span class="token operator">*</span>\<span class="token punctuation">.</span><span class="token punctuation">(</span>jpg<span class="token operator">|</span>png<span class="token operator">|</span>gif<span class="token punctuation">)</span>$ <span class="token punctuation">{</span>
+        gzip off<span class="token punctuation">;</span>
+        gzip_http_version <span class="token number">1.1</span><span class="token punctuation">;</span>
+        gzip_comp_level <span class="token number">3</span><span class="token punctuation">;</span>
+        gzip_types image<span class="token operator">/</span>jpeg image<span class="token operator">/</span>png image<span class="token operator">/</span>gif<span class="token punctuation">;</span>
+        expires <span class="token number">24</span>h<span class="token punctuation">;</span>
+        root <span class="token operator">/</span>data<span class="token operator">/</span>images<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    # 下面 比上面多了一个防盗链
+    # <span class="token number">47.104</span><span class="token number">.184</span><span class="token number">.134</span> 服务器id
+    location <span class="token operator">~</span> <span class="token punctuation">.</span><span class="token operator">*</span>\<span class="token punctuation">.</span><span class="token punctuation">(</span>jpg<span class="token operator">|</span>png<span class="token operator">|</span>gif<span class="token punctuation">)</span>$ <span class="token punctuation">{</span>
+        expires <span class="token number">1</span>h<span class="token punctuation">;</span>
+        gzip off<span class="token punctuation">;</span>
+        gzip_http_version <span class="token number">1.1</span><span class="token punctuation">;</span>
+        gzip_comp_level <span class="token number">3</span><span class="token punctuation">;</span>
+        gzip_types image<span class="token operator">/</span>jpeg image<span class="token operator">/</span>png image<span class="token operator">/</span>gif<span class="token punctuation">;</span>
+        valid_referers none blocked <span class="token number">47.104</span><span class="token number">.184</span><span class="token number">.134</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>$invalid_referer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token keyword">return</span> <span class="token number">403</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        root <span class="token operator">/</span>data<span class="token operator">/</span>images<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    # html等代码处理
+    location <span class="token operator">~</span> <span class="token punctuation">.</span><span class="token operator">*</span>\<span class="token punctuation">.</span><span class="token punctuation">(</span>html<span class="token operator">|</span>js<span class="token operator">|</span>css<span class="token punctuation">)</span>$ <span class="token punctuation">{</span>
+        gzip on<span class="token punctuation">;</span>
+        gzip_min_length <span class="token number">1</span>k<span class="token punctuation">;</span>
+        gzip_http_version <span class="token number">1.1</span><span class="token punctuation">;</span>
+        gzip_comp_level <span class="token number">9</span><span class="token punctuation">;</span>
+        gzip_types  text<span class="token operator">/</span>css application<span class="token operator">/</span>javascript<span class="token punctuation">;</span>
+        root <span class="token operator">/</span>data<span class="token operator">/</span>html<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    # 下载
+    location <span class="token operator">~</span> <span class="token operator">^</span><span class="token operator">/</span>download <span class="token punctuation">{</span>
+        gzip_static on<span class="token punctuation">;</span>
+        tcp_nopush on<span class="token punctuation">;</span> 
+        root <span class="token operator">/</span>data<span class="token operator">/</span>download<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    
+    # 跨域
+    location <span class="token operator">~</span> <span class="token punctuation">.</span><span class="token operator">*</span>\<span class="token punctuation">.</span>json$ <span class="token punctuation">{</span>
+        add_header Access<span class="token operator">-</span>Control<span class="token operator">-</span>Allow<span class="token operator">-</span>Origin http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>localhost<span class="token punctuation">:</span><span class="token number">3000</span><span class="token punctuation">;</span>
+        add_header Access<span class="token operator">-</span>Control<span class="token operator">-</span>Allow<span class="token operator">-</span>Methods <span class="token constant">GET</span><span class="token punctuation">,</span><span class="token constant">POST</span><span class="token punctuation">,</span><span class="token constant">PUT</span><span class="token punctuation">,</span><span class="token constant">DELETE</span><span class="token punctuation">,</span><span class="token constant">OPTIONS</span><span class="token punctuation">;</span>
+        add_header Access<span class="token operator">-</span>Control<span class="token operator">-</span>Allow<span class="token operator">-</span>Headers Content<span class="token operator">-</span>Type<span class="token punctuation">;</span>
+        #允许携带凭证 
+        add_header Access<span class="token operator">-</span>Control<span class="token operator">-</span>Allow<span class="token operator">-</span>Credentials <span class="token boolean">true</span><span class="token punctuation">;</span>
+        root <span class="token operator">/</span>data<span class="token operator">/</span>json<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    # 配置跨域的demo
+
+    <span class="token keyword">let</span> xhr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XMLHttpRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        xhr<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string">'GET'</span><span class="token punctuation">,</span> <span class="token string">'http://47.104.184.134/users.json'</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        xhr<span class="token punctuation">.</span><span class="token function-variable function">onreadystatechange</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>xhr<span class="token punctuation">.</span>readyState <span class="token operator">==</span> <span class="token number">4</span> <span class="token operator">&amp;&amp;</span> xhr<span class="token punctuation">.</span>status <span class="token operator">==</span> <span class="token number">200</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>xhr<span class="token punctuation">.</span>responseText<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    xhr<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="负载均衡-反向代理"><a href="#负载均衡-反向代理" aria-hidden="true" class="header-anchor">#</a> 负载均衡&amp;&amp; 反向代理</h3> <table><thead><tr><th>语法</th> <th style="text-align:center">作用</th> <th style="text-align:left">上下文</th></tr></thead> <tbody><tr><td>proxy_pass&gt;URL</td> <td style="text-align:center">代理服务</td> <td style="text-align:left">server,location</td></tr> <tr><td>upstream&gt;name {}</td> <td style="text-align:center">负载均衡</td> <td style="text-align:left">http</td></tr></tbody></table> <div class="tip custom-block"><p class="custom-block-title">负载均衡分配方式</p> <table><thead><tr><th>方法</th> <th style="text-align:center">作用</th></tr></thead> <tbody><tr><td>轮询（默认）</td> <td style="text-align:center">每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</td></tr> <tr><td>weight(加权轮询)</td> <td style="text-align:center">指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</td></tr> <tr><td>ip_hash</td> <td style="text-align:center">每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</td></tr> <tr><td>url_hash（第三方）</td> <td style="text-align:center">按访问的URL地址来分配 请求，每个URL都定向到同一个后端 服务器上(缓存)</td></tr> <tr><td>fair（第三方）</td> <td style="text-align:center">按后端服务器的响应时间来分配请求，响应时间短的优先分配。</td></tr> <tr><td>least_conn</td> <td style="text-align:center">最小连接数，哪个连接少就分给谁</td></tr> <tr><td>自定义hash</td> <td style="text-align:center">hash自定义key</td></tr></tbody></table></div> <div class="language-js extra-class"><pre class="language-js"><code>upstream zfpx <span class="token punctuation">{</span>
+  ip_hash<span class="token punctuation">;</span>
+  server localhost<span class="token punctuation">:</span><span class="token number">3000</span><span class="token punctuation">;</span>
+  server localhost<span class="token punctuation">:</span><span class="token number">4000</span><span class="token punctuation">;</span>
+  server localhost<span class="token punctuation">:</span><span class="token number">5000</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+server <span class="token punctuation">{</span>
+    listen       <span class="token number">80</span><span class="token punctuation">;</span>  <span class="token comment">//监听的端口号</span>
+    server_name  localhost<span class="token punctuation">;</span>  <span class="token comment">//用域名方式访问的地址</span>
+    # 反向代理
+    resolver <span class="token number">8.8</span><span class="token number">.8</span><span class="token number">.8</span><span class="token punctuation">;</span>
+    location <span class="token operator">~</span> <span class="token operator">^</span><span class="token operator">/</span>api <span class="token punctuation">{</span>
+        proxy_pass http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token punctuation">:</span><span class="token number">3000</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+server <span class="token punctuation">{</span>
+    listen <span class="token number">8080</span><span class="token punctuation">;</span>
+    server_name locahost<span class="token punctuation">;</span>
+    # 负载均衡
+    location <span class="token operator">/</span> <span class="token punctuation">{</span>
+        proxy_pass http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>zfpx<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="缓存"><a href="#缓存" aria-hidden="true" class="header-anchor">#</a> 缓存</h3> <ul><li>proxy_cache</li></ul> <div class="tip custom-block"><p class="custom-block-title">TIP</p> <p>http{<br>
+proxy_cache_path /data/nginx/tmp-test levels=1:2 keys_zone=tmp-test:100m inactive=7d max_size=1000g;<br>
+}</p> <ul><li>proxy_cache_path 缓存文件路径</li> <li>levels 设置缓存文件目录层次；levels=1:2 表示两级目录</li> <li>keys_zone 设置缓存名字和共享内存大小</li> <li>inactive 在指定时间内没人访问则被删除</li> <li>max_size 最大缓存空间，如果缓存空间满，默认覆盖掉缓存时间最长的资源。</li></ul> <p>location /tmp-test/ {<br>
+proxy_cache tmp-test;<br>
+proxy_cache_valid  200 206 304 301 302 10d;<br>
+proxy_cache_key $uri;<br>
+proxy_set_header Host $host:$server_port;<br>
+proxy_set_header X-Real-IP $remote_addr;<br>
+proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;<br>
+proxy_pass http://127.0.0.1:8081/media_store.php/tmp-test/;<br>
+}</p> <ul><li>proxy_cache tmp-test 使用名为tmp-test的对应缓存配置</li> <li>proxy_cache_valid 200 206 304 301 302 10d; 对httpcode为200…的缓存10天</li> <li>proxy_cache_key $uri 定义缓存唯一key,通过唯一key来进行hash存取</li> <li>proxy_set_header 自定义http header头，用于发送给后端真实服务器。</li> <li>proxy_pass 指代理后转发的路径，注意是否需要最后的/</li></ul></div></div> <div class="page-edit"><!----> <div class="last-updated"><span class="prefix">上次更新: </span> <span class="time">3/27/2019, 5:37:33 PM</span></div></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/operation/git.html" class="prev">
+          git
+        </a></span> <span class="next"><a href="/operation/linux.html">
+          linux
+        </a>
+        →
+      </span></p></div> </div> <!----></div></div>
+    <script src="/assets/js/app.c4cf2eda.js" defer></script><script src="/assets/js/20.628ecc9a.js" defer></script>
+  </body>
+</html>

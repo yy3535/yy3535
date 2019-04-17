@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>docker | NorthUnicorn</title>
+    <meta name="description" content="">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.d4311df0.css" as="style"><link rel="preload" href="/assets/js/app.c4cf2eda.js" as="script"><link rel="preload" href="/assets/js/17.4a939374.js" as="script"><link rel="prefetch" href="/assets/js/10.6cd71b79.js"><link rel="prefetch" href="/assets/js/11.422b6fcc.js"><link rel="prefetch" href="/assets/js/12.98e6e0fd.js"><link rel="prefetch" href="/assets/js/13.50517f5f.js"><link rel="prefetch" href="/assets/js/14.706f6f8f.js"><link rel="prefetch" href="/assets/js/15.6aeae412.js"><link rel="prefetch" href="/assets/js/16.6f9f8d7c.js"><link rel="prefetch" href="/assets/js/18.8ca9d15a.js"><link rel="prefetch" href="/assets/js/19.0379ebaf.js"><link rel="prefetch" href="/assets/js/2.e27297f7.js"><link rel="prefetch" href="/assets/js/20.628ecc9a.js"><link rel="prefetch" href="/assets/js/21.00910530.js"><link rel="prefetch" href="/assets/js/22.2b1e5011.js"><link rel="prefetch" href="/assets/js/23.8097ecb2.js"><link rel="prefetch" href="/assets/js/24.f22c2e26.js"><link rel="prefetch" href="/assets/js/25.7f3808a6.js"><link rel="prefetch" href="/assets/js/26.99a7eac6.js"><link rel="prefetch" href="/assets/js/27.a13d7bf0.js"><link rel="prefetch" href="/assets/js/3.3d37efe5.js"><link rel="prefetch" href="/assets/js/4.2b055829.js"><link rel="prefetch" href="/assets/js/5.a49d4744.js"><link rel="prefetch" href="/assets/js/6.fbe1d0e6.js"><link rel="prefetch" href="/assets/js/7.b5e36c76.js"><link rel="prefetch" href="/assets/js/8.9a129d08.js"><link rel="prefetch" href="/assets/js/9.c45149f5.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d4311df0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">NorthUnicorn</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/qianduan/" class="nav-link">前端</a></div><div class="nav-item"><a href="/houduan/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link router-link-active">运维</a></div><div class="nav-item"><a href="/foundation/" class="nav-link">内功</a></div><div class="nav-item"><a href="https://github.com/xiaoqi7777" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/qianduan/" class="nav-link">前端</a></div><div class="nav-item"><a href="/houduan/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link router-link-active">运维</a></div><div class="nav-item"><a href="/foundation/" class="nav-link">内功</a></div><div class="nav-item"><a href="https://github.com/xiaoqi7777" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first"><p class="sidebar-heading open"><span>运维</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/operation/git.html" class="sidebar-link">git</a></li><li><a href="/operation/nginx.html" class="sidebar-link">nginx</a></li><li><a href="/operation/linux.html" class="sidebar-link">linux</a></li><li><a href="/operation/docker.html" class="active sidebar-link">docker</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/operation/docker.html#安装" class="sidebar-link">安装</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#docker架构" class="sidebar-link">Docker架构</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#阿里云加速" class="sidebar-link">阿里云加速</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#image" class="sidebar-link">image</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#容器" class="sidebar-link">容器</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#制作镜像-使用" class="sidebar-link">制作镜像 &amp;&amp; 使用</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#数据盘" class="sidebar-link">数据盘</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#网络" class="sidebar-link">网络</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#compose" class="sidebar-link">compose</a></li><li class="sidebar-sub-header"><a href="/operation/docker.html#实战" class="sidebar-link">实战</a></li></ul></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="docker"><a href="#docker" aria-hidden="true" class="header-anchor">#</a> docker</h1> <blockquote><p>Docker 属于 Linux 容器的一种封装，提供简单易用的容器使用接口。它是目前最流行的 Linux 容器解决方案。Docker 将应用程序与该程序的依赖，打包在一个文件里面。运行这个文件，就会生成一个虚拟容器。程序在这个虚拟容器里运行，就好像在真实的物理机上运行一样</p></blockquote> <p></p><div class="table-of-contents"><ul><li><a href="#安装">安装</a></li><li><a href="#docker架构">Docker架构</a></li><li><a href="#阿里云加速">阿里云加速</a></li><li><a href="#image">image</a></li><li><a href="#容器">容器</a></li><li><a href="#制作镜像-使用">制作镜像 &amp;&amp; 使用</a><ul><li><a href="#制作dockerfile">制作Dockerfile</a></li><li><a href="#dockerfile编写例子-使用">Dockerfile编写例子 &amp;&amp; 使用</a></li></ul></li><li><a href="#数据盘">数据盘</a></li><li><a href="#网络">网络</a></li><li><a href="#compose">compose</a><ul><li><a href="#docker-compose-yml-使用">docker-compose.yml 使用</a></li></ul></li><li><a href="#实战">实战</a></li></ul></div><p></p> <h2 id="安装"><a href="#安装" aria-hidden="true" class="header-anchor">#</a> 安装</h2> <ul><li><a href="https://docs.docker.com/install/linux/docker-ce/centos/" target="_blank" rel="noopener noreferrer">docker 连接<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>docker 自带DNS功能  可以通过名字 互相访问</li> <li>所有的指令都是 docker 打头</li></ul> <div class="tip custom-block"><p class="custom-block-title">centos7.2中安装docker</p> <ul><li><p>yum -y install docker-io</p></li> <li><p>docker version</p></li> <li><p>docker info</p></li> <li><p>启动docker服务 systemctl start docker</p></li></ul></div> <h2 id="docker架构"><a href="#docker架构" aria-hidden="true" class="header-anchor">#</a> Docker架构</h2> <img src="/img/docker.jpg"> <h2 id="阿里云加速"><a href="#阿里云加速" aria-hidden="true" class="header-anchor">#</a> 阿里云加速</h2> <div class="language-js extra-class"><pre class="language-js"><code>mkdir <span class="token operator">-</span>p <span class="token operator">/</span>etc<span class="token operator">/</span>docker
+tee <span class="token operator">/</span>etc<span class="token operator">/</span>docker<span class="token operator">/</span>daemon<span class="token punctuation">.</span>json <span class="token operator">&lt;&lt;</span><span class="token operator">-</span><span class="token string">'EOF'</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;registry-mirrors&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;https://fwvjnv59.mirror.aliyuncs.com&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+<span class="token constant">EOF</span>
+systemctl daemon<span class="token operator">-</span>reload
+systemctl restart docker
+</code></pre></div><h2 id="image"><a href="#image" aria-hidden="true" class="header-anchor">#</a> image</h2> <blockquote><p>镜像  image 文件可以看作是容器的模板 一个 image 文件往往通过继承另一个 image 文件，加上一些个性化设置而生成  用来实例化的  可比喻一个类</p></blockquote> <ul><li>基本操作</li></ul> <table><thead><tr><th>命令</th> <th>含义</th> <th>案例</th></tr></thead> <tbody><tr><td>images</td> <td>查看全部镜像</td> <td>docker image ls</td></tr> <tr><td>search</td> <td>查找镜像</td> <td>docker search [imageName]</td></tr> <tr><td>pull</td> <td>拉取镜像</td> <td>docker pull [imageName]</td></tr> <tr><td>rmi</td> <td>删除镜像</td> <td>docker rmi [imageName]</td></tr></tbody></table> <h2 id="容器"><a href="#容器" aria-hidden="true" class="header-anchor">#</a> 容器</h2> <blockquote><p>docker run 命令会从 image 文件，生成一个正在运行的容器实例 就像 new object 一样</p></blockquote> <table><thead><tr><th>命令</th> <th>含义</th> <th>案例</th></tr></thead> <tbody><tr><td>run</td> <td>从镜像运行一个容器</td> <td>docker run ubuntu /bin/echo 'hello-world'</td></tr> <tr><td>--rm</td> <td>运行完自动删除</td> <td>docker run --rm ubuntu /bin/bash</td></tr> <tr><td>ps</td> <td>查看当前运行的容器</td> <td>docker ps -a -l</td></tr> <tr><td>kill [containerId]</td> <td>终止容器(发送SIGKILL )</td> <td>docker kill [containerId]</td></tr> <tr><td>rm [containerId]</td> <td>删除容器</td> <td>docker rm [containerId]</td></tr> <tr><td>start [containerId]</td> <td>启动已经生成、已经停止运行的容器文件</td> <td>docker start [containerId]</td></tr> <tr><td>stop [containerId]</td> <td>终止容器运行 (发送 SIGTERM )</td> <td>docker stop [containerId]</td></tr> <tr><td>logs [containerId]</td> <td>查看 docker 容器的输出</td> <td>docker logs [containerId]</td></tr> <tr><td>attach [containerId]</td> <td>进入容器</td> <td>docker attach [containerId]</td></tr> <tr><td>exec [containerId]</td> <td>进入一个正在运行的 docker 容器</td> <td>docker container exec -it [containerID] /bin/bash</td></tr> <tr><td>cp [containerId]</td> <td>从正在运行的 Docker 容器里面，将文件拷贝到本机</td> <td>docker container cp [containID]:app/package.json</td></tr></tbody></table> <h2 id="制作镜像-使用"><a href="#制作镜像-使用" aria-hidden="true" class="header-anchor">#</a> 制作镜像 &amp;&amp; 使用</h2> <div class="language-js extra-class"><pre class="language-js"><code>制作个性化镜像
+    docker commit <span class="token operator">-</span>m<span class="token string">&quot;hello&quot;</span> <span class="token operator">-</span>a <span class="token string">&quot;songge&quot;</span> <span class="token punctuation">[</span>containerId<span class="token punctuation">]</span> songge<span class="token operator">/</span>hello<span class="token punctuation">:</span>latest
+    docker images
+    docker run zhangrenyang<span class="token operator">/</span>hello <span class="token operator">/</span>bin<span class="token operator">/</span>bash
+</code></pre></div><h3 id="制作dockerfile"><a href="#制作dockerfile" aria-hidden="true" class="header-anchor">#</a> 制作Dockerfile</h3> <blockquote><p>docker inspect centos</p></blockquote> <ul><li>Docker 的镜像是用一层一层的文件组成的</li> <li>docker inspect命令可以查看镜像或者容器</li> <li>Layers就是镜像的层文件，只读不能修改。基于镜像创建的容器会共享这些文件层</li> <li>.dockerignore(忽略文件)
+<ul><li>.git</li> <li>node_modules</li></ul></li></ul> <div class="tip custom-block"><p class="custom-block-title">编写Dockerfile</p> <table><thead><tr><th>命令</th> <th style="text-align:left">含义</th> <th>案例</th></tr></thead> <tbody><tr><td>FROM</td> <td style="text-align:left">继承的镜像</td> <td>FROM node</td></tr> <tr><td>COPY</td> <td style="text-align:left">拷贝</td> <td>COPY ./app /app</td></tr> <tr><td>WORKDIR</td> <td style="text-align:left">指定工作路径</td> <td>WORKDIR /app</td></tr> <tr><td>RUN</td> <td style="text-align:left">编译打包阶段运行命令</td> <td>RUN npm install</td></tr> <tr><td>EXPOSE</td> <td style="text-align:left">暴露端口</td> <td>EXPOSE 3000</td></tr> <tr><td>CMD</td> <td style="text-align:left">容器运行阶段运行命令</td> <td>CMD npm run start</td></tr></tbody></table></div> <h3 id="dockerfile编写例子-使用"><a href="#dockerfile编写例子-使用" aria-hidden="true" class="header-anchor">#</a> Dockerfile编写例子 &amp;&amp; 使用</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token number">1</span>、node 安装
+    wget <span class="token operator">-</span>qO<span class="token operator">-</span> https<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>raw<span class="token punctuation">.</span>githubusercontent<span class="token punctuation">.</span>com<span class="token operator">/</span>creationix<span class="token operator">/</span>nvm<span class="token operator">/</span>v0<span class="token punctuation">.</span><span class="token number">33.11</span><span class="token operator">/</span>install<span class="token punctuation">.</span>sh <span class="token operator">|</span> bash
+    nvm install stable
+    node <span class="token operator">-</span>v
+    npm i cnpm <span class="token operator">-</span>g
+    npm i nrm <span class="token operator">-</span>g
+
+<span class="token number">2</span>、安装express
+    npm install express<span class="token operator">-</span>generator <span class="token operator">-</span>g
+    express app
+
+<span class="token number">3</span>、Dockerfile
+    vim Dockerfile
+    写入 
+        <span class="token constant">FROM</span> node
+        <span class="token constant">COPY</span> <span class="token punctuation">.</span><span class="token operator">/</span>app <span class="token operator">/</span>app
+        <span class="token constant">WORKDIR</span> <span class="token operator">/</span>app
+        <span class="token constant">RUN</span> npm install
+        <span class="token constant">EXPOSE</span> <span class="token number">3000</span>
+<span class="token number">4</span>、运行 docker build <span class="token operator">-</span>t express<span class="token operator">-</span>demo <span class="token punctuation">.</span>
+<span class="token operator">-</span>t用来指定image镜像的名称，后面还可以加冒号指定标签，如果不指定默认就是latest
+<span class="token punctuation">.</span>表示Dockerfile文件的所有路径<span class="token punctuation">,</span><span class="token punctuation">.</span>就表示当前路径
+
+<span class="token number">5</span>、使用
+docker container run <span class="token operator">-</span>p <span class="token number">3333</span><span class="token punctuation">:</span><span class="token number">3000</span> <span class="token operator">-</span>it express<span class="token operator">-</span>demo <span class="token operator">/</span>bin<span class="token operator">/</span>bash
+
+<span class="token number">6</span>、发布
+docker login
+docker image tag <span class="token punctuation">[</span>imageName<span class="token punctuation">]</span> <span class="token punctuation">[</span>username<span class="token punctuation">]</span><span class="token operator">/</span><span class="token punctuation">[</span>repository<span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token punctuation">[</span>tag<span class="token punctuation">]</span>
+docker image build <span class="token operator">-</span>t <span class="token punctuation">[</span>username<span class="token punctuation">]</span><span class="token operator">/</span><span class="token punctuation">[</span>repository<span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token punctuation">[</span>tag<span class="token punctuation">]</span> <span class="token punctuation">.</span>
+
+docker tag express<span class="token operator">-</span>demo songge<span class="token operator">/</span>express<span class="token operator">-</span>demo<span class="token punctuation">:</span><span class="token number">1.0</span><span class="token number">.0</span>
+docker push songge<span class="token operator">/</span>express<span class="token operator">-</span>demo<span class="token punctuation">:</span><span class="token number">1.0</span><span class="token number">.0</span>
+</code></pre></div><ul><li>3注释
+<ul><li>FROM 表示该镜像继承的镜像 :表示标签</li> <li>COPY 是将当前目录下的app目录下面的文件都拷贝到image里的/app目录中</li> <li>WORKDIR 指定工作路径，类似于执行 cd 命令</li> <li>RUN npm install 在/app目录下安装依赖，安装后的依赖也会打包到image目录中</li> <li>EXPOSE 暴露3000端口，允许外部连接这个端口</li></ul></li> <li>4注释
+<ul><li>-p 参数是将容器的3000端口映射为本机的3333端口,通过访问本机的3333端口就可以 访问到容器的3000</li> <li>-it 参数是将容器的shell容器映射为当前的shell,在本机容器中执行的命令都会发送到容器当中执行express-demo image的名称</li> <li>/bin/bash 容器启动后执行的第一个命令,这里是启动了bash容器以便执行脚本</li> <li>--rm 在容器终止运行后自动删除容器文件</li></ul></li></ul> <h2 id="数据盘"><a href="#数据盘" aria-hidden="true" class="header-anchor">#</a> 数据盘</h2> <ul><li><p>删除容器的时候，容器层里创建的文件也会被删除掉，如果有些数据你想永久保存，比如Web服务器的日志，数据库管理系统中的数据，可以为容器创建一个数据盘。</p></li> <li><p>创建容器的时候我们可以通过-v或--volumn给它指定一下数据盘</p></li> <li><p>指定数据盘</p> <ul><li>~/data:/mnt 把当前用户目录中的data目录映射到/mnt上</li> <li>: 前是linux内的空间  后是容器内的空间</li></ul></li></ul> <div class="language-js extra-class"><pre class="language-js"><code>mkdir <span class="token operator">~</span><span class="token operator">/</span>data
+docker run <span class="token operator">-</span>v <span class="token operator">~</span><span class="token operator">/</span>data<span class="token punctuation">:</span><span class="token operator">/</span>mnt <span class="token operator">-</span>ti <span class="token operator">--</span>name logs2 centos bash
+cd <span class="token operator">/</span>mnt
+echo <span class="token number">3</span> <span class="token operator">&gt;</span> <span class="token number">3.</span>txt
+exit
+cat <span class="token operator">~</span><span class="token operator">/</span>data<span class="token operator">/</span><span class="token number">3.</span>txt
+</code></pre></div><ul><li>容器共享数据盘</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker create <span class="token operator">-</span>v <span class="token operator">/</span>mnt <span class="token operator">--</span>name logger <span class="token function">centos</span> <span class="token punctuation">(</span>在linux中创建数据盘<span class="token punctuation">,</span><span class="token parameter">name</span><span class="token operator">=&gt;</span>logger<span class="token punctuation">)</span>
+docker run <span class="token operator">--</span>volumes<span class="token operator">-</span><span class="token keyword">from</span> logger <span class="token operator">--</span>name logger3 <span class="token operator">-</span>i <span class="token operator">-</span>t centos <span class="token function">bash</span><span class="token punctuation">(</span>初始化容器指定logger容器<span class="token punctuation">)</span>
+cd <span class="token operator">/</span>mnt 
+touch logger3
+docker run <span class="token operator">--</span>volumes<span class="token operator">-</span><span class="token keyword">from</span> logger <span class="token operator">--</span>name logger4 <span class="token operator">-</span>i <span class="token operator">-</span>t centos bash
+cd <span class="token operator">/</span>mnt
+touch logger4
+</code></pre></div><ul><li>管理数据盘</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker volume ls 列出所有的数据盘
+docker volume ls <span class="token operator">-</span>f dangling<span class="token operator">=</span><span class="token boolean">true</span> 列出已经孤立的数据盘
+docker volume rm xxxx
+docker volume ls
+docker rm logger1 logger2
+docker volume inspect xxx
+docker rm logger <span class="token operator">-</span>v
+</code></pre></div><h2 id="网络"><a href="#网络" aria-hidden="true" class="header-anchor">#</a> 网络</h2> <ul><li>docker里面有一个DNS服务，可以通过容器名称访问主机 网络类型</li></ul> <div class="tip custom-block"><p class="custom-block-title">TIP</p> <p>none 无网络，对外界完全隔离</p> <p>host 主机网络</p> <p>bridge 桥接网络，默认网络</p></div> <ul><li>bridge</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker network ls
+docker inspect bridge
+docker run <span class="token operator">-</span>d <span class="token operator">--</span>name server1 nginx
+docker run <span class="token operator">-</span>d <span class="token operator">--</span>name server2 nginx
+docker exec <span class="token operator">-</span>it server1 bash
+ping server2
+</code></pre></div><ul><li>none</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker run <span class="token operator">-</span>d <span class="token operator">--</span>name server_none <span class="token operator">--</span>net none nginx
+docker inspect none
+docker exec <span class="token operator">-</span>it server_none bash
+ip addr
+</code></pre></div><ul><li>host</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker run <span class="token operator">-</span>d <span class="token operator">--</span>name server_host <span class="token operator">--</span>net host nginx
+docker inspect none
+docker exec <span class="token operator">-</span>it server_host bash
+ip addr
+</code></pre></div><ul><li>访问桥接网络里面的服务
+<ul><li>访问主机的8080端口会被定向到容器的80端口</li></ul></li></ul> <div class="language- extra-class"><pre class="language-text"><code>docker inspect nginx
+docker run -d --name server_nginx -p &quot;8080:80&quot;  nginx
+</code></pre></div><ul><li>查看主机绑定的端口</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker inspect <span class="token punctuation">[</span>容器名称<span class="token punctuation">]</span>
+docker port server_nginx
+</code></pre></div><h2 id="compose"><a href="#compose" aria-hidden="true" class="header-anchor">#</a> compose</h2> <div class="language-js extra-class"><pre class="language-js"><code> 安装 pip install docker<span class="token operator">-</span>compose
+</code></pre></div><ul><li>Compose 通过一个配置文件来管理多个Docker容器，在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用，和应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景 步骤：</li> <li>在 docker-compose.yml 中定义组成应用程序的服务，以便它们可以在隔离的环境中一起运行。</li> <li>最后，运行docker-compose up，Compose 将启动并运行整个应用程序。 配置文件组成</li> <li>services 可以定义需要的服务，每个服务都有自己的名字、使用的镜像、挂载的数据卷所属的网络和依赖的其它服务。</li> <li>networks 是应用的网络，在它下面可以定义使用的网络名称，类性。</li> <li>volumes是数据卷，可以在此定义数据卷，然后挂载到不同的服务上面使用。</li></ul> <h3 id="docker-compose-yml-使用"><a href="#docker-compose-yml-使用" aria-hidden="true" class="header-anchor">#</a> docker-compose.yml 使用</h3> <ul><li>空格缩进表示层次</li> <li>冒号空格后面有空格</li></ul> <div class="language- extra-class"><pre class="language-text"><code>version: '2'
+services:
+  zfpx1:
+    image: nginx
+    port:
+      - &quot;8080:80&quot;
+  zfpx2:
+    image: nginx
+    port:
+      - &quot;8081:80&quot;
+</code></pre></div><ul><li>nginx工具包</li></ul> <blockquote><p>docker体积很小</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code>apt update
+#ping
+apt install inetutils<span class="token operator">-</span>ping 
+#nslookup
+apt install dnsutils   
+#ifconfig 
+apt install net<span class="token operator">-</span>tools    
+#ip
+apt install iproute2     
+#curl
+apt install curl
+</code></pre></div><ul><li>启动</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>docker<span class="token operator">-</span>compose up 启动所有的服务
+docker<span class="token operator">-</span>compose <span class="token operator">-</span>d 后台启动所有的服务
+docker<span class="token operator">-</span>compose ps 打印所有的容器
+docker<span class="token operator">-</span>compose stop 停止所有服务
+docker<span class="token operator">-</span>compose logs <span class="token operator">-</span>f 持续跟踪日志
+docker<span class="token operator">-</span>compose exec zfpx1 bash 进入zfpx服务系统
+docker<span class="token operator">-</span>compose rm 删除服务容器
+docker network ls 网络不会删除
+docker<span class="token operator">-</span>compose down 删除网路
+</code></pre></div><h2 id="实战"><a href="#实战" aria-hidden="true" class="header-anchor">#</a> 实战</h2> <ul><li>nodeapp 是一个用 Docker 搭建的本地 Node.js 应用开发与运行环境。</li></ul> <div class="tip custom-block"><p class="custom-block-title">服务</p> <p>node：启动node服务</p> <p>web：使用 nginx 作为应用的 web 服务器</p></div> <div class="tip custom-block"><p class="custom-block-title">结构</p> <ul><li><p>app：这个目录存储应用</p> <ul><li>web 放应用的代码</li></ul></li> <li><p>services： 环境里定义的服务需要的一些服务</p></li> <li><p>images: 方式一些贬义的脚本和镜像</p></li> <li><p>docker-compose.yml：定义本地开发环境需要的服务</p></li> <li><p>images/nginx/config/default.conf 放置nginx 配置文件</p></li> <li><p>node 的Dockfile配置文件</p></li></ul></div> <ul><li>docker-compose.yml</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>version<span class="token punctuation">:</span> <span class="token string">'2'</span>
+services<span class="token punctuation">:</span>
+ node<span class="token punctuation">:</span>
+  build<span class="token punctuation">:</span>
+    context<span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token operator">/</span>images<span class="token operator">/</span>node
+    dockerfile<span class="token punctuation">:</span> Dockerfile
+  volumes<span class="token punctuation">:</span>
+    <span class="token operator">-</span> <span class="token punctuation">.</span><span class="token operator">/</span>app<span class="token operator">/</span>web<span class="token punctuation">:</span><span class="token operator">/</span>web
+  depends_on<span class="token punctuation">:</span>
+   <span class="token operator">-</span> db
+ web<span class="token punctuation">:</span>
+  image<span class="token punctuation">:</span> nginx
+  ports<span class="token punctuation">:</span>
+   <span class="token operator">-</span> <span class="token string">&quot;8080:80&quot;</span>
+  volumes<span class="token punctuation">:</span>
+   <span class="token operator">-</span> <span class="token punctuation">.</span><span class="token operator">/</span>images<span class="token operator">/</span>nginx<span class="token operator">/</span>config<span class="token punctuation">:</span><span class="token operator">/</span>etc<span class="token operator">/</span>nginx<span class="token operator">/</span>conf<span class="token punctuation">.</span>d
+   <span class="token operator">-</span> <span class="token punctuation">.</span><span class="token operator">/</span>app<span class="token operator">/</span>web<span class="token operator">/</span>views<span class="token punctuation">:</span><span class="token operator">/</span>mnt<span class="token operator">/</span>views  
+  depends_on<span class="token punctuation">:</span>
+   <span class="token operator">-</span> node
+ db<span class="token punctuation">:</span>
+  image<span class="token punctuation">:</span> mariadb
+  environment<span class="token punctuation">:</span>
+   <span class="token constant">MYSQL_ROOT_PASSWORD</span><span class="token punctuation">:</span> <span class="token string">&quot;root&quot;</span>
+   <span class="token constant">MYSQL_DATABASE</span><span class="token punctuation">:</span> <span class="token string">&quot;node&quot;</span>
+   <span class="token constant">MYSQL_USER</span><span class="token punctuation">:</span> <span class="token string">&quot;zfpx&quot;</span>
+   <span class="token constant">MYSQL_PASSWORD</span><span class="token punctuation">:</span> <span class="token string">&quot;123456&quot;</span>
+  volumes<span class="token punctuation">:</span>
+    <span class="token operator">-</span> db<span class="token punctuation">:</span><span class="token operator">/</span><span class="token keyword">var</span><span class="token operator">/</span>lib<span class="token operator">/</span>mysql
+volumes<span class="token punctuation">:</span>
+ db<span class="token punctuation">:</span>
+  driver<span class="token punctuation">:</span> local
+</code></pre></div><ul><li>app/web/server.js</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">let</span> http<span class="token operator">=</span><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'http'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> mysql  <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'mysql'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> connection <span class="token operator">=</span> mysql<span class="token punctuation">.</span><span class="token function">createConnection</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  host     <span class="token punctuation">:</span> <span class="token string">'db'</span><span class="token punctuation">,</span>
+  user     <span class="token punctuation">:</span> <span class="token string">'zfpx'</span><span class="token punctuation">,</span>
+  password <span class="token punctuation">:</span> <span class="token string">'123456'</span><span class="token punctuation">,</span>
+  database <span class="token punctuation">:</span> <span class="token string">'node'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+connection<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> server<span class="token operator">=</span>http<span class="token punctuation">.</span><span class="token function">createServer</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span>res</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    connection<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span><span class="token string">'SELECT 2 + 2 AS solution'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">error<span class="token punctuation">,</span> results<span class="token punctuation">,</span> fields</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token keyword">throw</span> error<span class="token punctuation">;</span>
+        res<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token operator">+</span>results<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>solution<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+server<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><ul><li>package.json</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token string">&quot;scripts&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;start&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;node server.js&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre></div><ul><li>images/node/Dockerfile</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token constant">FROM</span> node
+<span class="token constant">MAINTAINER</span> zhangrenyang <span class="token operator">&lt;</span>zhang_renyang@<span class="token number">126.</span>com<span class="token operator">&gt;</span>
+<span class="token constant">WORKDIR</span> <span class="token operator">/</span>web
+<span class="token constant">RUN</span> npm install
+<span class="token constant">CMD</span> npm start
+</code></pre></div><ul><li>images/nginx/config/default.conf</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>upstream backend <span class="token punctuation">{</span>
+    server node<span class="token punctuation">:</span><span class="token number">3000</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+server <span class="token punctuation">{</span>
+    listen <span class="token number">80</span><span class="token punctuation">;</span>
+    server_name localhost<span class="token punctuation">;</span>
+    root <span class="token operator">/</span>mnt<span class="token operator">/</span>views<span class="token punctuation">;</span>
+    index index<span class="token punctuation">.</span>html index<span class="token punctuation">.</span>htm<span class="token punctuation">;</span>
+
+    location <span class="token operator">/</span>api <span class="token punctuation">{</span>
+        proxy_pass http<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>backend<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <div class="page-edit"><!----> <div class="last-updated"><span class="prefix">上次更新: </span> <span class="time">3/27/2019, 5:37:33 PM</span></div></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/operation/linux.html" class="prev">
+          linux
+        </a></span> <!----></p></div> </div> <!----></div></div>
+    <script src="/assets/js/app.c4cf2eda.js" defer></script><script src="/assets/js/17.4a939374.js" defer></script>
+  </body>
+</html>

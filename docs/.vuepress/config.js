@@ -1,7 +1,16 @@
 module.exports = {
-  title: 'yy3535', // 页签标题 : A001_VuePress博客搭建的简单教程&问题分析 # | Wiki 1001
-  description: 'yy3535的笔记', // meta 中的描述文字，意义不大，SEO用
+  base: '/note/',
+  title: 'yy3535',
+  description: 'yy3535的笔记',
+  head: [
+    ['link', { rel: 'icon', href: '/img/favicon.ico' }]
+  ],
+  // markdown: {
+  //   lineNumbers: true
+  // },
   themeConfig: {
+    //导航栏徽标
+    logo: '/img/logo.jpg',
     editLinkText: "编辑此页",
     lastUpdated: "上次更新",
     nav: [
@@ -9,7 +18,9 @@ module.exports = {
       { text: '后端', link: '/Backend/' },
       { text: '运维', link: '/Operation/' },
       // { text: '关于', link: '/About/' },
-      { text: 'GitHub', link: 'https://github.com/yy3535' },
+      { text: '待整理', link: '/Todo/' },
+      { text: '随想', link: '/Thought/' },
+      { text: 'GitHub', link: 'https://github.com/yy3535/yy3535' },
     ],
     sidebar: {
       '/Frontend/':[
@@ -17,8 +28,12 @@ module.exports = {
             title: '前端',
             collapsable: false,
             children: [
-               "js",
+              {
+                title: 'Group 2',
+                children: [['"/js/01"', 'js基础'],"/js/02"]
+              },
                "vue",
+               "vuepress",
                "webpack"
             ]
         }
@@ -46,7 +61,19 @@ module.exports = {
             title: '关于',
             collapsable: false,
         }
-      ]
+      ],
+      '/Todo/':[
+        {
+            title: '待整理',
+            collapsable: false,
+        }
+      ],
+      '/Thought/':[
+        {
+            title: '随想',
+            collapsable: false,
+        }
+      ],
     }
   }
 }

@@ -13,6 +13,7 @@ vue+components+vue-router+vuex+vue-cli
 **库和框架的区别**
 
 库：调用库中的方法实现自己的功能
+
 框架：我们在指定的位置写好代码，框架帮我们调用
 
 **mvc和mvvm区别**
@@ -75,7 +76,7 @@ let vm=new Vue({
 
 
 3. 值设置为对象才有效，需要修改某个值，可以使用vm.$set(vm.info,'address','zf');
-    
+   
     vm.info.address='world'//无效 
     
     vm.info={address:'回龙观'}//有效，

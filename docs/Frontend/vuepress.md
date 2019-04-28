@@ -162,7 +162,9 @@ themeConfig: {
         '/',
         '/page-a',
         //自定义标题
-        ['/page-b', 'Explicit link text']
+        ['/page-b', 'Explicit link text'],
+        //多级菜单
+        '/js/jsbasic/xxx',
     ],
     sidebar: [
         {
@@ -170,7 +172,9 @@ themeConfig: {
             强制一个组始终打开
             collapsable: false,
             children: [
-            '/'
+            '/',
+            //多级菜单
+            '/js/jsbasic/xxx',
             ]
         },
         {

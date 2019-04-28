@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>前端设计模式 | yy3535</title>
+    <meta name="description" content="yy3535的笔记">
+    <link rel="icon" href="/img/favicon.ico">
+    
+    <link rel="preload" href="/assets/css/0.styles.9cd8b68b.css" as="style"><link rel="preload" href="/assets/js/app.4229ff90.js" as="script"><link rel="preload" href="/assets/js/11.88c913a7.js" as="script"><link rel="prefetch" href="/assets/js/10.3e3f7da4.js"><link rel="prefetch" href="/assets/js/12.4f80bc9f.js"><link rel="prefetch" href="/assets/js/13.39527c02.js"><link rel="prefetch" href="/assets/js/14.adf0b48c.js"><link rel="prefetch" href="/assets/js/15.5e9cd7d7.js"><link rel="prefetch" href="/assets/js/16.29ec60f3.js"><link rel="prefetch" href="/assets/js/17.2b9dd0bf.js"><link rel="prefetch" href="/assets/js/18.7d8f5a46.js"><link rel="prefetch" href="/assets/js/19.17013f97.js"><link rel="prefetch" href="/assets/js/2.066c3c73.js"><link rel="prefetch" href="/assets/js/20.30d91b6c.js"><link rel="prefetch" href="/assets/js/21.0bbeaf9e.js"><link rel="prefetch" href="/assets/js/22.0ba195fb.js"><link rel="prefetch" href="/assets/js/23.4a4b0dd3.js"><link rel="prefetch" href="/assets/js/24.58756634.js"><link rel="prefetch" href="/assets/js/25.ae46cac1.js"><link rel="prefetch" href="/assets/js/26.2cb9b913.js"><link rel="prefetch" href="/assets/js/27.6c2a2505.js"><link rel="prefetch" href="/assets/js/28.987724c6.js"><link rel="prefetch" href="/assets/js/29.b4db2f7e.js"><link rel="prefetch" href="/assets/js/3.c9cad497.js"><link rel="prefetch" href="/assets/js/4.b0a44811.js"><link rel="prefetch" href="/assets/js/5.9e5d89e4.js"><link rel="prefetch" href="/assets/js/6.047f29f9.js"><link rel="prefetch" href="/assets/js/7.af66f526.js"><link rel="prefetch" href="/assets/js/8.a2a06361.js"><link rel="prefetch" href="/assets/js/9.e478d2fe.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.9cd8b68b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/logo.jpg" alt="yy3535" class="logo"> <span class="site-name can-hide">yy3535</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/frontend/" class="nav-link router-link-active">前端</a></div><div class="nav-item"><a href="/backend/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link">运维</a></div><div class="nav-item"><a href="/todo/" class="nav-link">待整理</a></div><div class="nav-item"><a href="https://github.com/yy3535/yy3535" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/frontend/" class="nav-link router-link-active">前端</a></div><div class="nav-item"><a href="/backend/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link">运维</a></div><div class="nav-item"><a href="/todo/" class="nav-link">待整理</a></div><div class="nav-item"><a href="https://github.com/yy3535/yy3535" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first"><p class="sidebar-heading open"><span>js</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/js/jsbasic/" class="sidebar-link">01-JS基础知识</a></li><li><a href="/frontend/js/jswebapi/" class="sidebar-link">02-JS-WEB-API</a></li><li><a href="/frontend/js/devenv/" class="sidebar-link">03-开发环境</a></li><li><a href="/frontend/js/runenv/" class="sidebar-link">04-运行环境</a></li><li><a href="/frontend/js/es6/" class="sidebar-link">ES6</a></li><li><a href="/frontend/js/designpatterns/" class="active sidebar-link">前端设计模式</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#面对对象" class="sidebar-link">面对对象</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#设计原则" class="sidebar-link">设计原则</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#工厂模式" class="sidebar-link">工厂模式</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#单例模式" class="sidebar-link">单例模式</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#适配器模式" class="sidebar-link">适配器模式</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#装饰器模式" class="sidebar-link">装饰器模式</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#代理模式" class="sidebar-link">代理模式</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#外观模式" class="sidebar-link">外观模式</a></li><li class="sidebar-sub-header"><a href="/frontend/js/designpatterns/#观察者模式-监听模式" class="sidebar-link">观察者模式(监听模式)</a></li></ul></li><li><a href="/frontend/js/jsbasic/zepto/" class="sidebar-link">zepto源码解读</a></li><li><a href="/frontend/js/jsbasic/shenrubibao/" class="sidebar-link">深入理解javascript原型链和闭包</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>vue</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/vue.html" class="sidebar-link">vue</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>webpack</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/webpack.html" class="sidebar-link">webpack</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>小工具</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/vuepress.html" class="sidebar-link">vuepress</a></li><li><a href="/frontend/markdown.html" class="sidebar-link">markdown 语法</a></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="前端设计模式"><a href="#前端设计模式" aria-hidden="true" class="header-anchor">#</a> 前端设计模式</h1> <p></p><div class="table-of-contents"><ul><li><a href="#面对对象">面对对象</a></li><li><a href="#设计原则">设计原则</a></li><li><a href="#工厂模式">工厂模式</a><ul><li><a href="#简单工厂模式">简单工厂模式</a></li><li><a href="#工厂方法模式">工厂方法模式</a></li><li><a href="#抽象工厂模式">抽象工厂模式</a></li><li><a href="#总结工厂模式">总结工厂模式</a></li></ul></li><li><a href="#单例模式">单例模式</a></li><li><a href="#适配器模式">适配器模式</a></li><li><a href="#装饰器模式">装饰器模式</a></li><li><a href="#代理模式">代理模式</a></li><li><a href="#外观模式">外观模式</a></li><li><a href="#观察者模式-监听模式">观察者模式(监听模式)</a></li></ul></div><p></p> <h2 id="面对对象"><a href="#面对对象" aria-hidden="true" class="header-anchor">#</a> 面对对象</h2> <ol><li><p>把客观对象属性抽象成属性和操作，隐藏内部属性</p></li> <li><p>把同一个类型的对象的属性和操作绑在一起，变成类</p></li> <li><p>可实现继承和操作</p> <ul><li>面对对象的分析 OOA</li> <li>面对对象的设计 OOD</li> <li>面对对象的变成 OOP</li></ul></li> <li><p>类</p> <div class="language- extra-class"><pre class="language-text"><code>class Animal{
+  constructor(name){
+    this.name=name;
+  }
+  eat(food){
+    console.log(`${this.name} eat ${food}`)
+  }
+}
+let dog=new Animal(&quot;狗&quot;);
+dog.eat(&quot;肉&quot;)
+</code></pre></div></li> <li><p>继承</p> <p>父类公用方法</p> <div class="language- extra-class"><pre class="language-text"><code>class Dog extends Animal{
+  constructor(){
+    super(&quot;狗&quot;)
+  }
+  speak(){
+    console.log(&quot;汪汪汪&quot;)
+  }
+}
+let dog=new Dog();
+dog.eat(&quot;肉&quot;);
+dog.speak();
+
+class Cat extends Animal{
+  constructor(){
+    super('猫');
+  }
+  speak(){
+    console.log('喵喵喵')
+  }
+}
+let cat=new Cat();
+cat.eat(&quot;鱼&quot;);
+cat.speak();
+</code></pre></div></li> <li><p>封装</p></li></ol> <ul><li>减少耦合，部分不让外部访问，管理接口权限</li> <li>带_开头的都是私有的，业界约定，但es6语法尚不支持，typescript有这种特性</li></ul> <blockquote><p>TypeScript
+是js的超级版本，实现了类型的检查</p></blockquote> <ol><li>安装</li></ol> <div class="language- extra-class"><pre class="language-text"><code>npm install -g typescript
+</code></pre></div><ol start="2"><li>使用</li></ol> <div class="language- extra-class"><pre class="language-text"><code>//2.ts
+function greeting(user:string){//类型限制
+  return 'hello'+user;
+}
+let user='zfpx';
+console.log(greeting(user));
+let user=10;
+console.log(greeting(user));//报错
+</code></pre></div><p>编译成js</p> <div class="language- extra-class"><pre class="language-text"><code>tsc 2.ts//会出来一个2.js
+</code></pre></div><p>特点</p> <ul><li><p>类型限制，如上</p></li> <li><p>封装</p> <p>public 类内和类外都可使用</p> <p>protected 可在类内和子类中使用</p> <p>private 只可在类内使用</p> <div class="language- extra-class"><pre class="language-text"><code>//2.ts
+class Person{
+  public name:string;
+  protected age:number;
+  private money:number;
+  constructor(name,age,money){
+    this.name=name;
+    this.age=age;
+    this.money=money;
+  }
+}
+class Student extends Person{
+	public num:number;
+  constructor(name,age,money,num){
+    super(name,age,money);
+    this.num=num;
+  }
+  getName(){
+    //在子类中可以访问父类的公有属性
+    console.log(`我的名字叫${this.name}`)
+  }
+  getAge(){
+    //在子类中可以访问父类的protected属性
+    console.log(`我的名字叫${this.name}`)
+  }
+  getMoney(){
+    console.log(`我的名字叫${this.name}`)//出错
+  }
+}
+let s1=new Student('zfpx',10,100,1);
+//在其他类中可访问公有属性
+console.log(s1.name)//可访问
+console.log(s1.age)//报错
+console.log(s1.money)//报错，在类外
+</code></pre></div></li></ul> <ol start="4"><li><p>多态</p> <p>同一个函数名接收不同参数(暂时无法实现，会报错)</p> <p>同一个函数名在子类中实现不同功能</p></li></ol> <h2 id="设计原则"><a href="#设计原则" aria-hidden="true" class="header-anchor">#</a> 设计原则</h2> <ul><li>按什么标准来实现功能。</li> <li>功能相同，有不同的设计方法。</li> <li>需求不断变化，设计的作用就会体现出来。</li></ul> <p>五大设计原则</p> <ul><li><p>单一职责原则</p> <p>一个程序只做一件事，否则拆分</p></li> <li><p>开放封闭原则</p> <p>对扩展开放，对修改封闭，不能改老代码</p> <div class="language- extra-class"><pre class="language-text"><code>//request.js
+function checkStatus(response){
+  if(response.code&gt;=200&amp;&amp;response.code&lt;300){
+    return response;
+  }else{
+    throw new Error('响应结果不正确');
+  }
+}
+function parseJSON(response){
+  return response.json();
+}
+function request(url,options){
+/**
+*1.判断相应的状态码是不是2xx，如果不是的话也认为是错误
+*2.把相应体转化成JSON对象
+*/
+  fetch(url,options)
+  	.then(checkStatus)
+  	.then(parseJSON)
+  	.then(checkCode)
+}
+</code></pre></div></li> <li><p>里氏替换原则</p> <ul><li><p>子类的函数能覆盖父类同名函数</p> <div class="language- extra-class"><pre class="language-text"><code>class Animal{
+  eat(){
+    
+  }
+}
+class Cat{
+  constructor(){
+    super()
+  }
+  eat(){
+    console.log(&quot;鱼&quot;)
+  }
+}
+class Dog{
+  constructor(){
+    super()
+  }
+  eat(){
+    console.log(&quot;骨头&quot;)
+  }
+}
+</code></pre></div></li> <li><p>父类能出现的地方，子类也能出现</p> <div class="language- extra-class"><pre class="language-text"><code>//应用场景
+//React 虚拟DOM,hello和h1都是子类，所以都能放
+React.render(&lt;Hello/&gt;);
+React.render(&lt;h1/&gt;)
+</code></pre></div></li> <li><p>js使用比较少</p></li></ul></li> <li><p>接口隔离原则</p> <ul><li><p>保持接口独立，接口单一原则，JS中没有接口，使用较少，ts中有接口</p> <div class="language- extra-class"><pre class="language-text"><code>//4.ts
+interface Person{
+  firstName:string
+  lastName:string
+}
+interface Fly{
+  swing:number;
+}
+function greeting(obj:Person){//加上类型检查会对传入的对象作检查，类型不对或者缺少会报错
+  console.log(obj.firstName+obj.lastName)
+}
+let p={firstName:'张',lastName:'三'}
+greeting(p)
+</code></pre></div></li></ul></li> <li><p>依赖反转原则</p> <ul><li><p>依赖抽象而不依赖实现(尽量依赖父类而不依赖子类)，能依赖Person不依赖Women</p> <div class="language- extra-class"><pre class="language-text"><code>class Person{
+  constructor(){}
+  buy(){}
+}
+class Man extends Person{
+  constructor(gender){
+    this.gender=gender;
+  }
+  buy(){
+    console.log(&quot;买ipad&quot;)
+  }
+}
+class Woman extends Person{
+  constructor(gender){
+    this.gender=gender;
+  }
+  buy(){
+    console.log(&quot;买包&quot;)
+  }
+}
+let p=new Person();
+let man=new Man('男');
+let women=new Woman('女');
+man.buy();
+woman.buy();
+</code></pre></div></li></ul></li></ul> <h2 id="工厂模式"><a href="#工厂模式" aria-hidden="true" class="header-anchor">#</a> 工厂模式</h2> <p><strong>UML</strong></p> <p>标准建模语言，其中一个最重要的就是<strong>类图</strong>和<strong>对象图</strong></p> <p><strong>类图</strong></p> <p>描述类的关系(依赖，泛华(继承))</p> <p><img src="/img/%E7%B1%BB%E5%9B%BE.png" alt></p> <h3 id="简单工厂模式"><a href="#简单工厂模式" aria-hidden="true" class="header-anchor">#</a> 简单工厂模式</h3> <p>+public</p> <p>-private</p> <p>箭头空三角 子类继承父类</p> <p><img src="/img/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82.png" alt="简单工厂模式"></p> <div class="language- extra-class"><pre class="language-text"><code>class Plant{
+  constructor(name){
+    this.name=name;
+  }
+  grow(){
+    console.log('我正在生长~~~~')
+  }
+class Apple extends Plant{
+  constructor(name,flavour){
+    super(name);
+    this.flavour=flavour;
+  }
+}
+class Orange extends Plant{
+  constructor(name,flavour){
+    super(name);
+    this.flavour=flavour;
+  }
+}
+new Apple();
+new Orange();
+</code></pre></div><p>直接new有什么缺点：</p> <ol><li>耦合(需要知道我要的类在哪里，得知道怎么做)</li> <li>依赖具体实现(apple类永远不能修改删掉)</li></ol> <p>简单工厂模式：(用一个类做一个端菜的服务员)</p> <div class="language- extra-class"><pre class="language-text"><code>class Factory{
+  static create(type){
+    switch(type)
+    	case 'apple':
+    		return new Apple('苹果','甜');
+    	case 'orange':
+    		return new Orange('橘子’，酸');
+    	default:
+    		throw new Error('你要的东西没有');
+  }
+}
+let apple=Factory.create('apple');
+console.log(apple.flavour);
+let orange=Factory.create('orange');
+console.log(orange.flavour);
+
+</code></pre></div><p>好处：</p> <ol><li>（有一天橘子没有了，可以换成柠檬，但客户并不知道）隐藏实现，需求修改后只需要改更少的一部分</li> <li>外部简单，内部灵活</li></ol> <p>经典应用场景：</p> <ol><li><p>jQuery</p> <div class="language- extra-class"><pre class="language-text"><code>class jQuery{
+  constructor(selector){
+    let elements=Array.from(document.querySelectorAll(selector));
+    let length=elements?elements.length:0;
+    for(let i=0;i&lt;length;i++){
+      this[i]=elements[i];
+    }
+    this.length=length;
+  }
+  html(){}
+}
+window.$=function(selector){
+  return new jQuery(selector)//调方法，返回一个jquery实例
+}
+</code></pre></div></li> <li><p>react</p> <div class="language- extra-class"><pre class="language-text"><code>//虚拟DOM
+let h1=&lt;h1 className=&quot;title&quot;&gt;hello&lt;/h1&gt;;
+//babel编译后变成：let h1=React.createElement('h1',{className:'title'},'hello');
+//h1就是虚拟DOM
+class VNode{
+  constructor(tagName,attrs,children){
+    this.tagName=tagName;
+    this.attrs=attrs;
+    this.children=children;
+  }
+}
+function createElement(tagName,attrs,children){
+  return new VNode(tagName,attrs,children)//返回一个VNode实例，有一天VNode名字改了，外部依然是调用createElement
+}
+</code></pre></div></li></ol> <h3 id="工厂方法模式"><a href="#工厂方法模式" aria-hidden="true" class="header-anchor">#</a> 工厂方法模式</h3> <p>核心工厂不再负责所有产品的创建，而是将具体创建交给子类去做</p> <p>原因：</p> <ul><li>简单工厂模式不符合开闭原则(对修改关闭，对扩展开放，会改到老代码)</li></ul> <div class="language- extra-class"><pre class="language-text"><code>//plant.js
+class Plant{
+  constructor(name){
+    this.name=name;
+  }
+}
+module.exports=Plant;
+//apple.js
+let Plant=require('./plant');
+let Factory=require('./factory');
+class Apple extends Plant{
+  constructor(name,flavour){
+    super(name);
+    this.flavour=flavour;
+  }
+}
+class AppleFactory extends Factory{
+  static create(){
+    return new Apple('苹果','甜');
+  }
+}
+module.exports=AppleFactory;
+//orange.js
+let Plant=require('./plant');
+let Factory=require('./factory');
+class Orange extends Plant{
+  constructor(name,flavour){
+    super(name);
+    this.flavour=flavour;
+  }
+}
+class OrangeFactory extends Factory{
+  static create(){
+    return new Orange('桔子','酸');
+  }
+}
+module.exports=OrangeFactory;
+//factory.js
+//工厂一般是接口，规定子类必须实现的方法
+//依赖抽象而不依赖实现
+class Factory{
+  create(){}
+}
+module.exports=Factory;
+
+//接口一般会跟配置对象配合
+let settings={
+  'apple':AppleFactory,
+  'orange':OrangeFactory
+}
+let apple=settings['apple'].create();
+let orange=settings['orange'].create();
+</code></pre></div><blockquote><p>什么是接口？</p></blockquote> <p>接口只有方法定义，没有具体实现，如果一个类要实现该接口，就必须实现该接口中的所有方法</p> <h3 id="抽象工厂模式"><a href="#抽象工厂模式" aria-hidden="true" class="header-anchor">#</a> 抽象工厂模式</h3> <p><img src="/img/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F1.png" alt></p> <p><img src="/img/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F2.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>//1.method.js
+clsss Factory{
+  
+}
+class AppleFactory extends Factory{
+  createButton(){//创建按钮
+  	return new AppleButton();
+  }
+  createIcon(){//创建图标
+  	return new AppleIcon();
+  }
+}
+class WindowsFactory extends Factory{
+  createButton(){//创建按钮
+  	return new WindowsButton();
+  }
+  createIcon(){//创建图标
+  	return new WindowsIcon();
+  }
+}
+
+class Icon{}
+class AppleIcon{
+  render(){
+    console.log(`绘制苹果的图标`)
+  }
+}
+class WindowsIcon{
+  render(){
+    console.log(`绘制Windows的图标`)
+  }
+}
+
+class Button{}
+class AppleButton{
+  render(){
+    console.log(`绘制苹果的按钮`)
+  }
+}
+class WindowsButton{
+  render(){
+    console.log(`绘制windows的按钮`)
+  }
+}
+let windowsFactory=new WindowsFactory();
+windowsFactory.createIcon().render();
+windowsFactory.createButton().render();
+</code></pre></div><p>使用场景：工厂里有多种产品，而且生产过程都是一套一套的。</p> <h3 id="总结工厂模式"><a href="#总结工厂模式" aria-hidden="true" class="header-anchor">#</a> 总结工厂模式</h3> <ol><li><p>简单工厂</p> <p>一般就是一个函数返回产品的实例</p></li> <li><p>工厂方法模式</p> <p>多了工厂类，要想创建产品，需要先创建此工厂的实例，再通过这个工厂返回产品实例</p></li> <li><p>抽象工厂模式</p> <p>前两种只能创建一种产品，这种一个工厂可批量创建产品</p></li></ol> <blockquote><p>实际工作中第一种用的最多，2、3种很少见到和用到。</p></blockquote> <h2 id="单例模式"><a href="#单例模式" aria-hidden="true" class="header-anchor">#</a> 单例模式</h2> <p><img src="/img/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>//es6的单例写法
+class Window{
+  constructor(name){
+    this.name=name;
+  }
+  static getInstance(){
+    if(!this.instance){
+      this.instance=new Window();
+    }
+    return this.instance;
+  }
+}
+//Window.getInstance()是类上的方法，只可以通过类来访问，不能通过实例来访问
+
+//es5的单例写法
+function Window(name){
+  this.name=name;
+}
+Window.prototype.getName=function(){//这是实例可访问的方法
+  return this.name;
+}
+Window.getInstance=(function(){//通过闭包实现只能通过Window.getInstance访问的方法
+  let instance;
+  return function(name){
+    if(!instance){
+      instance=new Window(name);
+    }
+    return instance;
+  }
+}){};
+let w1=Window.getInstance();
+let w2=Window.getInstance();
+</code></pre></div><p><strong>两个问题</strong></p> <ol><li><p>客户端 就是使用这个类的使用者必须知道这是一个单例的类，必须主动调用Instance方法</p></li> <li><p>并不能真正阻止客户端直接new Window</p> <div class="language- extra-class"><pre class="language-text"><code>let w3=new Window();
+let w4=new Window();
+</code></pre></div></li></ol> <p><strong>解决问题</strong></p> <p>能够直接new Window，并且是个单例的。</p> <ol><li>透明单例：</li></ol> <div class="language- extra-class"><pre class="language-text"><code>let Window=(function(){
+  let window;
+  let Window=function(name){
+    if(window){
+      return window;
+    }else{
+      this.name=name;
+      return (window=this);
+    }
+  }
+  return Window;
+})();
+//new 关键字 创建一个对象，this指向这个对象，执行代码，返回this
+let w1=new Window();
+let w2=new Window();
+console.log(w1===w2);
+</code></pre></div><ol start="2"><li><p>单例改进</p> <p>透明单例违反了单一职责原则，应该把类的实例的创建逻辑和单例逻辑分开</p> <div class="language- extra-class"><pre class="language-text"><code>function Window(name){
+  this.name=name;
+}
+Window.prototype.getName=function(){
+  console.log(this.name);
+}
+let CreateWindow=(function(){
+  let instance;
+  return function(name){
+    if(!instance){
+      instance=new Window(name);
+    }
+    return instance;
+  }
+})();
+let w1=new CreateSingle('zfpx1');//加不加new一样
+let w2=new CreateSingle('zfpx2');
+console.log(w1===w2)
+</code></pre></div></li> <li><p>单例改进</p> <p>因为new Window(name)写死了，不能直接添加其他的构造函数的单例</p> <div class="language- extra-class"><pre class="language-text"><code>function Window(name){
+  this.name=name;
+}
+Window.prototype.getName=function(){
+  console.log(this.name);
+}
+function Dialog(title,content){
+  this.title=title;
+  this.content=content;
+}
+let CreateSingle=function(Constructor){
+  let instance;
+  return function(name){
+    if(!instance){
+    	Constructor.apply(this,arguments);//让Constructor执行时里面的this指向执行CreateSingle时new出来的对象
+    	Object.setPrototypeOf(this,Constructor.prototype);
+    	//这句是this.__proto__=Constructor.prototype的简写
+    	//如果不添加这句，w1就无法访问到Window原型上的getName方法，因为this的原型指向Function.prototype,即原型继承
+      instance=this;
+      //或者省略以上改成一句instance=new Constructor(...arguments);也可以
+    }
+    return instance;
+  }
+};
+let createWindow=CreateSingle(Window);
+let w1=createWindow('zfpx1');//无论是new还是直接调用，都会创建一个this指针
+let w2=createWindow('zfpx2');
+console.log(w1===w2)//true
+
+let createDialog=CreateSingle(Dialog);
+let w1=createDialog('zfpx1');
+let w2=createDialog('zfpx2');
+console.log(w1===w2)//true
+</code></pre></div></li> <li><p>命名空间(单例的一种)</p> <p>能解决：</p> <ul><li>变量名冲突</li> <li>复杂层次对象的可读性要求</li></ul> <div class="language- extra-class"><pre class="language-text"><code>//例如：jquery并没有把变量都声明在window上，而是都挂在$对象 JQuery
+$.get()
+$.post()
+$.ajax()
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>let $={};
+$.define=function(namespace,fn){
+  let namespaces=namespace.split('.');
+  let fnName=namespaces.pop();
+  let current=$;
+  for(let i=0;i&lt;namespaces.length;i++){
+    let namespace=namespaces[i]//dom
+    if(!current[namespace]){
+      current[namespace]={};//{dom:{}}
+    }
+    current=current[namespace];
+  }
+  current[fnName]=fn;
+}
+$.define('dom.class.addClass',function(){
+  console.log('dom.class.addClass');
+});
+$.define('dom.attr',function(){
+  console.log('dom.attr');
+})
+$.define('string.trim',function(){
+  console.log('string.trim');
+})
+$.define('event.preventDefault',function(){
+  console.log('event.preventDefault');
+})
+</code></pre></div><p><strong>应用场景</strong></p> <ol><li><p>jQuery</p> <div class="language- extra-class"><pre class="language-text"><code>if(window.jQuery!=null){
+  return window.jQuery;//一个页面只会有一个jquery实例
+}else{
+  //init~~~~~~
+}
+</code></pre></div></li> <li><p>模态窗口</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;button id=&quot;show-btn&quot;&gt;显示登录框&lt;/button&gt;
+&lt;button id=&quot;hide-btn&quot;&gt;隐藏登录框&lt;/button&gt;
+&lt;script&gt;
+	class Login{
+    constructor(){
+      this.element=document.createElement('div');
+      this.element.innerHTML={
+        `
+        用户名 &lt;input name=&quot;username&quot;/&gt;
+        密码 &lt;input name=&quot;password&quot;/&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;登录&quot;/&gt;
+        `
+      }
+      this.element.style.cssText=`width:100px;height:100px;position:absolute;left:50%;top:50%;margin-top:-50px;margin-left:-50px; display:none;`
+      document.body.appendChild(this.element);
+    }
+    show(){
+      this.element.style.display='block';
+    }
+    hide(){
+      this.element.style.display='none';
+    }
+    static getInstance(){
+      if(!this.instance){
+        this.instance=new Login();
+      }
+      return this.instance;
+    }
+	}
+	document.getElementById(&quot;show-btn).addEventListener('click',function(){
+    Login.getInstance.show();
+	})
+	document.getElementById(&quot;hide-btn).addEventListener('click',function(){
+    Login.getInstance.hide();
+	})
+&lt;/script&gt;
+</code></pre></div></li> <li><p>Redux 整个应用只有一个仓库，整个仓库只有一个状态state</p> <div class="language- extra-class"><pre class="language-text"><code>function createStore(reducer){
+  let state;
+  let listeners=[];
+  function subscribe(listener){
+    listeners.push(listener);
+  }
+  function getState(){
+    return state;
+  }
+  function dispatch(action){
+    state=reducer(state,action);
+  }
+  return{
+    getState,
+    dispatch,
+    subscribe
+  }
+}
+let reducer=function(){}
+let store=createStore(reducer)
+</code></pre></div></li> <li><p>数据库连接池</p> <p>本地创建与服务器数据库连接，取出数据后销毁。</p> <p>连接池创建固定连接，省去创建和销毁的时间</p></li> <li><p>缓存</p> <p>缓存是为了提高性能的</p> <div class="language- extra-class"><pre class="language-text"><code>let express=require('express');
+let bodyParser=require('body-parser');
+let fs=require('fs');
+let app=express();
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json())
+let cache={};//缓存
+//返回某个用户的详情
+app.get('/user/:id',function(){
+  let id=req.params.id;
+  let user=cache[id];
+  if(uesr){
+    res.json(user);
+  }else{
+    fs.readFile(`./users/${id}.json`,'utf8',function(err,data){
+      let user=JSON.parse(data);
+      cache[id]=user;
+      res.json(user);
+    })
+  }
+  
+})
+//写入某个用户详情
+app.get('/user',function(req,res){
+  let user=req.body;//{id:1,name:'zfpx1',age:9}
+  fs.writeFile(`./users/${user.id}.json`,JSON.stringify(user),function(err){
+    res.json(user);
+  })
+})
+app.listen(8080);
+</code></pre></div></li> <li><p>LRU缓存</p> <p>用一个数组来存储数据，给每一个数据项标记一个访问时间戳</p> <p>每次插入新数据项的时候，先把数组中存在的数据项的时间戳自增，并将新数据项的时间戳设置为0并插入到数组中</p> <p>每次访问数组中的数据项的时候，将被访问的数据项的时间戳置为0</p> <p>当数组空间已满时，将时间戳最大的数据项淘汰</p> <div class="language- extra-class"><pre class="language-text"><code>class LRUCache{
+  constructor(capacity){
+    this.capacity=capacity;
+    this.members=[];
+  }
+  put(key,value){
+  	let oldestAge=-1;
+  	let oldestIndex=-1;
+    for(let i=0;i&lt;this.member.length;i++){
+      let member=this.members[i];
+      if(member.age&gt;oldestAge){
+        oldestAge=member.age;
+      	oldestIndex=i;
+      }
+      member.age++;
+    }
+    if(this.member.length&gt;=this.capacity){
+      this.members.splice(oldestIndex,1);
+    }
+    this.members.push({key,value,age:0})
+  }
+  get(key){
+    for(let i=0;i&lt;this.members.length;i++){
+      let member=this.members[i];//{key,value,age}
+      if(member.key===key){
+        member.age=0;
+        return member.value;
+      }
+    }
+    return -1;
+  }
+}
+let cache=new LRUCache(3);
+cache.put('1','1');
+cache.put('2','2');
+cache.put('3','3');
+console.log(cache.get('2'))
+</code></pre></div></li></ol> <h2 id="适配器模式"><a href="#适配器模式" aria-hidden="true" class="header-anchor">#</a> 适配器模式</h2> <p><img src="/img/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>//适配器
+class Power{
+  charge(){
+    return '220v';
+  }
+}
+class Adaptor{
+  constructor(power){
+    this.power=power;
+  }
+  charge(){//此处可以改为xxx任意名字
+    let v=this.power.charge;
+    return `${v}=&gt;12v`;
+  }
+}
+class Client{
+  constructor(){
+    this.adaptor=new Adaptor();
+  }
+  use(){
+    console,log(this.adaptor.charge())
+  }
+}
+let client=new Client();
+client.use();
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//参数的适配
+//返回值的适配
+function ajax(options){
+  let defaultOptions={
+    method:'GET',
+    dataType:'json'
+  }
+  for(let attr in options){
+    defaultOptions[attr]=options[attr]||defaultOptions[attr];//参数适配
+  }
+  console.log(defaultOptions);
+}
+function transform(str){
+  return JSON.parse(str)
+}
+ajax({
+  url:'http://www.baidu.com',
+  method:'POST',
+  success(str){
+    //服务器返回的是JSON字符串
+    let result=transform(str)//返回值适配
+  }
+})
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//串行连续的读取三个文件的内容
+const fs=require('fs');
+function promisify(fn){
+  return function(...args){
+    return new Promise(function(resolve,reject){
+      fn(...args,function(err,data){
+        if(err){
+          reject(err);
+        }else{
+          resolve(data)
+        }
+      })
+    })
+  }
+}
+let readFile=promisify(fs.readFile);//需要promise时适配一个promise
+(awync function read(){
+  let one=await readFile('1.txt','utf8');
+  let two=await readFile('2.txt','utf8');
+  let three=await readFile('3.txt','utf8');
+  console.log(one,two,three)
+}){}();
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//需要修改项目中所有的jquery方法为fetch
+window.$={//适配了原来所有的$.ajax，并且使用了fetch（老用法适配新用法）
+  ajax(options){
+    return fetch(options.url,{
+      method:options.type||'GET',
+      body:JSON.stringify(options.data||{})
+    }).then(response=&gt;response.json());
+  }
+}
+$.ajax({
+  url,
+  type:'POST',
+  dataType:'json',
+  data:{id:1}
+}).then(function(data){
+  console.log(data);
+})
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//Vue中使用案例
+&lt;body&gt;
+	&lt;div id='root'&gt;
+		&lt;p&gt;{{name}}&lt;/p&gt;
+		&lt;p&gt;{{upperName}}&lt;/p&gt;
+	&lt;/div&gt;
+	&lt;script&gt;
+		let vm=new Vue({
+      el:'#root',
+      data:{
+        name:'zfpx'
+      },
+      computed:{
+        upperName(){
+          return this.name.toUpperCase();//老字符串适配成一个新的字符串
+        }
+      }
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+</code></pre></div><h2 id="装饰器模式"><a href="#装饰器模式" aria-hidden="true" class="header-anchor">#</a> 装饰器模式</h2> <p>面向切面编程</p> <p>给一个类增加功能，但不会改变类的实质，只是修饰作用。它比适配器模式更强大。他修饰的方法必须同名。</p> <p>是将一个对象嵌入另一个对象之中，实际上相当于这个对象被另一个对象包装起来，形成一条包装链。请求随着这条链条依次传递到所有的对象，每个对象有处理这个请求的机会。</p> <p><img src="/img/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>class Duck{
+  constructor(name){
+    this.name=name;
+  }
+  eat(food){
+    console.log(`吃${food}`)
+  }
+}
+class TangDuck{
+  constructor(name){
+    this.duck=new Duck(name)
+  }
+  eat(food){//必须同名,修饰上面的同名方法
+    this.duck.eat(food);
+    console.log('谢谢');
+  }
+}
+let t=new TangDuck();
+t.eat('苹果');
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//装饰器模式有时候会优于继承
+class Coffee{
+  make(water){
+    return `${water}+咖啡`;
+  }
+  cost(){
+    return 10;
+  }
+}
+class MilkCoffee{
+  constructor(parent){
+    this.parent=parent;
+  }
+  make(water){
+    return `${this.parent.make(water)+奶}`;
+  }
+  cost(){
+    return `${this.parent.cost()+2}`;
+  }
+}
+class SugarCoffee{
+  constructor(parent){
+    this.parent=parent;
+  }
+  make(water){
+    return `${this.parent.make(water)+糖}`;
+  }
+}
+let coffee=new Coffee();
+let sugarCoffee=new sugarCoffee(coffee);
+let milkCoffee=new MilkCoffee(sugarCoffee);
+milkCoffee.make('水')
+</code></pre></div><p><strong>AOP:</strong></p> <p>AOP就是在函数执行之前或之后添加一些额外的逻辑，而不需要修改函数原来的功能。</p> <div class="language- extra-class"><pre class="language-text"><code>Function.prototype.before=function(beforeFn){
+  let _this=this;
+  return function(){
+    beforeFn.apply(this,arguments);//继承beforeFn，调用beforeFn
+    _this.apply(this,arguments);//调用函数
+  }
+}
+Function.prototype.after=function(afterFn){
+  let _this=this;
+  return function(){
+    _this.apply(this,arguments);//调用函数
+    afterFn.apply(this,arguments);//继承afterFn，调用afterFn
+  }
+}
+function buy(money,goods){
+  console.log(`花${money}元买${goods}`);
+}
+buy=buy.before(function(){
+  console.log('向媳妇申请一块钱');
+})
+buy=buy.after(function(){
+  console.log('向媳妇归还两毛钱');
+})
+buy(0.8,'盐')；
+
+</code></pre></div><p><strong>应用场景</strong></p> <ol><li>埋点：</li></ol> <p>埋点分析，是网站分析的一种常用的数据采集方法。</p> <p>ajax的请求拦截，koa中间件，redux中间件都是基于装饰器实现的。</p> <ul><li><p>服务器端埋点</p></li> <li><p>客户端埋点</p> <ul><li><p>代码埋点(写死)</p> <div class="language- extra-class"><pre class="language-text"><code>//4.html
+&lt;body&gt;
+	&lt;button data-name=&quot;watermelon&quot; id=&quot;watermelon&quot;&gt;西瓜&lt;/button&gt;
+	&lt;button data-name=&quot;apple&quot; id=&quot;apple&quot;&gt;苹果&lt;/button&gt;
+	&lt;script&gt;
+		let watermelon=document.getElementById('watermelon');
+		let apple=document.getElementById('apple');
+		function click(){
+      console.log('你点击了'+this.dataset.name);
+      let img=new Image();
+      img.src='http://localhost:3000/report?name='+this.dataset.name;
+		}
+		Array.from(document.querySelectorAll('button')).forEach(button=&gt;{
+      button.addEventListener('click',click);
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+//report.js
+let express=require('express');
+let app=express();
+let goods={};
+app.get('/report',function(req,res){
+  let name=req.query.name;
+  if(goods[name]){
+    goods[name]++;
+  }else{
+    goods[name]=1
+  }
+  console.log('name',name);
+  res.json(goods);
+})
+app.get('/',function(req,res){
+  res.json(goods);
+})
+app.listen(3000);
+</code></pre></div></li> <li><p>自动化埋点(AOP，推荐)</p> <div class="language- extra-class"><pre class="language-text"><code>//点击统计
+//4.html
+&lt;body&gt;
+	&lt;button data-name=&quot;watermelon&quot; id=&quot;watermelon&quot;&gt;西瓜&lt;/button&gt;
+	&lt;button data-name=&quot;apple&quot; id=&quot;apple&quot;&gt;苹果&lt;/button&gt;
+	&lt;script&gt;
+		let watermelon=document.getElementById('watermelon');
+		let apple=document.getElementById('apple');
+		Function.prototype.after=function(afterFn){
+      let _this=this;
+      return function(){
+        _this.apply(this,arguments);//调用函数
+        afterFn.apply(this,arguments);//继承afterFn，调用afterFn
+      }
+    }
+		function click(){
+      console.log('你点击了'+this.dataset.name);
+		}
+		click=click.after(function(){
+      let img=new Image();
+      img.src='http://localhost:3000/report?name='+this.dataset.name;
+		})
+		Array.from(document.querySelectorAll('button')).forEach(button=&gt;{
+      button.addEventListener('click',click);
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+//report.js
+let express=require('express');
+let app=express();
+let goods={};
+app.get('/report',function(req,res){
+  let name=req.query.name;
+  if(goods[name]){
+    goods[name]++;
+  }else{
+    goods[name]=1
+  }
+  console.log('name',name);
+  res.json(goods);
+})
+app.get('/',function(req,res){
+  res.json(goods);
+})
+app.listen(3000);
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//2.表单校验，避免校验逻辑和表单提交逻辑合在一起
+&lt;body&gt;
+	
+		用户名 &lt;input type=&quot;text&quot; id=&quot;username&quot;/&gt;
+		密码 &lt;input type=&quot;text&quot; id=&quot;password&quot;/&gt;
+		&lt;button id=&quot;submit-btn&quot;&gt;提交&lt;/button&gt;
+	
+	&lt;script&gt;
+		Function.prototype.before=function(beforeFn){
+      let _this=this;
+      return function(){
+        let ret=beforeFn.apply(this,arguments);//继承beforeFn，调用beforeFn
+        if(ret){
+          _this.apply(this,arguments);//调用函数
+        }
+      }
+    }
+		function submit(){
+      console.log('提交表单')
+		}
+		let checkUserNameNotNull=submit.before(function(){
+      let username=document.getElementById('username').value;
+		  if(username.length&lt;6){
+        return alert('用户名长度不够')
+		  }
+		  return true;
+		})
+		checkUserNameMoreThanSix=checkUserNameNotNull.before(function(){
+      let username=document.getElementById('username').value;
+		  if(!username){
+        return alert('用户名没有输入')
+		  }
+		  return true;
+		})
+		document.getElementById('submit-btn').addEventListener('click',submit)
+	&lt;/script&gt;
+&lt;/body&gt;
+</code></pre></div></li> <li><p>第三方实现 百度统计，友盟等</p></li></ul></li></ul> <ol start="2"><li><p>decorator(node不认识，需要babel转译)</p> <p>webpack要支持decorators要安装如下插件：</p> <div class="language- extra-class"><pre class="language-text"><code>//babel-plugin-proposal-decorators
+&quot;plugins&quot;:[
+  [&quot;@babel/plugin-proposal-decorator&quot;,{&quot;legacy&quot;:true}],//装饰器
+  [&quot;@babel/plugin-proposal-class-properties&quot;,{&quot;loose&quot;:true}]//类装饰器
+]
+</code></pre></div><p>类装饰器</p> <div class="language- extra-class"><pre class="language-text"><code>@testable
+class Person{
+  
+}
+function testable(target){//对类进行装饰
+  target.testalbe=true;
+}
+console.log(Person.testable);
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//react以前的例子（现在已废掉）
+let Hooks={
+  componentWillMount(){
+    console.log('componentWillMount');
+  },
+  componentDidMount(){
+    console.log('componentDidMount');
+  }
+}
+function mixins(...others){
+  return function(target){
+     Object.assign(target.prototype,...others);
+  }
+}
+@mixings(Hooks)
+class Component{
+  
+}
+let c=new Component();
+console.log(c)
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//方法decorators,用函数装饰类上的属性
+function readonly(target,attr,descriptor){//目标，属性名，属性描述器
+  descriptor.writable=false;
+}
+class Circle{
+  @readonly
+  PI=3.14
+}
+let c=new Circle();
+c.PI=300;
+console.log(c.PI)
+
+//在一个老的逻辑之前执行一段逻辑
+function logger(target,attr,descriptor){
+  let oldVal=descriptor.value;
+  descriptor.value=function(...args){
+    console.log(`参数：${args}`);
+    return oldVal(...args);
+  }
+}
+class Caculator{
+  @logger
+  sum(a,b){
+    return a+b;
+  }
+}
+let c=new Caculator();
+let ret=c.sum(1,2);
+console.log(ret);
+
+</code></pre></div></li></ol> <h2 id="代理模式"><a href="#代理模式" aria-hidden="true" class="header-anchor">#</a> 代理模式</h2> <p>由于一个对象不能直接引用另一个对象，所以需要通过代理对象在这两个对象之间起到中介作用</p> <p>在使用者和目标对象之间加一个代理对象，通过代理可以实现控制</p> <p>例如，VPN</p> <p><img src="/img/VPN.png" alt></p> <p>中国网站有GFW防火墙，所以无法访问谷歌服务器，需要买一个中间服务器，创建proxy代理，通过它来访问谷歌。</p> <p><img src="/img/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>//1.google.js
+class Google{
+  get(url){
+    return google;
+  }
+}
+class Proxy{
+  constructor(){
+    this.google=new Google();
+  }
+  get(url){
+    return this.google.get(url);
+  }
+}
+let proxy=new Proxy();
+let result=proxy.get('http://www/google.com');
+console.log(result);//google
+</code></pre></div><p><img src="/img/%E5%85%AC%E5%8F%B8%E5%86%85%E9%83%A8%E6%9C%8D%E5%8A%A1%E5%99%A8.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>//2.cache.js
+//n=4 1!+2!+3!+4
+//修改前，
+function multi(n){
+  if(n&lt;=1){
+    return 1;
+  }else{
+    return n*multi(n-1)
+  }
+}
+let sum=function(n){
+  let result=0;
+  for(let i=1;i&lt;=n;i++){
+    result+multi(n)
+  }
+  return result;
+}
+console.time('cost');
+console.log(sum(3))
+console.time('cost');
+
+//修改后
+let sum=(function(){
+  let cache={};//缓存每次的计算结果
+  function multi(n){
+    if(n&lt;=1){
+      return 1;
+    }else{
+      return n*(cache[n-1]||multi(n-1))
+    }
+  }
+  return function(n){
+    let result=0;
+    for(let i=1;i&lt;n;i++){
+      let ret=multi(i);
+      cache[i]=ret;//从1开始，每个阶乘都记录在了缓存中
+      result+=ret;
+    }
+    return result;
+  }
+})();
+console.time('cost');
+</code></pre></div><p><strong>proxy函数</strong></p> <div class="language- extra-class"><pre class="language-text"><code>//$.proxy绑定this。通过$.proxy生成新的函数，内部调用原始函数
+&lt;body&gt;
+	&lt;button id='clickMe'&gt;点我&lt;/button&gt;
+	&lt;script src=&quot;http://libs.baidu.com/jquery/2.0.0/jquery.min.js&quot;&gt;&lt;/script&gt;
+	&lt;script&gt;
+		document.getElementById('clickMe').addEventListener('click',function(){
+      setTimeout($.proxy(function(){
+        $(this).css('color','red');
+      },this),3000)//proxy绑定this到this,否则是window。原理：setColor=setColor.bind(this)
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//自己写一个$.proxy
+document.getElementById('clickMe').addEventListener('click',function(){
+  function setColor(){
+    $(this).css('color','red');
+  }
+  function proxy(fn,context){
+    return function(){
+      fn.apply(context,arguments);
+    }
+  }
+  setColor=proxy(setColor,this);
+  setTimeout(setColor,3000);
+});
+</code></pre></div><p><strong>Proxy(es6)</strong></p> <ul><li>Proxy 用于修改某些操作的默认行为</li> <li>Proxy可以理解成，在目标对象之前架设一层&quot;拦截&quot;，外界对该对象的访问，都必须先通过这层拦截，因此提供了对外界访问的过滤和改写。由它来代理某些操作，即代理器</li> <li>Vue3.0是用Proxy实现的。Vue2.0是用Object.defineProperty实现的。</li></ul> <div class="language- extra-class"><pre class="language-text"><code>let wangy={
+  name:&quot;王燕&quot;,
+  age:31,
+  height:165
+}
+let wangMaMa = new Proxy(wangy,{
+  get(target,key){
+    if(key=='age'){
+      return target.age-2;
+    }else if(key==='height'){
+      return target.height+3;
+    }else{
+      return target[key];
+    }
+  },
+  set(target,key,val){
+    if(key=='boyfriend'){
+      let boyfriend=val;
+      if(boyfriend.age&gt;40){
+        throw Error('太老了');
+      }else if(boyfriend.salary&lt;20000){
+        throw Error('太穷了');
+      }else{
+        target[key]=val;
+      }
+    }
+  }
+})
+console.log(wangMaMa.age)
+console.log(wangMaMa.height)
+console.log(wangMaMa.name)
+wangMaMa.boyfriend={age:12,salary:8};
+
+</code></pre></div><blockquote><p>代理模式和适配器模式区别？</p> <p>适配器提供不同接口，代理模式提供一模一样的接口</p></blockquote> <blockquote><p>代理模式和装饰器模式的区别？</p> <p>装饰器模式原来的功能不变还可以使用，代理模式改变原来的功能</p></blockquote> <p><strong>事件委托</strong></p> <p>addEventListener的第三个参数，true为捕获，false为冒泡</p> <p>事件委托也是一种代理模式</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;body&gt;
+	&lt;ul&gt;
+		&lt;li&gt;1&lt;/li&gt;
+		&lt;li&gt;2&lt;/li&gt;
+		&lt;li&gt;3&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;script&gt;
+		let ulist=document.getElementById('ulist');
+		ulist.addEventListener('click',function(event){
+			if(event.target.nodetype==='li'){
+        console.log(event.target.innerHTML);
+			}
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+</code></pre></div><p><strong>图片懒加载</strong></p> <p>不改变原有代码，且API不变，增强了额外的功能</p> <div class="language- extra-class"><pre class="language-text"><code>//app.js
+let express=require('express')
+let path=require('path')
+app=express();
+app.use(express.static(__dirname));
+app.get('/images/:name',function(req,res){
+	setTimeout(function(){
+    res.sendFile(path.join(__dirname,req.path));
+	},2000)
+  
+})
+app.get('/loading.gif',function(req,res){
+  res.sendFile(path.resolve('loading.gif'));
+})
+app.listen(3000);
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//index.html
+&lt;body&gt;
+	&lt;ul id='menu'&gt;
+		&lt;li data-src='/images/bg1.jpg'&gt;图片1&lt;/li&gt;
+		&lt;li data-src='/images/bg2.jpg'&gt;图片2&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div id&quot;bgimg&quot;&gt;&lt;/div&gt;
+	&lt;script&gt;
+		let bgimg=document.getElementById('bgimg');
+		let menu=document.getElementById('menu');
+		let Background=(function(){
+      let img=new Image();
+      bgimg.appendChild(img);
+      return {
+        setSrc(src){
+          img.src=src;
+        }
+      }
+		})()
+		menu.addEventListener('click',function(event){
+      let src=event.darget.dataset.src;
+      Background.setSrc(src);
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+
+//使用代理模式改进
+//index.html
+&lt;body&gt;
+	&lt;ul id='menu'&gt;
+		&lt;li data-src='/images/bg1.jpg'&gt;图片1&lt;/li&gt;
+		&lt;li data-src='/images/bg2.jpg'&gt;图片2&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div id&quot;bgimg&quot;&gt;&lt;/div&gt;
+	&lt;script&gt;
+		let bgimg=document.getElementById('bgimg');
+		let menu=document.getElementById('menu');
+		let Background=(function(){
+      let img=new Image();
+      bgimg.appendChild(img);
+      return {
+        setSrc(src){
+          img.src=src+'?ts='+Date.now();
+        }
+      }
+		})()
+		//不改变原有代码，且API不变，增强了额外的功能
+		---------------------修改2------------------------
+		let ProxyBackground=(function(){
+      let img=new Image();
+      img.onload=function(){
+        Background.setSrc(this.src);
+      }
+      return {
+        setSrc(src){
+          Background.setSrc('/loading.gif');
+          img.src=src
+        }
+      }
+		})()
+		---------------------修改2------------------------
+		menu.addEventListener('click',function(event){
+      let src=event.darget.dataset.src;
+      --------修改1-----------
+      ProxyBackground.setSrc(src);//
+      --------修改1-----------
+		})
+	&lt;/script&gt;
+&lt;/body&gt;
+</code></pre></div></li></ol> <p><strong>防抖代理</strong></p> <p>勾选后修改数据，有时候点击多了的时候，不需要发送那么多请求，而是等确定后再发送请求</p> <div class="language- extra-class"><pre class="language-text"><code>//app.js
+let express=require('express')
+let path=require('path')
+app=express();
+app.use(express.static(__dirname));
+let todos=[
+  {id:1,text:'吃饭',completed:false},
+  {id:2,text:'睡觉',completed:false},
+  {id:3,text:'打豆豆',completed:false}
+]
+app.get('/todos'，function(req,res){
+  res.json(todos);
+})
+app.get('/toggle',function(req,res){
+  let ids=req.query.ids;
+  ids=ids.split(',').map(item=&gt;parseInt(item));
+  todos=todos.map(function(todo){
+    if(ids.includes(todo.id)){
+      todo.completed=!todo.completed;
+    }
+    return todo;
+  });
+  res.json({code:0})
+})
+app.listen(3000);
+
+//index.html
+&lt;ul id=&quot;todoApp&quot;&gt;
+
+&lt;/ul&gt;
+&lt;script&gt;
+	let todoApp=document.getElementById('todoApp');
+	window.onload=function(){
+    fetch('/todos').then(res=&gt;res.json()).then(function(todos){
+      todoApp.innerHTML=todos.map(item=&gt;{
+        `&lt;li&gt;
+        	&lt;input value=&quot;${item.id}&quot; type=&quot;checkbox&quot; ${item.completed?&quot;checked&quot;:&quot;&quot;}/&gt;
+        	${item.text}
+        &lt;/li&gt;`
+      }).join('');
+    })
+	}
+	function toggle(id){
+    fetch(`/toggle?id=${id}`).then(res=&gt;res.json()).then(function(result){
+      
+    })
+	}
+	let lazyToggle=(function(){
+    let ids=[];
+    let timer;
+    return function(id){
+      ids.push(id);
+      if(!timer){
+        timer=setTimeout(function(){
+          toggole(ids.join(','));
+          ids=[];
+          clearTimeout(timer);
+          timer=null;
+        },2000);
+      }
+    }
+	})();
+	todoApp.addEventListener('click',function(event){
+    let id=event.target.value;
+    lazyToggle(id);
+	})
+&lt;/script&gt;
+</code></pre></div><h2 id="外观模式"><a href="#外观模式" aria-hidden="true" class="header-anchor">#</a> 外观模式</h2> <p><img src="/img/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>class Sum{
+    sum(a,b) {
+        return a+b;
+    }
+}
+class Minus{
+    minus(a,b) {
+        return a-b;
+    }
+}
+class Multiply{
+    multiply(a,b) {
+        return a * b;
+    }
+}
+class Calculator{
+    constructor() {
+        this.sumObj=new Sum();
+        this.minusObj=new Minus();
+        this.multiplyObj=new Multiply();
+    }
+    sum(...args) {
+        this.sumObj.sum(...args);
+    }
+    minus(...args) {
+        this.minusObj.minus(...args);
+    }
+    multiply(...args) {
+        this.multiplyObj.multiply(...args);
+    }
+}
+let calculator=new Calculator();
+calculator.sum(1,2);
+calculator.minus(1,2);
+calculator.multiply(1,2);
+</code></pre></div><p><strong>场景</strong></p> <ul><li>为复杂的模块或子系统提供外界访问的模块</li> <li>子系统相互独立</li></ul> <p>redux</p> <p>客户端和子模块得到了隔离，内部修改影响不到使用。</p> <p><img src="/img/redux.png" alt></p> <h2 id="观察者模式-监听模式"><a href="#观察者模式-监听模式" aria-hidden="true" class="header-anchor">#</a> 观察者模式(监听模式)</h2> <ul><li>被观察者供维护观察者的一系列方法</li> <li>观察者提供更新接口</li> <li>观察者把自己注册到被观察者里</li> <li>在被观察者发生变化时候，调用观察者的更新方法</li></ul> <div class="language- extra-class"><pre class="language-text"><code>class Star{
+    constructor(name) {
+        this.name=name;
+        this.state='';
+        this.observers=[];
+    }
+    getState() {
+        return this.state;
+    }
+    setState(state) {
+        this.state=state;
+        this.notifyAllObservers();
+    }
+    attach(observer) {
+        this.observers.push(observer);
+    }
+    notifyAllObservers() {
+        this.observers.forEach(observer=&gt;observer.update());
+    }
+}
+class Fan{
+    constructor(name,star) {
+        this.name=name;
+        this.star=star
+        this.star.attach(this);
+    }
+    update() {
+        console.log(`我的明星喜欢${this.star.getState()}，我也喜欢`);    
+    }
+}
+let star=new Star('angelbaby');
+let fan1=new Fan('zhangsan',star);
+star.setState('绿色');
+</code></pre></div><p><strong>场景</strong></p> <ol><li><p>事件绑定</p> <div class="language- extra-class"><pre class="language-text"><code> &lt;button id=&quot;btn&quot;&gt;click&lt;/button&gt;
+    &lt;script&gt;
+        let btn = document.getElementById('btn');
+        btn.addEventListener('click',()=&gt;{alert(1)});
+        btn.addEventListener('click',()=&gt;{alert(2)});
+        btn.addEventListener('click',()=&gt;{alert(3)});
+    &lt;/script&gt;
+</code></pre></div></li> <li><p>Promise</p> <div class="language- extra-class"><pre class="language-text"><code>class Promise{
+    constructor(fn) {
+        this.callbacks=[];
+        let resolve=() =&gt; {
+            this.callbacks.forEach(callback =&gt; callback())
+        };
+        fn(resolve);
+    }
+    then(callback) {
+        this.callbacks.push(callback);
+    }
+}
+let promise=new Promise(function (resolve,reject) {
+    setTimeout(function () {
+        resolve(100);
+    },1000);
+});
+promise.then(() =&gt; console.log(1));
+promise.then(() =&gt; console.log(2));
+</code></pre></div></li> <li><p>JQuery.Callbacks</p> <p>Callbacks对象其实就是一个函数队列，获得Callbacks对象之后 ，就可以向这个集合中增加或者删除函数。</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;script src=&quot;http://libs.baidu.com/jquery/2.0.0/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+ window.jQuery={
+     Callbacks(){
+       let observers = [];
+       function add(observer){
+           observers.push(observer);
+       }
+       function remove(observer){
+           let index = observers.indexOf(observer);
+           if(index != -1)
+             observers.splice(index,1);
+       }
+       function fire(){
+           observers.forEach(item=&gt;item());
+       }
+       return {
+           add,
+           remove,
+           fire
+       }
+   }
+ }
+ let callbacks = jQuery.Callbacks();
+
+ let a1= ()=&gt;alert(1);
+ let a2= ()=&gt;alert(2);
+ let a3= ()=&gt;alert(13);
+ callbacks.add(a1);
+ callbacks.add(a2);
+ callbacks.add(a3);
+ callbacks.remove(a3);
+ callbacks.fire();
+&lt;/script&gt;
+</code></pre></div></li> <li><p>events</p> <p>node库---自定义事件，来自events模块。可以实现监听事件，触发事件</p> <div class="language- extra-class"><pre class="language-text"><code>const EventEmitter=require('events');
+const util=require('util');
+let eve=new EventEmitter();
+eve.on('click',function (name) {
+    console.log(1,name);
+});
+eve.on('click',function (name) {
+    console.log(2,name);
+});
+eve.emit('click','zfpx');
+
+//使用util.inherits继承EventEmitter
+function Bell(){
+  
+}
+util.inherits(Bell,EventEmitter);
+let bell=new Bell();
+bell.on('click',function(name){
+  console.log(&quot;同学们进入&quot;)
+})
+
+</code></pre></div></li> <li><p>stream文件流</p> <div class="language- extra-class"><pre class="language-text"><code>let fs=require('fs');
+let rs=fs.createReadStream('./1.txt');
+rs.on('data',function (data) {
+    console.log(data)
+});
+rs.on('end',function () {
+    console.log('end')
+});
+</code></pre></div></li> <li><p>http服务器</p> <div class="language- extra-class"><pre class="language-text"><code>let http=require('http');
+let server = http.createServer();
+server.on('request',(req,res)=&gt;{
+  req.on('data',function(data){
+      console.log(data)
+  });
+}));
+</code></pre></div></li> <li><p>生命周期函数</p></li> <li><p>vue watch</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;body&gt;
+&lt;div id=&quot;root&quot;&gt;
+      &lt;p&gt;FullName: {{fullName}}&lt;/p&gt;
+      &lt;p&gt;FirstName: &lt;input type=&quot;text&quot; v-model=&quot;firstName&quot;/&gt;&lt;/p&gt;
+      &lt;p&gt;LastName: &lt;input type=&quot;text&quot; v-model=&quot;lastName&quot;/&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;script src=&quot;https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+new Vue({
+  el:'#root',
+  data: {
+    firstName:'张',
+    lastName: '三',
+    fullName:'张三'
+  },
+  watch: {
+    firstName(newName, oldName) {
+      this.fullName = newName + ' ' + this.lastName;
+    }
+  } 
+})
+&lt;/script&gt;
+</code></pre></div></li> <li><p>redux</p></li></ol> <p><strong>观察者模式和发布订阅模式的区别？</strong></p> <ul><li><p>观察者模式</p> <p><img src="/img/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F.png" alt></p> <ol><li>观察者和被观察者是耦合的</li> <li>观察者的update动作是由被观察者来调用的</li></ol></li> <li><p>发布订阅模式</p> <p><img src="/img/%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F.png" alt></p> <div class="language- extra-class"><pre class="language-text"><code>class Agency{
+    constructor() {
+        this._topics={};
+    }
+    // on addEventListener
+    subscribe(topic,listener) {
+        let listeners=this._topics[topic];
+        if (listeners) {
+            listeners.push(listener);
+        } else {
+            this._topics[topic]=[listener];
+        }
+    }
+    //emit
+    publish(topic) {
+        let listeners=this._topics[topic];
+        let args=Array.from(arguments).slice(1);
+        listeners.forEach(listener =&gt; listener(...args));
+    }
+}
+let agent=new Agency();
+class Landlord{
+    constructor(name) {
+        this.name=name;
+    }
+    lend(agent,area,money) {
+        agent.publish('house',area,money);
+    }
+}
+
+class Tenant{
+    constructor(name) {
+        this.name=name;
+    }
+    rent(agent) {
+        agent.subscribe('house', (area,money)=&gt; {
+            console.log(`有新房源了, ${area}平米, ${money}元`);
+        });
+    }
+}
+let t1=new Tenant('房客1');
+let t2=new Tenant('房客2');
+let l1=new Landlord('房东1');
+t1.rent(agent);
+t2.rent(agent);
+l1.lend(agent,30,2000);
+</code></pre></div></li> <li><p>虽然两种模式都存在订阅者和发布者（观察者可认为是订阅者、被观察者可认为是发布者）</p></li> <li><p>但是观察者模式是由被观察者调度的，而发布/订阅模式是统一由调度中心调的</p></li> <li><p>所以观察者模式的订阅者与发布者之间是存在依赖的，而发布/订阅模式则不会。</p></li></ul></div> <div class="page-edit"><!----> <!----></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/frontend/js/es6/" class="prev">
+          ES6
+        </a></span> <span class="next"><a href="/frontend/js/jsbasic/zepto/">
+          zepto源码解读
+        </a>
+        →
+      </span></p></div> </div> <!----></div></div>
+    <script src="/assets/js/app.4229ff90.js" defer></script><script src="/assets/js/11.88c913a7.js" defer></script>
+  </body>
+</html>

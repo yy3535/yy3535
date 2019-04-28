@@ -1,63 +1,49 @@
 # vue
-
+[[toc]]
 ## start
 
-**渐进式**
-
+- 渐进式
 可按需使用
-
-**逐一递增**
-
+- 逐一递增
 vue+components+vue-router+vuex+vue-cli
+- 库和框架的区别
 
-**库和框架的区别**
+  库：调用库中的方法实现自己的功能
 
-库：调用库中的方法实现自己的功能
+  框架：我们在指定的位置写好代码，框架帮我们调用
+- mvc和mvvm区别
 
-框架：我们在指定的位置写好代码，框架帮我们调用
+  mvc单向，model-view-controller，数据变化后需要通过controller手动改变视图
 
-**mvc和mvvm区别**
+  mvvm双向，model-view-viewmodel，数据变化可以驱动视图，vm就是viewmodel
+- 声明式和命令式
 
-mvc单向，model-view-controller，数据变化后需要通过controller手动改变视图
+  reduce不知道内部如何实现，是声明式
 
-mvvm双向，model-view-viewmodel，数据变化可以驱动视图，vm就是viewmodel,
+  for循环，命令计算机帮执行，叫做命令式
 
-**声明式和命令式**
-
-reduce不知道内部如何实现，是声明式
-for循环，命令计算机帮执行，叫做命令式
-
-**vm=new Vue({})配置**
-
-1. el:'#app'//范围
-
-    > el换成.$mount('#app')是一样的。
-    >
-    > 单元测试时会用到。
-
-2. template:'\<h1>hello world\</h1>'//替换范围中内容
-
-3. data:{
-        msg:'hello'
-    }//存放数据,把数据代理给了vm。用之前需要先声明。
+### vm=new Vue({})配置
 
 ```
 let vm=new Vue({
+    //范围 
     el:'#app',
-    template:'<h1>hello world</h1>'
+    //替换范围中内容
+    template:'<h1>hello world</h1>',
+    //存放数据,把数据代理给了vm。用之前需要先声明。
     data:{
       info:{xxx:'xxx'}
     }
 }).$mount('#app')//与el相同作用，二选一
 ```
+**注：**
+el换成.$mount('#app')是一样的。
+单元测试时会用到。
 
 
+## observer(响应式变化)
 
-## observer
-
-响应式变化
-
-什么样的数据会更新？
+### 什么样的数据会更新
 
 1. 对象需要先声明存在，才能触发数据更新。
 
@@ -81,7 +67,7 @@ let vm=new Vue({
     
     vm.info={address:'回龙观'}//有效，
 
-**observer原理：**
+### observer原理
 
 ```
 let obj={
@@ -116,53 +102,53 @@ obj.age.age='zf'
 ```
 
 ## vue实例上的方法
-1. vm.$el 
+### vm.$el 
 
    当前挂载的元素
-2. vm.$options 
+### vm.$options 
 
    当前实例的参数
-3. vm.$nextTick(()=>{...})
+### vm.$nextTick(()=>{...})
 
    视图更新后再执行
    (vue数据变化后更新视图操作是异步执行的)
-4. vm.$watch('info.xxx',function(newValue,oldValue){...})
+### vm.$watch('info.xxx',function(newValue,oldValue){...})
 
    数据变化后执行
    (多次更新只会触发一次)
 
 ## template
 
-- 取值表达式
-   {{}}
+### 取值表达式{{}}
 
    作用：
    - 运算
    - 取值
    - 三元
 
-   注意：
+   **注：**
    - 其中的this都是指代vm实例，可省略
    - 取值时放对象，加空格即可 {{ {name:1} }}
 
 ## 指令
-1. v-once,v-html
-   v-once 
-   - 只渲染一次，数据变化了也不更新视图
-   v-html 
-   - 渲染成dom元素
+### v-once,v-html
+#### v-once 
+只渲染一次，数据变化了也不更新视图
+#### v-html 
+渲染成dom元素
 
-   > v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容必须为可信任
-   > \<img src="x" onerror="alert()" /> 图片找不到会走onerror事件，就会弹出alert框
+**注：**
+v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容必须为可信任
+\<img src="x" onerror="alert()" /> 图片找不到会走onerror事件，就会弹出alert框
    
-2. v-if v-else
+### v-if v-else
    - 必须是连一块的
    - 可使用template无意义标签来框起来
 
-   > v-if和v-show的区别：
-   >   v-if控制dom有没有，v-show控制样式不显示，v-show不支持template
+   **v-if和v-show的区别：**
+   v-if控制dom有没有，v-show控制样式不显示，v-show不支持template
 
-3. v-for 
+### v-for 
 
    ```
    //循环数组
@@ -177,34 +163,32 @@ obj.age.age='zf'
 
    - 可使用template无意义标签来框起来
 
-     > key只能加在循环的元素上，不能加在template上，应该加在内部循环的元素上
-     >
-     > ```
-     > <template v-for="i in 3">
-     > 	<div :key="${i}_1">{{i}}</div>
-     > 	<div :key="${i}_2">{{i}}</div>
-     > </template>
-     > ```
+  **注：**
+  1. key只能加在循环的元素上，不能加在template上，应该加在内部循环的元素上
+    
+    ```
+    <template v-for="i in 3">
+    <div :key="${i}_1">{{i}}</div>
+    <div :key="${i}_2">{{i}}</div>
+    </template>
+    ```
+  2. key也可以用来区分元素
 
-> 注意：
->
-> 1. key也可以用来区分元素
->
->    ```
->    //修改flag值后不会立刻渲染，因为认为是同一个东西，加了key之后就会立刻重新渲染
->    <div v-if="flag">
->    	<span>珠峰</span>
->    	<input type="text" key="1"/>
->    </div>
->    <div v-else>
->    	<span>架构</span>
->    	<input type="text" key="2"/>
->    </div>
->    ```
->
-> 2. 尽量不要用index来作为key，因为index再数据顺序变化后会消耗性能，如果有唯一标识，尽量用唯一标识
+    ```
+    //修改flag值后不会立刻渲染，因为认为是同一个东西，加了key之后就会立刻重新渲染
+    <div v-if="flag">
+    	<span>珠峰</span>
+    	<input type="text" key="1"/>
+    </div>
+    <div v-else>
+    	<span>架构</span>
+    	<input type="text" key="2"/>
+    </div>
+    ```
 
-4. v-model
+  3. 尽量不要用index来作为key，因为index再数据顺序变化后会消耗性能，如果有唯一标识，尽量用唯一标识
+
+### v-model
 
    ```
    <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/>
@@ -242,7 +226,7 @@ obj.age.age='zf'
 
    
 
-5. @
+### @
 
    ```
    <input type='text' @input="fn"/>
@@ -258,7 +242,7 @@ obj.age.age='zf'
      1. 需要传参就加括号写参数，无参数则不加括号
      2. 默认有e事件参数，有传参时，保留$event参数作为事件参数
 
-6. v-bind:或者:
+### v-bind:或者:
 
    ```
    <input type='text' :value="msg"/>

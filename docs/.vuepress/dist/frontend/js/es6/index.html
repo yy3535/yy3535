@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ES6 | yy3535</title>
+    <meta name="description" content="yy3535的笔记">
+    <link rel="icon" href="/img/favicon.ico">
+    
+    <link rel="preload" href="/assets/css/0.styles.9cd8b68b.css" as="style"><link rel="preload" href="/assets/js/app.4229ff90.js" as="script"><link rel="preload" href="/assets/js/13.39527c02.js" as="script"><link rel="prefetch" href="/assets/js/10.3e3f7da4.js"><link rel="prefetch" href="/assets/js/11.88c913a7.js"><link rel="prefetch" href="/assets/js/12.4f80bc9f.js"><link rel="prefetch" href="/assets/js/14.adf0b48c.js"><link rel="prefetch" href="/assets/js/15.5e9cd7d7.js"><link rel="prefetch" href="/assets/js/16.29ec60f3.js"><link rel="prefetch" href="/assets/js/17.2b9dd0bf.js"><link rel="prefetch" href="/assets/js/18.7d8f5a46.js"><link rel="prefetch" href="/assets/js/19.17013f97.js"><link rel="prefetch" href="/assets/js/2.066c3c73.js"><link rel="prefetch" href="/assets/js/20.30d91b6c.js"><link rel="prefetch" href="/assets/js/21.0bbeaf9e.js"><link rel="prefetch" href="/assets/js/22.0ba195fb.js"><link rel="prefetch" href="/assets/js/23.4a4b0dd3.js"><link rel="prefetch" href="/assets/js/24.58756634.js"><link rel="prefetch" href="/assets/js/25.ae46cac1.js"><link rel="prefetch" href="/assets/js/26.2cb9b913.js"><link rel="prefetch" href="/assets/js/27.6c2a2505.js"><link rel="prefetch" href="/assets/js/28.987724c6.js"><link rel="prefetch" href="/assets/js/29.b4db2f7e.js"><link rel="prefetch" href="/assets/js/3.c9cad497.js"><link rel="prefetch" href="/assets/js/4.b0a44811.js"><link rel="prefetch" href="/assets/js/5.9e5d89e4.js"><link rel="prefetch" href="/assets/js/6.047f29f9.js"><link rel="prefetch" href="/assets/js/7.af66f526.js"><link rel="prefetch" href="/assets/js/8.a2a06361.js"><link rel="prefetch" href="/assets/js/9.e478d2fe.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.9cd8b68b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/logo.jpg" alt="yy3535" class="logo"> <span class="site-name can-hide">yy3535</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/frontend/" class="nav-link router-link-active">前端</a></div><div class="nav-item"><a href="/backend/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link">运维</a></div><div class="nav-item"><a href="/todo/" class="nav-link">待整理</a></div><div class="nav-item"><a href="https://github.com/yy3535/yy3535" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/frontend/" class="nav-link router-link-active">前端</a></div><div class="nav-item"><a href="/backend/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link">运维</a></div><div class="nav-item"><a href="/todo/" class="nav-link">待整理</a></div><div class="nav-item"><a href="https://github.com/yy3535/yy3535" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first"><p class="sidebar-heading open"><span>js</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/js/jsbasic/" class="sidebar-link">01-JS基础知识</a></li><li><a href="/frontend/js/jswebapi/" class="sidebar-link">02-JS-WEB-API</a></li><li><a href="/frontend/js/devenv/" class="sidebar-link">03-开发环境</a></li><li><a href="/frontend/js/runenv/" class="sidebar-link">04-运行环境</a></li><li><a href="/frontend/js/es6/" class="active sidebar-link">ES6</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/frontend/js/es6/#let和const" class="sidebar-link">let和const</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#解构赋值-deconstruction" class="sidebar-link">解构赋值(deconstruction)</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#扩展运算符…" class="sidebar-link">扩展运算符…</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#object-defineproperty-定义属性" class="sidebar-link">Object.defineProperty(定义属性)</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#class类" class="sidebar-link">class类</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#箭头函数" class="sidebar-link">箭头函数</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#symbol" class="sidebar-link">Symbol</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#map-set-集合" class="sidebar-link">map set 集合</a></li><li class="sidebar-sub-header"><a href="/frontend/js/es6/#字符串符号" class="sidebar-link">字符串符号``</a></li></ul></li><li><a href="/frontend/js/designpatterns/" class="sidebar-link">前端设计模式</a></li><li><a href="/frontend/js/jsbasic/zepto/" class="sidebar-link">zepto源码解读</a></li><li><a href="/frontend/js/jsbasic/shenrubibao/" class="sidebar-link">深入理解javascript原型链和闭包</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>vue</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/vue.html" class="sidebar-link">vue</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>webpack</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/webpack.html" class="sidebar-link">webpack</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>小工具</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/frontend/vuepress.html" class="sidebar-link">vuepress</a></li><li><a href="/frontend/markdown.html" class="sidebar-link">markdown 语法</a></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="es6"><a href="#es6" aria-hidden="true" class="header-anchor">#</a> ES6</h1> <p></p><div class="table-of-contents"><ul><li><a href="#let和const">let和const</a><ul><li><a href="#优点">优点</a></li><li><a href="#const特殊地方">const特殊地方</a></li><li><a href="#哪些地方用const">哪些地方用const</a></li></ul></li><li><a href="#解构赋值-deconstruction">解构赋值(deconstruction)</a></li><li><a href="#扩展运算符…">扩展运算符…</a><ul><li><a href="#用处">用处</a></li></ul></li><li><a href="#object-defineproperty-定义属性">Object.defineProperty(定义属性)</a><ul><li><a href="#使用">使用</a></li><li><a href="#vue双向绑定实现原理">vue双向绑定实现原理</a></li></ul></li><li><a href="#class类">class类</a><ul><li><a href="#es5中的类">es5中的类</a></li><li><a href="#es6中的类">es6中的类</a></li><li><a href="#babel">babel</a></li><li><a href="#装饰器">装饰器</a></li></ul></li><li><a href="#箭头函数">箭头函数</a></li><li><a href="#symbol">Symbol</a></li><li><a href="#map-set-集合">map set 集合</a><ul><li><a href="#set">set</a></li><li><a href="#set的方法">Set的方法</a></li><li><a href="#map">map</a></li></ul></li><li><a href="#字符串符号">字符串符号``</a></li></ul></div><p></p> <h2 id="let和const"><a href="#let和const" aria-hidden="true" class="header-anchor">#</a> let和const</h2> <h3 id="优点"><a href="#优点" aria-hidden="true" class="header-anchor">#</a> 优点</h3> <ol><li><p>没有变量提升问题</p></li> <li><p>不能重复声明</p></li> <li><p>不会污染全局作用域(let a; window.a//null)</p></li> <li><p>有作用域</p> <blockquote><p>以前需要让变量有作用域，需要用函数把变量包起来：</p> <div class="language- extra-class"><pre class="language-text"><code>(function(){
+	var a=1 
+})()
+</code></pre></div><p>现在{}和let配合可产生作用域</p> <div class="language- extra-class"><pre class="language-text"><code>{
+	let a=1
+}
+</code></pre></div></blockquote></li> <li><p>变量会绑定作用域内的let，不受外部影响(块级作用域开始的地方到let声明之前称作<strong>暂存死区</strong>，会出现not defined错误)</p> <div class="language- extra-class"><pre class="language-text"><code>let a=2
+{
+	console.log(a)//not defined
+	let a=1
+}
+console.log(a)
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>for(let i=0;i&lt;100;i++){
+  setTimeout(()=&gt;{
+    console.log(i);
+  },1)
+}
+</code></pre></div><h3 id="const特殊地方"><a href="#const特殊地方" aria-hidden="true" class="header-anchor">#</a> const特殊地方</h3> <p>常量，不能更改值得引用地址，会报错</p> <p>所以可这样更改：</p> <div class="language- extra-class"><pre class="language-text"><code>const a={a:1}
+a.a=100//正确
+</code></pre></div><h3 id="哪些地方用const"><a href="#哪些地方用const" aria-hidden="true" class="header-anchor">#</a> 哪些地方用const</h3> <div class="language- extra-class"><pre class="language-text"><code>const fs=require('fs');
+fs.xxx
+</code></pre></div><h2 id="解构赋值-deconstruction"><a href="#解构赋值-deconstruction" aria-hidden="true" class="header-anchor">#</a> 解构赋值(deconstruction)</h2> <ul><li><p>结构相同的内容，可直接拿出来</p></li> <li><p>可赋予默认值</p> <div class="language- extra-class"><pre class="language-text"><code>Promise.all([1,2,3,4]).then(function([,,a,,b='hello']){
+  console.log(a,b)//3 'hello'
+})
+let [,,a,,b='hello']=[1,2,3,4];
+</code></pre></div></li> <li><p>对象的解构，=号是赋予默认值，:是起别名</p> <div class="language- extra-class"><pre class="language-text"><code>let {length}=[1,2,3,4];
+console.log(length);//4
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>let {length}={length:3};//length:3
+let {length:Len}={length:3}//Len:3
+</code></pre></div></li></ul> <h2 id="扩展运算符…"><a href="#扩展运算符…" aria-hidden="true" class="header-anchor">#</a> 扩展运算符…</h2> <h3 id="用处"><a href="#用处" aria-hidden="true" class="header-anchor">#</a> 用处</h3> <ol><li>#####对象的展开(es7)</li> <li>拷贝对象</li></ol> <div class="language- extra-class"><pre class="language-text"><code>let obj={name:'zfpx',age:9};
+let school={...obj}//...的作用就是删掉外面的{}
+console.log(school===obj)//不相等，因为是另辟了一个空间
+</code></pre></div><ol><li><p>合并对象</p> <div class="language- extra-class"><pre class="language-text"><code>let school={...obj,...obj1};
+</code></pre></div></li></ol> <ul><li><p>$.extend：深拷贝</p></li> <li><p>扩展运算符(…)：浅拷贝，对象的对象引用地址还是同一个</p></li> <li><p>Object.assign(es6)：浅拷贝</p> <div class="language- extra-class"><pre class="language-text"><code>let o=Object.assign(obj.obj1)
+或者
+let o={}
+let o=Object.assign(o,obj,obj1)
+</code></pre></div></li></ul> <blockquote><div class="language- extra-class"><pre class="language-text"><code>//如何实现深拷贝----递归拷贝
+let obj={a:b:{abc:abc}}
+function deepClone(obj){
+if(obj===null) return null;
+if(typeof obj!='object') return obj;
+if(obj instanceof RegExp) return new RegExp(obj);
+if(obj instanceof Date) return new Date(obj);
+let newObj=new obj.constructor;
+for(let key in obj){
+newObj[key]=deepClone(obj[key]);
+}
+return newObj
+}
+let newReg=deepClone(obj);
+console.log(newReg);
+</code></pre></div></blockquote> <ol><li>#####数组的展开(es6)</li></ol> <div class="language- extra-class"><pre class="language-text"><code>console.log([...arr1,...arr2])//原理：es6转es5,concat(arr1,arr2)
+Math.max.apply(Math,arr1)//以前展开数组方法
+console.log(Math.max(...arr1));//现在展开数组方法
+</code></pre></div><ol><li><h5 id="剩余运算符"><a href="#剩余运算符" aria-hidden="true" class="header-anchor">#</a> 剩余运算符</h5> <p>只能放在函数的最后一个参数，sum(b,…arg)</p> <div class="language- extra-class"><pre class="language-text"><code>function sum(...arg){//使用剩余运算符作为参数接收，并且只能放在最后一项
+  //return eval(arguments.join('+'));类数组没有join方法
+  return eval([...arguments].join('+'));//类数组可迭代，所以可以用这个运算符
+}
+let r=sum(1,2,3,4,5);
+console.log(r)
+</code></pre></div></li></ol> <h2 id="object-defineproperty-定义属性"><a href="#object-defineproperty-定义属性" aria-hidden="true" class="header-anchor">#</a> Object.defineProperty(定义属性)</h2> <p>1.这种方式定义无法看到但是可以取到属性</p> <p>2.这种方式定义的属性不可更改</p> <p>3.这种方式定义的属性不可删除</p> <p>4.value可改成get,set，捕获事件</p> <div class="language- extra-class"><pre class="language-text"><code>let obj={}
+let temp=3.15;
+Object.defineProperty(obj,'name',{
+	//原理:
+	//enumerable:false,如果改成true就可看见。
+	//writable:false，改成true就可以改写
+	//configurable:false，改成true就可被删除
+  //value:123===&gt;可改成get和set，且使用get，set是不能有value和writable的
+	get(){
+    console.log('哈哈')
+    return temp
+	},
+	set(val){
+    console.log('呵呵');
+    temp=val;
+	}
+})
+console.log(obj)//{}
+console.log(obj.name)//123
+
+get第二种写法
+
+let obj={
+	temp:'',
+  get PI(){
+    return this.temp
+  },
+  set PI(val){
+    this.temp=val;
+  }
+}
+console.log(obj.PI)
+obj.PI=100;
+</code></pre></div><h3 id="使用"><a href="#使用" aria-hidden="true" class="header-anchor">#</a> 使用</h3> <ul><li>class的实现</li> <li>vue的MVVM</li> <li>mobx</li> <li>装饰器</li> <li>koa</li></ul> <p>//作业：</p> <p>写promise es6版本的 传到github</p> <h3 id="vue双向绑定实现原理"><a href="#vue双向绑定实现原理" aria-hidden="true" class="header-anchor">#</a> vue双向绑定实现原理</h3> <div class="language- extra-class"><pre class="language-text"><code>//老的原理
+let obj={name:'zfpx',age:9};
+function update(){
+  console.log('数据更新了')
+}
+function observer(obj){
+  if(typeof obj!=='object'){
+    return obj;//普通值不需要观察
+  }
+  for(let key in obj){
+    defineReactive(obj,key,obj[key]);
+  }
+}
+//把对象中的所有属性都采用Object.defineProperty方式来定义
+function defineReactive(obj,key,value){
+observer(value);//递归确认值是否是对象
+  Object.defineProperty(obj,key,{
+    get(){
+      return value;
+    },
+    set(val){
+      update();
+      if(value!=val) value=val
+    }
+  })
+}
+observer(obj);
+obj.name=100;
+console.log(obj.name)
+obj.name.name='zfpx1';
+
+//现在的原理：proxy 代理 es6语法 mobx observer
+好处：
+- Object.defineProperty不支持数组，而proxy可监控到数组的变化
+- 不存在的属性添加时依然可以监控
+坏处：
+- 兼容性不好，Object.defineProperty是es5语法
+//let arr=[1,2,3]
+let obj={}
+let p=new Proxy(obj,{
+  get(target,key,proxy){//第三个参数一般不用，调用了会陷入死循环
+    return Reflect.get(target,key);//第二种写法
+    //第一种写法：return target[key]
+  },
+  set(target,key,value){
+  	if(key==='length') return true;
+    return Reflect.set(target,key,value);
+  }
+})
+//p.push(4);
+p.name='hello';
+
+</code></pre></div><h2 id="class类"><a href="#class类" aria-hidden="true" class="header-anchor">#</a> class类</h2> <h3 id="es5中的类"><a href="#es5中的类" aria-hidden="true" class="header-anchor">#</a> es5中的类</h3> <p>原生的构造函数</p> <p>类必须要大写</p> <p>es5中可以当做函数来调用，es6中类只能new</p> <div class="language- extra-class"><pre class="language-text"><code>function Animal(type){
+  this.type=type;
+}
+Animal.prototype.eat=function(){
+  console.log('eat')
+}
+**继承的三种方法：**
+//1.继承实例上的属性
+function Cat(type){
+  Animal.call(this,type)
+}
+//2.获取父类的公共属性
+- node刚出来的时候
+es5:Cat.prototype.__proto__=Animal.prototype;
+- node6.0的时候
+es5:Cat.prototype=Object.create(Animal.prototype,{constructor:{value:Cat}});
+- es6出来以后
+es6:Object.setPrototypeOf(Cat.prototype,Animal.prototype);
+
+let cat=new Cat('哺乳类')
+console.log(cat.eat)
+
+//3.继承父类实例上的所有属性：因为初始化子类不能给父类传参，所以没人用，一般用1+2
+// Cat.prototype=new Animal();
+// let cat=new Cat('哺乳类');
+
+</code></pre></div><h3 id="es6中的类"><a href="#es6中的类" aria-hidden="true" class="header-anchor">#</a> es6中的类</h3> <p>只能new</p> <div class="language- extra-class"><pre class="language-text"><code>class Animal{
+  constructor(type){
+    this.type=type;
+  }
+  //添加公共属性
+  eat(){
+    console.log(this);
+  }
+}
+//继承原型和公共方法，extends里面内置了call，也实现了继承共有属性
+Class Cat extends Animal{
+	//静态方法，子类可继承
+	static flag(){
+    return '好玩'
+	}
+  constructor(type){
+    super(type);//继承必须写这句，相当于Animal.call(this.type);
+  }
+}
+Animal.prototype.eat=...//不需要用这种方法，直接在类里添加即可
+Animal()//出错 构造函数Animal只能通过new来调用
+let animal=new Animal('哺乳类');
+let cat=new Cat('哺乳类')
+
+
+</code></pre></div><p>如何用es5实现es6Class类</p> <div class="language- extra-class"><pre class="language-text"><code>function _classCallCheck(sub,constr){
+  if(!(sub instanceof constr)){
+    throw new Error('Cannot with new ')
+  }
+}
+let Animal=function (){
+  function Animal(type){
+    _classCallCheck(this,Animal);//判断如果不是通过new返回错误
+    this.type=type;
+  }
+  _createClass();//用Object.defineProperty，因为通过es6类创建的方法是不可看到的
+  return Animal;
+}()
+Animal()
+//...没看懂==！
+
+</code></pre></div><h3 id="babel"><a href="#babel" aria-hidden="true" class="header-anchor">#</a> babel</h3> <p>转换es6成es5</p> <p>可在命令行中直接转换</p> <ol><li>安装babel</li></ol> <div class="language- extra-class"><pre class="language-text"><code>npm install @babel/cli @babel/core//babel核心和babelcli
+npm add @babel/preset-env//babel插件1
+npm add @babel/plugin-proposal-class-properties//babel插件2
+npm add @babel/plugin-proposal-decorators//babel插件3
+
+</code></pre></div><ol><li><p>新建一个.babelrc文件，运行时会按这个文件的方式来解析</p> <div class="language- extra-class"><pre class="language-text"><code>{
+	&quot;presets&quot;:[
+    &quot;@babel/preset-env&quot;//这个插件告诉babel按es6到es5编译
+	],
+  &quot;plugins&quot;:[
+  	[
+      &quot;@babel/plugin-proposal-class-properties&quot;,//这个插件用来转化类上的属性
+      {
+        &quot;loose&quot;:false
+      }
+  	],
+  	[
+      &quot;@babel/plugin-proposal-decorators&quot;,//这个插件用来识别类装饰器
+      {
+        &quot;legacy&quot;:true
+      }
+  	]
+  ]
+}
+
+</code></pre></div></li> <li><p>解析</p> <div class="language- extra-class"><pre class="language-text"><code>class Circle{
+	constructor(){
+    this.a=1
+	}//简写成如下写法
+	a=1//高级写法，可用babel解析识别
+  static PI=3.14//es6不支持静态属性，可用babel解析识别
+}
+let c=new Circle;
+console.log(c.a)
+命令：babel 6.class.js -o new.jss
+
+</code></pre></div></li></ol></li></ol> <h3 id="装饰器"><a href="#装饰器" aria-hidden="true" class="header-anchor">#</a> 装饰器</h3> <pre><code>  @符号表示是装饰器，他可以修饰类 类中的属性和方法
+
+  ```
+  function sweetCoffee(coffee){
+    coffee();
+    console.log('加糖')
+  }
+  function coffee(){
+    console.log('一杯苦coffee')
+  }
+  sweetCoffee(coffee)
+  
+  ```
+</code></pre> <h2 id="箭头函数"><a href="#箭头函数" aria-hidden="true" class="header-anchor">#</a> 箭头函数</h2> <p>没有this指向 没有arguments</p> <p>一个参数可以省略圆括号</p> <p>可以省略return和{}，如果返回的是一个对象，要用小括号包裹起来</p> <h2 id="symbol"><a href="#symbol" aria-hidden="true" class="header-anchor">#</a> Symbol</h2> <p>js的数据类型：number string boolean null undefined  object</p> <p>Symbol是第七种，一般用作常量</p> <div class="language- extra-class"><pre class="language-text"><code>console.log(typeof Symbol());//symbol
+console.log(Symbol()===Symbol());//false
+console.log(Symbol('a')===Symbol('a'));//false
+const a1=Symbol.for('a');//声明一个Symbol
+console.log(Symbol.keyFor(a1))//a ,取值
+
+</code></pre></div><p>特点：每次拿到的都不一样</p> <h2 id="map-set-集合"><a href="#map-set-集合" aria-hidden="true" class="header-anchor">#</a> map set 集合</h2> <h3 id="set"><a href="#set" aria-hidden="true" class="header-anchor">#</a> set</h3> <p>放的东西不能重复(数组可重复)，可以被迭代</p> <div class="language- extra-class"><pre class="language-text"><code>//数组去重
+let arr=[1,2,3,3,2,1]
+console.log(new Set(arr));
+
+</code></pre></div><h4 id="常见面试题"><a href="#常见面试题" aria-hidden="true" class="header-anchor">#</a> 常见面试题</h4> <div class="language- extra-class"><pre class="language-text"><code>//并集
+let arr1=[1,2,3,3,2,1];
+let arr2=[4,5,6];
+let s=[...new Set([...arr1,arr2])];//Symbol.iterator
+console.log(s)//1,2,3,4,5,6
+
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//交集
+let s1=new Set(arr1);
+let s2=new Set(arr2);
+let r=[...s1].filter(item=&gt;{//如果返回true表示留下
+  return s2.has(item);
+})
+console.log(r);
+
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//差集
+let r=[...s1].filter(item=&gt;{//如果返回true表示留下
+  return !s2.has(item);
+})
+console.log(r);
+
+</code></pre></div><h3 id="set的方法"><a href="#set的方法" aria-hidden="true" class="header-anchor">#</a> Set的方法</h3> <div class="language- extra-class"><pre class="language-text"><code>let s=new Set([1,2,3]);
+s.add(5);
+s.clear();
+s.delete(2);
+
+</code></pre></div><h3 id="map"><a href="#map" aria-hidden="true" class="header-anchor">#</a> map</h3> <p>一样，不能放重复的数据</p> <div class="language- extra-class"><pre class="language-text"><code>let map=new Map();
+map.set('js',['nodejs'])
+map.set('js',['js1'])//覆盖
+console.log(map);
+map.forEach((item,key)=&gt;{
+  console.log(item,key)
+})
+
+</code></pre></div><h2 id="字符串符号"><a href="#字符串符号" aria-hidden="true" class="header-anchor">#</a> 字符串符号``</h2> <p>可自动支持换行，用${}显示变量值</p> <div class="language- extra-class"><pre class="language-text"><code>//拼接字符串
+let name='zfpx';
+let age=10;
+let val=`${name}今年${age}岁了
+你好
+`
+console.log(val)
+
+</code></pre></div></div> <div class="page-edit"><!----> <!----></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/frontend/js/runenv/" class="prev">
+          04-运行环境
+        </a></span> <span class="next"><a href="/frontend/js/designpatterns/">
+          前端设计模式
+        </a>
+        →
+      </span></p></div> </div> <!----></div></div>
+    <script src="/assets/js/app.4229ff90.js" defer></script><script src="/assets/js/13.39527c02.js" defer></script>
+  </body>
+</html>

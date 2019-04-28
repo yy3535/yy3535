@@ -1,44 +1,74 @@
 module.exports = {
-  base: '/note/',
+  base: '/',
   title: 'yy3535',
   description: 'yy3535的笔记',
   head: [
     ['link', { rel: 'icon', href: '/img/favicon.ico' }]
   ],
-  // markdown: {
-  //   lineNumbers: true
-  // },
   themeConfig: {
     //导航栏徽标
     logo: '/img/logo.jpg',
     editLinkText: "编辑此页",
     lastUpdated: "上次更新",
+    // sidebarDepth: 4, 
     nav: [
-      { text: '前端', link: '/Frontend/' },
-      { text: '后端', link: '/Backend/' },
-      { text: '运维', link: '/Operation/' },
+      { text: '前端', link: '/frontend/' },
+      { text: '后端', link: '/backend/' },
+      { text: '运维', link: '/operation/' },
       // { text: '关于', link: '/About/' },
-      { text: '待整理', link: '/Todo/' },
-      { text: '随想', link: '/Thought/' },
+      { text: '待整理', link: '/todo/' },
+      // { text: '随想', link: '/Thought/' },
       { text: 'GitHub', link: 'https://github.com/yy3535/yy3535' },
     ],
     sidebar: {
-      '/Frontend/':[
+      '/frontend/':[
         {
-            title: '前端',
+            title: 'js',
             collapsable: false,
             children: [
-              {
-                title: 'Group 2',
-                children: [['"/js/01"', 'js基础'],"/js/02"]
-              },
-               "vue",
-               "vuepress",
-               "webpack"
+              '/frontend/js/jsbasic/',
+              '/frontend/js/jswebapi/',
+              '/frontend/js/devenv/',
+              '/frontend/js/runenv/',
+              '/frontend/js/es6/',
+              '/frontend/js/designpatterns/',
+              '/frontend/js/jsbasic/zepto/',
+              '/frontend/js/jsbasic/shenrubibao/',
             ]
-        }
+        },
+        {
+          title: 'vue',
+          collapsable: false,
+          children: [
+             "vue",
+          ]
+        },
+        {
+          title: 'webpack',
+          collapsable: false,
+          children: [
+             "webpack",
+          ]
+        },
+        {
+          title: '小工具',
+          collapsable: false,
+          children: [
+             "vuepress",
+             "markdown"
+          ]
+        },
+        // '/frontend/',
+        // {
+        //   title: 'jswebapi',
+        //   children: [
+        //       '/frontend/js/jswebapi/',
+        //   ]
+        // },
+        // ['/frontend/js/jswebapi','js基础'],
+        // ['/frontend/js/other','js基础'],
       ],
-      '/Backend/':[
+      '/backend/':[
         {
             title: '后端',
             collapsable: false,
@@ -47,7 +77,7 @@ module.exports = {
             ]
         }
       ],
-      '/Operation/':[
+      '/operation/':[
         {
             title: '运维',
             collapsable: false,
@@ -56,19 +86,19 @@ module.exports = {
             ]
         }
       ],
-      '/About/':[
+      '/about/':[
         {
             title: '关于',
             collapsable: false,
         }
       ],
-      '/Todo/':[
+      '/todo/':[
         {
             title: '待整理',
             collapsable: false,
         }
       ],
-      '/Thought/':[
+      '/thought/':[
         {
             title: '随想',
             collapsable: false,

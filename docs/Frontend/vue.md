@@ -189,13 +189,14 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
   3. 尽量不要用index来作为key，因为index再数据顺序变化后会消耗性能，如果有唯一标识，尽量用唯一标识
 
 ### v-model
-
+#### input
    ```
    <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/>
    等价于  <!-- v-model 是 @input + :value 的一个语法糖-->
    <input type='text' v-model="msg"/>
    ```
 
+#### select,radio和checkbox
    ```
    //select
    data:{
@@ -218,10 +219,18 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
    <input type='radio' v-model="radioValue" value="其他"/>
    
    //checkbox
+   //只要是多个就是数组
    data:{
-   	checkValue:true
+   	checkValue:true,
+    checkValues:[]
    }
+   <!--true/false-->
    <input type='checkbox' v-model="checkValue" value="是否喜欢"/>
+   <!--多选-->
+   <input type='checkbox' v-model="checkValues" value="游泳"/>
+   <input type='checkbox' v-model="checkValues" value="健身"/>
+   <input type='checkbox' v-model="checkValues" value="看书"/>
+   {{checkValues}}
    ```
 
    

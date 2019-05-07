@@ -117,6 +117,8 @@ obj.age.age='zf'
    数据变化后执行
    (多次更新只会触发一次)
 
+### vm.$destroy 手动销毁组件
+
 ## template
 
 ### 取值表达式{{}}
@@ -168,8 +170,8 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
     
     ```
     <template v-for="i in 3">
-    <div :key="${i}_1">{{i}}</div>
-    <div :key="${i}_2">{{i}}</div>
+    <div :key="${i}_1"></div>
+    <div :key="${i}_2"></div>
     </template>
     ```
   2. key也可以用来区分元素
@@ -187,6 +189,7 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
     ```
 
   3. 尽量不要用index来作为key，因为index再数据顺序变化后会消耗性能，如果有唯一标识，尽量用唯一标识
+
 
 ### v-model
 #### input
@@ -224,8 +227,9 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
    	checkValue:true,
     checkValues:[]
    }
+   不给value，值就是true/false，给了value，就是数组
    <!--true/false-->
-   <input type='checkbox' v-model="checkValue" value="是否喜欢"/>
+   <input type='checkbox' v-model="checkValue"/>
    <!--多选-->
    <input type='checkbox' v-model="checkValues" value="游泳"/>
    <input type='checkbox' v-model="checkValues" value="健身"/>
@@ -233,30 +237,438 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
    {{checkValues}}
    ```
 
-   
+#### 修饰符（可以连续修饰）
+```
+  <input type="text" v-model.number="val">{{typeof val}}//只能数字
+  <input type="text" v-model.trim="val">{{typeof val}}//清除空格
+```
+### @绑定事件
 
-### @
+```
+<input type='text' @input="fn"/>
 
-   ```
-   <input type='text' @input="fn"/>
-   
-   methods:{
-   	fn(){...}
-   }
-   ```
+methods:{
+  fn(){...}
+}
+```
 
-   - 绑定方法，写在method中，this指向vm实例，data中不能放方法，因为this指向window
-   - methods中不要写成fn:()=>{}，否则this就指向window了
-   - 方法传参：
-     1. 需要传参就加括号写参数，无参数则不加括号
-     2. 默认有e事件参数，有传参时，保留$event参数作为事件参数
+- 绑定方法，写在method中，this指向vm实例，data中不能放方法，因为this指向window
+- methods中不要写成fn:()=>{}，否则this就指向window了
+- 方法传参：
+  1. 需要传参就加括号写参数，无参数则不加括号
+  2. 默认有e事件参数，有传参时，保留$event参数作为事件参数
+
+#### 修饰符(可以连续修饰)
+
+@keyup.按键名称/按键unicode码//只有按了该按键才响应
+
+常用：.ctrl .esc .enter
+
+```
+<input type="text" @keyup.enter="fn">
+<input type="text" @keyup.esc="fn">
+```
+vue配置一个键盘code别名,需要按fn+f1
+
+```
+Vue.config.keyCodes={
+  'f1':112
+}
+```
 
 ### v-bind:或者:
 
-   ```
-   <input type='text' :value="msg"/>
-   ```
+```
+<input type='text' :value="msg"/>
+```
 
-   - 绑定属性
+- 绑定属性
 
-   
+> 动态绑定样式 
+class
+1. 等于对象
+```
+<div class="abc" :class="{b:true}">你好</div>
+```
+2. 等于数组
+```
+<div class="abc" :class="['a','b',c]">你好</div>//c为data中定义的
+```
+style
+等于对象或者数组
+```
+<div style='color:red' :style="{background:'blue'}">
+<div style='color:red' :style="[{background:'red',color:'blue'}]">
+```
+
+## computed
+- methods getFullName()放取值表达式中会造成性能问题，每次其他数据更新都会重新执行这个方法
+- computed也是通过Object.defineProperty来实现的，只有依赖的数据更新时才会执行（有缓存）
+```
+computed:{
+  fullName(){
+    return this.firstName+this.lastName;
+  }
+}
+```
+
+### watch实现computed
+```
+data:{
+  firstName:'珠',
+  lastName:'峰',
+  fullName:'',
+},
+methods:{
+  getFullName(){
+    this.fullName=this.firstName+this.lastName;
+  }
+},
+watch:{//相当于vm.$watch('firstname',()=>{})
+  //普通写法，需要mount来执行
+  firstName(newValue){
+    this.getFullName();
+  },
+  //其他写法
+  firstName:{
+    handler(newValue){
+      this.getFullName();
+    },
+    //立即执行
+    immediate:true
+  }
+  lastName(){
+    this.getFullName();
+  }
+}
+```
+> computed和method的区别？
+computed只有绑定的数据变了才会执行，method做绑定时所有数据变了都会执行
+
+> computed和watch的区别？
+- watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
+
+### computed实现双向绑定
+```
+全选：<input type="checkbox" v-model="checkAll">
+<input type="checkbox" v-for="(item,key) in checks" v-model="item.value" :key="key">
+data:{
+  checks:[{value:true},{value:false},{value:true},]
+},
+computed:{
+  checkAll:{
+    get(){
+      return this.checks.every(check=>check.value)
+    },
+    set(kvalue){
+      this.checks.forEach(check=>check.value=value);
+    }
+  }
+}
+```
+
+## 生命周期
+
+初始化自己的生命周期，并且绑定自己的事件
+- this.$data 
+vm.data
+
+### beforeCreate
+实例尚未创建完成
+初始化注入，和响应事件
+```
+data:{
+  a:1
+},
+beforeCreate(){
+  console.log(this)//undefined
+  console.log(this.$data)//undefined
+}
+
+```
+### created
+可以获取数据和调用方法
+```
+create(){
+  console.log(this)//存在
+  console.log(this.$data)//{a:1}
+}
+```
+
+### beforeMount
+渲染前，第一次调用渲染函数执行，可以拿到data,method等
+
+
+### mounted（重要）
+渲染后，可获取真实dom，一般ajax请求放在这儿。
+```
+mounted(){
+  console.log(this.$el.innerHTML);
+}
+```
+
+### beforeUpdate
+更新前
+```
+beforeUpdate(){
+  console.log(this.$el.innerHTML);
+}
+```
+
+### updated
+一般不要操作数据，否则可能会死循环
+更新后
+```
+updated(){
+  console.log(this.$el.innerHTML);
+}
+```
+
+### beforeDestroy（重要）
+销毁前（当前实例还可以用），一般会放销毁定时器等解绑操作
+```
+beforeDestroy(){
+  console.log(this.$el.innerHTML);
+}
+```
+
+### destroyed
+销毁后（实例上的方法，监听，事件绑定都被移除）
+```
+destroyed(){
+  console.log(this.$el.innerHTML);
+}
+```
+> 什么情况会走destroy?
+- 路由切换
+  一个组件切换到另一个组件，上一个组件要销毁
+  
+- vm.$destroy()
+  手动销毁
+
+
+![vue生命周期](/img/lifecycle.png)
+
+## 组件(component)
+### 组件化开发的优点：
+  - 一个页面分为几个组件开发，方便协作，方便维护，可复用
+
+- 要采用闭合标签
+- 为了每个组件的数据，互不影响，data采用函数
+### 全局组件
+```
+<div id='app'>
+  <my-button></my-button>
+  <my-button></my-button>
+  <my-button></my-button>
+</div>
+<script>
+  //组件实际上就是个对象
+  Vue.component('my-button',{
+    template:`<button>{{msg}}</button>`,
+    data(){
+      return {
+        msg:'点我啊'
+      }
+    }
+  })
+  //根实例，也是一个组件
+  let vm=new Vue({
+    el:'#app',
+  })
+</script>
+```
+
+### 局部组件
+声明在某个组件之内
+- 子组件在父组件的模板中使用
+- 组件名定义时写大驼峰，使用时用`-`连接，因为html标签不能有大写字母
+```
+//父组件
+<div id='app'>
+  <my-button></my-button>
+  <my-button></my-button>
+  <my-button></my-button>
+</div>
+let vm = new Vue({
+  el:"#app",
+  //子组件
+  components:{
+    'MyButton':{
+      data(){
+        return {msg:'点我啊'}
+      },
+      template:`<button>{{}}</button>`
+    }
+  }
+})
+```
+
+### 组件交互
+
+prop
+#### prop传值
+
+- 简单传值
+```
+Vue.component('blog-post', {
+  props: ['title'],
+  template: '<h3>{{ title }}</h3>'
+})
+
+<blog-post title="My journey with Vue"></blog-post>
+<blog-post title="Blogging with Vue"></blog-post>
+<blog-post title="Why Vue is so fun"></blog-post>
+
+My journey with Vue
+Blogging with Vue
+Why Vue is so fun
+```
+- 传一个数组
+```
+new Vue({
+  el: '#blog-post-demo',
+  data: {
+    posts: [
+      { id: 1, title: 'My journey with Vue' },
+      { id: 2, title: 'Blogging with Vue' },
+      { id: 3, title: 'Why Vue is so fun' }
+    ]
+  }
+})
+
+<blog-post
+  v-for="post in posts"
+  v-bind:key="post.id"
+  v-bind:title="post.title"
+></blog-post>
+```
+
+#### this.$attrs
+没有使用的属性
+
+#### prop大小写
+当你使用 DOM 中的模板时，camelCase (驼峰命名法) 的 prop 名需要使用其等价的 kebab-case (短横线分隔命名) 命名
+```
+Vue.component('blog-post', {
+  // 在 JavaScript 中是 camelCase 的
+  props: ['postTitle'],
+  template: '<h3>{{ postTitle }}</h3>'
+})
+<!-- 在 HTML 中是 kebab-case 的 -->
+<blog-post post-title="hello!"></blog-post>
+```
+
+#### prop类型
+每个 prop 都有指定的值类型,可以以对象形式列出 prop，这些属性的名称和值分别是 prop 各自的名称和类型
+```
+props: {
+  title: String,
+  likes: Number,
+  isPublished: Boolean,
+  commentIds: Array,
+  author: Object,
+  callback: Function,
+  contactsPromise: Promise // or any other constructor
+}
+```
+
+#### 传递静态或动态 Prop
+- 静态prop
+```
+<blog-post title="My journey with Vue"></blog-post>
+```
+
+- 动态prop
+```
+<!-- 动态赋予一个变量的值 -->
+<blog-post v-bind:title="post.title"></blog-post>
+
+<!-- 动态赋予一个复杂表达式的值 -->
+<blog-post
+  v-bind:title="post.title + ' by ' + post.author.name"
+></blog-post>
+```
+
+##### 传入一个对象的所有属性
+如果你想要将一个对象的所有属性都作为 prop 传入，你可以使用不带参数的 v-bind
+```
+post: {
+  id: 1,
+  title: 'My Journey with Vue'
+}
+```
+下面的模板：
+```
+<blog-post v-bind="post"></blog-post>
+```
+等价于：
+```
+<blog-post
+  v-bind:id="post.id"
+  v-bind:title="post.title"
+></blog-post>
+```
+
+##### 禁用特性继承
+
+```
+Vue.component('my-component', {
+  inheritAttrs: false,//没有用到的属性，不会显示在dom结构上了
+  //
+  template:`<div>my-button <my v-bind="$attrs"></my></div>`,
+  components:{
+    'my':{
+      props:['a','b'],
+      template:`<span>{{a}} {{b}}</span>`
+    }
+  }
+})
+```
+
+```
+let vm=new Vue({
+  el:'#app',
+  data:{
+    content:'点我啊'
+  },
+  components:{
+    'MyButton':{
+      mounted(){
+        //对没有使用的属性 把他保留在this.$attrs中
+        console.log(this.$attrs)
+      },
+      inheritAttrs:false,//没有用到的数据，就不会显示在dom结构上了
+      template:`<div>my-button <my v-bind="$attrs"></my></div>`,
+      components:{
+        'my':{
+          props:['a','b'],
+          template:`<span>{{a}}{{b}}</span>`
+        }
+      }
+    }
+  }
+})
+```
+
+##### props
+```
+<my-button :a="1" b="2" :arr="[1,2,3]"></my-button>
+componets:{
+  'MyButton':{
+    props:{
+      msg:{
+        type:String,
+        default:'点我啊'
+      },
+      a:{
+        type:Number
+      },
+      b:{}
+    },
+    template:`<button>{{msg}}{{a}}{{b}}</button>`
+  }
+}
+
+```
+

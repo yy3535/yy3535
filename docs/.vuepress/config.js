@@ -37,6 +37,13 @@ module.exports = {
             ]
         },
         {
+            title: 'css',
+            collapsable: false,
+            children: [
+              'css',
+            ]
+        },
+        {
           title: 'vue',
           collapsable: false,
           children: [

@@ -312,6 +312,7 @@ computed:{
 }
 ```
 
+
 ### watch实现computed
 ```
 data:{
@@ -362,6 +363,17 @@ computed:{
     },
     set(kvalue){
       this.checks.forEach(check=>check.value=value);
+    }
+  }
+}
+```
+
+### computed传入参数
+```
+computed:{
+  status:()=>{
+    return (params)=>{
+        return params
     }
   }
 }

@@ -764,7 +764,29 @@ componets:{
 <div id="app">
   <collapse>
     <collapse-item></collapse-item>
+    <collapse-item></collapse-item>
+    <collapse-item></collapse-item>
   </collapse>
 </div>
-
+<script>
+  Vue.component('Collapse',{
+    template:`<div class="wrap"></div>`
+  });
+  Vue.component
+  let vm=new Vue({
+    el:'#app'
+  })
+</script>
 ```
+
+<el-form :model="dispatchForm" :rules="rules" ref="dispatchForm" label-width="80px">
+    <el-form-item label="库存量">
+        {{maxApplyNum}}
+    </el-form-item>
+    <el-form-item label="申请数量" prop="applicationNum">
+        <el-input v-model="dispatchForm.H_ApplicationNum"></el-input>
+    </el-form-item>
+    <el-form-item label="校区阿姨" prop="receiver">
+        <el-input v-model="dispatchForm.H_Receiver"></el-input>
+    </el-form-item>
+</el-form>

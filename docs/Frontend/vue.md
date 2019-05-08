@@ -119,6 +119,8 @@ obj.age.age='zf'
 
 ### vm.$destroy 手动销毁组件
 
+### vm.$on('click',change) 绑定事件
+
 ## template
 
 ### 取值表达式{{}}
@@ -664,19 +666,33 @@ let vm=new Vue({
 ```
 
 ##### props
+属性父级传子组件
 ```
 <my-button :a="1" b="2" :arr="[1,2,3]"></my-button>
 componets:{
   'MyButton':{
     props:{
       msg:{
+        //类型，校验只会出错误，但不影响页面渲染
         type:String,
+        //默认值
         default:'点我啊'
       },
       a:{
         type:Number
       },
-      b:{}
+      b:{
+        type:String,
+        //验证
+        validator(value){
+          return value>3
+        }
+      },
+      arr:{
+        type:Array,
+        //属性校验中，如果是数组/对象，需要将默认值返回
+        default:()=>([1,2])//箭头函数后面是括号表示[1,2]是个返回值
+      }
     },
     template:`<button>{{msg}}{{a}}{{b}}</button>`
   }
@@ -684,3 +700,71 @@ componets:{
 
 ```
 
+##### 子组件触发父级的方法
+
+**子组件触发父级的方法，给子组件最外层元素绑定。**
+@click.native
+```
+<div id="app">
+  <my-button @click.native="change"></my-button>
+</div>
+<script>
+  let vm=new Vue({
+    el:'#app',
+    data:{
+      content:'点我啊'
+    },
+    methods:{
+      change(){
+        alert(1);
+      }
+    }
+    components:{
+      'MyButton':{
+        template:`<button>点我啊</button>`
+      }
+    }
+  })
+</script>
+```
+
+**组件的某个子元素触发父级方法，有三种方法。**
+
+- this.$attrs //获取当前组件所有的属性
+- this.$listeners //获取当前组件所有的绑定事件
+
+1. @click="$listeners.click()"
+2. @click="this.$emit('click')"
+3. v-on="$listeners"
+
+```
+  <div id="app">
+    <!--相当于 this.on('click',change)-->
+    <my-button @click="change" @mouseup="change"></my-button>
+  </div>
+  template:`<div>
+    //第一种
+    <button @click=“$listeners.click()”>点我啊</button>
+    //第二种
+    <button @click="$emit('click')"></button>
+    //第三种,所有事件全绑上去
+    <button v-on="$listeners"></button>
+  </div>`
+
+```
+> v-bind=$attrs 绑定所有的属性
+> v-on=$listeners 绑定所有的方法
+
+##### 总结：props emit | $attrs $listeners | $parent $children
+
+##### $parent $children
+
+```
+//手风琴效果组件
+<div id="app">
+  <collapse>
+    <collapse-item></collapse-item>
+  </collapse>
+</div>
+
+```

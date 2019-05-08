@@ -324,6 +324,88 @@ webkit内核浏览器（safari）
 某项目的对齐方式：auto | flex-start | flex-end | center | baseline | stretch;
 
 ## grid（网格）布局
+### 容器显示grid
+```
+.box{
+    display:grid;
+}
+//行内元素
+.box{
+    display:inline-grid
+}
+```
+
+### 容器的其他属性
+#### grid-template-columns
+列：100px 100px 100px/auto
+
+#### grid-template-rows
+行：100px 100px 100px
+
+#### grid-template-areas
+网格区域：
+"h h h h h h h h h h h h"
+"m m c c c c c c c c c c"
+"f f f f f f f f f f f f";
+
+#### grid-column-gap
+
+#### grid-row-gap
+
+#### grid-gap以上两项合集
+
+#### justify-items
+
+#### align-items
+
+#### justify-content
+
+#### align-content
+
+#### grid-auto-colums
+
+#### grid-auto-rows
+
+#### grid-auto-flow
+
+### 项目属性
+
+#### grid-column-start
+
+#### grid-column-end
+
+#### grid-column以上两项合集
+1/4
+#### grid-row-start
+
+#### grid-row-end
+
+#### grid-row
+2/3
+
+#### grid-area
+项目的网格区域名称
+grid-area: h;
+
+#### justify-self
+
+#### align-self
+
+## 高度100px，三列布局
+
+1. 哪五种五种解决方案，
+
+2. 每个解决方案的优缺点：
+	浮动：脱离文档流，处理不好带来很多问题/兼容性好
+	绝对定位：快捷，不容易出问题/布局脱离文档流，其中所有子元素也必须脱离文档流，不实用
+	Flex：解决了以上两个的问题，比较完美
+	表格布局：兼容性好/有时不需要同时增高
+	网格布局：
+3. 假设高度去掉，哪个方案不再适用了，
+4. 真正到业务中使用，哪个最实用\
+
+## 找到rem的代码，并背下来
+
 
 
 

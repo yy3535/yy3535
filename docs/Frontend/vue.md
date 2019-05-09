@@ -747,12 +747,119 @@ componets:{
 
 ##### $parent $children
 
+- $parent
+获取父组件的实例
+- $children
+获取所有的子组件
+
+- slot插槽
+name：
+1. default
+2. 自定义:hello
+v-slot
+\#
+```
+<template v-slot:hello>
+  <>
+</template>
+或者
+<template #:hello>
+  <>
+</template>
+```
+
+
 ```
 //手风琴效果组件
 <div id="app">
   <collapse>
-    <collapse-item></collapse-item>
+    <collapse-item title="react">内容1</collapse-item>
+    <collapse-item title="vue">内容2</collapse-item>
+    <collapse-item title="node">内容3</collapse-item>
   </collapse>
 </div>
+<script>
+  Vue.component('Collapse',{
+    methods:{
+      cut(childId){
+        this.$children.forEach(child=>{
+          if(child._uid!==childId){
+            child.show=false
+          }
+        })
+      }
+    },
+    template:`<div class="wrap">
+      <slot></slot>
+    </div>`
+  });
+  Vue.component('CollapseItem',{
+    props:['title'],
+    data(){
+      return {
+        show:false
+      }
+      
+    },
+    methods:{
+      change(){
+        this.$parent.cut(this._uid);
+        this.show=!this.show;
+      }
+    }
+    template:`<div>
+      <div class="title" @click="change">{{title}}</div>
+      <div v-show="show">
+        <slot></slot>
+      </div>
+    </div>`
+  })
+  let vm=new Vue({
+    el:'#app'
+  })
+</script>
+```
+
+##### provide
+在根组件上提供属性，所有的子组件都可以获取
+可实现组件传值
 
 ```
+<div id="app">
+  <my></my>
+</div>
+Vue.component('my',{
+  inject:['a'],
+  template:"<div>{{a}}</div>"
+})
+let vm=new Vue({
+  el:'#app',
+  provide:{
+    a:1
+  },
+  mounted(){
+    console.log(this._uid)
+  }
+})
+```
+
+
+
+
+##### 总结：组件间通信
+1. prop和$emit
+父组件向子组件传递通过prop,子组件向父组件传递通过$emit
+2. $attrs和$listeners
+Vue2.4开始提供$attrs和$listeners传递值
+3. $parent,$children
+4. $refs
+获取实例
+5. provider和inject
+父组件通过provider提供变量，子组件通过inject来注入变量
+6. eventBus
+平级组件数据传递，可使用中央事件总线方式
+7. vuex状态管理
+
+##### 异步组件
+
+##### 递归组件

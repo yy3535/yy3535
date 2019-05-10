@@ -38,10 +38,11 @@ Vue自带指令：v-model v-html v-text {{}} v-cloak v-if/v-else v-show v-pre �
 指令有全局和局部
 
 - 自定义指令
+默认函数形式
 Vue.directive('xxx',function(el,bindings,vnode){
       ...  
 });
-相当于
+相当于bind和update
 Vue.directive('xxx',function(el,bindings,vnode){
       //只当数据更新时指令生效
       update(el,bindings,vnode){
@@ -53,19 +54,24 @@ Vue.directive('xxx',function(el,bindings,vnode){
       } 
 });
 
-- 自定义只取长度为三的字符串的指令
+- 自定义只取长度为三的字符串的指令且双向绑定
 
 ```
-
 <div id="app">
-    <input type="text" v-model="msg" v-split.xxx="msg">
+    <input type="text" v-split.3.xxx="msg">
 </div>
 <script>
     Vue.directive('split',{
-        update()
         bind(el,bindings,vnode){
             let ctx=vnode.context;//当前指令所在的组件
-            ctx[bingdings.expression]=el.value.slice(0,3);
+            let [,len]=bindings.rawName.split('.');
+            el.addEventListener('input',(e)=>{
+                let val=e.target.value.slice(0,len);
+                ctx[bingdings.expression]=val;
+                el.value=val;
+            })
+            //赋予默认值
+            el.value=ctx[bingdings.expression].value.slice(0,3);
         }
     });
     let vm=new Vue({
@@ -76,3 +82,9 @@ Vue.directive('xxx',function(el,bindings,vnode){
     })
 </script>
 ```
+
+
+
+
+
+

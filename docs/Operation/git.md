@@ -45,7 +45,11 @@ github上面个人邮箱需要重新认证，认证完就可以上传了。
 
    即可访问<https://zhugeshuiying.github.io/>
 
+## git 放弃本地修改，强行拉取更新
 
+git fetch --all
+git reset --hard origin/master
+git pull //可以省略
 
 
 

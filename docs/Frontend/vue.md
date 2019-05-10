@@ -756,16 +756,19 @@ componets:{
 name：
 1. default
 2. 自定义:hello
-v-slot
-\#
+v-slot/#/<slot>
 ```
 <template v-slot:hello>
-  <>
+  ...
 </template>
 或者
 <template #:hello>
-  <>
+  ...
 </template>
+或者
+<div class="wrap">
+  <slot></slot>
+</div>
 ```
 
 
@@ -861,5 +864,7 @@ Vue2.4开始提供$attrs和$listeners传递值
 7. vuex状态管理
 
 ##### 异步组件
+
+
 
 ##### 递归组件

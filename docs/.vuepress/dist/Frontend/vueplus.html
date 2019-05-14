@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>$refs | yy3535</title>
+    <meta name="description" content="yy3535的笔记">
+    <link rel="icon" href="/img/favicon.ico">
+    
+    <link rel="preload" href="/assets/css/0.styles.9cd8b68b.css" as="style"><link rel="preload" href="/assets/js/app.14dbe886.js" as="script"><link rel="preload" href="/assets/js/25.a2f69063.js" as="script"><link rel="prefetch" href="/assets/js/10.53163a34.js"><link rel="prefetch" href="/assets/js/11.71698fa7.js"><link rel="prefetch" href="/assets/js/12.3aa598ee.js"><link rel="prefetch" href="/assets/js/13.8d3e5c2b.js"><link rel="prefetch" href="/assets/js/14.16087bb3.js"><link rel="prefetch" href="/assets/js/15.338312c2.js"><link rel="prefetch" href="/assets/js/16.9e690ae9.js"><link rel="prefetch" href="/assets/js/17.2192cdae.js"><link rel="prefetch" href="/assets/js/18.28fa6872.js"><link rel="prefetch" href="/assets/js/19.609bd761.js"><link rel="prefetch" href="/assets/js/2.066c3c73.js"><link rel="prefetch" href="/assets/js/20.558b8601.js"><link rel="prefetch" href="/assets/js/21.9cd1db22.js"><link rel="prefetch" href="/assets/js/22.75f5ffe8.js"><link rel="prefetch" href="/assets/js/23.60d8f0b6.js"><link rel="prefetch" href="/assets/js/24.f0f70b8c.js"><link rel="prefetch" href="/assets/js/26.a40964a8.js"><link rel="prefetch" href="/assets/js/27.f1a91351.js"><link rel="prefetch" href="/assets/js/28.998de35a.js"><link rel="prefetch" href="/assets/js/29.bad79c17.js"><link rel="prefetch" href="/assets/js/3.64aa5436.js"><link rel="prefetch" href="/assets/js/30.341a8b04.js"><link rel="prefetch" href="/assets/js/31.aa115302.js"><link rel="prefetch" href="/assets/js/32.16ad8e51.js"><link rel="prefetch" href="/assets/js/33.6e4baef8.js"><link rel="prefetch" href="/assets/js/34.5bf638c5.js"><link rel="prefetch" href="/assets/js/35.96884e71.js"><link rel="prefetch" href="/assets/js/4.6ebf9fab.js"><link rel="prefetch" href="/assets/js/5.87def82c.js"><link rel="prefetch" href="/assets/js/6.8760c3fe.js"><link rel="prefetch" href="/assets/js/7.ce6961ce.js"><link rel="prefetch" href="/assets/js/8.638fa8dd.js"><link rel="prefetch" href="/assets/js/9.bbfb2b29.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.9cd8b68b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/img/logo.jpg" alt="yy3535" class="logo"> <span class="site-name can-hide">yy3535</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/frontend/" class="nav-link">前端</a></div><div class="nav-item"><a href="/backend/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link">运维</a></div><div class="nav-item"><a href="/todo/" class="nav-link">待整理</a></div><div class="nav-item"><a href="https://github.com/yy3535/yy3535" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/frontend/" class="nav-link">前端</a></div><div class="nav-item"><a href="/backend/" class="nav-link">后端</a></div><div class="nav-item"><a href="/operation/" class="nav-link">运维</a></div><div class="nav-item"><a href="/todo/" class="nav-link">待整理</a></div><div class="nav-item"><a href="https://github.com/yy3535/yy3535" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <!----> </div> <div class="page"> <div class="content"><h5 id="refs"><a href="#refs" aria-hidden="true" class="header-anchor">#</a> $refs</h5> <p>获取所有引用</p> <ul><li>ref名不能重复，重复会覆盖。但如果遇到循环，就会成数组形式</li> <li>子组件给一个ref,父组件调用this.$refs.com.show传值，父组件调用子组件的方法</li></ul> <div class="language- extra-class"><pre class="language-text"><code>&lt;div id=&quot;app&quot;&gt;
+    &lt;template v-for=&quot;i in 3&quot;&gt;
+        &lt;div ref=&quot;my&quot;&gt;我的dom元素&lt;/div&gt;
+    &lt;/template&gt;
+    &lt;my-component ref=&quot;com&quot;&gt;&lt;/my-component&gt;
+&lt;/div&gt;
+&lt;script&gt;
+    let vm=new Vue({
+        el:'#app',
+        mounted(){
+            console.log(this.$refs.my)
+            console.log(this.$refs.com.show)
+        },
+        components:{
+            'myComponent':{
+                methods:{
+                    show(){
+                        alert(1)
+                    }
+                },
+                template:`&lt;div&gt;my-component&lt;/div&gt;`
+            }
+        }
+    })
+&lt;/script&gt;
+</code></pre></div><h5 id="自定义指令-directive"><a href="#自定义指令-directive" aria-hidden="true" class="header-anchor">#</a> 自定义指令(directive)</h5> <p>Vue自带指令：v-model v-html v-text {{}} v-cloak v-if/v-else v-show v-pre 有十几种
+指令有全局和局部</p> <ul><li><p>自定义指令
+默认函数形式
+Vue.directive('xxx',function(el,bindings,vnode){
+...<br>
+});
+相当于bind和update
+Vue.directive('xxx',function(el,bindings,vnode){
+//只当数据更新时指令生效
+update(el,bindings,vnode){
+...
+},
+//只当用户绑定时指令生效
+bind(el,bindings,vnode){
+...
+}
+});</p></li> <li><p>自定义只取长度为三的字符串的指令且双向绑定</p></li></ul> <div class="language- extra-class"><pre class="language-text"><code>&lt;div id=&quot;app&quot;&gt;
+    &lt;input type=&quot;text&quot; v-split.3.xxx=&quot;msg&quot;&gt;
+&lt;/div&gt;
+&lt;script&gt;
+    Vue.directive('split',{
+        bind(el,bindings,vnode){
+            let ctx=vnode.context;//当前指令所在的组件
+            let [,len]=bindings.rawName.split('.');
+            el.addEventListener('input',(e)=&gt;{
+                let val=e.target.value.slice(0,len);
+                ctx[bingdings.expression]=val;
+                el.value=val;
+            })
+            //赋予默认值
+            el.value=ctx[bingdings.expression].value.slice(0,3);
+        }
+    });
+    let vm=new Vue({
+        el:'#app',
+        data:{
+            msg:'a'
+        }
+    })
+&lt;/script&gt;
+</code></pre></div><ul><li>inserted
+dom渲染完成后执行，相当于bind加了nextTick</li></ul> <div class="language- extra-class"><pre class="language-text"><code>Vue.directive('focus',{
+    bind(el){
+        //dom渲染出来后
+        Vue.nextTick(()=&gt;{
+            //绑定事件
+            el.focus()
+        })
+    }
+    inserted(el){
+        el.focus()
+    }
+})
+</code></pre></div><ul><li>指令和过滤器函数中的this是window，所以不能用this</li></ul> <h5 id="过滤器-filter"><a href="#过滤器-filter" aria-hidden="true" class="header-anchor">#</a> 过滤器(filter)</h5> <ul><li>只改变数据的展示形式 并不会改变原数据，可用computed替代</li> <li>分为全局和局部过滤器</li> <li>指令和过滤器函数中的this是window，所以不能用this</li></ul> <p>Vue.filter('xxx',function(value,len){
+...
+})</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;div id=&quot;app&quot;&gt;
+    {{name | capitalize(2)}}
+&lt;/div&gt;
+&lt;script&gt;
+    Vue.filter('capitalize',function(value,len){
+        return value.slice(0,len).toUpperCase()+value.slice(len);
+    })
+    let vm=new Vue({
+        el:'#app',
+        data:{
+            flag:false,
+            name:'zfjq'
+        },
+        filter(value,len){
+            ...
+        }
+    })
+&lt;/script&gt;
+</code></pre></div><h3 id="异步组件"><a href="#异步组件" aria-hidden="true" class="header-anchor">#</a> 异步组件</h3> <p>组件在异步加载完成后再显示出来，
+一般需要配合webpack的懒加载来使用</p> <div class="language- extra-class"><pre class="language-text"><code>Vue.component('my-component',function(resolve){
+    setTimeout(()=&gt;{
+        resolve({
+            template:'&lt;h1&gt;hello&lt;/h1&gt;'
+        })
+    },1000)
+})
+</code></pre></div><h3 id="使用-vue文件开发两种方法"><a href="#使用-vue文件开发两种方法" aria-hidden="true" class="header-anchor">#</a> 使用.vue文件开发两种方法</h3> <ul><li><p>安装vue-cli脚手架
+npm install @vue/cli -g</p></li> <li><p>安装service-global
+npm install -g @vue/cli-service-global</p></li></ul> <div class="language- extra-class"><pre class="language-text"><code>vue serve App.vue
+//http://localhost:8080/直接访问组件页面
+</code></pre></div><h3 id="递归组件"><a href="#递归组件" aria-hidden="true" class="header-anchor">#</a> 递归组件</h3> <p>.vue文件组件</p> <ul><li><p>组件大写可辨认<MenuItem></MenuItem></p></li> <li><p>使用</p> <ol><li>定义组件</li> <li>引用组件</li> <li>注册组件</li></ol></li> <li><p>用于树结构，菜单等</p></li> <li><p>组件中使用<code>name:'ReSub'</code>给自己命名,使用<code>&lt;ReSub&gt;&lt;/ReSub&gt;</code>可以调用自己，实现递归组件。</p></li> <li><p>把共同的循环的部分抽离成组件，然后在组件中调用自己。</p></li></ul> <div class="language- extra-class"><pre class="language-text"><code>//App.vue
+&lt;template&gt;
+    &lt;div id=&quot;app&quot;&gt;
+        &lt;Menu&gt;
+            &lt;template v-for=&quot;menu in menuList&quot;&gt;
+                &lt;MenuItem 
+                    :key=&quot;menu.title&quot; 
+                    v-if=&quot;!menu.children&quot;
+                &gt;
+                    {menu.title}
+                &lt;/MenuItem&gt;
+                &lt;!-- 把重复的部分抽离出去 --&gt;
+                &lt;ReSubMenu :key=&quot;menu.title&quot; v-else :data=&quot;menu.children&quot;&gt;&lt;/ReSubMenu&gt;
+            &lt;/template&gt;
+        &lt;/Menu&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+//.vue可省略
+import Menu from './Menu';
+import MenuItem from './MenuItem';
+import SubMenu from './SubMenu';
+import ReSubMenu from './ReSubMenu';
+export default {
+    data(){
+        return {
+            menuList:[
+                {
+                    title:'菜单1',
+                    children:[
+                        {
+                            title:'菜单1-1',
+                            children:[
+                                {title:'菜单1-1-1'},
+                                {title:'菜单1-1-2'},
+                                {title:'菜单1-1-3'},
+                            ]
+                        },
+                        {title:'菜单1-1'},
+                        {title:'菜单1-1'},
+                    ]
+                },
+                {
+                    title:'菜单2'
+                },
+                {
+                    title:'菜单3'
+                }
+            ]
+        }
+    },
+    components:{
+        Menu,MenuItem,SubMenu,ReSubMenu
+    }
+}
+&lt;/script&gt;
+&lt;style&gt;
+#app{
+    color:red;
+}
+&lt;/style&gt;
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//Menu.vue
+
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//MenuItem.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;li&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/li&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default {
+    data(){
+        return {msg:'hello'}
+    }
+}
+&lt;/script&gt;
+&lt;style&gt;
+&lt;/style&gt;
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//SubMenu.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;div class=&quot;title&quot; @click=&quot;change&quot;&gt;
+            &lt;slot name=&quot;title&quot;&gt;&lt;/slot&gt;
+        &lt;/div&gt;
+        &lt;div v-show=&quot;flag&quot; class=&quot;sub&quot;&gt;
+            &lt;slot name=&quot;title&quot;&gt;&lt;/slot&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+    data(){
+        return {flag:false}
+    },
+    methods:{
+        change(){
+            this.flag=!this.flag;
+        }
+    }
+}
+&lt;/script&gt;
+&lt;style&gt;
+    .sub{
+        padding-left:20px;
+    }
+&lt;/style&gt;
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//ReSubMenu.vue
+&lt;template&gt;
+    &lt;SubMenu&gt;
+        &lt;template #title&gt;
+            {{data.title}}
+        &lt;/template&gt;
+        &lt;template v-for=&quot;child in data.children&quot;&gt;
+            &lt;MenuItem :key=&quot;child.title&quot; v-if=&quot;!child.children&quot;&gt;{{child.title}}&lt;/MenuItem&gt;
+            &lt;ReSub :key=&quot;child.title&quot; v-else :data=&quot;child&quot;&gt;&lt;/ReSub&gt;
+        &lt;/template&gt;
+    &lt;/SubMenu&gt;
+&lt;/template&gt;
+&lt;script&gt;
+import SubMenu from './SubMenu'
+import MenuItem from './MenuItem'
+export default {
+    name:'ReSub',//可以使用递归组件
+    props:{
+        data:{
+            type:Object,
+            default:()=&gt;({})
+        },
+    },
+    components:{
+        SubMenu,MenuItem
+    }
+}
+&lt;/script&gt;
+&lt;style&gt;
+
+&lt;/style&gt;
+</code></pre></div><h2 id="vue-cli-3-0"><a href="#vue-cli-3-0" aria-hidden="true" class="header-anchor">#</a> vue-cli 3.0</h2> <h3 id="创建项目"><a href="#创建项目" aria-hidden="true" class="header-anchor">#</a> 创建项目</h3> <ol><li><p>vue create xxx/vue ui(可视化)
+vue create vue-router-apply</p></li> <li><p>选手动
+default(babel,eslint)//默认配置(包括babel和eslint)
+Manually select features//手动配置</p></li> <li><p>选配置
+babel,CSS</p></li> <li><p>配置放独立文件</p></li> <li><p>进入项目文件夹
+cd vue-router-apply
+yarn serve</p></li> <li><p>可新建vue.config.js来重置webpack配置
+//vue.config.js基于node,node不支持import语法</p></li></ol> <div class="language- extra-class"><pre class="language-text"><code>//webpack配置
+let path=require('path');
+module.exports={
+    //baseURL
+    //默认环境变量 NODE_ENV production devlopment
+    //打包后的结果带域名，开发中不带
+    publicPath:process.env.NODE_ENV==='production'?'http://www.zhufeng.cn':'/',
+    //assets打包成一个独立文件assets
+    assetsDir:'asserts',
+    //打包目录
+    outputDir:'./my-dist',
+    //使用模板方式 一般不使用 render改成template
+    runtimeCompiler:true,
+    //打包不再使用sourcemap
+    productionSourceMap:false, 
+    //修改webpack内部配置（获取webpack配置并给它添加自己的逻辑）
+    chainWebpack:config=&gt;{
+        //给目录src配置了别名'+'，路径可以用+代替src
+        config.resolve.alias.set('+',path.resolve(__dirname,'src'))
+    },
+    //新增其他webpack配置
+    configureWebpack:{
+        plugins:[],
+        module:{}
+    },
+    //配置开发服务时使用
+    devServer:{
+        //代理解决跨域：8080 -&gt; 自己的8080服务器 =&gt; 3000，服务访问服务是不受限的。
+        //开发环境使用，生产环境前端+后台=&gt;同一个服务器，就没有跨域问题了
+        //一般情况下如果不是没有后端程序员不需要用代理，直接请求头复制一下。
+        proxy:{
+            //http://localhost:8080/getUser帮我代理到http://localhost:3000/getUser
+            '/getUser':{
+                target:&quot;http://localhost:3000&quot;
+            }
+        }
+    },
+    //第三方插件配置
+    //可以使用三种方法配置插件：1. vue ui 安装插件 2. vue add style-resources-loader，相当于npm install @vue/cli-style-resource-loader 3. 在这儿配置
+    pluginOptions:{
+        //会给每个组件都引入这样一个样式文件
+        'style-resources-loader':{
+            preProcessor:'less',
+            patterns:[
+                path.resolve(__dirname,'src/assets/common.less')
+            ]
+        }
+    }
+}
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>//HelloWorld.vue
+&lt;template&gt;
+  &lt;div class=&quot;hello&quot;&gt;
+    123
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import axios from 'axios'
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  mounted(){
+    //没写默认是`http://localhost:8080/getUser`
+    axios.get('getUser').then(data=&gt;{
+      console.log(data)
+    })
+  }
+}
+&lt;/script&gt;
+</code></pre></div><ul><li><p>scope
+限制当前css只在当前组件上使用</p></li> <li><p>lang
+使用语言设置
+less/</p></li></ul> <div class="language- extra-class"><pre class="language-text"><code>&lt;style scoped lang=&quot;less&quot;&gt;
+@import '../assets/common.less';
+.hello{
+  color:@color
+}
+&lt;/style&gt;
+</code></pre></div><ul><li>less文件</li></ul> <div class="language- extra-class"><pre class="language-text"><code>//common.less
+@color:red;
+</code></pre></div><h3 id="打包"><a href="#打包" aria-hidden="true" class="header-anchor">#</a> 打包</h3> <p>npm run build，出现dist目录</p> <h3 id="express"><a href="#express" aria-hidden="true" class="header-anchor">#</a> express</h3> <p>vue 启动服务通过express，所以内置了express.</p> <div class="language- extra-class"><pre class="language-text"><code>//server.js
+let express=require('express');
+
+let app=express();
+
+app.get('/getUser',(req,res)=&gt;{
+    res.json({name:'zfpx'});
+})
+
+app.listen(3000)
+</code></pre></div><h3 id><a href="#" aria-hidden="true" class="header-anchor">#</a></h3> <h3 id="vue-router-钩子的用法"><a href="#vue-router-钩子的用法" aria-hidden="true" class="header-anchor">#</a> vue-router 钩子的用法</h3> <h3 id="vuex-模块的"><a href="#vuex-模块的" aria-hidden="true" class="header-anchor">#</a> vuex 模块的</h3> <h3 id="axios-获取数据"><a href="#axios-获取数据" aria-hidden="true" class="header-anchor">#</a> axios 获取数据</h3> <h3 id="jwt-实现-权限-vuex-jwt-鉴权"><a href="#jwt-实现-权限-vuex-jwt-鉴权" aria-hidden="true" class="header-anchor">#</a> jwt 实现 权限 vuex+jwt 鉴权</h3></div> <div class="page-edit"><!----> <div class="last-updated"><span class="prefix">上次更新: </span> <span class="time">5/14/2019, 9:03:34 AM</span></div></div> <!----> </div> <!----></div></div>
+    <script src="/assets/js/app.14dbe886.js" defer></script><script src="/assets/js/25.a2f69063.js" defer></script>
+  </body>
+</html>

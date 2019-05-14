@@ -18,8 +18,11 @@ module.exports={
             warnings:false,
             errors:false
         }
-    }
+    },
+    lintOnSave:false,
 }
+
+
 ```
 
 ## 快捷键

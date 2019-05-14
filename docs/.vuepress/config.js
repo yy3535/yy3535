@@ -12,28 +12,28 @@ module.exports = {
     lastUpdated: "上次更新",
     // sidebarDepth: 4, 
     nav: [
-      { text: '前端', link: '/frontend/' },
-      { text: '后端', link: '/backend/' },
-      { text: '运维', link: '/operation/' },
+      { text: '前端', link: '/Frontend/' },
+      { text: '后端', link: '/Backend/' },
+      { text: '运维', link: '/Operation/' },
       // { text: '关于', link: '/About/' },
-      { text: '待整理', link: '/todo/' },
+      { text: '待整理', link: '/Todo/' },
       // { text: '随想', link: '/Thought/' },
       { text: 'GitHub', link: 'https://github.com/yy3535/yy3535' },
     ],
     sidebar: {
-      '/frontend/':[
+      '/Frontend/':[
         {
             title: 'js',
             collapsable: false,
             children: [
-              '/frontend/js/jsbasic/',
-              '/frontend/js/jswebapi/',
-              '/frontend/js/devenv/',
-              '/frontend/js/runenv/',
-              '/frontend/js/es6/',
-              '/frontend/js/designpatterns/',
-              '/frontend/js/jsbasic/zepto/',
-              '/frontend/js/jsbasic/shenrubibao/',
+              '/Frontend/js/jsbasic/',
+              '/Frontend/js/jswebapi/',
+              '/Frontend/js/devenv/',
+              '/Frontend/js/runenv/',
+              '/Frontend/js/es6/',
+              '/Frontend/js/designpatterns/',
+              '/Frontend/js/jsbasic/zepto/',
+              '/Frontend/js/jsbasic/shenrubibao/',
             ]
         },
         {
@@ -65,17 +65,17 @@ module.exports = {
              "markdown"
           ]
         },
-        // '/frontend/',
+        // '/Frontend/',
         // {
         //   title: 'jswebapi',
         //   children: [
-        //       '/frontend/js/jswebapi/',
+        //       '/Frontend/js/jswebapi/',
         //   ]
         // },
-        // ['/frontend/js/jswebapi','js基础'],
-        // ['/frontend/js/other','js基础'],
+        // ['/Frontend/js/jswebapi','js基础'],
+        // ['/Frontend/js/other','js基础'],
       ],
-      '/backend/':[
+      '/Backend/':[
         {
             title: '后端',
             collapsable: false,
@@ -84,7 +84,7 @@ module.exports = {
             ]
         }
       ],
-      '/operation/':[
+      '/Operation/':[
         {
             title: '运维',
             collapsable: false,
@@ -99,13 +99,13 @@ module.exports = {
             collapsable: false,
         }
       ],
-      '/todo/':[
+      '/Todo/':[
         {
             title: '待整理',
             collapsable: false,
         }
       ],
-      '/thought/':[
+      '/Thought/':[
         {
             title: '随想',
             collapsable: false,

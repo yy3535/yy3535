@@ -757,7 +757,7 @@ componets:{
 name：
 1. default
 2. 自定义:hello
-v-slot:/#/<slot>
+`v-slot:` `#` `<slot>`
 ```
 <template v-slot:hello>
   ...
@@ -1027,7 +1027,7 @@ vue serve App.vue
 ### 递归组件
 
 .vue文件组件
-- 组件大写可辨认<MenuItem>
+- 组件大写可辨认`<MenuItem>`
 - 使用
   1. 定义组件
   2. 引用组件
@@ -1468,62 +1468,74 @@ export default {
 </style>
 ```
 
-## vue-router 钩子的用法
+## vue-router
 
 ### 安装
 yarn add vue-router
 
 ### 路由的两种方式
-- #
+> #
 url加#xxx
-- history
+> history(h5api)
 history.pushState({},null,'/a')
 问题：刷新时浏览器会找不到路径
 
 ### 使用
-1. 路由配置文件
-注册了`router-link`,`router-view`组件
-定义了`$router`,`$route`,`this.$router`,`this.$route`
+
+#### 路由配置文件
+- 第三方插件 引入后要使用Vue.use() => install
+- install注册了两个全局组件：
+`router-link` 链接
+`router-view` 路由视图
+- install定义了两个变量：
+`$router`,`this.$router`,包含方法
+`$route`,`this.$route`,包含属性
+- 导出路由配置
+
 ```
 //router/index.js
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-// 第三方插件 引入后要使用Vue.use() => install
-
 Vue.use(VueRouter);
-//install 方法中注册了两个全局组件 
-//router-link 链接
-//router-view 路由视图
-// 会再每个组件上定义两个属性 $router $route this.$route this.$route
-
 
 //默认导出
 export default new VueRouter({
-    //mode，路由形式，默认hash，history(h5api)
+    //路由形式(默认hash，history)
     mode:'hash / history',
-    //路由映射表,建议单独一个routes.js文件导出routes
+    //路由映射表(建议单独一个routes.js文件导出routes)
     routes,
-
 })
 
 ```
 
-- 默认是页面进入，所有组件都加载进来。
-- 希望只有首页默认显示，其他页面点击时才加载组件
-- 使用懒加载`()=>import('_v/Login.vue')`,但可能会导致白屏问题
 ```
 //routes.js
 import Home from '_v/Home';
+import Name from '_v/Name.vue';
+import Version from '_v/Version.vue';
+
 export default [
+    //首页显示
+    {
+        path:'/',
+        //重定向去首页(需要用path)
+        redirect:{path:'/home'}
+    },
     {
         path:'/home',
         name:'home',
-        component:Home
+        //一个路由多个组件
+        components:{
+            default:Home,
+            name:Name,
+            version:Version
+        }
     },
     {
         path:'/login',
         name:'login',
+        //组件懒加载(现在是页面进入所有组件都加载。希望点击时才加载组件,使用`懒加载`,但可能会导致白屏问题)
         component:()=>import('_v/Login.vue')
     },
     {
@@ -1534,8 +1546,31 @@ export default [
     {
         path:'/user',
         name:'user',
-        component:()=>import('_v/User.vue')
+        component:()=>import('_v/User.vue'),
+        //子路由(//path'/'代表根目录，所以'/add'表示根目录下的add,'add'表示'/user/add')
+        children:[
+            //设置默认显示（使用时必须用路径跳转，不能使用name）
+            {
+                path:'',
+                component:()=>import('_v/UserAdd')
+            },
+            {
+                path:'add',
+                name:'userAdd',
+                component:()=>import('_v/UserAdd')
+            },
+            {
+                path:'list',
+                name:'userList',
+                component:()=>import('_v/UserList')
+            }
+        ]
     },
+    //路由都匹配不到的情况
+    {
+        path:'*',
+        component:()=>import('_v/404')
+    }
 ]
 ```
 
@@ -1549,7 +1584,7 @@ config.resolve.alias.set('_v',path.resolve(__dirname,'src/views'))
 - 
 
 
-2. 在Vue实例中引用路由
+#### 在Vue实例中引用路由
 ```
 //main.js
 import Vue from 'vue'
@@ -1564,7 +1599,8 @@ new Vue({
 
 ```
 
-3. 在Vue实例模板中显示路由视图
+#### 在Vue实例模板中显示路由视图
+- //一个路由一个组件
 ```
 //App.vue
 <template>
@@ -1584,29 +1620,271 @@ export default {
 </style>
 
 ```
+- //一个路由多个组件
 
-4. 点击路由跳转
+```
+<div class="container">
+  <router-view></router-view>
+  <router-view name="name"></router-view>
+  <router-view name="version"></router-view>
+</div>
+```
+
+
+
+#### 点击路由跳转(声明式路由跳转)
 router-link
 - to属性
-'home','/home','{path:'/home'}','{name:'home'}'
+to='home'
+to='/home'
+:to='{path:'/home'}'
+:to='{name:'home'}'
+to='/user/detail?id=1'
 - tag属性
-'span' 链接无下划线
+链接无下划线
+tag='span'
+- 
 
 ```
+<router-link to='/home'>首页</router-link>
+<router-link to='login'>登录</router-link>
+<router-link :to="{name:'profile'}">个人中心</router-link>
+<router-link :to="{path:'/user'}">用户</router-link>
+
+//传参1(问号传参)
+<router-link to="/user/detail?id=1">用户详情</router-link>
+{{this.$route.query.id}}
+
+//传参2(路径传参)
+{
+  path:'detail/:id',
+  name:'userDetail,
+  component:()=>import('_v/UserDetail.vue)
+}
+<router-link to="/user/detail/1">用户详情</router-link>
+{{this.$route.params.id}}
 
 ```
-- bootstrap
+> bootstrap
 yarn add bootstrap3
 ```
 //main.js中全局引用
 import 'bootstrap/dist/css/bootstrap.css'
 ```
+#### 编程式路由跳转
+this.$router.push(path)
+```
+this.$router.push('/user/list')
+```
+
+#### 路由钩子函数
+例如：离开一个组件前即一个组件销毁前提示是否离开。
+- 参数next：继续函数`next()` `next(path)`,可选择去的路由。
+1. 组件中的路由钩子
+- beforeRouteLeave
+- beforeRouterEnter
+- beforeRouterUpdate
+```
+//login.vue
+export default {
+  //离开钩子(离开组建，组件销毁时)
+  beforeRouteLeave (to, from, next) {
+    if(this.username){
+        let confirm=window.confirm('你需要切换吗')
+        if(confirm){
+            next()
+        }
+    }else{
+        next()
+    }
+  }
+  //进入之前钩子
+  beforeRouterEnter(to, from, next){
+    //此方法中不能拿到this
+    if(from.name==='userAdd'){
+        console.log('是这里过来的')
+    }
+    next(vm=>{
+        //组件渲染完成后会回调，可以在这里拿到当前实例
+        console.og(vm);
+    })
+  },
+  //当前路由更新钩子(相当于监控$route,一般与mount配合使用，当属性变化时，并没有重新加载组件，但会触发这个)
+  beforeRouterUpdate(to, from, next){
+      next();
+  },
+  watch:{
+      $route(){
+          alert(1)
+      }
+  }
+}
 
 
-### vuex 模块的
+```
+
+2. 路由配置中的路由钩子(在组件之前触发)
+- beforeEnter
+```
+//routes.js
+{
+    path:'/profile',
+    name:'profile',
+    component:()=>import('_v/Profile.vue'),
+    beforeEnter:(to,from,next){
+      next()
+    }
+},
+```
+
+1. 全局路由钩子(在组件，路由配置之前，对所有路由有效)
+- router.beforeEach
+- router.beforeResolve
+```
+//main.js
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+
+//进入当前路由之前触发
+router.beforeEach((to,from,next)=>{
+  next();
+})
+//当前路由解析后触发
+router.beforeResolve((to,from,next)=>{
+  next();
+})
+//当前路由进入完毕后触发
+router.afterEach(()=>{
+
+})
+new Vue({
+  router,
+  render: h => h(App),
+}).$mount('#app')
+```
+
+##### 路由钩子总结
+当组件切换时：
+1. 离开钩子(组件beforeRouterLeave)
+2. 进入新页面之前(全局beforeEach-->路由配置beforeEnter-->组件beforeRouterEnter)
+3. 路由解析完成(全局beforeResolve)
+4. 页面进入完成(全局afterEach)
+5. 属性变化，但没有重新加载组件(组件beforeRouteUpdate)
+6. 组件渲染完成(组件beforeRouterEnter回调)
+
+##### 【官网】完整的导航解析流程（背）
+1. 导航被触发。
+2. 在失活的组件里调用离开守卫。
+3. 调用全局的 beforeEach 守卫。
+4. 在重用的组件里调用 beforeRouteUpdate 守卫 (2.2+)。
+5. 在路由配置里调用 beforeEnter。
+6. 解析异步路由组件。
+7. 在被激活的组件里调用 beforeRouteEnter。
+8. 调用全局的 beforeResolve 守卫 (2.5+)。
+9. 导航被确认。
+10. 调用全局的 afterEach 钩子。
+11. 触发 DOM 更新。
+12. 用创建好的实例调用 beforeRouteEnter 守卫中传给 next 的回调函数。
+
+
+##### 拦截登录
+设置路由备注，在全局beforeEach中拦截
+```
+//routes.js
+{
+    path:'/profile',
+    name:'profile',
+    component:()=>import('_v/Profile.vue'),
+    //路由元信息(备注)
+    meta:{needLogin:true}
+},
+```
+
+```
+//main.js
+router.beforeEach((to,from,next)=>{
+  //是否需要登录
+  let flag=to.matched.some(match=>match.meta&&match.meta.needLogin);
+  //是否已登录
+  let isLogin=localStorage.getItem('login');
+  console.log(flag,isLogin)
+  
+  if(flag){//需要登录
+    if(isLogin){
+      next()
+    }else{
+      next('/login')
+    }
+  }else{//不需要登录
+    next()
+  }
+  //是登陆页且已经登录
+  if(to.name==='login'&&isLogin){
+    next('/')
+  }
+
+})
+```
+
+##### 面试考点
+- 钩子函数
+- $router方法 $route属性
+- meta备注
+- redirect重定向
+
+
+### vuex
+组件之间的传值多且复杂，所以用它把数据统一存放起来
+
+#### 面试考点
+![vuex图](https://vuex.vuejs.org/vuex.png)
+
+- vue是单向数据流，组件变动不能驱动数据，而是数据变动驱动组件
+- 组件驱动数据
+  同步情况，调用mutation改数据
+  异步情况，派发action，调用api，再在action里调用mutation改数据。好处：调用api逻辑不分散地放在组件里，而是独立出来，方便复用。
+
+  | vue组件 | vuex |
+  | ------- | ------ |
+  | data | state |
+  | computed | getters |
+  |  |  |
+
+#### 安装
+yarn add vuex
+
+#### 新建
+- 新建src/store/state.js
+
+- 新建src/store/getters.js
+
+- 新建src/store/mutations.js
+
+- 新建src/store/actions.js
+
+- 新建src/store/index.js
+
+```
+//index.js
+
+```
+
+
 
 ### axios 获取数据
 
 ### jwt 实现 权限 vuex+jwt 鉴权
 
+### 报错
+- No ESLint configuration found
+npm install eslint --save-dev
+./node_modules/.bin/eslint --init 初始化配置文件.eslintrc.js
 
+### google工具
+- vuetools
+  ```
+  <Root>根实例
+    <App></App>App实例
+  <Root>
+  ```

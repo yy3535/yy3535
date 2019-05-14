@@ -168,37 +168,63 @@ vue serve App.vue
     
 
 - 用于树结构，菜单等
-- 
+- 组件中使用`name:'ReSub'`给自己命名,使用`<ReSub></ReSub>`可以调用自己，实现递归组件。
+- 把共同的循环的部分抽离成组件，然后在组件中调用自己。
 
 ```
 //App.vue
 <template>
     <div id="app">
         <Menu>
-            <MenuItem>菜单1</MenuItem>
-            <MenuItem>菜单2</MenuItem>
-            <MenuItem>菜单3</MenuItem>
-            <SubMenu>
-                <template #title>
-                    菜单4
-                </template>
-                <MenuItem>菜单4-1</MenuItem>
-                <MenuItem>菜单4-2</MenuItem>
-            </SubMenu>
+            <template v-for="menu in menuList">
+                <MenuItem 
+                    :key="menu.title" 
+                    v-if="!menu.children"
+                >
+                    {menu.title}
+                </MenuItem>
+                <!-- 把重复的部分抽离出去 -->
+                <ReSubMenu :key="menu.title" v-else :data="menu.children"></ReSubMenu>
+            </template>
         </Menu>
     </div>
 </template>
 <script>
 //.vue可省略
-import Menu from './Menu.vue';
-import Menu from './MenuItem';
+import Menu from './Menu';
+import MenuItem from './MenuItem';
 import SubMenu from './SubMenu';
+import ReSubMenu from './ReSubMenu';
 export default {
     data(){
-        return {msg:'hello'}
+        return {
+            menuList:[
+                {
+                    title:'菜单1',
+                    children:[
+                        {
+                            title:'菜单1-1',
+                            children:[
+                                {title:'菜单1-1-1'},
+                                {title:'菜单1-1-2'},
+                                {title:'菜单1-1-3'},
+                            ]
+                        },
+                        {title:'菜单1-1'},
+                        {title:'菜单1-1'},
+                    ]
+                },
+                {
+                    title:'菜单2'
+                },
+                {
+                    title:'菜单3'
+                }
+            ]
+        }
     },
     components:{
-        SubMenu,
+        Menu,MenuItem,SubMenu,ReSubMenu
     }
 }
 </script>
@@ -211,20 +237,7 @@ export default {
 
 ```
 //Menu.vue
-<template>
-    <div class="menu">
-        <slot></slot>
-    </div>
-</template>
-<script>
-export default {
-    data(){
-        return {msg:'hello'}
-    }
-}
-</script>
-<style>
-</style>
+
 ```
 
 ```
@@ -245,8 +258,215 @@ export default {
 </style>
 ```
 
+```
+//SubMenu.vue
+<template>
+    <div>
+        <div class="title" @click="change">
+            <slot name="title"></slot>
+        </div>
+        <div v-show="flag" class="sub">
+            <slot name="title"></slot>
+        </div>
+    </div>
+</template>
 
-### vue-cli写两个组件（cli配置）
+<script>
+export default {
+    data(){
+        return {flag:false}
+    },
+    methods:{
+        change(){
+            this.flag=!this.flag;
+        }
+    }
+}
+</script>
+<style>
+    .sub{
+        padding-left:20px;
+    }
+</style>
+```
+
+```
+//ReSubMenu.vue
+<template>
+    <SubMenu>
+        <template #title>
+            {{data.title}}
+        </template>
+        <template v-for="child in data.children">
+            <MenuItem :key="child.title" v-if="!child.children">{{child.title}}</MenuItem>
+            <ReSub :key="child.title" v-else :data="child"></ReSub>
+        </template>
+    </SubMenu>
+</template>
+<script>
+import SubMenu from './SubMenu'
+import MenuItem from './MenuItem'
+export default {
+    name:'ReSub',//可以使用递归组件
+    props:{
+        data:{
+            type:Object,
+            default:()=>({})
+        },
+    },
+    components:{
+        SubMenu,MenuItem
+    }
+}
+</script>
+<style>
+
+</style>
+```
+
+
+## vue-cli 3.0
+
+### 创建项目
+1. vue create xxx/vue ui(可视化)
+vue create vue-router-apply
+
+2. 选手动
+default(babel,eslint)//默认配置(包括babel和eslint)
+Manually select features//手动配置
+
+3. 选配置
+babel,CSS
+
+4. 配置放独立文件
+
+5. 进入项目文件夹
+cd vue-router-apply
+yarn serve
+
+6. 可新建vue.config.js来重置webpack配置
+//vue.config.js基于node,node不支持import语法
+
+```
+//webpack配置
+let path=require('path');
+module.exports={
+    //baseURL
+    //默认环境变量 NODE_ENV production devlopment
+    //打包后的结果带域名，开发中不带
+    publicPath:process.env.NODE_ENV==='production'?'http://www.zhufeng.cn':'/',
+    //assets打包成一个独立文件assets
+    assetsDir:'asserts',
+    //打包目录
+    outputDir:'./my-dist',
+    //使用模板方式 一般不使用 render改成template
+    runtimeCompiler:true,
+    //打包不再使用sourcemap
+    productionSourceMap:false, 
+    //修改webpack内部配置（获取webpack配置并给它添加自己的逻辑）
+    chainWebpack:config=>{
+        //给目录src配置了别名'+'，路径可以用+代替src
+        config.resolve.alias.set('+',path.resolve(__dirname,'src'))
+    },
+    //新增其他webpack配置
+    configureWebpack:{
+        plugins:[],
+        module:{}
+    },
+    //配置开发服务时使用
+    devServer:{
+        //代理解决跨域：8080 -> 自己的8080服务器 => 3000，服务访问服务是不受限的。
+        //开发环境使用，生产环境前端+后台=>同一个服务器，就没有跨域问题了
+        //一般情况下如果不是没有后端程序员不需要用代理，直接请求头复制一下。
+        proxy:{
+            //http://localhost:8080/getUser帮我代理到http://localhost:3000/getUser
+            '/getUser':{
+                target:"http://localhost:3000"
+            }
+        }
+    },
+    //第三方插件配置
+    //可以使用三种方法配置插件：1. vue ui 安装插件 2. vue add style-resources-loader，相当于npm install @vue/cli-style-resource-loader 3. 在这儿配置
+    pluginOptions:{
+        //会给每个组件都引入这样一个样式文件
+        'style-resources-loader':{
+            preProcessor:'less',
+            patterns:[
+                path.resolve(__dirname,'src/assets/common.less')
+            ]
+        }
+    }
+}
+```
+
+```
+//HelloWorld.vue
+<template>
+  <div class="hello">
+    123
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  mounted(){
+    //没写默认是`http://localhost:8080/getUser`
+    axios.get('getUser').then(data=>{
+      console.log(data)
+    })
+  }
+}
+</script>
+```
+- scope
+限制当前css只在当前组件上使用
+
+- lang
+使用语言设置
+less/
+
+```
+<style scoped lang="less">
+@import '../assets/common.less';
+.hello{
+  color:@color
+}
+</style>
+```
+
+- less文件
+```
+//common.less
+@color:red;
+```
+
+### 打包
+npm run build，出现dist目录
+
+### express
+vue 启动服务通过express，所以内置了express.
+```
+//server.js
+let express=require('express');
+
+let app=express();
+
+app.get('/getUser',(req,res)=>{
+    res.json({name:'zfpx'});
+})
+
+app.listen(3000)
+```
+
+
+
+
+### 
 
 ### vue-router 钩子的用法
 

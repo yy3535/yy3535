@@ -1,10 +1,30 @@
 <template>
     <div>
-        <div class="title">
+        <div class="title" @click="change">
             <slot name="title"></slot>
         </div>
-        <div class="title">
+        <div v-show="flag" class="sub">
             <slot name="title"></slot>
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    data(){
+        return {flag:false}
+    },
+    methods:{
+        change(){
+            this.flag=!this.flag;
+        }
+    }
+}
+</script>
+<style>
+    .sub{
+        padding-left:20px;
+    }
+</style>
+
+

@@ -406,8 +406,21 @@ grid-area: h;
 
 ## 找到rem的代码，并背下来
 
+## less
+xxx.less
 
+1. 定义变量
+```
+@color:red;
+```
 
+2. 使用
+```
+@import '../assets/xxx.less'
+.hello{
+    color:@color
+}
+```
 
 
 

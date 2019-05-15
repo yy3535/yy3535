@@ -2049,9 +2049,12 @@ action里可以多次调用接口，action里可以调用其他action
 
 - 不要赋值修改状态，严格模式下不合法
 
+### jsonwebtoken(jwt)
+
+### iview,axios
 
 
-
+### express,jsonwebtoken(jwt),bodyparser
 
 
 

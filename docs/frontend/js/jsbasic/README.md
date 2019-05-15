@@ -606,6 +606,27 @@ var f1 = F1()
 F2(f1)
 ```
 
+> 面试题
+```
+var name = "The Window";
+var object = {
+    name : "My Object",
+    getNameFunc : function(){
+        return (function(){
+             alert(this.name);
+        })();
+    },
+
+    getName:function(){
+        alert(this.name);
+    }
+};
+object.getNameFunc();  //The Window
+object.getName();  //My Object
+```
+答：函数 getNameFunc 内返回一个闭包，因此 this 指向全局对象，所以 this.name 即为定义在全部作用域下的 name（"The Window"）。
+而函数 getName 内并未返回闭包，因此 this 指向当前对象，所以 this.name 即为当前作用域下的 name（"My Object"）。
+
 ### 扩展阅读
 
 请参考我之前写过的文章[《深入理解JS原型和闭包系列博客》](http://www.cnblogs.com/wangfupeng1988/p/3977924.html)
@@ -1139,3 +1160,45 @@ forEach(obj, function (key, value) {
     console.log(key, value)
 })
 ```
+
+### 实现一个深拷贝
+```
+function deepCopy(obj){
+    //递归跳出去的条件，不加的话就相当于死循环
+    if(typeof obj!='object'){
+        return obj;
+    }
+    var newObj;
+    if(obj instanceof Array){
+        newObj=[];
+    }else{
+        newObj={};
+    }
+    //将obj身上的所有属性复制到newObj身上
+    for(var attr in obj){
+        //自己调用自己  （递归）
+        newObj[attr]=deepCopy(obj[attr]);
+    }
+    return newObj;
+};
+```
+
+### 其他面试题
+- setTimeout设置为0有什么作用？
+```
+var fuc = [1,2,3];
+for(var i in fuc){
+  setTimeout(function(){console.log(fuc[i])},0);
+  console.log(fuc[i]);
+}
+//1
+//2
+//3
+//3
+//3
+```
+虽然设置为0秒后执行任务，实际上是大于0秒才执行的。可是这有什么用呢？
+
+用处就在于我们可以改变任务的执行顺序！因为浏览器会在执行完当前任务队列中的任务，再执行setTimeout队列中积累的的任务。
+
+通过设置任务在延迟到0s后执行，就能改变任务执行的先后顺序，延迟该任务发生，使之异步执行。

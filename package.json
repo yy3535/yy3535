@@ -8,5 +8,9 @@
         "sass-loader": "^7.1.0",
         "vuepress": "^0.14.4",
         "webpack-dev-middleware": "^3.6.0"
+    },
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "jsonwebtoken": "^8.5.1"
     }
 }

@@ -2,21 +2,13 @@
 sidebar: false
 ---
 
-# 待整理
-
-- git命令
-  http://www.runoob.com/git/git-remote-repo.html
-- markdown笔记
-  https://www.cnblogs.com/rossoneri/p/4446440.html
-- 已有笔记整理上去
-- 前端基础和就业班需要的整理
-- less sass 语法整理
-   
 # 待完成
 
-- vue视频
 
-## 今天任务
-- 调度模块（上午）
-- git笔记整理（上午）
-- vue视频看完（下午）
+- 已有笔记整理上去
+- less sass 语法整理
+- webpack
+- 跳槽技巧
+- vue剩余两节jxt（需要看node中间件)
+- 背诵笔记
+   

@@ -1865,10 +1865,201 @@ yarn add vuex
 
 - 新建src/store/index.js
 
+#### store配置
 ```
 //index.js
+import Vue from 'vue';
+import vuex from 'vuex'
+
+import actions from './actions';
+import mutations from './mutations';
+import state from './state';
+import getters from './getters'
+
+import user from './mudules/user'
+
+Vue.use(vuex);
+export default new vuex.Store({
+    //子模块
+    modules:{
+        user,
+    },
+    //严格模式(开发下使用，严格模式下不可以直接赋值修改状态)
+    strict:process.env.NODE_ENV!=='production'
+    actions,
+    mutations,
+    state,
+    getters
+})
+```
+
+- 公共数据
+```
+//state.js
+export default {
+    lesson:'珠峰培训',
+}
+```
+
+- 子模块数据
+新建 /store/modules/user.js
+```
+//user.js
+export default {
+    //命名空间，true
+    namespaced:true,
+    state:{
+      userName:'姜文'
+    },
+    action:{
+      change_user({commit},payload){
+          setTimeout(()=>{
+              commit('change_user',payload)
+          },1000)
+      }
+    },
+    mutations:{
+      change_user(state,payload){
+          state.userName=payload;
+      }
+    },
+    getters:{
+      getNewUserName(state){
+          return '帅'+state.userName
+      }
+    }
+}
+
+#### 在实例中引用store
 
 ```
+//main.js
+import Vue from 'vue'
+import App from './App.vue'
+
+import store from './store/index'
+new Vue({
+  render: h => h(App),
+  store
+}).$mount('#app')
+```
+
+#### 使用数据
+
+如果页面中注入了store 每个实例上都会存在一个属性 `$store`,
+##### 直接使用$store
+```
+//App.vue
+<template>
+  <div id="app">
+    <!-- 获取数据公共 -->
+    {{$store.state.lesson}}
+    {{$store.getters.getNewName}}
+
+    <!-- 获取数据子模块 -->
+    {{$store.state.user.userName}}
+    {{$store.getters.user.getNewName}}
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'app',
+  methods:{
+    change(){
+      // 同步修改数据子模块
+      this.$store.commit('user/change','jw')
+
+      // 异步修改数据子模块
+      this.$store.dispatch('user/change_user','jw')
+    }
+  }
+}
+</script>
+
+<style>
+</style>
+```
+
+##### 辅助函数
+
+```
+//App.vue
+<template>
+  <div id='app'>
+    {{lesson}}
+    {{userName}}
+    {{u}}
+    {{getNewName}}
+  </div>
+</template>
+
+<script>
+import {mapState,mapGetters,mapMutations} from 'vuex';
+export default {
+  name: 'app',
+  computed:{
+    // 获取数据公共
+    ...mapState(['lesson','className']),
+    ...mapGetters(['getNewName'])
+    // 获取数据子模块
+    ...mapState('user',['userName'])
+    ...mapGetters('user',['getNewUserName'])
+
+    //起别名:对象形式
+    ...mapState('user',{u:(state)=>state.userName})
+    
+  },
+  methods:{
+    // 同步修改数据子模块
+    ...mapMutations('user',['change_user']),
+    change(){
+      this['change_user']('jw')
+    },
+    // 异步修改数据子模块
+    ...mapActions('user',['change_user']),
+    this['change_user']('jw')
+  }
+}
+</script>
+```
+
+- 模块引用可使用`createNamespaceHelpers`
+```
+import {createNamespaceHelpers} from 'vuex';
+let {mapState} = createNamespaceHelpers('user');
+export default {
+  name: 'app',
+  computed:{
+    ...mapState['userName']
+  }
+}
+</script>
+```
+
+- 如果子模块没有开启namespace,只有state需要通过模块.属性获取。如果开启了namespace，所有的都需要通过模块.属性获取
+
+- 异步需要从action绕一下，好处：
+action里可以多次调用接口，action里可以调用其他action
+
+- 使用模块最好使用辅助函数
+
+- 同步修改状态 commit mapMutation
+- 异步修改状态 dispatch mapAction
+
+- 不要赋值修改状态，严格模式下不合法
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

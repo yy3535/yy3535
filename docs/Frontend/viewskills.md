@@ -18,12 +18,17 @@ jr.jd.com
   - webpack打包工具
 - Elements看源码（主要看header）
   - 
-```
-<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">//设置IE用Edge渲染，有chrome用chrome渲染
-<meta name="renderer" content="webkit">//双核浏览器优先用webkit内核渲染浏览器
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">//网站编码
-<meta name="description" content="京东金融官网，服务金融机构的数字科技公司。中国互联网金融协会理事单位! 参与中央网信办等四部委发起的联合安全测评并位居榜首。旗下品牌包括京东财富、京东众筹、京东保险、京东白条、企业金融、京东股票、东家财富、金融云、城市计算等。">//网站描述，SEO
-<link rel="dns-prefetch" href="//static.360buyimg.com">//实现dns预解析，优化性能
+```html
+<!-- 设置IE用Edge渲染，有chrome用chrome渲染 -->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<!-- 双核浏览器优先用webkit内核渲染浏览器 -->
+<meta name="renderer" content="webkit">
+<!-- 网站编码 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- 网站描述，SEO -->
+<meta name="description" content="京东金融官网，服务金融机构的数字科技公司。中国互联网金融协会理事单位! 参与中央网信办等四部委发起的联合安全测评并位居榜首。旗下品牌包括京东财富、京东众筹、京东保险、京东白条、企业金融、京东股票、东家财富、金融云、城市计算等。">
+<!-- 实现dns预解析，优化性能 -->
+<link rel="dns-prefetch" href="//static.360buyimg.com">
 
 ```
 - Application
@@ -82,5 +87,219 @@ webpack:必准备
 - 遇到困难的面试可以找面试官要资料，让自己有所收获。
   
 ### 参考简历
-![模板简历1](../.vuepress/public/img/模板简历1.png)
-![模板简历1](../.vuepress/public/img/模板简历2.png)
+![模板简历1]('../.vuepress/public/img/模板简历1.png')
+![模板简历1]('../.vuepress/public/img/模板简历2.png')
+
+## 页面布局
+### 实现两栏（三栏）布局的方法
+```html
+<section class="layout float">
+    <style>
+        .layout.float .left{
+            float: left;
+            width:300px;
+            background-color: red;
+        }
+        .layout.float .right{
+            float: right;
+            width:300px;
+            background-color:blue;
+        }
+        .layout.float .center{
+            margin-left:300px;
+            margin-right:300px;
+            background-color:yellow;
+        }
+    </style>
+    <article class="left-right-center">
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="center">
+            <div style="width:100%; height:50px;">
+                hahaha 
+                <h1>浮动解决方案</h1>
+                1.这是三栏布局中间部分
+                2.这是三栏布局中间部分
+            </div>
+        </div>
+    </article>
+</section>
+<section class="layout absolute">
+    <style>
+        .layout.absolute{
+            height: 100px;
+        }
+        .layout.absolute .left{
+            position: absolute;
+            width:300px;
+            left:0;
+            background-color: red;
+        }
+        .layout.absolute .center{
+            position: absolute;
+            left:300px;
+            right:300px;
+            background-color: yellow;
+        }
+        .layout.absolute .right{
+            position: absolute;
+            width:300px;
+            right:0;
+            background-color: blue;
+        }
+    </style>
+    <article class="left-center-right">
+        <div class="left"></div>
+        <div class="center">
+            <div style="width:100%; height:50px;">
+                hahaha 
+                <h1>绝对定位解决方案</h1>
+                1.这是三栏布局中间部分
+                2.这是三栏布局中间部分
+            </div>
+        </div>
+        <div class="right"></div>
+    </article>
+</section>
+<section class="layout flex">
+    <style>
+        .layout.flex .left-center-right{
+            display:flex;
+        }
+        .layout.flex .left{
+            width:300px;
+            background-color: red;
+        }
+        .layout.flex .center{
+            flex:1;
+            background-color: yellow;
+        }
+        .layout.flex .right{
+            width:300px;
+            background-color: blue;
+        }
+    </style>
+    <article class="left-center-right">
+        <div class="left"></div>
+        <div class="center">
+            <div style="width:100%; height:50px;">
+                hahaha 
+                <h1>flex解决方案</h1>
+                1.这是三栏布局中间部分
+                2.这是三栏布局中间部分
+            </div>
+        </div>
+        <div class="right"></div>
+    </article>
+</section>
+<section class="layout table">
+    <style>
+        .layout.table .left-center-right{
+            display:table;
+            width:100%;
+        }
+        .layout.table .left{
+            display:table-cell;
+            width:300px;
+            background-color: red;
+        }
+        .layout.table .center{
+            display:table-cell;
+            background-color: yellow;
+        }
+        .layout.table .right{
+            display: table-cell;
+            width:300px;
+            background-color: blue;
+        }
+    </style>
+    <article class="left-center-right">
+        <div class="left"></div>
+        <div class="center">
+            <div style="width:100%; height:50px;">
+                hahaha 
+                <h1>表格解决方案</h1>
+                1.这是三栏布局中间部分
+                2.这是三栏布局中间部分
+            </div>
+        </div>
+        <div class="right"></div>
+    </article>
+</section>
+<section class="layout grid">
+    <style>
+        .layout.grid .left-center-right{
+            display:grid;
+            grid-template-rows: 100px;
+            grid-template-columns: 300px auto 300px;
+        }
+        .layout.grid .left{
+            background-color: red;
+        }
+        .layout.grid .center{
+            background-color: yellow;
+        }
+        .layout.grid .right{
+            background-color: blue;
+        }
+    </style>
+    <article class="left-center-right">
+        <div class="left"></div>
+        <div class="center">
+            <div style="width:100%; height:50px;">
+                hahaha 
+                <h1>grid解决方案</h1>
+                1.这是三栏布局中间部分
+                2.这是三栏布局中间部分
+            </div>
+        </div>
+        <div class="right"></div>
+    </article>
+</section>
+```
+
+哪五种五种解决方案，
+每个解决方案的优缺点：
+	浮动：脱离文档流，处理不好带来很多问题/兼容性好
+	绝对定位：快捷，不容易出问题/布局脱离文档流，其中所有子元素也必须脱离文档流，不实用
+	Flex：解决了以上两个的问题，比较完美
+	表格布局：兼容性好/有时不需要同时增高
+	网格布局：
+假设高度去掉，哪个方案不再适用了，
+真正到业务中使用，哪个最实用
+
+- 页面布局的变通（像上面一样写出多种方案，各个优缺点）
+    - 三栏布局
+        - 左右宽度固定，中间自适应
+        - 上下高度固定，中间自适应
+    - 两栏布局
+        - 左宽度固定，右自适应
+        - 右宽度固定，左自适应
+        - 上高度固定，下自适应
+        - 下高度固定，上自适应
+
+
+## CSS盒模型
+怎么看CSS盒模型？
+1. 基本概念：标准模型+IE模型，margin,padding,border,content
+2. 标准模型和IE模型的区别
+3. CSS如何设置这两种模型
+4. JS如何设置获取盒模型对应的宽和高
+5. 实例题（根据盒模型解释边距重叠）
+6. BFC(边距重叠解决方案)
+
+
+## DOM事件
+
+## HTTP协议
+
+## 面对对象
+
+## 原型链
+
+## 通信
+
+## 安全
+
+## 算法
+

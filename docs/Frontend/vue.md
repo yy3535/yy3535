@@ -24,7 +24,7 @@ vue+components+vue-router+vuex+vue-cli
 
 ### vm=new Vue({})配置
 
-```
+```js
 let vm=new Vue({
     //范围 
     el:'#app',
@@ -49,7 +49,8 @@ el换成.$mount('#app')是一样的。
 
 2. 数组需要改写，改写后length变化不能监听
 
-   ```let arr=['push','slice','shift','unshift']
+   ```js
+   let arr=['push','slice','shift','unshift']
     arr.forEach(method=>{
       let oldPush=Array.prototype[method];
       Array.prototype[method]=function(value){
@@ -57,7 +58,7 @@ el换成.$mount('#app')是一样的。
         oldPush.call(this,value)//别人身上的方法，想要使用到自己身上，就用call去调用
       }
     })
-    obj.age.push(5)```
+    obj.age.push(5)
    ```
 
 
@@ -69,7 +70,7 @@ el换成.$mount('#app')是一样的。
 
 ### observer原理
 
-```
+```js
 let obj={
     name:'jw',
     age:{
@@ -154,10 +155,10 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
 
 ### v-for 
 
-   ```
-   //循环数组
+   ```html
+   <!-- 循环数组 -->
    <div v-for="(fruit,index) in fruits" :key="index">{{fruit}}{{index}}</div>
-   //循环对象
+   <!-- 循环对象 -->
    <div v-for="(value,key) in fruits" :key="key">{{value}}{{key}}</div>
    ```
 
@@ -170,7 +171,7 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
   **注：**
   1. key只能加在循环的元素上，不能加在template上，应该加在内部循环的元素上
     
-    ```
+    ```html
     <template v-for="i in 3">
     <div :key="${i}_1"></div>
     <div :key="${i}_2"></div>
@@ -178,7 +179,7 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
     ```
   2. key也可以用来区分元素
 
-    ```
+    ```html
     //修改flag值后不会立刻渲染，因为认为是同一个东西，加了key之后就会立刻重新渲染
     <div v-if="flag">
     	<span>珠峰</span>
@@ -195,14 +196,14 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
 
 ### v-model
 #### input
-   ```
+   ```html
    <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/>
    等价于  <!-- v-model 是 @input + :value 的一个语法糖-->
    <input type='text' v-model="msg"/>
    ```
 
 #### select,radio和checkbox
-   ```
+   ```html
    //select
    data:{
    	selectValue:'',
@@ -240,13 +241,13 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
    ```
 
 #### 修饰符（可以连续修饰）
-```
+```html
   <input type="text" v-model.number="val">{{typeof val}}//只能数字
   <input type="text" v-model.trim="val">{{typeof val}}//清除空格
 ```
 ### @绑定事件
 
-```
+```html
 <input type='text' @input="fn"/>
 
 methods:{
@@ -266,13 +267,13 @@ methods:{
 
 常用：.ctrl .esc .enter
 
-```
+```html
 <input type="text" @keyup.enter="fn">
 <input type="text" @keyup.esc="fn">
 ```
 vue配置一个键盘code别名,需要按fn+f1
 
-```
+```js
 Vue.config.keyCodes={
   'f1':112
 }
@@ -280,7 +281,7 @@ Vue.config.keyCodes={
 
 ### v-bind:或者:
 
-```
+```html
 <input type='text' :value="msg"/>
 ```
 
@@ -289,16 +290,16 @@ Vue.config.keyCodes={
 > 动态绑定样式 
 class
 1. 等于对象
-```
+```html
 <div class="abc" :class="{b:true}">你好</div>
 ```
 2. 等于数组
-```
+```html
 <div class="abc" :class="['a','b',c]">你好</div>//c为data中定义的
 ```
 style
 等于对象或者数组
-```
+```html
 <div style='color:red' :style="{background:'blue'}">
 <div style='color:red' :style="[{background:'red',color:'blue'}]">
 ```
@@ -306,7 +307,7 @@ style
 ## computed
 - methods getFullName()放取值表达式中会造成性能问题，每次其他数据更新都会重新执行这个方法
 - computed也是通过Object.defineProperty来实现的，只有依赖的数据更新时才会执行（有缓存）
-```
+```js
 computed:{
   fullName(){
     return this.firstName+this.lastName;
@@ -315,7 +316,7 @@ computed:{
 ```
 
 ### watch实现computed
-```
+```js
 data:{
   firstName:'珠',
   lastName:'峰',
@@ -351,7 +352,7 @@ computed只有绑定的数据变了才会执行，method做绑定时所有数据
 - watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
 
 ### computed实现双向绑定
-```
+```html
 全选：<input type="checkbox" v-model="checkAll">
 <input type="checkbox" v-for="(item,key) in checks" v-model="item.value" :key="key">
 data:{
@@ -726,7 +727,7 @@ componets:{
 2. @click="this.$emit('click')"
 3. v-on="$listeners"
 
-```
+```js
   <div id="app">
     <!--相当于 this.on('click',change)-->
     <my-button @click="change" @mouseup="change"></my-button>
@@ -1027,7 +1028,7 @@ vue serve App.vue
 ### 递归组件
 
 .vue文件组件
-- 组件大写可辨认`<MenuItem>`
+- 组件大写可辨认`MenuItem`
 - 使用
   1. 定义组件
   2. 引用组件
@@ -1492,7 +1493,7 @@ history.pushState({},null,'/a')
 `$route`,`this.$route`,包含属性
 - 导出路由配置
 
-```
+```js
 //router/index.js
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -1509,7 +1510,7 @@ export default new VueRouter({
 
 ```
 
-```
+```js
 //routes.js
 import Home from '_v/Home';
 import Name from '_v/Name.vue';
@@ -1575,7 +1576,7 @@ export default [
 ```
 
 - 导入文件目录太繁琐应定义别名
-```
+```js
 //vue.config.js
 config.resolve.alias.set('_',path.resolve(__dirname,'src/components'))
 
@@ -1585,7 +1586,7 @@ config.resolve.alias.set('_v',path.resolve(__dirname,'src/views'))
 
 
 #### 在Vue实例中引用路由
-```
+```js
 //main.js
 import Vue from 'vue'
 import App from './App.vue'
@@ -1601,7 +1602,7 @@ new Vue({
 
 #### 在Vue实例模板中显示路由视图
 - //一个路由一个组件
-```
+```js
 //App.vue
 <template>
   <div id="app">
@@ -1622,7 +1623,7 @@ export default {
 ```
 - //一个路由多个组件
 
-```
+```js
 <div class="container">
   <router-view></router-view>
   <router-view name="name"></router-view>
@@ -1645,7 +1646,7 @@ to='/user/detail?id=1'
 tag='span'
 - 
 
-```
+```js
 <router-link to='/home'>首页</router-link>
 <router-link to='login'>登录</router-link>
 <router-link :to="{name:'profile'}">个人中心</router-link>
@@ -1667,13 +1668,13 @@ tag='span'
 ```
 > bootstrap
 yarn add bootstrap3
-```
+```js
 //main.js中全局引用
 import 'bootstrap/dist/css/bootstrap.css'
 ```
 #### 编程式路由跳转
 this.$router.push(path)
-```
+```js
 this.$router.push('/user/list')
 ```
 
@@ -1684,7 +1685,7 @@ this.$router.push('/user/list')
 - beforeRouteLeave
 - beforeRouterEnter
 - beforeRouterUpdate
-```
+```js
 //login.vue
 export default {
   //离开钩子(离开组建，组件销毁时)
@@ -1725,7 +1726,7 @@ export default {
 
 2. 路由配置中的路由钩子(在组件之前触发)
 - beforeEnter
-```
+```js
 //routes.js
 {
     path:'/profile',
@@ -1740,7 +1741,7 @@ export default {
 1. 全局路由钩子(在组件，路由配置之前，对所有路由有效)
 - router.beforeEach
 - router.beforeResolve
-```
+```js
 //main.js
 import Vue from 'vue'
 import App from './App.vue'
@@ -1790,7 +1791,7 @@ new Vue({
 
 ##### 拦截登录
 设置路由备注，在全局beforeEach中拦截
-```
+```js
 //routes.js
 {
     path:'/profile',
@@ -1801,7 +1802,7 @@ new Vue({
 },
 ```
 
-```
+```js
 //main.js
 router.beforeEach((to,from,next)=>{
   //是否需要登录
@@ -1866,7 +1867,7 @@ yarn add vuex
 - 新建src/store/index.js
 
 #### store配置
-```
+```js
 //index.js
 import Vue from 'vue';
 import vuex from 'vuex'
@@ -1894,7 +1895,7 @@ export default new vuex.Store({
 ```
 
 - 公共数据
-```
+```js
 //state.js
 export default {
     lesson:'珠峰培训',
@@ -1903,7 +1904,7 @@ export default {
 
 - 子模块数据
 新建 /store/modules/user.js
-```
+```js
 //user.js
 export default {
     //命名空间，true
@@ -1942,13 +1943,13 @@ new Vue({
   render: h => h(App),
   store
 }).$mount('#app')
-```
+```js
 
 #### 使用数据
 
 如果页面中注入了store 每个实例上都会存在一个属性 `$store`,
 ##### 直接使用$store
-```
+```js
 //App.vue
 <template>
   <div id="app">
@@ -1983,7 +1984,7 @@ export default {
 
 ##### 辅助函数
 
-```
+```js
 //App.vue
 <template>
   <div id='app'>
@@ -2025,7 +2026,7 @@ export default {
 ```
 
 - 模块引用可使用`createNamespaceHelpers`
-```
+```js
 import {createNamespaceHelpers} from 'vuex';
 let {mapState} = createNamespaceHelpers('user');
 export default {
@@ -2077,8 +2078,10 @@ npm install eslint --save-dev
 
 ### google工具
 - vuetools
-  ```
-  <Root>根实例
-    <App></App>App实例
+  ```html
+  <!-- 根实例 -->
+  <Root>
+    <!-- App实例 -->
+    <App></App>
   <Root>
   ```

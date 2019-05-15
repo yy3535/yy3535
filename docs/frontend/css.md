@@ -92,7 +92,7 @@ float对自身的影响：
 - rem/viewport/media query
 
 #### 实现两栏（三栏）布局的方法
-```
+```html
 <section class="layout float">
     <style>
         .layout.float .left{

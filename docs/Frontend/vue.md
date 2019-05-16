@@ -171,25 +171,25 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
   **注：**
   1. key只能加在循环的元素上，不能加在template上，应该加在内部循环的元素上
     
-    ```html
-    <template v-for="i in 3">
-    <div :key="${i}_1"></div>
-    <div :key="${i}_2"></div>
-    </template>
-    ```
+```html
+<template v-for="i in 3">
+<div :key="${i}_1"></div>
+<div :key="${i}_2"></div>
+</template>
+```
   2. key也可以用来区分元素
 
-    ```html
-    //修改flag值后不会立刻渲染，因为认为是同一个东西，加了key之后就会立刻重新渲染
-    <div v-if="flag">
-    	<span>珠峰</span>
-    	<input type="text" key="1"/>
-    </div>
-    <div v-else>
-    	<span>架构</span>
-    	<input type="text" key="2"/>
-    </div>
-    ```
+```html
+//修改flag值后不会立刻渲染，因为认为是同一个东西，加了key之后就会立刻重新渲染
+<div v-if="flag">
+  <span>珠峰</span>
+  <input type="text" key="1"/>
+</div>
+<div v-else>
+  <span>架构</span>
+  <input type="text" key="2"/>
+</div>
+```
 
   3. 尽量不要用index来作为key，因为index再数据顺序变化后会消耗性能，如果有唯一标识，尽量用唯一标识
 
@@ -203,49 +203,49 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
    ```
 
 #### select,radio和checkbox
-   ```html
-   //select
-   data:{
-   	selectValue:'',
-   	list:['{value:'菜单1',id:1}','{value:'菜单2',id:2}','{value:'菜单3',id:3}']
-   }
-   <select v-model="selectValue">
-   	<option value="0" disabled>请选择</option>
-   	<option v-for="item in list" :key="item.id" :value="item.id">{{item.value}}</option>
-   </select>
-   //multiple，太丑一般不用
-   
-   //radio
-   //根据v-model来分组
-   data:{
-   	radioValue:'男'
-   }
-   <input type='radio' v-model="radioValue" value="男"/>
-   <input type='radio' v-model="radioValue" value="女"/>
-   <input type='radio' v-model="radioValue" value="其他"/>
-   
-   //checkbox
-   //只要是多个就是数组
-   data:{
-   	checkValue:true,
-    checkValues:[]
-   }
-   不给value，值就是true/false，给了value，就是数组
-   <!--true/false-->
-   <input type='checkbox' v-model="checkValue"/>
-   <!--多选-->
-   <input type='checkbox' v-model="checkValues" value="游泳"/>
-   <input type='checkbox' v-model="checkValues" value="健身"/>
-   <input type='checkbox' v-model="checkValues" value="看书"/>
-   {{checkValues}}
-   ```
+```js
+//select
+data:{
+selectValue:'',
+list:['{value:'菜单1',id:1}','{value:'菜单2',id:2}','{value:'菜单3',id:3}']
+}
+<select v-model="selectValue">
+<option value="0" disabled>请选择</option>
+<option v-for="item in list" :key="item.id" :value="item.id">{{item.value}}</option>
+</select>
+//multiple，太丑一般不用
+
+//radio
+//根据v-model来分组
+data:{
+radioValue:'男'
+}
+<input type='radio' v-model="radioValue" value="男"/>
+<input type='radio' v-model="radioValue" value="女"/>
+<input type='radio' v-model="radioValue" value="其他"/>
+
+//checkbox
+//只要是多个就是数组
+data:{
+checkValue:true,
+checkValues:[]
+}
+不给value，值就是true/false，给了value，就是数组
+<!--true/false-->
+<input type='checkbox' v-model="checkValue"/>
+<!--多选-->
+<input type='checkbox' v-model="checkValues" value="游泳"/>
+<input type='checkbox' v-model="checkValues" value="健身"/>
+<input type='checkbox' v-model="checkValues" value="看书"/>
+{{checkValues}}
+```
 
 #### 修饰符（可以连续修饰）
 ```html
   <input type="text" v-model.number="val">{{typeof val}}//只能数字
   <input type="text" v-model.trim="val">{{typeof val}}//清除空格
 ```
-### @绑定事件
+### v-on或@ 绑定事件
 
 ```html
 <input type='text' @input="fn"/>
@@ -279,7 +279,7 @@ Vue.config.keyCodes={
 }
 ```
 
-### v-bind:或者:
+### v-bind或: 绑定属性
 
 ```html
 <input type='text' :value="msg"/>
@@ -352,7 +352,7 @@ computed只有绑定的数据变了才会执行，method做绑定时所有数据
 - watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
 
 ### computed实现双向绑定
-```html
+```js
 全选：<input type="checkbox" v-model="checkAll">
 <input type="checkbox" v-for="(item,key) in checks" v-model="item.value" :key="key">
 data:{
@@ -379,7 +379,7 @@ vm.data
 ### beforeCreate
 实例尚未创建完成
 初始化注入，和响应事件
-```
+```js
 data:{
   a:1
 },
@@ -391,7 +391,7 @@ beforeCreate(){
 ```
 ### created
 可以获取数据和调用方法
-```
+```js
 create(){
   console.log(this)//存在
   console.log(this.$data)//{a:1}
@@ -404,7 +404,7 @@ create(){
 
 ### mounted（重要）
 渲染后，可获取真实dom，一般ajax请求放在这儿。
-```
+```js
 mounted(){
   console.log(this.$el.innerHTML);
 }
@@ -412,7 +412,7 @@ mounted(){
 
 ### beforeUpdate
 更新前
-```
+```js
 beforeUpdate(){
   console.log(this.$el.innerHTML);
 }
@@ -421,7 +421,7 @@ beforeUpdate(){
 ### updated
 一般不要操作数据，否则可能会死循环
 更新后
-```
+```js
 updated(){
   console.log(this.$el.innerHTML);
 }
@@ -429,7 +429,7 @@ updated(){
 
 ### beforeDestroy（重要）
 销毁前（当前实例还可以用），一般会放销毁定时器等解绑操作
-```
+```js
 beforeDestroy(){
   console.log(this.$el.innerHTML);
 }
@@ -437,7 +437,7 @@ beforeDestroy(){
 
 ### destroyed
 销毁后（实例上的方法，监听，事件绑定都被移除）
-```
+```js
 destroyed(){
   console.log(this.$el.innerHTML);
 }
@@ -453,20 +453,39 @@ destroyed(){
 ![vue生命周期](/img/lifecycle.png)
 
 ## 组件(component)
-### 组件化开发的优点：
+  - data返回函数
+  - 要用闭合标签
+  - 子组件在父组件的模板中使用
+  - 组件名定义时写大驼峰，使用时用`-`连接（因为html标签不能有大写字母）
+### 优点：
   - 一个页面分为几个组件开发，方便协作，方便维护，可复用
+  - 为了每个组件的数据，互不影响，
 
-- 要采用闭合标签
-- 为了每个组件的数据，互不影响，data采用函数
-### 全局组件
+### 使用.vue文件开发两种方法
+- 安装vue-cli脚手架
+npm install @vue/cli -g
+
+- 安装service-global
+npm install -g @vue/cli-service-global
+
 ```
+vue serve App.vue
+```
+//http://localhost:8080/直接访问组件页面
+
+### 分类
+- 全局组件
+- 局部组件（声明在某个组件之内
+）
+```html
+<!-- 父组件 -->
 <div id='app'>
   <my-button></my-button>
   <my-button></my-button>
   <my-button></my-button>
 </div>
 <script>
-  //组件实际上就是个对象
+  // 全局组件
   Vue.component('my-button',{
     template:`<button>{{msg}}</button>`,
     data(){
@@ -475,225 +494,72 @@ destroyed(){
       }
     }
   })
-  //根实例，也是一个组件
-  let vm=new Vue({
-    el:'#app',
+  let vm = new Vue({
+    el:"#app",
+    // 子组件
+    components:{
+      'MyButton':{
+        data(){
+          return {msg:'点我啊'}
+        },
+        template:`<button>{{}}</button>`
+      }
+    }
+  })
+</script>
+
+```
+### props(属性父传子)
+- 命名在 HTML 中是 kebab-case 的,在 js 中是 camelCase 的
+- v-bind=对象，传入对象的所有属性
+- this.$attrs 所有属性
+```html
+<!-- 简单传值 -->
+<blog-post msg-title="hello!"></blog-post>
+<!-- 传入数组 -->
+<blog-post
+  v-for="item in arr"
+  v-bind:key="item.id"
+  v-bind:title="item.title"
+></blog-post>
+<script>
+  new Vue({
+    el:'app',
+    componets:{
+      'MyButton':{
+        //禁用特性(没有使用的属性 保留在this.$attrs中，不会显示在dom结构上了)
+        inheritAttrs: false,
+        props:{
+          msgTitle:{
+            //类型(String/Number/Boolean/Array/Object/Function/Promise)
+            type:String,
+            //默认值
+            default:'点我啊',
+            //验证
+            validator(value){
+              return value>3
+            }
+          },
+          arr:{
+            type:Array,
+            //属性校验中，如果是数组/对象，需要将默认值返回
+            default:()=>([1,2])//箭头函数后面是括号表示[1,2]是个返回值
+          }
+        },
+      }
+  }
   })
 </script>
 ```
 
-### 局部组件
-声明在某个组件之内
-- 子组件在父组件的模板中使用
-- 组件名定义时写大驼峰，使用时用`-`连接，因为html标签不能有大写字母
-```
-//父组件
-<div id='app'>
-  <my-button></my-button>
-  <my-button></my-button>
-  <my-button></my-button>
-</div>
-let vm = new Vue({
-  el:"#app",
-  //子组件
-  components:{
-    'MyButton':{
-      data(){
-        return {msg:'点我啊'}
-      },
-      template:`<button>{{}}</button>`
-    }
-  }
-})
-```
-
-### 组件交互
-
-prop
-#### prop传值
-
-- 简单传值
-```
-Vue.component('blog-post', {
-  props: ['title'],
-  template: '<h3>{{ title }}</h3>'
-})
-
-<blog-post title="My journey with Vue"></blog-post>
-<blog-post title="Blogging with Vue"></blog-post>
-<blog-post title="Why Vue is so fun"></blog-post>
-
-My journey with Vue
-Blogging with Vue
-Why Vue is so fun
-```
-- 传一个数组
-```
-new Vue({
-  el: '#blog-post-demo',
-  data: {
-    posts: [
-      { id: 1, title: 'My journey with Vue' },
-      { id: 2, title: 'Blogging with Vue' },
-      { id: 3, title: 'Why Vue is so fun' }
-    ]
-  }
-})
-
-<blog-post
-  v-for="post in posts"
-  v-bind:key="post.id"
-  v-bind:title="post.title"
-></blog-post>
-```
-
-#### this.$attrs
-没有使用的属性
-
-#### prop大小写
-当你使用 DOM 中的模板时，camelCase (驼峰命名法) 的 prop 名需要使用其等价的 kebab-case (短横线分隔命名) 命名
-```
-Vue.component('blog-post', {
-  // 在 JavaScript 中是 camelCase 的
-  props: ['postTitle'],
-  template: '<h3>{{ postTitle }}</h3>'
-})
-<!-- 在 HTML 中是 kebab-case 的 -->
-<blog-post post-title="hello!"></blog-post>
-```
-
-#### prop类型
-每个 prop 都有指定的值类型,可以以对象形式列出 prop，这些属性的名称和值分别是 prop 各自的名称和类型
-```
-props: {
-  title: String,
-  likes: Number,
-  isPublished: Boolean,
-  commentIds: Array,
-  author: Object,
-  callback: Function,
-  contactsPromise: Promise // or any other constructor
-}
-```
-
-#### 传递静态或动态 Prop
-- 静态prop
-```
-<blog-post title="My journey with Vue"></blog-post>
-```
-
-- 动态prop
-```
-<!-- 动态赋予一个变量的值 -->
-<blog-post v-bind:title="post.title"></blog-post>
-
-<!-- 动态赋予一个复杂表达式的值 -->
-<blog-post
-  v-bind:title="post.title + ' by ' + post.author.name"
-></blog-post>
-```
-
-##### 传入一个对象的所有属性
-如果你想要将一个对象的所有属性都作为 prop 传入，你可以使用不带参数的 v-bind
-```
-post: {
-  id: 1,
-  title: 'My Journey with Vue'
-}
-```
-下面的模板：
-```
-<blog-post v-bind="post"></blog-post>
-```
-等价于：
-```
-<blog-post
-  v-bind:id="post.id"
-  v-bind:title="post.title"
-></blog-post>
-```
-
-##### 禁用特性继承
-
-```
-Vue.component('my-component', {
-  inheritAttrs: false,//没有用到的属性，不会显示在dom结构上了
-  //
-  template:`<div>my-button <my v-bind="$attrs"></my></div>`,
-  components:{
-    'my':{
-      props:['a','b'],
-      template:`<span>{{a}} {{b}}</span>`
-    }
-  }
-})
-```
-
-```
-let vm=new Vue({
-  el:'#app',
-  data:{
-    content:'点我啊'
-  },
-  components:{
-    'MyButton':{
-      mounted(){
-        //对没有使用的属性 把他保留在this.$attrs中
-        console.log(this.$attrs)
-      },
-      inheritAttrs:false,//没有用到的数据，就不会显示在dom结构上了
-      template:`<div>my-button <my v-bind="$attrs"></my></div>`,
-      components:{
-        'my':{
-          props:['a','b'],
-          template:`<span>{{a}}{{b}}</span>`
-        }
-      }
-    }
-  }
-})
-```
-
-##### props
-属性父级传子组件
-```
-<my-button :a="1" b="2" :arr="[1,2,3]"></my-button>
-componets:{
-  'MyButton':{
-    props:{
-      msg:{
-        //类型，校验只会出错误，但不影响页面渲染
-        type:String,
-        //默认值
-        default:'点我啊'
-      },
-      a:{
-        type:Number
-      },
-      b:{
-        type:String,
-        //验证
-        validator(value){
-          return value>3
-        }
-      },
-      arr:{
-        type:Array,
-        //属性校验中，如果是数组/对象，需要将默认值返回
-        default:()=>([1,2])//箭头函数后面是括号表示[1,2]是个返回值
-      }
-    },
-    template:`<button>{{msg}}{{a}}{{b}}</button>`
-  }
-}
-
-```
-
-##### 子组件触发父级的方法
-
-**子组件触发父级的方法，给子组件最外层元素绑定。**
-@click.native
-```
+### 子组件触发父级的方法
+- this.$attrs 获取当前组件所有的属性
+- this.$listeners 获取当前组件所有的绑定事件
+- v-bind=$attrs 绑定所有的属性
+- v-on=$listeners 绑定所有的方法
+- 给子组件最外层元素绑定
+`@click.native`
+```html
 <div id="app">
   <my-button @click.native="change"></my-button>
 </div>
@@ -717,37 +583,27 @@ componets:{
 </script>
 ```
 
-**组件的某个子元素触发父级方法（调用自己属性上的父级的方法），有三种方法。**
+- 组件的某个子元素触发父级方法
+  - （调用自己属性上的父级的方法），有三种方法。
+    - @click="$listeners.click()"
+    - @click="this.$emit('click')"
+    - v-on="$listeners"
 
-
-- this.$attrs //获取当前组件所有的属性
-- this.$listeners //获取当前组件所有的绑定事件
-
-1. @click="$listeners.click()"
-2. @click="this.$emit('click')"
-3. v-on="$listeners"
-
-```js
+```html
   <div id="app">
     <!--相当于 this.on('click',change)-->
     <my-button @click="change" @mouseup="change"></my-button>
   </div>
-  template:`<div>
-    //第一种
-    <button @click=“$listeners.click()”>点我啊</button>
-    //第二种
-    <button @click="$emit('click')"></button>
-    //第三种,所有事件全绑上去
-    <button v-on="$listeners"></button>
-  </div>`
-
+  <!-- 第一种 -->
+  <button @click=“$listeners.click()”>点我啊</button>
+  <!-- 第二种 -->
+  <button @click="$emit('click')"></button>
+  <!-- 第三种,所有事件全绑上去 -->
+  <button v-on="$listeners"></button>
 ```
-> v-bind=$attrs 绑定所有的属性
-> v-on=$listeners 绑定所有的方法
 
-##### 总结：props emit | $attrs $listeners | $parent $children
 
-##### $parent $children
+### $parent和$children
 
 - $parent
 获取父组件的实例
@@ -759,23 +615,22 @@ name：
 1. default
 2. 自定义:hello
 `v-slot:` `#` `<slot>`
-```
+```html
 <template v-slot:hello>
   ...
 </template>
-或者
+<!-- 或者 -->
 <template #:hello>
   ...
 </template>
-或者
+<!-- 或者 -->
 <div class="wrap">
   <slot></slot>
 </div>
 ```
-
-
-```
-//手风琴效果组件
+- demo
+```html
+<!-- 手风琴效果组件 -->
 <div id="app">
   <collapse>
     <collapse-item title="react">内容1</collapse-item>
@@ -825,53 +680,35 @@ name：
 </script>
 ```
 
-##### provide
-在根组件上提供属性，所有的子组件都可以获取
-可实现组件传值
+### provide和inject
+- 在根组件上提供属性，所有的子组件都可以获取
+- 可实现组件传值
 
-```
+```html
 <div id="app">
   <my></my>
 </div>
-Vue.component('my',{
-  inject:['a'],
-  template:"<div>{{a}}</div>"
-})
-let vm=new Vue({
-  el:'#app',
-  provide:{
-    a:1
-  },
-  mounted(){
-    console.log(this._uid)
-  }
-})
+<script>
+  Vue.component('my',{
+    inject:['a'],
+    template:"<div>{{a}}</div>"
+  })
+  let vm=new Vue({
+    el:'#app',
+    provide:{
+      a:1
+    },
+    mounted(){
+      console.log(this._uid)
+    }
+  })
+</script>
 ```
-
-
-
-
-##### 总结：组件间通信
-1. prop和$emit
-父组件向子组件传递通过prop,子组件向父组件传递通过$emit
-2. $attrs和$listeners
-Vue2.4开始提供$attrs和$listeners传递值
-3. $parent,$children
-4. $refs
-获取实例
-5. provider和inject
-父组件通过provider提供变量，子组件通过inject来注入变量
-6. eventBus
-平级组件数据传递，可使用中央事件总线方式
-7. vuex状态管理
-
-
-
-##### $refs
+### $refs
 获取所有引用
 - ref名不能重复，重复会覆盖。但如果遇到循环，就会成数组形式
 - 子组件给一个ref,父组件调用this.$refs.com.show传值，父组件调用子组件的方法
-```
+```html
 <div id="app">
     <template v-for="i in 3">
         <div ref="my">我的dom元素</div>
@@ -899,31 +736,61 @@ Vue2.4开始提供$attrs和$listeners传递值
 </script>
 ```
 
+### 总结：组件间通信
+props emit | $attrs $listeners | $parent $children
+1. prop和$emit
+父组件向子组件传递通过prop,子组件向父组件传递通过$emit
+2. $attrs和$listeners
+Vue2.4开始提供$attrs和$listeners传递值
+3. $parent,$children
+4. $refs
+获取实例
+5. provider和inject
+父组件通过provider提供变量，子组件通过inject来注入变量
+6. eventBus
+平级组件数据传递，可使用中央事件总线方式
+7. vuex状态管理
 
-##### 自定义指令(directive)
-Vue自带指令：v-model v-html v-text {{}} v-cloak v-if/v-else v-show v-pre 有十几种
-指令有全局和局部
-
-- 自定义指令
-默认函数形式
+### 自定义指令(directive)
+- Vue自带指令：
+`v-model`
+`v-html`
+`v-text`
+`{{}}`
+`v-cloak`
+`v-if/v-else`
+`v-show`
+`v-pre`有十几种
+- 自定义指令有全局和局部
+- 分为默认函数形式和bind,update形式
+- 指令函数中的this是window，所以不能用this
+```js
+// 1. 默认函数形式
 Vue.directive('xxx',function(el,bindings,vnode){
       ...  
 });
-相当于bind和update
+// 2. bind和update形式
 Vue.directive('xxx',function(el,bindings,vnode){
-      //只当数据更新时指令生效
+      // 数据更新时指令生效
       update(el,bindings,vnode){
           ...
       },
-      //只当用户绑定时指令生效
+      // 用户绑定时指令生效
       bind(el,bindings,vnode){
-          ...
-      } 
+          Vue.nextTick(()=>{
+              //dom渲染出来后绑定事件
+              el.focus()
+          })
+      },
+      // dom渲染完成后执行，相当于bind加了nextTick
+      inserted(el){
+        el.focus()
+      }
 });
-
-- 自定义只取长度为三的字符串的指令且双向绑定
-
 ```
+- demo
+```html
+<!-- 自定义只取长度为三的字符串的指令且双向绑定的指令 -->
 <div id="app">
     <input type="text" v-split.3.xxx="msg">
 </div>
@@ -950,39 +817,17 @@ Vue.directive('xxx',function(el,bindings,vnode){
 </script>
 ```
 
-- inserted
-dom渲染完成后执行，相当于bind加了nextTick
-```
-Vue.directive('focus',{
-    bind(el){
-        //dom渲染出来后
-        Vue.nextTick(()=>{
-            //绑定事件
-            el.focus()
-        })
-    }
-    inserted(el){
-        el.focus()
-    }
-})
-```
-
-- 指令和过滤器函数中的this是window，所以不能用this
-
-##### 过滤器(filter)
-- 只改变数据的展示形式 并不会改变原数据，可用computed替代
+### 过滤器(filter)
+- 可用computed替代(过滤器只改变数据的展示形式 不改变原数据)
 - 分为全局和局部过滤器
-- 指令和过滤器函数中的this是window，所以不能用this
-  
-Vue.filter('xxx',function(value,len){
-    ...
-})
-
-```
+- 过滤器函数中的this是window，所以不能用this
+```html
+<!-- 字符串前两个数字变大写 -->
 <div id="app">
     {{name | capitalize(2)}}
 </div>
 <script>
+    // 全局过滤器
     Vue.filter('capitalize',function(value,len){
         return value.slice(0,len).toUpperCase()+value.slice(len);
     })
@@ -992,6 +837,7 @@ Vue.filter('xxx',function(value,len){
             flag:false,
             name:'zfjq'
         },
+        // 局部过滤器
         filter(value,len){
             ...
         }
@@ -1000,9 +846,8 @@ Vue.filter('xxx',function(value,len){
 ```
 
 ### 异步组件
-组件在异步加载完成后再显示出来，
-一般需要配合webpack的懒加载来使用
-```
+- 组件在异步加载完成后再显示出来，一般需要配合webpack的懒加载来使用
+```js
 Vue.component('my-component',function(resolve){
     setTimeout(()=>{
         resolve({
@@ -1012,34 +857,18 @@ Vue.component('my-component',function(resolve){
 })
 ```
 
-
-### 使用.vue文件开发两种方法
-
-- 安装vue-cli脚手架
-npm install @vue/cli -g
-
-- 安装service-global
-npm install -g @vue/cli-service-global
-```
-vue serve App.vue
-//http://localhost:8080/直接访问组件页面
-```
-
 ### 递归组件
-
 .vue文件组件
 - 组件大写可辨认`MenuItem`
 - 使用
   1. 定义组件
   2. 引用组件
   3. 注册组件
-    
-
 - 用于树结构，菜单等
 - 组件中使用`name:'ReSub'`给自己命名,使用`<ReSub></ReSub>`可以调用自己，实现递归组件。
 - 把共同的循环的部分抽离成组件，然后在组件中调用自己。
 
-```
+```html
 //App.vue
 <template>
     <div id="app">
@@ -1103,13 +932,13 @@ export default {
 </style>
 ```
 
-```
-//Menu.vue
+```html
+<!-- Menu.vue -->
 
 ```
 
-```
-//MenuItem.vue
+```html
+<!-- MenuItem.vue -->
 <template>
     <div>
         <li><slot></slot></li>
@@ -1126,8 +955,8 @@ export default {
 </style>
 ```
 
-```
-//SubMenu.vue
+```html
+<!-- SubMenu.vue -->
 <template>
     <div>
         <div class="title" @click="change">
@@ -1158,8 +987,8 @@ export default {
 </style>
 ```
 
-```
-//ReSubMenu.vue
+```html
+<!-- ReSubMenu.vue -->
 <template>
     <SubMenu>
         <template #title>
@@ -1192,7 +1021,6 @@ export default {
 </style>
 ```
 
-
 ## vue-cli 3.0
 
 ### 创建项目
@@ -1215,7 +1043,7 @@ yarn serve
 6. 可新建vue.config.js来重置webpack配置
 //vue.config.js基于node,node不支持import语法
 
-```
+```js
 //webpack配置
 let path=require('path');
 module.exports={
@@ -1267,8 +1095,8 @@ module.exports={
 }
 ```
 
-```
-//HelloWorld.vue
+```html
+<!-- HelloWorld.vue -->
 <template>
   <div class="hello">
     123
@@ -1298,7 +1126,7 @@ export default {
 使用语言设置
 less/
 
-```
+```html
 <style scoped lang="less">
 @import '../assets/common.less';
 .hello{
@@ -1308,7 +1136,7 @@ less/
 ```
 
 - less文件
-```
+```less
 //common.less
 @color:red;
 ```
@@ -1318,7 +1146,7 @@ npm run build，出现dist目录
 
 ### express
 vue 启动服务通过express，所以内置了express.
-```
+```js
 //server.js
 let express=require('express');
 
@@ -1333,8 +1161,6 @@ app.listen(3000)
 
 ### defer & async /preload & prefetch
 
-
-
 ### 基于vue-cli编写组件---小球滚动组件
 
 - 组件的id问题，`_uid`用于标识组件的每个实例
@@ -1344,11 +1170,10 @@ app.listen(3000)
 - 注意：子组件中的this.observer.define拦截，而this.timer不需要。直接赋值就行了。
 - h5的requestAnimationFrame、cancelAnimationFrame代替setTimeout
 
-```
-//App.vue
+```html
+<!-- App.vue -->
 <template>
   <div id="app">
-    
     <!-- 第三种   :value.sync="xxx"=:xxx + this.$emit('update:xxx')-->
     <!-- pos5是pos4得语法糖 -->
     <ScrollBall color="red" :target="300" :value.sync="pos5" ref="ball5">红球</ScrollBall>
@@ -1398,8 +1223,8 @@ export default {
 </style>
 ```
 
-```
-//ScrollBall.vue
+```html
+<!-- ScrollBall.vue -->
 <template>
     <div class="ball" :style="style" :id="ballId">
         <slot></slot>
@@ -1475,15 +1300,16 @@ export default {
 yarn add vue-router
 
 ### 路由的两种方式
-> #
+- `#`哈希值
+  
 url加#xxx
-> history(h5api)
+- history(h5api)
+
 history.pushState({},null,'/a')
+
 问题：刷新时浏览器会找不到路径
 
-### 使用
-
-#### 路由配置文件
+### 路由配置文件
 - 第三方插件 引入后要使用Vue.use() => install
 - install注册了两个全局组件：
 `router-link` 链接
@@ -1582,10 +1408,9 @@ config.resolve.alias.set('_',path.resolve(__dirname,'src/components'))
 
 config.resolve.alias.set('_v',path.resolve(__dirname,'src/views'))
 ```
-- 
 
 
-#### 在Vue实例中引用路由
+### 在Vue实例中引用路由
 ```js
 //main.js
 import Vue from 'vue'
@@ -1600,10 +1425,10 @@ new Vue({
 
 ```
 
-#### 在Vue实例模板中显示路由视图
-- //一个路由一个组件
-```js
-//App.vue
+### 在Vue实例模板中显示路由视图
+- 一个路由一个组件
+```html
+<!-- App.vue -->
 <template>
   <div id="app">
     <router-view></router-view>
@@ -1621,9 +1446,9 @@ export default {
 </style>
 
 ```
-- //一个路由多个组件
+- 一个路由多个组件
 
-```js
+```html
 <div class="container">
   <router-view></router-view>
   <router-view name="name"></router-view>
@@ -1633,30 +1458,29 @@ export default {
 
 
 
-#### 点击路由跳转(声明式路由跳转)
+### 点击路由跳转(声明式路由跳转)
 router-link
 - to属性
-to='home'
-to='/home'
-:to='{path:'/home'}'
-:to='{name:'home'}'
-to='/user/detail?id=1'
+  - to='home'
+  - to='/home'
+  - :to='{path:'/home'}'
+  - :to='{name:'home'}'
+  - to='/user/detail?id=1'
 - tag属性
-链接无下划线
-tag='span'
-- 
+  - 链接无下划线
+  - tag='span'
 
-```js
+```html
 <router-link to='/home'>首页</router-link>
 <router-link to='login'>登录</router-link>
 <router-link :to="{name:'profile'}">个人中心</router-link>
 <router-link :to="{path:'/user'}">用户</router-link>
 
-//传参1(问号传参)
+<!-- 传参1(问号传参) -->
 <router-link to="/user/detail?id=1">用户详情</router-link>
 {{this.$route.query.id}}
 
-//传参2(路径传参)
+<!-- 传参2(路径传参) -->
 {
   path:'detail/:id',
   name:'userDetail,
@@ -1666,22 +1490,21 @@ tag='span'
 {{this.$route.params.id}}
 
 ```
-> bootstrap
+- bootstrap
 yarn add bootstrap3
 ```js
 //main.js中全局引用
 import 'bootstrap/dist/css/bootstrap.css'
 ```
-#### 编程式路由跳转
-this.$router.push(path)
+### 编程式路由跳转
 ```js
 this.$router.push('/user/list')
 ```
 
-#### 路由钩子函数
+### 路由钩子函数
 例如：离开一个组件前即一个组件销毁前提示是否离开。
 - 参数next：继续函数`next()` `next(path)`,可选择去的路由。
-1. 组件中的路由钩子
+#### 组件中的路由钩子
 - beforeRouteLeave
 - beforeRouterEnter
 - beforeRouterUpdate
@@ -1724,7 +1547,7 @@ export default {
 
 ```
 
-2. 路由配置中的路由钩子(在组件之前触发)
+#### 路由配置中的路由钩子(在组件之前触发)
 - beforeEnter
 ```js
 //routes.js
@@ -1738,7 +1561,7 @@ export default {
 },
 ```
 
-1. 全局路由钩子(在组件，路由配置之前，对所有路由有效)
+#### 全局路由钩子(在组件，路由配置之前，对所有路由有效)
 - router.beforeEach
 - router.beforeResolve
 ```js
@@ -1765,7 +1588,7 @@ new Vue({
 }).$mount('#app')
 ```
 
-##### 路由钩子总结
+#### 路由钩子总结
 当组件切换时：
 1. 离开钩子(组件beforeRouterLeave)
 2. 进入新页面之前(全局beforeEach-->路由配置beforeEnter-->组件beforeRouterEnter)
@@ -1774,7 +1597,7 @@ new Vue({
 5. 属性变化，但没有重新加载组件(组件beforeRouteUpdate)
 6. 组件渲染完成(组件beforeRouterEnter回调)
 
-##### 【官网】完整的导航解析流程（背）
+#### 【官网】完整的导航解析流程（背）
 1. 导航被触发。
 2. 在失活的组件里调用离开守卫。
 3. 调用全局的 beforeEach 守卫。
@@ -1789,8 +1612,8 @@ new Vue({
 12. 用创建好的实例调用 beforeRouteEnter 守卫中传给 next 的回调函数。
 
 
-##### 拦截登录
-设置路由备注，在全局beforeEach中拦截
+#### 拦截登录
+- 设置路由备注，在全局beforeEach中拦截
 ```js
 //routes.js
 {
@@ -1801,7 +1624,6 @@ new Vue({
     meta:{needLogin:true}
 },
 ```
-
 ```js
 //main.js
 router.beforeEach((to,from,next)=>{
@@ -1824,38 +1646,35 @@ router.beforeEach((to,from,next)=>{
   if(to.name==='login'&&isLogin){
     next('/')
   }
-
 })
 ```
 
-##### 面试考点
+#### 路由面试考点
 - 钩子函数
 - $router方法 $route属性
 - meta备注
 - redirect重定向
 
 
-### vuex
+## vuex
 组件之间的传值多且复杂，所以用它把数据统一存放起来
-
-#### 面试考点
+- 面试考点
 ![vuex图](https://vuex.vuejs.org/vuex.png)
-
 - vue是单向数据流，组件变动不能驱动数据，而是数据变动驱动组件
 - 组件驱动数据
-  同步情况，调用mutation改数据
-  异步情况，派发action，调用api，再在action里调用mutation改数据。好处：调用api逻辑不分散地放在组件里，而是独立出来，方便复用。
-
+  - 同步情况，调用mutation改数据
+  - 异步情况，派发action，调用api，再在action里调用mutation改数据。
+    - 好处：调用api逻辑不分散地放在组件里，而是独立出来，方便复用。
   | vue组件 | vuex |
   | ------- | ------ |
   | data | state |
   | computed | getters |
-  |  |  |
+  | methods | mutations/actions |
 
-#### 安装
+### 安装
 yarn add vuex
 
-#### 新建
+### 新建store文件夹
 - 新建src/store/state.js
 
 - 新建src/store/getters.js
@@ -1866,7 +1685,7 @@ yarn add vuex
 
 - 新建src/store/index.js
 
-#### store配置
+### store配置
 ```js
 //index.js
 import Vue from 'vue';
@@ -1893,19 +1712,16 @@ export default new vuex.Store({
     getters
 })
 ```
-
-- 公共数据
 ```js
-//state.js
+//state.js(公共数据)
 export default {
     lesson:'珠峰培训',
 }
 ```
 
-- 子模块数据
-新建 /store/modules/user.js
+- 新建 `/store/modules/user.js`
 ```js
-//user.js
+//user.js(子模块数据)
 export default {
     //命名空间，true
     namespaced:true,
@@ -1930,11 +1746,11 @@ export default {
       }
     }
 }
-
-#### 在实例中引用store
-
 ```
-//main.js
+
+### 在实例中引用store
+```js
+// main.js
 import Vue from 'vue'
 import App from './App.vue'
 
@@ -1943,26 +1759,33 @@ new Vue({
   render: h => h(App),
   store
 }).$mount('#app')
-```js
+```
 
-#### 使用数据
-
-如果页面中注入了store 每个实例上都会存在一个属性 `$store`,
-##### 直接使用$store
-```js
-//App.vue
+### 数据获取和修改
+- 如果页面中注入了store 每个实例上都会存在一个属性 `$store`
+- 注意事项：
+  - 如果子模块没有开启namespace,只有state需要通过模块.属性获取。如果开启了namespace，所有的都需要通过模块.属性获取
+  - 异步需要从action绕一下
+    - 好处：
+    action里可以多次调用接口，action里可以调用其他action
+  - 使用模块最好使用辅助函数
+- 总结：
+  - 同步修改状态 commit mapMutation
+  - 异步修改状态 dispatch mapAction
+  - 不要赋值修改状态，严格模式下不合法
+#### 直接使用$store
+```html
+<!-- App.vue -->
 <template>
   <div id="app">
     <!-- 获取数据公共 -->
     {{$store.state.lesson}}
     {{$store.getters.getNewName}}
-
     <!-- 获取数据子模块 -->
     {{$store.state.user.userName}}
     {{$store.getters.user.getNewName}}
   </div>
 </template>
-
 <script>
 export default {
   name: 'app',
@@ -1970,22 +1793,18 @@ export default {
     change(){
       // 同步修改数据子模块
       this.$store.commit('user/change','jw')
-
       // 异步修改数据子模块
       this.$store.dispatch('user/change_user','jw')
     }
   }
 }
 </script>
-
 <style>
 </style>
 ```
-
-##### 辅助函数
-
-```js
-//App.vue
+#### 辅助函数
+```html
+<!-- App.vue -->
 <template>
   <div id='app'>
     {{lesson}}
@@ -1994,7 +1813,6 @@ export default {
     {{getNewName}}
   </div>
 </template>
-
 <script>
 import {mapState,mapGetters,mapMutations} from 'vuex';
 export default {
@@ -2009,7 +1827,6 @@ export default {
 
     //起别名:对象形式
     ...mapState('user',{u:(state)=>state.userName})
-    
   },
   methods:{
     // 同步修改数据子模块
@@ -2024,7 +1841,6 @@ export default {
 }
 </script>
 ```
-
 - 模块引用可使用`createNamespaceHelpers`
 ```js
 import {createNamespaceHelpers} from 'vuex';
@@ -2038,24 +1854,13 @@ export default {
 </script>
 ```
 
-- 如果子模块没有开启namespace,只有state需要通过模块.属性获取。如果开启了namespace，所有的都需要通过模块.属性获取
 
-- 异步需要从action绕一下，好处：
-action里可以多次调用接口，action里可以调用其他action
+## jsonwebtoken(jwt)
 
-- 使用模块最好使用辅助函数
-
-- 同步修改状态 commit mapMutation
-- 异步修改状态 dispatch mapAction
-
-- 不要赋值修改状态，严格模式下不合法
-
-### jsonwebtoken(jwt)
-
-### iview,axios
+## iview,axios
 
 
-### express,jsonwebtoken(jwt),bodyparser
+## express,jsonwebtoken(jwt),bodyparser
 
 
 
@@ -2067,16 +1872,16 @@ action里可以多次调用接口，action里可以调用其他action
 
 
 
-### axios 获取数据
+## axios 获取数据
 
-### jwt 实现 权限 vuex+jwt 鉴权
+## jwt 实现 权限 vuex+jwt 鉴权
 
-### 报错
+## 报错
 - No ESLint configuration found
 npm install eslint --save-dev
 ./node_modules/.bin/eslint --init 初始化配置文件.eslintrc.js
 
-### google工具
+## google调试工具
 - vuetools
   ```html
   <!-- 根实例 -->

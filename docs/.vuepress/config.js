@@ -27,13 +27,13 @@ module.exports = {
             collapsable: false,
             children: [
               '/Frontend/js/jsbasic/',
+              '/Frontend/js/jsbasic/zepto',
+              '/Frontend/js/jsbasic/shenrubibao',
               '/Frontend/js/jswebapi/',
               '/Frontend/js/devenv/',
               '/Frontend/js/runenv/',
               '/Frontend/js/es6/',
               '/Frontend/js/designpatterns/',
-              '/Frontend/js/jsbasic/zepto/',
-              '/Frontend/js/jsbasic/shenrubibao/',
             ]
         },
         {
@@ -99,12 +99,12 @@ module.exports = {
             collapsable: false,
         }
       ],
-      '/Todo/':[
-        {
-            title: '待整理',
-            collapsable: false,
-        }
-      ],
+      // '/Todo/':[
+      //   {
+      //       title: '待整理',
+      //       collapsable: false,
+      //   }
+      // ],
       '/Thought/':[
         {
             title: '随想',

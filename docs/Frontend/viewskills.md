@@ -280,13 +280,64 @@ webpack:必准备
 
 
 ## CSS盒模型
-怎么看CSS盒模型？
-1. 基本概念：标准模型+IE模型，margin,padding,border,content
-2. 标准模型和IE模型的区别
-3. CSS如何设置这两种模型
-4. JS如何设置获取盒模型对应的宽和高
-5. 实例题（根据盒模型解释边距重叠）
-6. BFC(边距重叠解决方案)
+- 怎么看CSS盒模型？
+    - 基本概念：标准模型+IE模型，margin,padding,border,content
+    - 标准模型和IE模型的区别
+        - 标准模型宽度是content
+        - IE模型宽度是content,padding,border
+    - CSS如何设置这两种模型
+        - box-sizing:content-box(默认)/border-box;
+    - JS如何设置获取盒模型对应的宽和高
+        - dom.style.width/height(只能取行内样式，不能取内联样式和外联样式)
+        - dom.currentStyle.width/height(得到的是渲染后的数据，仅IE)
+        - window.getComputedStyle(dom).width/height(通用性好)
+        - dom.getBoundingClientRect().width/height(内部通过位置来实现)
+    - 实例题（根据盒模型解释边距重叠）
+        - 两个div,里面的div高度100px,上边距(margin)为10px,求外面div的实际高度。--100，如果加了BFC,是110
+    - BFC(边距重叠解决方案)
+        - 三种情况（重叠原则：取最大值）
+            - 父子margin重叠
+            - 兄弟margin重叠
+            - 空元素margin重叠(上下margin取最大值作边距和左右margin取最大值作边距)
+        - BFC的基本概念:边距重叠解决方案
+        - BFC的原理(渲染规则)
+            - 在BFC这个元素垂直方向的边距会发生重叠
+            - BFC的区域不会和浮动元素的box重叠
+            - BFC在页面上是一个独立的容器，外面的元素不影响里面的元素，里面的也不影响外面
+            - 计算BFC高度时，浮动元素也会参与计算
+        - 如何创建BFC(以下任一条件)
+            - overflow不为visible(设置hidden,auto)
+            - float值不为none(默认为none，只要设置了float，当前元素就是BFC)
+            - position不是static或relative(设置absolute,fixed)
+            - display是table/tablecell跟table相关的都可以
+        - BFC的使用场景
+            - 解决边距重叠(父子重叠在父元素加BFC,兄弟重叠给自己或者兄弟加个父元素加BFC,空元素给自己加个父元素加加BFC)
+            - demo1:(BFC的区域不会和浮动元素的box重叠)
+```html
+<section id='layout'>
+    <style media="screen">
+        #layout{
+            background:red;
+        }
+        #layout .left{
+            float:left;
+            width:100px;
+            height:100px;
+            background:pink;
+        }
+        #layout .right{
+            height:110px;
+            background:#ccc;
+            /* 给右边元素加BFC，右边就不会往左边流10px了 */
+            overflow:auto;
+        }
+    </style>
+    <div class="left"></div>
+    <div class="right"></div>
+</section>
+```
+                - demo2:父元素设置BFC可以清除浮动(计算BFC高度时，浮动元素也会参与计算)
+
 
 
 ## DOM事件

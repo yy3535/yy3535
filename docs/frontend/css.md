@@ -91,6 +91,40 @@ float对自身的影响：
 - 隐藏，折行，自适应空间
 - rem/viewport/media query
 
+- 媒体查询
+```css
+.container{padding:0 15px; margin:0 auto;}
+.container:before{
+    content: '';
+    display: table;/*防止第一个子元素margin-top越界*/
+    }
+.container:after{
+    content:"";
+    display:table;/*防止最后個子元素margin-bottom越界*/
+    clear:both;/*清楚子元素浮动的影响*/
+}
+/*超大PC屏幕下的专用样式*/
+@media screen and (min-width:1200px) {
+    .container{ width:1170px;}
+    .my-img{width:25%}
+}
+/*中等PC屏幕下的专用样式*/
+@media screen and (min-width:992px) and (max-width: 1199px) {
+    .container{width:970px;}
+    .my-img{width:25%}
+}
+/*PAD屏幕下的专用样式*/
+@media screen and (min-width: 768px) and (max-width:991px ){
+    .container{width:750px;}
+    .my-img{width:50%}
+}
+/*PHONE屏幕下的专用样式*/
+@media screen and (min-width:767px) {
+    .container{ width:100%;}
+    .my-img{  width:100%;}
+}
+```
+
 #### 实现两栏（三栏）布局的方法
 ```html
 <section class="layout float">

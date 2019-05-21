@@ -1476,8 +1476,9 @@ router-link
 <router-link :to="{name:'profile'}">个人中心</router-link>
 <router-link :to="{path:'/user'}">用户</router-link>
 
-<!-- 传参1(问号传参) -->
+<!-- 传参1(问号传参/query传参) -->
 <router-link to="/user/detail?id=1">用户详情</router-link>
+<router-link :to="{ path: '/user/detail', query: { id: 1 }}">用户详情</router-link>
 {{this.$route.query.id}}
 
 <!-- 传参2(路径传参) -->

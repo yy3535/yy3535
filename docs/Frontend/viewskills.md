@@ -53,20 +53,20 @@ www.elong.com
 
 ### 技术栈
 
-jQuery:
-看源码（核心架构是什么，事件委托怎么做，插件机制是什么，兼容性暂时可以不看）：找一篇jquery源码分析文章看
-Vue/React/Angular:
-时间紧准备一个，问起来就说那个没用过，这个用的熟。对于其中一个的原理理解深，Vue源码深入理解，找一篇分析的文章看。提前准备好遇到过怎么问题，怎么解决的，思路是什么（二面三面经常问，考察思维，如何解决问题等）。
-Node:
-没时间不准备没事，直接说不了解，但要准备就准备好了，不要画蛇添足
+- jQuery:
+    - 看源码（核心架构是什么，事件委托怎么做，插件机制是什么，兼容性暂时可以不看）：找一篇jquery源码分析文章看
+- Vue/React/Angular:
+    - 时间紧准备一个，问起来就说那个没用过，这个用的熟。对于其中一个的原理理解深，Vue源码深入理解，找一篇分析的文章看。提前准备好遇到过怎么问题，怎么解决的，思路是什么（二面三面经常问，考察思维，如何解决问题等）。
+- Node:
+    - 没时间不准备没事，直接说不了解，但要准备就准备好了，不要画蛇添足
 
 ### 前端工程（构建工具）
-sass/less:
-gulp/grunt:都不了解，就准备gulp
-npm:
-常见命令，通常怎么用的，npm scripts怎么用的（博客随便搜一个）
-browserify
-webpack:必准备
+- sass/less:
+- gulp/grunt:都不了解，就准备gulp
+- npm:
+    - 常见命令，通常怎么用的，npm scripts怎么用的（博客随便搜一个）
+- browserify
+- webpack:必准备
 
 ## 自我陈述
 
@@ -85,10 +85,10 @@ webpack:必准备
 - 问基础不要急躁。
 - 遇到难度大的题目要尽量去思考，不要轻易放弃。
 - 遇到困难的面试可以找面试官要资料，让自己有所收获。
-  
+
 ### 参考简历
-![模板简历1]('../.vuepress/public/img/模板简历1.png')
-![模板简历1]('../.vuepress/public/img/模板简历2.png')
+![模板简历1](/img/模板简历1.png)
+![模板简历2](/img/模板简历2.png)
 
 ## 页面布局
 ### 实现两栏（三栏）布局的方法
@@ -341,6 +341,51 @@ webpack:必准备
 
 
 ## DOM事件
+- 基本概念：DOM事件(DOM标准)的级别
+    - DOM0 element.onclick=function(){}
+    - DOM2 element.addEventListener('click',function(){},false)(DOM1标准设立的时候没有事件相关的东西，所以直接是2)
+    - DOM3 element.addEventListener('keyup',function(){},false)(事件类型较DOM2增加了很多)
+- DOM事件模型
+    - 冒泡(从下往上)
+    - 捕获(从上往下)
+- DOM事件流
+    - 比如点击了左键，左键是怎么传到页面上，就叫事件流
+    - 一个事件流分三个阶段：捕获阶段->目标阶段->冒泡阶段。事件通过捕获到达目标阶段，再从目标阶段冒泡上传到window对象
+- 描述DOM事件捕获的具体流程
+    - window->document->html->body->...->目标元素
+    - 冒泡流程：目标元素->...->boyd->html->document->window
+    - 如何拿html对象：document.documentElement
+    - 如何拿body：document.body
+- Event对象的常见应用
+    - 事件类型
+        - CAPTURING-PHASE  当前事件阶段为捕获阶段
+        - AT-TARGET   当前事件是目标阶段,在评估目标事件
+        - BUBBLING-PHASE   当前的事件为冒泡阶段
+    - 目标
+        - target 当前目标元素,事件委托中指子元素
+        - currentTarget 当前绑定的元素，事件委托中指父级元素
+
+    - 事件行为
+        - preventDefault() 阻止默认行为
+        - stopPropagation() 阻止冒泡
+        - stopImmediatePropagation() 优先级(绑定了ab两个事件，a事件中写了此函数，那么b就不会执行)
+
+    - 键盘事件
+        - altKey    返回当事件被触发时，"ALT" 是否被按下。
+        - ctrlKey	返回当事件被触发时，"CTRL" 键是否被按下。
+        - shiftKey	返回当事件被触发时，"SHIFT" 键是否被按下。
+        - charCode  返回onkeypress事件触发键值的字母代码。
+        - key	    在按下按键时返回按键的标识符。
+        - button	返回当事件被触发时，哪个鼠标按钮被点击。
+        - keyCode	返回onkeypress事件触发的键的值的字符代码，或者 onkeydown 或 onkeyup 事件的键的代码。
+    - 鼠标位置
+        - clientX	返回当事件被触发时，鼠标指针的水平坐标。
+        - clientY	返回当事件被触发时，鼠标指针的垂直坐标。
+        - screenX	返回当某个事件被触发时，鼠标指针的水平坐标。
+        - screenY	返回当某个事件被触发时，鼠标指针的垂直坐标。
+    
+- 自定义事件
+
 
 ## HTTP协议
 

@@ -58,6 +58,13 @@ module.exports = {
           ]
         },
         {
+          title: '前端跳槽面试必备技巧',
+          collapsable: false,
+          children: [
+             "viewskills",
+          ]
+        },
+        {
           title: '小工具',
           collapsable: false,
           children: [

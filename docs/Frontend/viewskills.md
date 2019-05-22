@@ -342,49 +342,127 @@ www.elong.com
 
 ## DOM事件
 - 基本概念：DOM事件(DOM标准)的级别
-    - DOM0 element.onclick=function(){}
-    - DOM2 element.addEventListener('click',function(){},false)(DOM1标准设立的时候没有事件相关的东西，所以直接是2)
-    - DOM3 element.addEventListener('keyup',function(){},false)(事件类型较DOM2增加了很多)
+    - DOM0 
+      - element.onclick=function(){}
+    - DOM2 
+      - element.addEventListener('click',function(){},false)(DOM1标准设立的时候没有事件相关的东西，所以直接是2)
+      - 默认false,冒泡阶段触发，true,捕获阶段触发。
+    - DOM3 
+      - element.addEventListener('keyup',function(){},false)(事件类型较DOM2增加了很多)
 - DOM事件模型
     - 冒泡(从下往上)
     - 捕获(从上往下)
 - DOM事件流
     - 比如点击了左键，左键是怎么传到页面上，就叫事件流
     - 一个事件流分三个阶段：捕获阶段->目标阶段->冒泡阶段。事件通过捕获到达目标阶段，再从目标阶段冒泡上传到window对象
-- 描述DOM事件捕获的具体流程
-    - window->document->html->body->...->目标元素
+- 具体流程
+    - 事件捕获：window->document->html->body->...->目标元素
     - 冒泡流程：目标元素->...->boyd->html->document->window
-    - 如何拿html对象：document.documentElement
-    - 如何拿body：document.body
+      - 如何拿html对象：document.documentElement
+      - 如何拿body：document.body
 - Event对象的常见应用
     - 事件类型
         - CAPTURING-PHASE  当前事件阶段为捕获阶段
         - AT-TARGET   当前事件是目标阶段,在评估目标事件
         - BUBBLING-PHASE   当前的事件为冒泡阶段
     - 目标
-        - target 当前目标元素,事件委托中指子元素
-        - currentTarget 当前绑定的元素，事件委托中指父级元素
+        - 【重要】target 当前目标元素,事件委托中指子元素
+        - 【重要】currentTarget 当前绑定的元素，事件委托中指父级元素
 
     - 事件行为
-        - preventDefault() 阻止默认行为
-        - stopPropagation() 阻止冒泡
-        - stopImmediatePropagation() 优先级(绑定了ab两个事件，a事件中写了此函数，那么b就不会执行)
+        - 【重要】preventDefault() 阻止默认行为(比如阻止链接默认跳转行为)
+        - 【重要】stopPropagation() 阻止冒泡
+        - 【重要】stopImmediatePropagation() 优先级(绑定了ab两个事件，a事件中写了此函数，那么b就不会执行)
 
     - 键盘事件
-        - altKey    返回当事件被触发时，"ALT" 是否被按下。
-        - ctrlKey	返回当事件被触发时，"CTRL" 键是否被按下。
-        - shiftKey	返回当事件被触发时，"SHIFT" 键是否被按下。
-        - charCode  返回onkeypress事件触发键值的字母代码。
-        - key	    在按下按键时返回按键的标识符。
-        - button	返回当事件被触发时，哪个鼠标按钮被点击。
-        - keyCode	返回onkeypress事件触发的键的值的字符代码，或者 onkeydown 或 onkeyup 事件的键的代码。
+        - altKey    
+          - 返回当事件被触发时，"ALT" 是否被按下。
+        - ctrlKey	
+          - 返回当事件被触发时，"CTRL" 键是否被按下。
+        - shiftKey	
+          - 返回当事件被触发时，"SHIFT" 键是否被按下。
+        - charCode  
+          - 返回onkeypress事件触发键值的字母代码。
+        - key	    
+          - 在按下按键时返回按键的标识符。
+        - button	
+          - 返回当事件被触发时，哪个鼠标按钮被点击。
+        - keyCode	
+          - 返回onkeypress事件触发的键的值的字符代码，或者 onkeydown 或 onkeyup 事件的键的代码。
     - 鼠标位置
         - clientX	返回当事件被触发时，鼠标指针的水平坐标。
         - clientY	返回当事件被触发时，鼠标指针的垂直坐标。
         - screenX	返回当某个事件被触发时，鼠标指针的水平坐标。
         - screenY	返回当某个事件被触发时，鼠标指针的垂直坐标。
     
-- 自定义事件
+- 【重要】自定义事件
+  - Event
+```js
+// 声明自定义事件
+var eve=new Event('custome');
+ev.addEventListener('custome',function(){
+    console.log('custome');
+})
+// 触发自定义事件
+ev.dispatchEvent(eve);
+```
+  - CustomEvent
+    - 多一个obj的参数，new CustomEvent('custome',object)
+
+## 类型转换
+### 数据类型
+- 原始类型
+  - Boolean
+  - Null
+  - Undefined
+  - Number
+  - String
+  - Symbol(ES6新增)
+- 对象
+  - Object
+
+### 显示类型转换
+- Number函数
+  - **数值**：转换后还是原来的值
+  - **字符串**：如果可以被解析为数值，则转换为相应的数值，否则得到NaN.空字符串转为0
+  - **布尔值**：true转成1，false转成0
+  - **undefined**：转成NaN
+  - **null**：转成0
+  - **对象**：先调用自身的valueOf，不行再调用自身的toString，再不行就报错
+- String函数
+  - **数值**：转为相应的字符串
+  - **字符串**：转换后还是原来的值
+  - **布尔值**：true转成'true'，false转成'false'
+  - **undefined**：转成'undefined'
+  - **null**：转成'null'
+  - **对象**：先调用自身的toString，不行再调用自身的valueOf，再不行就报错
+- Boolean函数
+  - undefined/null/-0/+0/NaN/''(空字符串)==>false
+  - 其他一律为true
+
+### 隐式类型转换
+  - 四则运算
+    - **+**：只要其中一个是String类型，表达式的值便是一个String。
+    - **其余**：只要其中一个是Number类型，表达式的值便是一个Number。
+    - **非法字符**：对于非法字符的情况通常会返回NaN
+```js
+'1' * 'a'     // => NaN
+```
+  - 判断语句
+    - 转换规则同Boolean的构造函数。
+  - Native调用
+    - 比如console.log、alert调用自动转为字符串类型
+#### 常见题目
+```js
+[]+[]
+[]+{}
+{}+[]
+{}+{}
+true+true
+1+{a:1}
+```
+
+
 
 
 ## HTTP协议

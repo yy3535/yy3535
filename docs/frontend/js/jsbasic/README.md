@@ -189,11 +189,7 @@ JOSN.parse('{"a":10,"b":20}')
 
 ## 02-原型和原型链知识点
 
-JS 是基于原型的语言，原型理解起来非常简单。任何长存不会被遗弃和提到的东西，都是最简单的东西。
-
 ### 构造函数
-
-所有的 JS 入门教程都会有类似这样的例子
 
 ```javascript
 function Foo(name, age) {
@@ -219,7 +215,7 @@ var f = new Foo('zhangsan', 20)
 
 大家看到以上几点，明白我要表达的意思了吗？
 
-**如何判断一个函数是否是一个变量的构造函数呢 ———— 使用`instanceof`**，原理接下来就会讲到。
+**如何判断一个函数是否是一个变量的构造函数呢 ———— 使用`instanceof`**
 
 ### 几个要点
 
@@ -295,7 +291,8 @@ for (item in f) {
 
 ### instanceof
 
-开始介绍的`instanceof`这里再讲一下原理。如果要计算`f instanceof Foo`是不是正确，就要判断`f`的原型一层一层往上，能否对应到`Foo.prototype`。同理，如果要计算`f instanceof Object`是不是正确，就要判断`f`的原型一层一层往上，能否对应到`Object.prototype`
+- 原理
+  - 如果要计算`f instanceof Foo`是不是正确，就要判断`f`的原型一层一层往上，能否对应到`Foo.prototype`。同理，如果要计算`f instanceof Object`是不是正确，就要判断`f`的原型一层一层往上，能否对应到`Object.prototype`
 
 ### 扩展参考
 
@@ -305,7 +302,7 @@ for (item in f) {
 
 ### 如何**准确**判断一个变量是数组类型
 
-只有`instanceof`才能判断一个对象是否是真正的数组，`instanceof`的具体原理后面会讲到。
+只有`instanceof`才能判断一个对象是否是真正的数组
 
 ```javascript
 var arr = []
@@ -430,15 +427,26 @@ function Foo(name) {
 }
 var foo = new Foo('beijing')
 ```
-
 - 创建一个新对象
 - `this`指向这个新对象
 - 执行代码，即对`this`赋值
 - 返回`this`
 
+- 创建一个新对象。它继承自foo.prototype
+- 执行foo构造函数里的代码。执行时相应的参数被传入，同时this会被指定为这个新实例。new foo等同于new foo()，只能用在不传递任何参数的情况
+- 如果构造函数返回了一个对象，那么返回这个对象。否则，返回this
+```js
+var new2=function(func){
+    var o=Object.create(func.prototype);
+    var k=func.call(o);
+    if(typeof k==='object'){
+        return k
+    }else{
+        return o
+    }
+}
+```
 ### zepto（或其他框架） 源码中如何使用原型链
-
-参考我在慕课网的视频教程[zepto设计和源码](http://www.imooc.com/learn/745)，免费的。
 
 ## 03-作用域和闭包知识点
 

@@ -299,19 +299,19 @@
 
    es5中可以当做函数来调用，es6中类只能new
 
-   ```
+   ```js
    function Animal(type){
      this.type=type;
    }
    Animal.prototype.eat=function(){
      console.log('eat')
    }
-   **继承的三种方法：**
-   //1.继承实例上的属性
+   // 继承的三种方法
+   // 1.继承实例上的属性
    function Cat(type){
      Animal.call(this,type)
    }
-   //2.获取父类的公共属性
+   // 2.获取父类的公共属性
    - node刚出来的时候
    es5:Cat.prototype.__proto__=Animal.prototype;
    - node6.0的时候
@@ -322,9 +322,9 @@
    let cat=new Cat('哺乳类')
    console.log(cat.eat)
    
-   //3.继承父类实例上的所有属性：因为初始化子类不能给父类传参，所以没人用，一般用1+2
-   // Cat.prototype=new Animal();
-   // let cat=new Cat('哺乳类');
+   // 3.继承父类实例上的所有属性：因为初始化子类不能给父类传参，所以没人用，一般用1+2
+   Cat.prototype=new Animal();
+   let cat=new Cat('哺乳类');
    
    ```
 

@@ -251,3 +251,87 @@ $codeBgColor = #282c34
 
 打包后找到 `docs/.vuepress/dist` 的文件，拷贝到github仓库中，访问http://yy3535.github.io。
 
+
+## 静态资源
+- 相对路径
+- 基础路径
+会在基础路径后寻找`.vuepress/public`路径下的文件
+```vue
+<img :src="$withBase('/foo.png')" alt="foo">
+```
+
+## Markdown 拓展
+- 内部链接
+```md
+[Home](/) <!-- 跳转到根部的 README.md -->
+[foo](/foo/) <!-- 跳转到 foo 文件夹的 index.html -->
+[foo heading anchor](/foo/#heading) <!-- 跳转到 foo/index.html 的特定 anchor 位置 -->
+[foo - one](/foo/one.html) <!-- 具体文件可以使用 .html 结尾 -->
+[foo - two](/foo/two.md) <!-- 也可以用 .md -->
+```
+注意：
+
+1. 确保链接以 .html 或 .md 结尾；
+
+2. 确保路径大小写正确，因为路径的匹配是大小写敏感的。
+
+- GitHub风格的表格
+```md
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+```
+
+- Emoji
+```md
+:tada: :100:
+```
+[所有表情](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json)
+- 目录
+```md
+[[toc]]
+```
+可以通过 markdown.toc 选项来配置
+
+- 自定义容器
+```md
+::: tip
+This is a tip
+:::
+
+::: warning
+This is a warning
+:::
+
+::: danger
+This is a dangerous warning
+:::
+
+::: danger STOP
+Danger zone, do not proceed
+:::
+```
+
+- 代码块中的行高亮
+```md
+``` js{4}
+export default {
+data () {
+    return {
+    msg: 'Highlighted!'
+    }
+}
+}
+```/
+```
+
+- 行号
+```js
+module.exports = {
+  markdown: {
+    lineNumbers: true
+  }
+}  
+```

@@ -488,34 +488,231 @@ true+true
     - 无连接【重要】（连接一次就会断掉，不会保持连接）
     - 无状态【重要】（客户端和服务端是两种身份，单http协议上是不能区分两次连接的身份的）
 - HTTP报文的组成部分
-    - 请求报文
-        - 请求行
-        - 请求头
-        - 空行
-        - 请求体
-    - 响应报文
-        - 状态行
-        - 响应头
-        - 空行
-        - 响应体
+  - 请求报文
+      - 请求行
+        - http方法
+        - 页面地址
+        - http协议以及版本
+      - 请求头
+        - key,value值告诉服务端我要哪些内容，哪些类型
+      - 空行
+        - 请求头和请求体的分割
+      - 请求体
+        - 数据部分
+```md
+<!-- 请求行 -->
+POST /search HTTP/1.1  
+<!-- 请求头 -->
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-excel, application/vnd.ms-powerpoint, 
+application/msword, application/x-silverlight, application/x-shockwave-flash, */*  
+Referer: <a href="http://www.google.cn/">http://www.google.cn/</a>  
+Accept-Language: zh-cn  
+Accept-Encoding: gzip, deflate  
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; TheWorld)  
+Host: <a href="http://www.google.cn">www.google.cn</a>  
+Connection: Keep-Alive  
+Cookie: PREF=ID=80a06da87be9ae3c:U=f7167333e2c3b714:NW=1:TM=1261551909:LM=1261551917:S=ybYcq2wpfefs4V9g; 
+NID=31=ojj8d-IygaEtSxLgaJmqSjVhCspkviJrB6omjamNrSm8lZhKy_yMfO2M4QMRKcH1g0iQv9u-2hfBW7bUFwVh7pGaRUb0RnHcJU37y-
+FxlRugatx63JLv7CWMD6UB_O_r  
+
+hl=zh-CN&source=hp&q=domety
+```
+  - 响应报文
+      - 状态行
+      - 响应头
+      - 空行
+      - 响应体
+```md
+<!-- 状态行 -->
+HTTP/1.1 200 OK
+<!-- 响应头 -->
+Date: Sat, 31 Dec 2005 23:59:59 GMT
+Content-Type: text/html;charset=ISO-8859-1
+Content-Length: 122
+
+＜html＞
+＜head＞
+＜title＞Wrox Homepage＜/title＞
+＜/head＞
+＜body＞
+＜!-- body goes here --＞
+＜/body＞
+＜/html＞
+```
 - HTTP方法
-
-- POST和GET的区别
-
+  - GET(获取资源)
+  - POST(传输资源)
+  - PUT(更新资源)
+  - DELETE(删除资源)
+  - HEAD(获得报文首部)
+- POST和GET的区别（记住三到四个）
+  - 【记】GET在浏览器回退时是无害的，而POST会再次提交请求
+  - GET产生的URL可以被收藏，而POST不可以(可不记)
+  - 【记】GET请求会被浏览器主动缓存，而POST不可以
+  - GET请求只能进行url编码，而POST支持多种编码方式(可记可不记)
+  - 【记】GET请求参数会被完整保留在浏览器历史纪录里，而POST中的参数不会被保留
+  - 【记】GET请求在URL中传送的参数是有长度限制的，而POST没有限制
+    - 【记】不同浏览器不一样，如果使用get请求，拼接的url不能太长，否则会被浏览器截断，http协议对长度有限制，所以太长发不出去，会截断
+  - 【重要】对参数的数据类型，GET只接受ASCII字符，而POST没有限制
+  - GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息(了解)
+  - 【记】GET参数通过URL传递，POST放在Request body中（了解）
 - HTTP状态码
-
+  - 记忆
+    - 1xx：指示信息-表示请求已接受，继续处理
+    - 2xx：成功-表示请求已被成功接收
+    - 3xx：重定向-要完成请求必须进行更进一步的操作
+    - 4xx：客户端错误-请求有语法错误或请求无法实现
+    - 5xx：服务端错误-服务器未能实现合法的请求
+  - 具体
+    - 200 OK：客户端请求成功
+    - 206 Partial Content：客户发送了一个带有Range头的GET请求，服务器完成了它(较多，audio,video标签，文件很大时会返回这个)
+    - 301 Moved Permanently：所请求的页面已经转移至新的url
+    - 302 Found：所请求的页面已经临时转移至新的url
+    - 304 Not Modified：客户端有缓冲的文档并发出了一个条件性的请求，服务器告诉客户，原来的缓冲问答那个还可以继续使用
+    - 400 Bad Request：客户端请求有语法错误，不能被服务器所理解
+    - 401 Unauthorized：请求未经授权，这个状态码必须和WWW-Authenticate报头域一起使用
+    - 403 Forbidden：对被请求页面的访问被禁止(较多，某页面的地址只能通过服务器来访问)
+    - 404 Not Found：请求资源不存在(较多，请求一个不存在的地址)
+    - 500 Internal Server Error：服务器发送不可预期的错误原来缓冲的文档还可以继续使用(一般服务端处理)
+    - 503 Server Unavailable：请求未完成，服务器临时过载或当机，一段时间后可能会恢复正常(一般服务端处理)
 - 什么是持久连接
-
+    - http普通模式是无连接无状态，但是可设置keep-alive模式支持持久链接，当出现对服务器的后继请求事，避免了建立或者重新建立连接。从http1.1版本开始才支持。
 - 什么是管线化
-
-
-## 面对对象
+  - 普通持久连接
+    - 请求1->响应1->请求2->响应2->请求3->响应3
+  - 管线化持久连接
+    - 【记】【原理】请求1->请求2->请求3->响应1->响应2->响应3(请求打包过去，响应打包发回来)
+    - 【记】管线化机制通过持久连接完成，http1.1才支持
+    - 【记】只有GET和HEAD请求可以管线化，而POST有所限制
+    - 【记】初次创建连接不应启动管线机制，因为对方服务器不一定支持http/1.1版本的协议
+    - 管线化不会影响响应到来的顺序
+    - http/1.1要求服务端支持管线化，但并不要求服务端对响应进行管线化处理，只要求对管线化的请求不失败即可
+    - 因为以上服务端问题，开启管线化可能并不会大幅度提升性能，而且很多服务器和代理程序对管线化支持并不好，因此Chrome和Firefox默认并未开启管线化支持
 
 ## 原型链
+### 创建对象有几种方法
+    ```js
+    // 第一种(字面量)
+    var obj1={name:'obj1'}// Object {name:'obj1'}
+    var obj2=new Object({name:'obj2'})// Object {name:'obj2'}
+    
+    // 第二种(构造函数)
+    var M=function(){this.name='obj3'}
+    var obj3=new M()// M {name:'obj3'}
+
+    // 第三种(Object.create)
+    var P={name:'obj4'}
+    var obj4=Object.create(P)// Object {}，看不到属性，但是存在。因为它本身是空对象，但是它的原型指向P这个对象。
+
+    ```
+### 原型、构造函数、实例、原型链
+![prototype](../Frontend/img/prototype.png)
+### instanceof的原理
+![prototype](../Frontend/img/instanceOf.png)
+- instanceof判断是否是实例，在原型链上的都会是true，而用constructor只有在本身上才是true，更加严谨
+### new运算符
+- 创建一个新对象。它继承自foo.prototype
+- 执行foo构造函数里的代码。执行时相应的参数被传入，同时this会被指定为这个新实例。new foo等同于new foo()，只能用在不传递任何参数的情况
+- 如果构造函数返回了一个对象，那么返回这个对象。否则，返回this
+```js
+var new2=function(func){
+    var o=Object.create(func.prototype);
+    var k=func.call(o);
+    if(typeof k==='object'){
+        return k
+    }else{
+        return o
+    }
+}
+```
+
+## 面向对象
+
+### 类与实例
+- 类的声明
+  - es5
+```js
+function Animal(){
+    this.name='name';
+}
+```
+   - es6
+```js
+class Animal {
+    constructor(){
+        this.name='name';
+    }
+}
+```
+```
+- 生成实例
+```js
+new Animal();
+```
+
+### 类与继承【非常重要，是整个js里最难理解的内容】
+- 如何实现继承（js继承本质：原型链）
+```js
+// 第一种，借助构造函数实现继承(这种无法继承parent原型对象上的方法)
+function Parent1(){
+    this.name='parent1';
+}
+Parent1.prototype.say=function(){}
+function Child1(){
+    Parent1.call(this);// call,apply改变函数执行上下文，即this
+    this.type='child1';
+}
+// 第二种，借助原型链实现继承(这种继承是继承了同一个parent实例，导致修改的也是同一个)
+function Parent2(){
+    this.name='parent2';
+    this.play=[1,2,3]
+}
+function Child2(){
+    this.type='child2';
+}
+Child2.prototype=new Parent2();
+var s1=new Child2();
+var s2=new Child2();
+s1.play.push(4);
+console.log(s1.play,s2.play)// [1,2,3,4],[1,2,3,4]
+// 第三种，组合继承方式(组合以上两种，避免了以上两个的问题)(缺点：继承时父级构造函数执行了两遍)
+function Parent3(){
+    this.name='parent3'
+}
+function Child3(){
+    Parent3.call(this);
+    this.type='child3';
+}
+Child3.prototype=new Parent3();
+// 组合继承方式优化1(问题：constructorwei指向Child4)
+function Parent4(){
+    this.name='parent4'
+}
+function Child4(){
+    Parent4.call(this);
+    this.type='child4';
+}
+Child4.prototype=Parent4.prototype;
+var s4=new Child4();
+console.log(s4.constructor);// Parent4
+// 组合继承方式优化2(最终方案)
+function Parent5{
+    this.name='parent5'
+}
+function Child5(){
+    Parent5.call(this);
+    this.type='child5';
+}
+Child5.prototype=Object.create(Parent5.prototype);// 隔离父类和子类的原型对象
+Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
+```
+- 继承的几种方式
+
 
 ## 通信
 
 ## 安全
+
 
 ## 算法
 

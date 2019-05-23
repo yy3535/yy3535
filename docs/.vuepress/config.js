@@ -1,5 +1,5 @@
 module.exports = {
-  base: '/',
+  // base: '/',
   title: 'yy3535',
   description: 'yy3535的笔记',
   head: [

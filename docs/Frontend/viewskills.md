@@ -429,6 +429,14 @@ ev.dispatchEvent(eve);
   - **undefined**：转成NaN
   - **null**：转成0
   - **对象**：先调用自身的valueOf，不行再调用自身的toString，再不行就报错
+    - Object的valueOf返回对象本身，toString返回"[object Object]"的字符串
+    - Array的valueOf返回对象本身，toString返回调用join(',')所返回的字符串。
+    - Function的valueOf返回对象本身，toString返回函数中包含的代码转为字符串的值。
+- Number等同于一元正号(+)
+```js
+> +{} //相当于 Number({})
+NaN
+```
 - String函数
   - **数值**：转为相应的字符串
   - **字符串**：转换后还是原来的值
@@ -440,10 +448,12 @@ ev.dispatchEvent(eve);
   - undefined/null/-0/+0/NaN/''(空字符串)==>false
   - 其他一律为true
 
+
+
 ### 隐式类型转换
   - 四则运算
-    - **+**：只要其中一个是String类型，表达式的值便是一个String。
-    - **其余**：只要其中一个是Number类型，表达式的值便是一个Number。
+    - **+**：只要其中一个是String类型，表达式的值转为String。若无字符串，表达式便转为Number类型
+    - **其余**：只要其中一个是Number类型，表达式的值便转为Number。
     - **非法字符**：对于非法字符的情况通常会返回NaN
 ```js
 '1' * 'a'     // => NaN
@@ -455,17 +465,49 @@ ev.dispatchEvent(eve);
 #### 常见题目
 ```js
 []+[]
+// ""
 []+{}
+// [object Object]
 {}+[]
+// [object Object]
+// 所有浏览器都认为{}是区块语句，计算+[]，得出0
 {}+{}
+// [object Object][object Object]
+// 谷歌浏览器是正常结果，火狐会把第一个{}当做区块语句，计算+{}，得出NaN
 true+true
+// 2
 1+{a:1}
+// 1[object Object]
 ```
 
-
-
-
 ## HTTP协议
+
+- HTTP协议的主要特点
+    - 简单快速(每个资源是固定的，处理起来简单，访问资源输入URI就行)
+    - 灵活（每个http协议头部分有个类型，可请求不同类型资源）
+    - 无连接【重要】（连接一次就会断掉，不会保持连接）
+    - 无状态【重要】（客户端和服务端是两种身份，单http协议上是不能区分两次连接的身份的）
+- HTTP报文的组成部分
+    - 请求报文
+        - 请求行
+        - 请求头
+        - 空行
+        - 请求体
+    - 响应报文
+        - 状态行
+        - 响应头
+        - 空行
+        - 响应体
+- HTTP方法
+
+- POST和GET的区别
+
+- HTTP状态码
+
+- 什么是持久连接
+
+- 什么是管线化
+
 
 ## 面对对象
 

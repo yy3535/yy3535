@@ -135,6 +135,21 @@ nodeType 区分过滤text标签，=1是p，=3是text
 
 nodeName=#text是text，=p是p
 
+<!-- ### DOM事件
+
+|属性|	描述	|
+| :------| ------: | :------: |
+onabort|图像的加载被中断。|
+onbeforeunload|	该事件在即将离开页面（刷新或关闭）时触发|
+onerror	|在加载文档或图像时发生错误。|
+onhashchange|	该事件在当前 URL 的锚部分发生修改时触发。	 |
+onload	|一张页面或一幅图像完成加载。	|
+onpageshow|	该事件在用户访问页面时触发	|
+onpagehide|	该事件在用户离开当前网页跳转到另外一个页面时触发	|
+onresize|	窗口或框架被重新调整大小。	|
+onscroll|	当文档被滚动时发生的事件。	|
+onunload|	用户退出页面。|  -->
+
 ## 解答
 
 ### DOM 是哪种基本的数据结构？
@@ -151,6 +166,7 @@ nodeName=#text是text，=p是p
 
 - property 只是一个 JS 属性的修改
 - attr 是对 html 标签属性的修改
+  
 
 ## 02-BOM操作
 
@@ -438,29 +454,21 @@ http 状态吗有 `2xx` `3xx` `4xx` `5xx` 这几种，比较常用的有以下�
 
 - 所有的跨域请求方式，都需要信息提供方来做出相应的支持和改动
 
-#### JSONP
-
-首先，有一个概念要你要明白，例如访问`http://coding.m.imooc.com/classindex.html`的时候，服务器端就一定有一个`classindex.html`文件吗？—— 不一定，服务器可以拿到这个请求，然后动态生成一个文件，然后返回。
-同理，`<script src="http://coding.m.imooc.com/api.js">`也不一定加载一个服务器端的静态文件，服务器也可以动态生成文件并返回。OK，接下来正式开始。
-
-例如我们的网站和慕课网，肯定不是一个域。我们需要慕课网提供一个接口，供我们来获取。首先，我们在自己的页面这样定义
-
+#### JSONP（利用script标签的异步加载来实现的）
+从服务端`http://www.abc.com/?callback=callbackName`下载一段callback函数执行代码，数据作为函数的参数。页面中定义一个`window.callbackName=function(data){}`，函数执行后即可进入callback函数获取到data。
 ```html
 <script>
-window.callback = function (data) {
-    // 这是我们跨域得到信息
+// 定义window.callbackName函数
+window.callbackName = function (data) {
     console.log(data)
 }
 </script>
 ```
 
-然后慕课网给我提供了一个`http://coding.m.imooc.com/api.js`，内容如下（之前说过，服务器可动态生成内容）
-
 ```js
-callback({x:100, y:200})
+// 服务端返回函数代码
+callbackName({x:100, y:200})
 ```
-
-最后我们在页面中加入`<script src="http://coding.m.imooc.com/api.js"></script>`，那么这个js加载之后，就会执行内容，我们就得到内容了
 
 #### 服务器端设置 http header
 

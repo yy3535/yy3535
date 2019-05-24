@@ -727,14 +727,70 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 - 事件的触发条件
 - 事件的触发顺序
 
-###【重要】跨域通信的几种方式(其它的方式不常用或者成本太高)
-- JSONP
-- Hash
+###【重要,手写】跨域通信的几种方式(其它的方式不常用或者成本太高)
+- JSONP（利用script标签的异步加载来实现的）
+```js
+util.jsonp=function(url,onsuccess,onerror,charset){
+    var callbackName=util.getName('tt_player');
+    window[callbackName]=function(){
+        if(onsuccess && util.isFunction(onsuccess)){
+            onsuccess(arguments[0]);
+        }
+    };
+    var script=util.createScript(url+'&callback='+callbackName,charset);
+    script.onload=script.onreadystatechange=function(){
+        if(!script.readyState||/loaded|complete/.test(script.readyState)){
+            script.onload=script.onreadystatechange=null;
+            // 移除该script的DOM对象
+            if(script.parentNode){
+                script.parentNode.removeChild(script);
+            }
+            // 删除函数或变量
+            window[callbackName]=null;
+        }
+    }
+    script.onerror=function(){
+        if(onerror&&util.isFunction(onerror)){
+            onerror();
+        }
+    }
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+```
+- Hash(用在iframe跨域页面通信)
     - hash#后改变页面是不刷新的，search改变是会刷新页面的
-- postMessage
+```js
+//当前页面A 通过iframe或frame嵌入了跨域的页面B。利用hashA向B通信。
+// 在A中的伪代码如下：
+var B=document.getElementsByTagName('iframe')
+B.src=B.src+'#'+'data';
+// 在B中的伪代码如下：
+window.onhashchange=function(){
+    var data=window.location.hash;
+}
+
+```
+- postMessage(跨域页面通信)
     - H5中增加了这个作为跨域通信的方式
+```js
+// 窗口A(http:A.com)向跨域的窗口B(http://B.com)发送信息
+Bwindow.postMessage('data','http://B.com');
+// 窗口B中监听
+window.addEventListener('message',function(event){
+    console.log(event.origin);// http://A.com
+    console.log(event.source);// Awindow
+    console.log(event.data);// data
+})
+```
 - WebSocket
     - 不受同源策略限制
+```js
+var ws=new WebSocket('wss://echo.websocket.org');
+ws.onopen=function(evt){
+    
+}
+```
 - CORS
     - 新出的通信方式，支持跨域通信的ajax
 

@@ -320,15 +320,89 @@ document.addEventListener('DOMContentLoaded', function () {
 
 #### 常见的 web 攻击方式有哪些，简述原理？如何预防？
 
-**SQL注入**。例如做一个系统的登录界面，输入用户名和密码，提交之后，后端直接拿到数据就拼接 SQL 语句去查询数据库。如果在输入时进行了恶意的 SQL 拼装，那么最后生成的 SQL 就会有问题。但是现在稍微大型的一点系统，都不会这么做，从提交登录信息到最后拿到授权，都经过层层的验证。因此，SQL 注入都只出现在比较低端小型的系统上。
+- SQL注入**。
+  - 例如做一个系统的登录界面，输入用户名和密码，提交之后，后端直接拿到数据就拼接 SQL 语句去查询数据库。如果在输入时进行了恶意的 SQL 拼装，那么最后生成的 SQL 就会有问题。但是现在稍微大型的一点系统，都不会这么做，从提交登录信息到最后拿到授权，都经过层层的验证。因此，SQL 注入都只出现在比较低端小型的系统上。
 
-**XSS（Cross Site Scripting，跨站脚本攻击）**，最常见，很多大型网站（例如 FaceBook 都被 XSS 攻击过）。举一个例子，我在一个博客网站正常发表一篇文章，输入汉字、英文和图片，完全没有问题。但是如果我写的是恶意的 js 脚本，例如获取到`document.cookie`然后传输到自己的服务器上，那我这篇博客的每一次浏览，都会执行这个脚本，都会把自己的 cookie 中的信息偷偷传递到我的服务器上来。
+- XSS
+  - 基本概念和缩写
+    - Cross Site Scripting，【记】跨站脚本攻击
+  - 攻击原理
+    - 与CSRF区别，不需要任何验证，通过合法方式向页面注入js，比如评论
+  - 攻击类型
+    - 反射型
+      - 发出请求时，XSS代码出现在URL中，作为输入提交到服务器端，服务器端解析后响应，XSS代码随响应内容一起传回浏览器，最好浏览器解析执行XSS代码。
+```js
+// index.js
+router.get('/', function(req, res, next) {
+  // 关闭浏览器的XSS拦截
+  res.set('X-XSS-Protection',0)
+  res.render('index', { title: 'Express',xss:req.query.xss });
+});
 
-预防 XSS 攻击就得对输入的内容进行过滤，过滤掉一切可以执行的脚本和脚本链接。大家可以参考[xss.js](https://github.com/leizongmin/js-xss)这个开源工具。
+// index.ejs
+<div class="">
+    <%- xss %>
+</div>
 
-简单总结一下，XSS 其实就是攻击者事先在一个页面埋下攻击代码，让登录用户去访问这个页面，然后偷偷执行代码，拿到当前用户的信息。
+// 篡改页面内容，自动触发
+`http://localhost:3000/?xss=<img src="null" onerror="alert(1)"/>`
+// 篡改页面内容，引诱触发
+`http://localhost:3000/?xss=<p onclick="alert('点我')">点我</p>`
+// 篡改页面内容，最简单的广告插入
+`http://localhost:3000/?xss=<iframe src="//baidu.com/t.html"></iframe>`
+```
+    - 存储型
+      - 和反射型XSS差别在于，提交的代码会存储在服务器端（数据库，内存，文件系统等），下次请求目标页面时不用再提交XSS代码
+```js
 
-**CSRF/XSRF（Cross-site request forgery，跨站请求伪造）**，比较常见。它是借用了当前操作者的权限来偷偷的完成某个操作，而不是拿到用户的信息。例如，一个购物网站，购物付费的接口是`http://buy.com/pay?id=100`，而这个接口在使用时没有任何密码或者 token 的验证，只要打开访问就付费购买了。一个用户已经登录了`http://buy.com`在选择商品时，突然收到一封邮件，而这封邮件正文有这么一行代码`<img src="http://buy.com/pay?id=100"/>`，他访问了邮件之后，其实就已经完成了购买。
 
-预防 CSRF 就是加入各个层级的权限验证，例如现在的购物网站，只要涉及到现金交易，肯定输入密码或者指纹才行。
+```
+  - 攻击方式
+    - 盗用cookie，获取敏感信息
+    - 破坏页面结构，插入一些内容
+    - 利用flash，了解即可
+    - DDOS(分布式拒绝服务攻击)，是目前最为强大最难以防御的攻击方式之一。
+      - DOS攻击：利用合理的客户端请求来占用过多的服务器资源，从而使合法用户无法得到服务器的响应
+      - DDOS是在传统的DOS攻击上产生的一类攻击方式
+    - ServerlimitDOS(当http header过长的时候，web server会产生一个400或者是4开头的错误，如果这些超长的数据保存在cookie中，能够让用户每次访问的时候造成http头超长，导致一些用户无法访问域名)
+    - 
+  - 防御措施（让插入的js不可执行）
+    - 编码
+      - 对用户输入的数据进行HTML Entity编码，显示为转义字符
+        - |字符|十进制|转义字符|
+          |:---:|:---:|:---:|
+          |"|&#34;|&quot;|
+          |&|&#38;|&amp;|
+          |<|&#60;|&lt;|
+          |>|&#62;|&gt;|
+          |不断开空格|&#160;|&nbsp;|
+    - 过滤
+      - 移除用户上传的DOM属性，如onerror等
+      - 移除用户上传的Style节点、Script节点、Iframe节点等。
+    - 矫正
+      - 避免直接对HTML Entity解码
+      - 使用DOM Parse转换，矫正不配对的DOM标签
 
+  - 实战
+  - 插件库
+    - encode.js：可以使用https://github.com/mathiasbynens/he 中的he.js
+
+    - domParse：可以用https://github.com/blowsie/Pure-JavaScript-HTML5-Parser 中的htmlparser.js
+```js
+// 通过构建Node服务和简历一个评论功能，实例演示XSS的攻击及预防
+
+
+```
+- CSRF
+  - 基本概念和缩写
+    - Cross-site request forgery，【记】跨站请求伪造
+  - 攻击原理
+    - <img :src="$withBase('/img/攻击原理.jpg')">
+  - 防御措施
+    - Token验证(链接自动携带cookie，但是不会自动携带token)
+    - Referer验证(页面来源，判断来源是否是本站点下的页面)
+    - 隐藏令牌(隐藏在http header头中)
+
+- XSS和CSRF区别
+  - XSS是上传输入的js脚本，并执行
+  - CSRF是需要用户已登录，帮你自动执行接口

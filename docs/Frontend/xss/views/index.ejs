@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="../public/javascripts/encode.js"></script>
+    <script src="../public/javascripts/domParse.js"></script>
+    <script>
+      var parse=function(str){
+        var results='';
+        try{
+          // 先反转义（解码），再domparse
+          HTMLParse(he.unescape(str,{strict:true}),{
+            start:function(tag,attrs,unary){
+              // 开始标签
+              results+='<'+tag;
+              for(var i=0,len=attrs.length;i<len;i++){
+                results+=" "+attrs[i].name+'='+attrs[i].escaped+'"';
+              }
+              results+=(unary?"/":"")+">";
+            },
+            end:function(tag){
+              // 结束标签
+              results+="</"+tag+">";
+            },
+            chars:function(text){
+              // 标签中间部分
+              results+=text;
+            },
+            comment:function(text){
+              // 注释部分
+              results+="<!--"+text+"-->";
+            }
+          })
+          return results
+        }catch(e){
+          console.log(e)
+        }finally{
+
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <textarea name="" id="txt" cols="30" rows="10">
+      <p>sks <img src="null" alt="" onerror="alert(1)"></p>
+    </textarea>
+    <button id="btn">评论</button>
+    <button id="get">获取评论</button>
+
+    <script>
+      var btn=document.getElementById("btn");
+      var get=document.getElementById("get");
+      var txt=document.getElementById("txt")
+      btn.addEventListener('click',function(){
+        var xhr=new XMLHttpRequest();
+        var url='/comment?comment='+txt.value;
+        xhr.open('GET',url,true);
+        xhr.onreadystatechange=function(){
+          if(xhr.readyState===4){
+            if(xhr.status===200){
+              console.log(xhr);
+            }else{
+              console.log('error');
+            }
+          }
+        }
+        xhr.send();
+      });
+      get.addEventListener('click',function(){
+        var xhr=new XMLHttpRequest();
+        var url='/getComment';
+        xhr.open('GET',url,true);
+        xhr.onreadystatechange=function(){
+          if(xhr.readyState===4){
+            if(xhr.status===200){
+              
+            }else{
+              console.log('error');
+            }
+          }
+        }
+        xhr.send();
+      })
+    </script>
+
+  </body>
+</html>

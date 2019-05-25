@@ -1158,3 +1158,16 @@ Node.js中**四种基本的流类型**：
 5. 暂停模式
 
 6. 自定义可读流
+
+
+## express
+- 安装
+```js
+npm install -g express-generator
+npm install -g express
+```
+- 快速创建express项目
+```js  
+// e.js作为模板引擎
+express -e ./
+```

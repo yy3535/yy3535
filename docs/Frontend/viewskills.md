@@ -718,7 +718,7 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 ### 前后端如何通信
     - Ajax(同源限制)
     - WebSocket(没有同源限制)
-    - CORS(支持跨域通信也支持同源通信，一种新的通信)
+    - CORS(支持跨域通信也支持同源通信，一种新的通信，浏览器如果发现是跨域请求，会自动在请求头中加一个origin)
 
 ### 如何创建Ajax
 考察点：
@@ -788,16 +788,37 @@ window.addEventListener('message',function(event){
 ```js
 var ws=new WebSocket('wss://echo.websocket.org');
 ws.onopen=function(evt){
-    
+    console.log('Connection open ...')
+    ws.send('Hello WebSocket!');
+}
+ws.onmessage=function(evt){
+    console.log('Received Message:'+evt.data)
+    ws.close();
+}
+ws.onclose=function(evt){
+    console.log('Connection closed.');
 }
 ```
-- CORS
+- CORS(ajax的一个变种)
     - 新出的通信方式，支持跨域通信的ajax(在ajax跨域头上加上这个，浏览器就会放行)
+    - 【参考资料】(http://www.ruanyifeng.com/blog/2016/04/cors.html)
+```js
+// url (必须), options(可选),设置了cors配置即可使用cors，否则是普通ajax请求
+fetch('/some/url',{
+    method:'get',
+}).then(function(res){
+
+}).catch(function(err){
+    // 出错了；等价于then的第二个参数，但这一更好用更直观
+})
+```
 
 
 
 ## 安全
+- CSRF
 
+- XSS
 
 ## 算法
 

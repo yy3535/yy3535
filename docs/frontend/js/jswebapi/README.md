@@ -404,6 +404,8 @@ xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
         if (xhr.status == 200) {
             alert(xhr.responseText)
+        }else{
+            console.log('error');
         }
     }
 }
@@ -622,22 +624,21 @@ $.ajax({
 })
 ```
 |项|值|
-|:---|---:|
+|:---|:---|
 |type|类型:String,默认值:GET|
-|url|类型:String,默认值:GET|
-|success|类型:String,默认值:GET|
-|options|类型:String,默认值:GET|
-|async|类型:String,默认值:GET|
-|beforeSend(XHR)|类型:String,默认值:GET|
-|cache|类型:String,默认值:GET|
-|type|类型:String,默认值:GET|
-|type|类型:String,默认值:GET|
-|type|类型:String,默认值:GET|
-|type|类型:String,默认值:GET|
-|type|类型:String,默认值:GET|
+|url|类型:String,默认值:当前页地址|
+|success|类型:Function，请求成功回调函数|
+|options|类型:Object|
+|async|类型:Boolean,默认值:true,默认异步，注意：同步请求将锁住浏览器，用户其他操作必须等待请求完成才可执行|
+|beforeSend(XHR)|类型:Function,发送请求前修改XMLHttpRequest对象，XMLHttpRequest为唯一参数，如果返回false,可以取消本次ajax请求|
+|cache|类型:Boolean,默认值:true,dataType为script和jsonp时默认为false,设置false将不缓存此页面|
+|contentType|类型:String,默认值:"application/x-www-form-urlencoded",发送信息至服务器时内容编码类型.默认值适合大多数情况.如果你明确的传递了一个content-type 给$.ajax()那么它必行会发送给服务器(即使没有数据要发送)|
+|data|类型:String,发送到服务器的数据,将自动转换为请求字符串格式.GET 请求中将附加在URL 后.查看processData 选项说明以禁止此自动转换.必须为Key/Value 格式,如果为数组,jQuery 将自动为不同值对应同一个名称.如:{foo:["bar1", "bar2"]}转换为’&foo=bar1&foo=bar2’|
+|dataFilter|类型:Function,给AJAX 返回的原始数据的进行预处理的函数.提供data 和type 两个参数,data 是AJAX 返回的原始数据,type 是调用jQuery.ajax 时提供的dataType 参数,函数返回的值将由jQuery 进一步处理|
+|dataType|类型:String,预期服务器返回的数据类型.如果不指定,jQuery 将自动根据HTTP 包MIME 信息来智能判断,比如XML MIME 类型就被识别为XML.在1.4 中,JSON 就会生成一个JavaScript 对象,而script 则会执行这个脚本.随后服务器端返回的数据会根据这个值解析后,传递给回调函数.可用值:`xml`,`html`,`script`,`json`,`jsonp`,`text`,注意：使用JSONP 形式调用函数时,如"myurl?callback=?"jQuery 将自动替换? 为正确的函数名,以执行回调函数.|
+|error|类型:Function,默认值:自动判断(xml 或html), 请求失败时调用此函数|
 
 #### JSONP
-
 提供方提供的数据：
 
 ```js
@@ -659,3 +660,5 @@ $.ajax({
     }
 })
 ```
+
+

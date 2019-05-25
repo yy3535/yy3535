@@ -962,27 +962,46 @@ dt.getSeconds()  // 秒（0 - 59）
 ### Math
 
 Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览器缓存，比如频繁访问一个链接，就在链接后加一个random()
-
-背讲义所有方法。
+| 功能 | API |
+| :------| ------: |
+| random() | [0,1) |
+| ceil(x) | 向上取整 |
+| floor(x) | 向下取整 |
+| round(x) | 四舍五入 |
+| abs(x) | 绝对值 |
+| max(x,y,z,...n) | 求最大值 |
+| min(x,y,z...n) | 求最小值 |
 
 ### 数组常用 API
 
+| 功能 | API |
+| :------| ------: |
+| 合并、切割 | concat,join,slice |
+| 添加 | unshift(从头),push(从末尾) |
+| 删除 | shift(从头),pop(从末尾) |
+| 删除并添加 | splice |
+| 排序 | sort,reverse |
+| 转换 | toString,toLocaleString,toSource,ValueOf |
+| 遍历 | map,forEach,reduce |
+| 筛选 | filter,every,some |
+| 转换成数组 | Array.from |
+
 - Array.forEach
 
+遍历数组的所有元素
 ```javascript
 var arr = [1,2,3]
 arr.forEach(function (item, index) {
-    // 遍历数组的所有元素
     console.log(index, item)
 })
 ```
 
 - Array.every
 
+判断所有的数组元素，都满足一个条件
 ```javascript
 var arr = [1,2,3]
 var result = arr.every(function (item, index) {
-    // 用来判断所有的数组元素，都满足一个条件
     if (item < 4) {
         return ture
     }
@@ -992,10 +1011,10 @@ console.log(result)
 
 - Array.some
 
+判断所有的数组元素，只要有一个满足条件即可
 ```javascript
 var arr = [1,2,3]
 var result = arr.some(function (item, index) {
-    // 用来判断所有的数组元素，只要有一个满足条件即可
     if (item < 2) {
         return ture
     }
@@ -1004,7 +1023,6 @@ console.log(result)
 ```
 
 - Array.sort
-
 ```javascript
 var arr = [1,4,2,3,5]
 var arr2 = arr.sort(function(a, b) {
@@ -1017,9 +1035,8 @@ console.log(arr2)
 ```
 
 - Array.map
-  
-第一个函数返回对数组每个元素进行操作，创建一个新数组
 
+第一个函数返回对数组每个元素进行操作，创建一个新数组
 ```
 Array.map(function(currentValue,index,arr),this.Value)
 ```
@@ -1068,7 +1085,14 @@ from() 方法用于通过拥有 length 属性的对象或可迭代的对象来�
 Array.from(object, mapFunction, thisValue)
 ```
 
+### 字符串常用 API
 
+| 功能 | API |
+| :------| ------: |
+| 查找 | indexOf,lastIndexOf,includes,charAt |
+| 合并，切割 | concat,slice[),subString[),subStr,splite |
+| 匹配 | match,replace,search,startsWith |
+| 格式化 | toLowerCase,toUpperCase,trim,repeat |
 
 
 ### 对象常用 API

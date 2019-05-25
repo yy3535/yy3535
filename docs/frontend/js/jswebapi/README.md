@@ -602,11 +602,31 @@ $div.on('click', 'a', function (e) {
 ```js
 $.ajax({
     url: '/api',
+    data:{name:"zhangsan",age:18},
+    dataType:"json",
+    type:"POST",
     success: function (result) {
         console.log(result)
+    },
+    error:function(){
+
     }
 })
 ```
+|项|值|
+|:---|---:|
+|type|类型:String,默认值:GET|
+|url|类型:String,默认值:GET|
+|success|类型:String,默认值:GET|
+|options|类型:String,默认值:GET|
+|async|类型:String,默认值:GET|
+|beforeSend(XHR)|类型:String,默认值:GET|
+|cache|类型:String,默认值:GET|
+|type|类型:String,默认值:GET|
+|type|类型:String,默认值:GET|
+|type|类型:String,默认值:GET|
+|type|类型:String,默认值:GET|
+|type|类型:String,默认值:GET|
 
 #### JSONP
 

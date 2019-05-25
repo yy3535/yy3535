@@ -729,6 +729,7 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 
 ###【重要】跨域通信的几种方式(其它的方式不常用或者成本太高)
 - JSONP
+    - 原理
 - Hash
     - hash#后改变页面是不刷新的，search改变是会刷新页面的
 - postMessage
@@ -736,7 +737,7 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 - WebSocket
     - 不受同源策略限制
 - CORS
-    - 新出的通信方式，支持跨域通信的ajax
+    - 新出的通信方式，支持跨域通信的ajax(在ajax跨域头上加上这个，浏览器就会放行)
 
 
 

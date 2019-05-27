@@ -365,9 +365,8 @@ router.get('/', function(req, res, next) {
       - DOS攻击：利用合理的客户端请求来占用过多的服务器资源，从而使合法用户无法得到服务器的响应
       - DDOS是在传统的DOS攻击上产生的一类攻击方式
     - ServerlimitDOS(当http header过长的时候，web server会产生一个400或者是4开头的错误，如果这些超长的数据保存在cookie中，能够让用户每次访问的时候造成http头超长，导致一些用户无法访问域名)
-    - 
   - 防御措施（让插入的js不可执行）
-    - 编码
+    - 编码(转义)
       - 对用户输入的数据进行HTML Entity编码，显示为转义字符
         - |字符|十进制|转义字符|
           |:---:|:---:|:---:|
@@ -386,11 +385,152 @@ router.get('/', function(req, res, next) {
   - 实战
   - 插件库
     - encode.js：可以使用https://github.com/mathiasbynens/he 中的he.js
-
     - domParse：可以用https://github.com/blowsie/Pure-JavaScript-HTML5-Parser 中的htmlparser.js
-```js
+```html
 // 通过构建Node服务和简历一个评论功能，实例演示XSS的攻击及预防
+// index.ejs
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/encode.js"></script>
+    <script src="/javascripts/domParse.js"></script>
+    <script>
+      var parse=function(str){
+        var results='';
+        try{
+          // 先反转义（解码），再domparse
+          HTMLParser(he.unescape(str,{strict:true}),{
+            start:function(tag,attrs,unary){
+              // 开始标签
+              // 过滤危险标签
+              if(tag=='script'||tag=='style'||tag=='link'||tag=='iframe') return;
+              results+='<'+tag;
+              // 过滤掉所有属性
+              // for(var i=0,len=attrs.length;i<len;i++){
+              //   results+=" "+attrs[i].name+'="'+attrs[i].escaped+'"';
+              // }
+              results+=(unary?"/":"")+">";
+            },
+            end:function(tag){
+              // 结束标签
+              results+="</"+tag+">";
+            },
+            chars:function(text){
+              // 标签中间部分
+              results+=text;
+            },
+            comment:function(text){
+              // 注释部分
+              results+="<!--"+text+"-->";
+            }
+          })
+          return results
+        }catch(e){
+          console.log(e)
+        }finally{
 
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <textarea name="" id="txt" cols="30" rows="10">
+      <p>sks <img src="/1.jpg" alt="" onerror="alert(1)" /></p>
+    </textarea>
+    <button id="btn">评论</button>
+    <button id="get">获取评论</button>
+
+    <script>
+      var btn=document.getElementById("btn");
+      var get=document.getElementById("get");
+      var txt=document.getElementById("txt")
+      btn.addEventListener('click',function(){
+        var xhr=new XMLHttpRequest();
+        var url='/comment?comment='+txt.value;
+        xhr.open('GET',url,true);
+        xhr.onreadystatechange=function(){
+          if(xhr.readyState===4){
+            if(xhr.status===200){
+              console.log(xhr);
+            }else{
+              console.log('error');
+            }
+          }
+        }
+        xhr.send();
+      });
+      get.addEventListener('click',function(){
+        var xhr=new XMLHttpRequest();
+        var url='/getComment';
+        xhr.open('GET',url,true);
+        xhr.onreadystatechange=function(){
+          if(xhr.readyState===4){
+            if(xhr.status===200){
+              var com=parse(JSON.parse(xhr.response).comment);
+              // var com=JSON.parse(xhr.response).comment;
+              console.log(com);
+              var txt=document.createElement('span');
+              txt.innerHTML=com;
+              document.body.appendChild(txt);
+            }else{
+              console.log('error');
+            }
+          }
+        }
+        xhr.send();
+      })
+    </script>
+
+  </body>
+</html>
+```
+
+```js
+// index.js
+var express = require('express');
+var router = express.Router();
+
+var comments={};
+
+// 字符转义，前端或者后端做都可以
+function html_encode(str){
+  var s='';
+  if(str.length==0) return "";
+  s=str.replace(/&/g,"&amp;");
+  s=s.replace(/</g,"&lt;");
+  s=s.replace(/>/g,"&gt;");
+  s=s.replace(/\s/g,"&nbsp;");
+  s=s.replace(/\'/g,"&#39;");
+  s=s.replace(/\"/g,"&quot;");
+  s=s.replace(/\n/g,"<br/>");
+  console.log('s',s)
+  return s;
+}
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express'});
+});
+
+router.get('/comment',function(req,res,next){
+  comments.v=html_encode(req.query.comment);
+  // comments.v=req.query.comment;
+  console.log('插入的',comments.v)
+  
+})
+
+router.get('/getComment',function(req,res,next){
+  console.log(comments.v)
+  res.json({
+    comment:comments.v
+  })
+})
+
+module.exports = router;
 
 ```
 - CSRF

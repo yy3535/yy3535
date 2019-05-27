@@ -72,6 +72,13 @@ module.exports = {
              "markdown"
           ]
         },
+        {
+          title: '自动化测试',
+          collapsable: false,
+          children: [
+             "automatedTest",
+          ]
+        },
         // '/Frontend/',
         // {
         //   title: 'jswebapi',
@@ -96,7 +103,8 @@ module.exports = {
             title: '运维',
             collapsable: false,
             children: [
-               "git"
+               "git",
+               "commands"
             ]
         }
       ],

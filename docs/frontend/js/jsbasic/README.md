@@ -986,6 +986,12 @@ Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览
 | 筛选 | filter,every,some |
 | 转换成数组 | Array.from |
 
+- Array.splice
+```js
+array.splice(index,howmany,item1,.....,itemX)
+// 返回被删除的元素的数组。
+```
+
 - Array.forEach
 
 遍历数组的所有元素

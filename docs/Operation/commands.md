@@ -12,5 +12,5 @@ echo '<template><h1>Hello!</h1></template>' > App.vue
 ```
 
 ## node升级
-windows:去官网下载新的安装包覆盖安装
-mac及其他：安装npm升级模块
+- windows:去官网下载新的安装包覆盖安装
+- mac及其他：安装npm升级模块

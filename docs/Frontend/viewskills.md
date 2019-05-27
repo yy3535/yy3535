@@ -822,3 +822,147 @@ fetch('/some/url',{
 
 ## 算法
 
+<img :src="$withBase('/img/算法.png')" >
+
+- 排序【重要】
+    - 冒泡排序
+        - 先从数列中取出一个数作为“基准”。
+        - 分区过程：将比这个“基准”大的数全放到“基准”的右边，小于或等于“基准”的数全放到“基准”的左边。
+        - 再对左右区间重复第二步，直到各区间只有一个数。
+        - <img :src="$withBase('/img/快速排序.gif')">
+```js
+var quickSort = function(arr) {
+    if (arr.length <= 1) { return arr; }
+    var pivotIndex = Math.floor(arr.length / 2);   //基准位置（理论上可任意选取）
+    var pivot = arr.splice(pivotIndex, 1)[0];  //基准数
+    var left = [];
+    var right = [];
+    for (var i = 0; i < arr.length; i++){
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+    return quickSort(left).concat([pivot], quickSort(right));  //链接左数组、基准数构成的数组、右数组
+};
+```
+- 选择排序
+    - 首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。
+    - 再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
+    - 重复第二步，直到所有元素均排序完毕。
+    - <img :src="$withBase('/img/selectionSort.gif')">
+```js
+function selectionSort(arr) {
+    var len = arr.length;
+    var minIndex, temp;
+    for (var i = 0; i < len - 1; i++) {
+        minIndex = i;
+        for (var j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {     // 寻找最小的数
+                minIndex = j;                 // 将最小数的索引保存
+            }
+        }
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+    }
+    return arr;
+}
+```
+- 插入排序
+    - 将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。
+
+    - 从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。（如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面。）
+- 希尔排序
+    - 希尔排序的基本思想是：先将整个待排序的记录序列分割成为若干子序列分别进行直接插入排序，待整个序列中的记录基本有序时，再对全体记录进行依次直接插入排序。
+    - <img :src="$withBase('/img/xiersort.jpeg')">
+    - <img :src="$withBase('/img/xiersort2.gif')">
+
+```js
+function shellSort(arr) {
+    var len = arr.length,
+        temp,
+        gap = 1;
+    while(gap < len/3) {          //动态定义间隔序列
+        gap =gap*3+1;
+    }
+    for (gap; gap > 0; gap = Math.floor(gap/3)) {
+        for (var i = gap; i < len; i++) {
+            temp = arr[i];
+            for (var j = i-gap; j >= 0 && arr[j] > temp; j-=gap) {
+                arr[j+gap] = arr[j];
+            }
+            arr[j+gap] = temp;
+        }
+    }
+    return arr;
+}
+```
+
+
+
+- 冒泡排序
+    - 比较相邻的元素。如果第一个比第二个大，就交换他们两个。
+    -  对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
+    - 针对所有的元素重复以上的步骤，除了最后一个。
+    - 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较
+    - <img :src="$withBase('/img/bubbleSort.gif')">
+```js
+function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len - 1; i++) {
+        for (var j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j+1]) {        // 相邻元素两两对比
+                var temp = arr[j+1];        // 元素交换
+                arr[j+1] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+    return arr;
+}
+```
+
+- 堆栈【重要】、队列【重要】、链表(难度较大，来不及就不准备)
+    - https://juejin.im/entry/58759e79128fe1006b48cdfd
+
+- 递归【重要】
+    - https://segmentfault.com/a/1190000009857470
+
+- 波兰式和逆波兰式
+    - 理论：https://www.cnblogs.com/chenying99/p/3675876.html
+    - 源码：https://github.com/Tairraos/rpn.js/blob/master/rpn.js
+
+
+
+## 二面/三面
+
+要学会赞美
+
+## 渲染机制
+- 什么是DOCTYPE及作用
+    - DTD文档类型定义，是一系列语法规则，浏览器会使用它来判断文档类型，决定使用何种协议来解析，以及切换浏览器模式
+    - DOCTYPE是用来声明文档类型和DTD规范的。不符合规范，解析时便会出一些差错。
+    - HTML5<!DOCTYPE html>【记】
+    - HTML4.01版本有两个模式：严格模式和传统模式【记】
+        - 区别：
+        - HTML4.01 Strict。该DTD包含所有HTML元素和属性，但不包括展示性的和弃用的元素(比如font)
+        - HTML4.01 Transitional该DTD包含所有HTML元素和属性，包括展示性的和弃用的元素(比如font)
+- 浏览器渲染过程
+
+- 重排Reflow
+    - 定义：DOM结构中的各个元素都有自己的盒子（模型），这些都需要浏览器根据各种样式来计算并根据计算结果将元素放到它该出现的位置。
+    - 触发Reflow:
+        - 
+
+- 重绘Repaint
+
+- 布局Layout
+
+## JS运行机制
+
+## 页面性能
+
+## 错误监控
+

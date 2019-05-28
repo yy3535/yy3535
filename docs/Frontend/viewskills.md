@@ -18,19 +18,19 @@ jr.jd.com
   - webpack打包工具
 - Elements看源码（主要看header）
   - 
-```html
-<!-- 设置IE用Edge渲染，有chrome用chrome渲染 -->
-<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<!-- 双核浏览器优先用webkit内核渲染浏览器 -->
-<meta name="renderer" content="webkit">
-<!-- 网站编码 -->
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- 网站描述，SEO -->
-<meta name="description" content="京东金融官网，服务金融机构的数字科技公司。中国互联网金融协会理事单位! 参与中央网信办等四部委发起的联合安全测评并位居榜首。旗下品牌包括京东财富、京东众筹、京东保险、京东白条、企业金融、京东股票、东家财富、金融云、城市计算等。">
-<!-- 实现dns预解析，优化性能 -->
-<link rel="dns-prefetch" href="//static.360buyimg.com">
+    ```html
+    <!-- 设置IE用Edge渲染，有chrome用chrome渲染 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- 双核浏览器优先用webkit内核渲染浏览器 -->
+    <meta name="renderer" content="webkit">
+    <!-- 网站编码 -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- 网站描述，SEO -->
+    <meta name="description" content="京东金融官网，服务金融机构的数字科技公司。中国互联网金融协会理事单位! 参与中央网信办等四部委发起的联合安全测评并位居榜首。旗下品牌包括京东财富、京东众筹、京东保险、京东白条、企业金融、京东股票、东家财富、金融云、城市计算等。">
+    <!-- 实现dns预解析，优化性能 -->
+    <link rel="dns-prefetch" href="//static.360buyimg.com">
 
-```
+    ```
 - Application
   - local Storage用的比较多，Session Storage没怎么用，所以重点准备localstorage
   - Frames-Fronts
@@ -953,16 +953,96 @@ function bubbleSort(arr) {
 
 - 重排Reflow
     - 定义：DOM结构中的各个元素都有自己的盒子（模型），这些都需要浏览器根据各种样式来计算并根据计算结果将元素放到它该出现的位置。
-    - 触发Reflow:
-        - 
+    - 触发Reflow：
+        - 当你增加、删除、修改DOM节点时，会导致Reflow或Repaint
+        - 当你移动DOM的位置，或是搞个动画的时候
+        - 当你修改CSS样式的时候
+        - 当你Resize窗口的时候（移动端没有这个问题），或是滚动的时候
+        - 当你修改网页的默认字体时
 
 - 重绘Repaint
-
+    - 定义：当各种盒子的位置、大小以及其他属性，例如颜色、字体大小等都确定下来后，浏览器于是便把这些元素都按照各自的特性绘制一遍，页面内容出现了
+    - 触发Repaint
+        - DOM改动
+        - CSS改动
+    - 避免Repaint:需要dom添加时，不要一个个添加，而是都放到一个父元素中，添加这个父元素。
 - 布局Layout
 
 ## JS运行机制
+```js
+console.log(1)
+setTimeout(function(){
+    console.log(3)
+},0)
+console.log(2)
+```
+
+
+
+```js
+console.log('A')
+while(true){
+
+}
+console.log('B')
+```
+```js
+for(var i=0;i<4;i++){
+    setTimeout(function(){
+        console.log(i)
+    },1000)
+}
+```
+- setTimeout的0秒不是0，是4毫秒，以前是10毫秒
+- 如何理解JS的单线程
+    - 一个时间JS只能做一件事。
+- 什么是任务队列
+    - 分同步任务和异步任务，优先同步任务，同步执行完，再去执行异步任务。
+    - 同步任务
+    - 异步任务
+        - setTimeout和setInterval
+        - DOM事件
+        - ES6中的Promise
+- 什么是Event Loop（事件环）
+    - 执行栈执行的是同步任务
+    - 当执行栈中空了会去异步队列中取任务
+    - 当setTimeout时间到了会放任务进异步队列中
+
 
 ## 页面性能
+
+- 提升页面性能的方法有哪些？
+    - 资源压缩合并，减少HTTP请求
+    - 非核心代码异步加载-->异步加载的方式-->异步加载的区别
+        - 异步加载的方式
+            - 加载动态脚本（动态创建一个script标签）
+            - defer(在script标签上加上defer属性)
+            - async(在script标签上加上async属性)
+        - 异步加载的区别
+            - defer是在HTML解析完之后才会执行，如果是多个，按照加载的顺序依次执行
+            - async是在HTML解析完之后才会执行，如果是多个，执行顺序和加载顺序无关
+    - 利用浏览器缓存[最重要的一步，重点内容]-->缓存的分类-->缓存的原理
+        - 
+        - 缓存的分类
+            - 强缓存
+                - Expires
+                - Cache-Control
+            - 协商缓存
+                - Lat-Modified If-Modified-Since
+                - Etag If-None-Match
+
+    - 使用CDN（CDN加载资源非常快，静态资源，尤其是浏览器第一次打开时，缓存是起不了任何作用的，CDN起很明显的作用）
+    - 预解析DNS
+```html
+<!--强制打开a标签的DNS预解析(所有a标签默认会做DNS预解析的。但是如果页面协议是https开头的，很多浏览器是默认关闭这个DNS预解析)-->
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<!-- 加DNS预解析 -->
+<link rel="dns-prefetch" href="//host_name_to_prefetch.com">
+
+```
+
+
+        
 
 ## 错误监控
 

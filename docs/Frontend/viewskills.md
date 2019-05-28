@@ -1024,12 +1024,14 @@ for(var i=0;i<4;i++){
     - 利用浏览器缓存[最重要的一步，重点内容]-->缓存的分类-->缓存的原理
         - 
         - 缓存的分类
-            - 强缓存
-                - Expires
-                - Cache-Control
-            - 协商缓存
-                - Lat-Modified If-Modified-Since
-                - Etag If-None-Match
+            - 强缓存(问都不问，发现有缓存直接用)。http服务器返回的头上带有如下一个或者两个（两个都下发了，相对时间优先）：
+                - **Expires** Expires:Thu,21 Jan 2017 23:39:02 GMT（服务器的绝对时间）
+                - **Cache-Control** Cache-Control:max-age=3600（过期时间，客户端相对时间，3600s以内缓存有效）
+            - 协商缓存（发现本地有缓存，询问服务器，可以使用再使用）
+                - **Lat-Modified**（服务器下发修改时间的字段） **If-Modified-Since**（再次发送请求确认时上次修改时间的字段） （两个字段为同一个值）
+                    - Last-Modified:Web,26 Jan 2017 00:35:11 GMT（第一次请求后服务器下发了修改时间，当强缓存失效后，向服务器发送携带这个值的请求，）
+                - **Etag** **If-None-Match**（第一次请求时服务器下发Etag值，第二次请求如果内容没有变化，服务器下发If-None-Match的值为上次Etag的值）
+            - 与缓存相关的http协议头有哪些？以上六个。
 
     - 使用CDN（CDN加载资源非常快，静态资源，尤其是浏览器第一次打开时，缓存是起不了任何作用的，CDN起很明显的作用）
     - 预解析DNS
@@ -1041,8 +1043,66 @@ for(var i=0;i<4;i++){
 
 ```
 
-
-        
-
 ## 错误监控
 
+### 前端错误的分类
+    - 即时运行错误：代码错误
+    - 资源加载错误
+
+
+### 每种错误的捕获方式
+    - 即时运行错误的捕获方式
+        - try...catch
+        - window.onerror
+    - 资源加载错误
+        - object.onerror
+        - performance.getEntries()// 可以获取所有已加载的资源减去页面上所有的img，即可得到未加载的资源
+        - Error事件捕获
+```html
+<img onerror="">
+<script onerror=""/>
+```
+> 注意：window.onerror只能捕获即时运行错误，不能捕获资源加载错误。因为onerror事件不冒泡。
+
+```html
+<script>
+    window.addEventListener('error',function(e){
+        console.log('捕获',e);
+    },true)
+</script>
+```
+【面试题延伸】跨域的js运行错误可以捕获吗，错误提示什么，应该怎么处理？
+- 错误提示：因为跨域了，所以拿不到错误信息。
+    - <img :src="$withBase('/img/跨域错误捕获.jpg')">
+- 如何处理才能拿到详细信息（两步）：
+    1. （前端）在script标签增加crossorigin属性
+    2. （后端）设置js资源响应头Access-Control-Allow-Origin:*// *也可以改成具体域名
+### 上报错误的原理
+- 采用Ajax通信的方式上报
+- 利用Image对象上报（所有的错误监控体系都是利用image对象上报的）
+```html
+<script>
+// 比ajax方式简单的多
+    (new Image()).src='http://baidu.com/tesjk?r=tksjk';
+</script>
+```
+
+
+
+## MVVM框架类
+- 了解MVVM框架吗？
+    - 引导模式，不要细节全说出来。
+- 谈谈你对MVVM的认识？
+    - 先聊MVC,再聊MVVM的定义,
+- 双向绑定是什么原理，可以写出来吗？
+    - 数据到页面的更新-->Object.defineProperty的更新回调（以前需要使用模板引擎）
+```js
+Object.defineProperty(obj,prop,descriptor)
+```
+    - 页面到数据的更新-->内置了input事件（以前需要自己写input事件）
+
+- 使用了什么设计模式？
+
+- 生命周期是什么？
+
+- 有看过源码吗？

@@ -392,7 +392,7 @@ beforeCreate(){
 ### created
 可以获取数据和调用方法
 ```js
-create(){
+created(){
   console.log(this)//存在
   console.log(this.$data)//{a:1}
 }

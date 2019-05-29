@@ -1098,11 +1098,39 @@ for(var i=0;i<4;i++){
     - 数据到页面的更新-->Object.defineProperty的更新回调（以前需要使用模板引擎）
 ```js
 Object.defineProperty(obj,prop,descriptor)
+descriptor
+MVVM框架中用的get set（其中检查新值和旧值如果不一样，修改）
+// 
+var obj1={};
+var descriptor=Object.create(null);
+descriptor.value='static';
+Object.defineProperty(obj1,'key',descriptor);
+console.log(obj1)
+// 显式
+var obj2={};
+Object.defineProperty(obj2,'key',{
+    enumerable:true,
+    configurable:false,
+    writable:false,
+    value:'static',
+});
+console.log(obj2)
 ```
+        【重要】：
+            1. object.defineProperty的用法要熟记于心
+            2. object.defineProperty与reflect.defineProperty的区别
+                - 前一个es5用法，返回一个新对象。 后一个es6用法，返回一个布尔值
+            3. object.defineProperty要会手写
     - 页面到数据的更新-->内置了input事件（以前需要自己写input事件）
 
 - 使用了什么设计模式？
-
+<img :src="$withBase='/img/MVVM设计模式.png'">
+    - 观察者设计模式的原理要了如指掌
+        - 模式分为几大主体(Observer,Dep,Watcher),角色，作用
+        - 最好能写出设计模式的伪代码
+        - 如果没有问到设计模式，也要找时机表现出来
 - 生命周期是什么？
-
+    - 说出八个事件点，八个事件点之间的区别
+    - 页面性能监控，在mounted更合适，测某个点的性能,updated更合适
 - 有看过源码吗？
+

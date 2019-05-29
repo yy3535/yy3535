@@ -17,6 +17,15 @@
 
 - npx webpack
     - 会执行nodemodules/bin/webpack.cmd，打包
+```json
+// package.json
+{
+    "scripts":{
+        "dev":"webpack-dev-server",
+        "build":"webpack"
+    }
+}
+```
 
 - npx webpack --mode development
     - mode默认production，会压缩代码，development，开发模式，不压缩代码
@@ -29,16 +38,21 @@ let path=require('path');
 let HtmlWebpackPlugin=require('html-webpack-plugin');
 module.exports={
     // 单入口
-    entry:''./src/index.js,
+    entry:'./src/index.js',
     // 多入口
     entry:{
-        main:''
+        main:'./src/index.js',
+        other:'./src/other.js',
     },
     // 打包出口
     output:{
         // 路径（必须为绝对路径）
         path:path.resolve(__dirname,'dist'),
-        filename:'bundle.js'
+        filename:'bundle.js',
+        // 可生成多个入口名字的文件
+        filename:'[name].js',
+        // 静态文件带8位哈希值，避免缓存
+        filename:'[name].[hash:8].js',
     },
     // 开发服务的配置
     devServer:{
@@ -58,6 +72,8 @@ module.exports={
             // 以下二选一
             filename:'index.html',
             template:'./public/index.html',
+            // 对应入口文件生成Html
+            chunks:['main'],
             // 文件压缩
             minify:{
                 removeAttributeQuotes:true,
@@ -65,6 +81,14 @@ module.exports={
             },
             // 引用js文件的哈希值设置变化的（避免缓存）
             hash:true
+        }),
+        // 可写多个生成多个html对应多个入口文件
+        new HtmlWebpackPlugin({
+            // 以下二选一
+            filename:'other.html',
+            template:'./public/other.html',
+            // 对应入口文件生成html
+            chunks:['other'],
         })
     ],
     // 加载器
@@ -77,7 +101,7 @@ module.exports={
                 // less：安装less,使用less-loader
                 // sass：安装node-sass,使用sass-loader
                 // stylus：安装stylus,使用stylus-loader
-            {test:/\.css/,use:['style-loader','css-loader','less-loader']},
+            {test:/\.css$/,use:['style-loader','css-loader','less-loader']},
             // js es6-->es5
             {
                 test:/\.js/,
@@ -90,12 +114,15 @@ module.exports={
                             '@babel/preset-env'
                         ],
                         plugins:[
-
+                            // 装饰器识别(放类属性上面要)
+                            ['@babel/plugin-proposal-decorators',{"legacy":true}],
+                            // 类属性
+                            ['@babel/plugin-proposal-class-properties',{"loose":true}],
                         ]
                     }
                 }],
-                // 不打包的文件目录
-                exclude:
+                // 编译打包时不需要的文件目录
+                exclude:/node_modules/
             }
         ]
     }
@@ -112,6 +139,12 @@ yarn add html-webpack-plugin -D
 <!-- 安装加载器 -->
 yarn add css-loader style-loader
 yarn add @babel/core @babel/preset-env babel-loader
+```
+
+```cmd
+<!-- 安装babel的插件 -->
+yarn add @babel/plugin-proposal-class-properties
+yarn add @babel/plugin-proposal-decorators
 ```
 
 - 启动开发服务

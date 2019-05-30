@@ -16,6 +16,7 @@ Compile.prototype = {
         }
     },
     nodeToFragment: function (el) {
+        // 创建虚拟DOM节点（节点对象包含所有属性和方法，当你想提取文档的一部分，改变，增加，或删除某些内容及插入到文档末尾可以使用createDocumentFragment() 方法。）
         var fragment = document.createDocumentFragment();
         var child = el.firstChild;
         while (child) {

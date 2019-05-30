@@ -27,7 +27,6 @@ module.exports={
 
 ### 快捷键
 
-- 所有种类注释 
 `<!--  -->`
 `//`
 `/* */`
@@ -35,3 +34,13 @@ ctrl+/
 
 ## 一体化后端服务leancloud
 为产品开发提供强有力的后端支持
+
+
+## 调试代码
+
+- debugger
+
+
+
+## es6,7-->es5
+babeljs.io中try it out

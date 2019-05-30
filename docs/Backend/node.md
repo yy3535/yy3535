@@ -1171,3 +1171,48 @@ npm install -g express
 // e.js作为模板引擎
 express -e ./
 ```
+- 使用
+```js
+//server.js
+let express=require('express');
+
+let app=express();
+
+app.get('/getUser',(req,res)=>{
+    res.json({name:'zfpx'});
+})
+
+app.listen(3000)
+```
+
+## websocket
+- 安装
+```js
+npm i nodejs-websocket -S
+```
+
+- 创建服务使用
+```js
+var ws = require("nodejs-websocket");
+console.log("开始建立连接...")
+
+var server = ws.createServer(function(conn){
+  conn.on("text", function (str) {
+    var msg = {
+        type: "message",
+        text: "something",
+        id:   "number",
+        date: Date.now()
+    };
+    console.log("message:"+str)
+    conn.send(JSON.stringify(msg));
+  })
+  conn.on("close", function (code, reason) {
+    console.log("关闭连接")
+  });
+  conn.on("error", function (code, reason) {
+    console.log("异常关闭")
+  });
+}).listen(3001)
+console.log("WebSocket建立完毕")
+```

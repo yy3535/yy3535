@@ -22,7 +22,9 @@
 {
     "scripts":{
         "dev":"webpack-dev-server",
-        "build":"webpack"
+        "build":"webpack",
+        // start可以省略run
+        "start":"yarn run dev"
     }
 }
 ```
@@ -36,7 +38,23 @@
 let path=require('path');
 // 引入插件
 let HtmlWebpackPlugin=require('html-webpack-plugin');
+let MiniCssExtractPlugin=require('mini-css-extract-plugin');
+let UgligyJsPlugin=require('uglifyjs-webpack-plugin');
+let OptimizeCssAssetsPlugin=require('optimize-css-assets-webpack-plugin');
 module.exports={
+    // 生产模式
+    mode:'production',
+    // 生产模式的压缩配置
+    optimization:{
+        minimizer:[
+            new UgligyJsPlugin({
+                cache:true,
+                // 并行
+                parallel:true,
+            }),
+            new OptimizeCssAssetsPlugin({})
+        ]
+    },
     // 单入口
     entry:'./src/index.js',
     // 多入口
@@ -89,19 +107,44 @@ module.exports={
             template:'./public/other.html',
             // 对应入口文件生成html
             chunks:['other'],
+        }),
+        // 抽离样式为link插件
+        new MiniCssExtractPlugin({
+            filename:'main.css'
         })
     ],
     // 加载器
     modules:{
         // 规则
-        // use值有三种['style-loader'],'style-loader',[{loader:'style-loader',...options}]
+        // use值有三种['style-loader'],'style-loader',[{loader:'style-loader',...options或者query}]
         rules:[
+            
             // css加载器（顺序不能变）
-                // style把样式加到html文件中，css解析@import
+                // style把样式style标签加到html文件中，css解析@import
                 // less：安装less,使用less-loader
                 // sass：安装node-sass,使用sass-loader
                 // stylus：安装stylus,使用stylus-loader
-            {test:/\.css$/,use:['style-loader','css-loader','less-loader']},
+            {
+                test:/\.css$/,
+                use:['style-loader','css-loader','less-loader'],
+                use:[{
+                    loader:'style-loader',
+                    options:{
+                        // 让style标签插在最上面
+                        insertAt:'top'
+                    }
+                },'css-loader','less-loader'],
+            },
+            {
+                test:/\.css$/,
+                use:[
+                    // 抽离css样式到link标签中，mini-css-extract-plugin
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    // css浏览器前缀自动添加。根目录创建对应配置文件`postcss.config.js`
+                    'postcss-loader'
+                ]
+            },
             // js es6-->es5
             {
                 test:/\.js/,
@@ -123,7 +166,21 @@ module.exports={
                 }],
                 // 编译打包时不需要的文件目录
                 exclude:/node_modules/
-            }
+            },
+            // js babel使用.babelrc文件配置
+            {
+                test:/\.js/,
+                // 代码规范校验,顺序不能变，校验配置文件根目录建.eslintrc.json，可在eslint官网demo生成
+                use:['babel-loader','eslint-loader'],
+                exclude:/node_modules/
+            },
+            // 代码规范校验
+            {
+                test:/\.js$/,
+                use:'eslint-loader',
+                // 确保在最之前校验
+                enforce:'pre',
+            },
         ]
     }
 }
@@ -132,19 +189,80 @@ module.exports={
 ```cmd
 <!-- 安装插件 -->
 yarn add html-webpack-plugin -D
-
+yarn add mini-css-extract-plugin -D
+yarn add postcss-loader autoprefixer -D
 ```
 
 ```cmd
 <!-- 安装加载器 -->
 yarn add css-loader style-loader
 yarn add @babel/core @babel/preset-env babel-loader
+<!-- 安装代码校验 -->
+yarn add eslint eslint-loader
 ```
 
 ```cmd
 <!-- 安装babel的插件 -->
 yarn add @babel/plugin-proposal-class-properties
 yarn add @babel/plugin-proposal-decorators
+<!-- 转某些高级es6es7语法 -->
+yarn add @babel/runtime
+yarn add plugin-transform-runtime
+<!-- 转实例上的高级语法 -->
+yarn add babel-polyfill
+```
+
+```js
+// postcss.config.js
+module.exports={
+    plugins:[require('autoprefixer')]
+}
+```
+
+```js
+// .babelrc
+{
+    "presets":[
+        "@babel/preset-env",
+    ],
+    "plugin":[
+        // 转某些高级es6es7语法(generator,promise等babel无法转的)
+        "@babel/plugin-transform-runtime",
+    ]
+}
+```
+
+```js
+import './other.js';
+// 转实例上的高级语法
+import 'babel-polyfill';
+
+str.includes('o');// es7
+```
+
+```js
+// .eslintrc.json
+{
+    "parserOptions": {
+        "ecmaVersion": 5,
+        "sourceType": "script",
+        "ecmaFeatures": {}
+    },
+    "rules": {
+        // 改成0即可不验证
+        "constructor-super": 2,
+        "no-case-declarations": 2,
+        "no-class-assign": 2,
+        "no-compare-neg-zero": 2,
+        "no-cond-assign": 2,
+        "no-console": 2,
+        "no-const-assign": 2,
+        "no-constant-condition": 2,
+        "no-control-regex": 2,
+        "no-debugger": 2
+    },
+    "env": {}
+}
 ```
 
 - 启动开发服务

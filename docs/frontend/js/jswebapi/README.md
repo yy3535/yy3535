@@ -508,7 +508,56 @@ xhr.send(null)
 - JSONP
 - 服务器端设置 http header
 
-## 05-存储
+
+
+
+
+## 05-websocket
+- 使用
+```js
+var Socket = new WebSocket(url, [protocol] );
+```
+
+WebSocket 事件
+事件	描述
+Socket.onopen	连接建立时触发
+Socket.onmessage	客户端接收服务端数据时触发
+Socket.onerror	通信发生错误时触发
+Socket.onclose	连接关闭时触发
+WebSocket 方法
+方法	描述
+Socket.send()	使用连接发送数据
+Socket.close()	关闭连接
+
+```js
+if(window.WebSocket){
+    var ws = new WebSocket('ws://localhost:3001');
+
+    ws.onopen = function(e){
+        console.log("连接服务器成功");
+        // 向服务器发送消息
+        let params={
+        region:'姑苏区'
+        }
+        ws.send(JSON.stringify(params));
+    }
+    ws.onclose = function(e){
+        console.log("服务器关闭");
+    }
+    ws.onerror = function(){
+        console.log("连接出错");
+    }
+    // 接收服务器的消息
+    ws.onmessage = function(e){
+        let message = "message:"+e.data+"";
+        
+        console.log(message);
+    }   
+}
+
+```
+
+## 06-存储
 
 ### cookie
 
@@ -542,7 +591,7 @@ cookie 本身不是用来做服务器端存储的（计算机领域有很多这�
 - 是否会携带到 ajax 中
 - API易用性
 
-## 06-jquery 相关
+## 07-jquery 相关
 
 移动端使用 zepto，使用方法和 jquery 一样。API 地址 http://jquery.cuishifeng.cn/
 

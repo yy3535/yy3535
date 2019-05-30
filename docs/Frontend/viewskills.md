@@ -651,7 +651,7 @@ new Animal();
 ```
 
 ### 类与继承【非常重要，是整个js里最难理解的内容】
-- 如何实现继承（js继承本质：原型链）
+- 如何实现继承（es5js继承本质：原型链）
 ```js
 // 第一种，借助构造函数实现继承(这种无法继承parent原型对象上的方法)
 function Parent1(){
@@ -707,7 +707,9 @@ Child5.prototype=Object.create(Parent5.prototype);// 隔离父类和子类的原
 Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 ```
 - 继承的几种方式
-
+    - es5继承
+    - es6继承
+    -  【查】class 继承 和 es5原型链 继承有什么区别？
 
 ## 通信
 ### 什么是同源策略及限制
@@ -1133,4 +1135,9 @@ console.log(obj2)
     - 说出八个事件点，八个事件点之间的区别
     - 页面性能监控，在mounted更合适，测某个点的性能,updated更合适
 - 有看过源码吗？
+    - observer的作用:在vue实例化时调用，把所有的data遍历一遍，调用object.defineProperty，读取时是否添加观察者，数据变化时是否通知观察者。
+    - dep的作用：有一个列表，可以添加，可以通知。
+    -watcher：会动态改变Dep.target，
 
+## 业务能力
+- 项目难点，亮点，解决手段，半小时内说完，语言组织好

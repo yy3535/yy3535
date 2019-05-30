@@ -1143,21 +1143,7 @@ less/
 
 ### 打包
 npm run build，出现dist目录
-
-### express
-vue 启动服务通过express，所以内置了express.
-```js
-//server.js
-let express=require('express');
-
-let app=express();
-
-app.get('/getUser',(req,res)=>{
-    res.json({name:'zfpx'});
-})
-
-app.listen(3000)
-```
+- vue 启动服务通过express，所以内置了express.
 
 ### defer & async /preload & prefetch
 

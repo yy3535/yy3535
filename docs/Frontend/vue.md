@@ -1485,7 +1485,19 @@ import 'bootstrap/dist/css/bootstrap.css'
 ```
 ### 编程式路由跳转
 ```js
-this.$router.push('/user/list')
+// 字符串
+router.push('home')
+
+// 对象
+router.push({ path: 'home' })
+
+// 命名的路由
+router.push({ name: 'user', params: { userId: '123' }})
+{{this.$route.params.userId}}
+
+// 带查询参数，变成 /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+{{this.$route.query.plan}}
 ```
 
 ### 路由钩子函数
@@ -1639,6 +1651,7 @@ router.beforeEach((to,from,next)=>{
 #### 路由面试考点
 - 钩子函数
 - $router方法 $route属性
+  - $route.path当前路由
 - meta备注
 - redirect重定向
 
@@ -1877,3 +1890,12 @@ npm install eslint --save-dev
     <App></App>
   <Root>
   ```
+## vue.http请求头加token
+```js
+Vue.http.interceptors.push((request, next) => {
+    if(request.url.includes('Warning/Warning')){
+      request.headers.set('auth', this.user.Token);
+    }
+    next()
+  });
+```

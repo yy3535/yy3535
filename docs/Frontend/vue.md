@@ -1665,11 +1665,12 @@ router.beforeEach((to,from,next)=>{
   - 同步情况，调用mutation改数据
   - 异步情况，派发action，调用api，再在action里调用mutation改数据。
     - 好处：调用api逻辑不分散地放在组件里，而是独立出来，方便复用。
-  | vue组件 | vuex |
-  | ------- | ------ |
-  | data | state |
-  | computed | getters |
-  | methods | mutations/actions |
+| vue组件 | vuex |
+| :-------: | :------: |
+| data | state |
+| computed | getters |
+| methods | mutations/actions |
+  
 
 ### 安装
 yarn add vuex

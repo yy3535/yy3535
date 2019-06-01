@@ -9,6 +9,6 @@ sidebar: false
 - less sass 语法整理
 - webpack（5节）
 - 跳槽技巧（9章）(数据结构和算法视频那块未看，vue源码那块需要整理正则表达式，未看完)
-- vue剩余两节jxt（需要看node中间件)
+- vue剩余两节jxt（需要看node中间件)，掌握vue课程中的4-11节
 - 背诵笔记
 

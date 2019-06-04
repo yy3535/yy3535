@@ -1091,18 +1091,25 @@ console.log(arr2)
 - Array.reduce
 
 第一个函数返回总值和每一项的计算，对数组进行计算后得到结果
-
-```
+```js
 Array.reduce(function(total,currentValue,index,arr),initialValue)
 ```
 
 
 - Array.from
-
 from() 方法用于通过拥有 length 属性的对象或可迭代的对象来返回一个数组。
-
-```
+```js
 Array.from(object, mapFunction, thisValue)
+```
+- Array.fill(value, start, end)
+    - value：填充值。
+    - start：填充起始位置，可以省略。
+    - end：填充结束位置，可以省略，实际结束位置是end-1。
+```js
+// 采用一个默认值填初始化数组。
+const a1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+a1.fill(7)
+console.log(‘%s‘, a1)// 7,7,7,7,7,7,7,7,7,7,7
 ```
 
 ### 字符串常用 API

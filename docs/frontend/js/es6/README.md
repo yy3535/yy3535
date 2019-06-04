@@ -554,11 +554,8 @@ map.forEach((item,key)=>{
 
 ```
 
-## 字符串符号``
-
-可自动支持换行，用${}显示变量值
-
-```
+## 模板字符串``
+```js
 //拼接字符串
 let name='zfpx';
 let age=10;
@@ -566,5 +563,34 @@ let val=`${name}今年${age}岁了
 你好
 `
 console.log(val)
-
 ```
+- 用`（反引号）标识，用${}将变量括起来。可自动支持换行，用${}显示变量值
+- 如果使用模版字符串表示多行字符串，所有的空格和缩进都会被保存在输出中
+- 可以放入任意的JavaScript表达式，还可以进行运算
+- 模版字符串还可以调用函数
+- 引用模版字符串本身
+```js
+let str="return"+"`Hello! ${name}`";
+let func=new Function("name",str);
+console.log(func("zzw"));
+```
+
+## 其他语法
+- Object.is(value1, value2);
+  - 参数
+    - value1，第一个需要比较的值。
+    - value2，第二个需要比较的值。
+  - 返回值
+    - 表示两个参数是否相同的`布尔值` 。
+- 是不是非数
+  - window.isNaN()
+    - 先把参数转化为数字类型,再判断是不是 NaN
+    - 只要不是数字都满足
+  - Number.isNaN()
+    - 先判断参数是不是数字类型,不是就返回 false, 是数字类型再进入判断是不是 NaN.
+    - 只有数字中的NaN满足
+```js
+window.isNaN('abc');// true
+Number.isNaN('abc');// false
+```
+

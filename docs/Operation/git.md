@@ -55,11 +55,19 @@ git checkout dev
 
    即可访问<https://zhugeshuiying.github.io/>
 
-## git 放弃本地修改，强行拉取更新
+## git 放弃本地修改，强行拉取更新(慎用)
 ```js
 git fetch --all
 git reset --hard origin/master
 git pull //可以省略
+```
+
+## git reset --hard恢复操作
+```js
+// 所有commit过的操作，最后commit的在最上面0的位置上
+git reflog
+// 恢复commmit的文件
+git reset --hard 98abc5a
 ```
 
 

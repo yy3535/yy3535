@@ -1,3 +1,69 @@
+// 观察者（发布订阅）
+class Dep {
+    constructor(){
+        // 存放所有的watcher
+        this.subs=[];
+    }
+    // 订阅
+    addSub(watcher){
+        this.subs.push(watcher);
+    }
+    // 发布
+    notify(){
+        this.subs.forEach(watcher=>watcher.update());
+    }
+}
+class Watcher{
+    constructor(vm,expr,cb){
+        this.vm=vm;
+        this.expr=expr;
+        this.cb=cb;
+        // 默认先存放老值
+        this.oldValue=this.get();
+
+    }
+    get(){
+        let value=CompileUtil.getVal(this.vm,this.expr);
+        return value;
+    }
+    update(){
+        let newVal=CompileUtil.getVal(this.vm,this.expr);
+        if(newVal!==this.oldValue){
+            this.cb(newVal);
+        }
+    }
+}
+
+// 数据劫持
+class Observer {
+    constructor(data){
+        this.Observer(data);
+    }
+    observer(data){
+        // 是对象才观察
+        if(data&&typeof data=='object'){
+            for(let key in data){
+                this.defineReactive(data,key,data[key]);
+            }
+        }
+    }
+    defineReactive(obj,key,value){
+        this.observer(value)
+        Object.defineProperty(obj,key,{
+            get(){
+                return value;
+            },
+            set:(newVal)=>{
+                if(newVal!=value){
+                    value=newVal;
+                }
+            }
+        })
+    }
+}
+
+
+// 编译模板
 class Compiler{
     constructor(el,vm){
         // 是否是元素节点
@@ -108,6 +174,8 @@ class Vue{
         this.$data=options.data;
 
         if(this.$el){
+            // 数据劫持（把数据全部转化成用Object.defineProperty来定义）
+            new IntersectionObserver(this.$data);
             // 编译模板
             new Compiler(this.$el,this);
         }

@@ -70,5 +70,16 @@ git reflog
 git reset --hard 98abc5a
 ```
 
-
+## git提交时出现non-fast-forward冲突
+- 原因
+  - git仓库已有部分代码，不允许直接代码覆盖
+- 方式
+  - 强制用本地代码覆盖git仓库内容
+    - git push -f
+  - 先把git的东西fetch到本地然后merge再commit push上去
+    - git fetch
+    - git merge(输完去文件中解决冲突)
+    - git add .
+    - git commit -m -a
+    - git push origin master
 

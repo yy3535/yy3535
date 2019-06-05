@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/minireset.css/0.0.2/minireset.min.css">
+    <title>Document</title>
+    <style>
+        .grid{
+            display:flex;
+            flex-wrap:wrap;
+            width:300px;
+        }
+        .grid>dd{
+            box-sizing: border-box;
+            border:4px solid grey;
+            text-align: center;
+            line-height: 100px;
+            height: 100px;
+            width:100px;
+            margin-left:-4px;
+            margin-top:-4px;
+        }
+        .grid>dd:nth-child(-n+3){
+            margin-top:0;
+        }
+        .grid>dd:nth-child(3n+1){
+            margin-left:0;
+        }
+        .grid>dd:hover{
+            border-color:red;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <dl class="grid">
+        <dd>1</dd>
+        <dd>2</dd>
+        <dd>3</dd>
+        <dd>4</dd>
+        <dd>5</dd>
+        <dd>6</dd>
+        <dd>7</dd>
+        <dd>8</dd>
+        <dd>9</dd>
+    </dl>
+</body>
+
+</html>

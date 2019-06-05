@@ -26,11 +26,10 @@ module.exports={
 ```
 
 ### 快捷键
-
-`<!--  -->`
-`//`
-`/* */`
-ctrl+/
+- 注释
+  - ctrl+/ `<!--  -->``//``/* */`
+- 代码
+  - ul.grid>li*9
 
 ## 一体化后端服务leancloud
 为产品开发提供强有力的后端支持
@@ -44,3 +43,4 @@ ctrl+/
 
 ## es6,7-->es5
 babeljs.io中try it out
+

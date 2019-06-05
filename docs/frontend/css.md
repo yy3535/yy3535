@@ -45,14 +45,98 @@
 - em/strong
 - i 斜体/做icon图标
 
-## 颜色
+## 语义化标签
+- 多个同样的东西可以用ul li标签，看上去更清楚
+
+
+
+## 样式初始化
+reset.css
+
+## CSS属性
+
+### 选择器
+- id选择器
+- 类选择器
+- 标签选择器
+- 属性选择器
+  - E[attr]、E[attr=val]、E[attr*=val]、E[attr^=val]、E[attr$=val]
+- 伪类选择器
+  - E:only-of-type 、E:only-child、E:first-child、E:last-child 、E:nth-child(n)、E:nth-last-child(n)、E:nth-of-type(n)、E:nth-last-of-type(n){n 范围[0,+∞),即所有子元素,0 和负数在伪类选择器中获取不到;-n+5 表示[1,5]}、E:empty、E:target、E:enabled、E:disabled 控制表单控件的禁用状态、E:checked 单选框或复选框被选中
+- 伪元素选择器
+  - E::befor、E::after、E::first-letter、E::first-line、E::selection(c3 引入)
+### 颜色
 - Hsla(200,50%,100%,0.7)
-H: Hue(色调)//0(或360)表示红色，120表示绿色，240表示蓝色
-S: Saturation(饱和度)//0.0% - 100.0%
-L：Lightness(亮度)。//0.0% - 100.0%
-A：Alpha透明度//0~1
+    - H: Hue(色调)//0(或360)表示红色，120表示绿色，240表示蓝色
+    - S: Saturation(饱和度)//0.0% - 100.0%
+    - L：Lightness(亮度)。//0.0% - 100.0%
+    - A：Alpha透明度//0~1
+- RGBA:该透明度不会被继承，区别于opacity
+
+### 文本阴影:
+text-shadow:none | <shadow> [ , <shadow> ]* 可以多阴影,逗号隔开
+<shadow> = <length>{2,3} && <color>? {Xoffset 可负、Yoffset 可负、blur 不可负}、颜色
+### 盒模型:
+box-sizing:content-box(标准模式盒模型) | border-box(怪异模式盒模型)
+### 盒子阴影:
+box-shadow:none | <shadow> [ , <shadow> ]* 可以有多个阴影
+<shadow> = inset? && <length>{2,4} && <color>? 内阴影、{Xoffset 可负、Yoffset 可负、blur 不可负、外延可负}、颜色
+### 边框圆角:
+border-radius:[ <length> | <percentage> ]{1,4} [ / [ <length> | <percentage> ]{1,4} ]?
+按上左(top-left)、上右(top-right)、下右(bottom-right)、下左(bottom-left)的顺序作用于四个角
+### 边框图片:
+border-image:<' border-image-source '> || <' border-image-slice '> [ / <' border-image-width '> | / <' border-image-width '>? / <'
+border-image-outset '> ]? || <' border-image-repeat '>
+source:图像路径url
+[面试]slice:内偏移(分割方式) [ <number> | <percentage> ]{1,4} && fill?指定从上,右,下,左方位来分隔图像,将图像分成4 个角,4 条边
+和中间区域共9 份,中间区域始终是透明的(即没图像填充),加上关键字fill 后按border-image-repeat 设定填充
+
+width:边框厚度,将裁切的图片缩放至设定厚度,然后在边框中显示,超出border-width 部分不显示
+outset:扩张,设置后图像在原本基础上向外延展设定值后再显示,不允许负值(少用)
+repeat:平铺,默认stretch 拉伸;repeat 平铺但不缩放;round 平铺且自适应缩放大小;space 平铺且自适应缩放间距
+### 渐变:
+线性渐变linear-gradient:( [<point> || <angle>,]? <stop>, <stop> [, <stop>]* )
+径向渐变radial-gradient:([ [ <shape> || <size> ] [ at <position> ]? , | at <position>, ]?<color-stop>[ , <color-stop> ]+)
+注意:渐变色不是单一颜色,不能使用backgroud-color 设置,只能使用background 设置
+间隔分明实现,red 0%,red 33.3%,green 33.3%,green 66.6%,blue 66.6%,blue 100%
+[面试]径向渐变中的size:渐变终止的地方(要能看到明显的起点终点来判定是哪种,默认最远角)
+closest-side:最近边、farthest-side:最远边、closest-corner:最近角、farthest-corner:最远角
+### 背景:
+background-size:auto/number/percentage/cover/contain
+cover 自动等比缩放,直到某方向完全显示;contain 自动等比缩放,直到图片完全显示
+[面试]移动端实现较小图片拥有较大响应区:下面连个属性都设置成context-box,配合padding 值增大响应区
+background-origin:padding-box/border-box/content-box; 设置定位原点
+background-clip: padding-box/border-box/content-box; 设置显示区域
+### 过渡:
+transition: property duration timing-function delay;
+过渡属性(必要,全属性为all)、过渡时间(必要)、过渡曲线(常用linear 匀速)、延时事件
+### 变换:
+坐标轴:x 向右为正,y 向下文正,z 向屏幕外为正
+3D 变换比2D 变换相比:多个Z 轴,合写语法需要写上默认值,此处不做详细说明
+translate 平移:正值向坐标轴正向平移,负值向坐标轴反向平移;默认参考元素左上角
+scale 缩放:比值,1 为不缩放,>1 为放大,<1 为缩小;默认参考元素中心点
+rotate 旋转:正向面对某坐标轴,正值为顺时针旋转,负值为逆时针旋转;默认参考元素中心点
+skew 斜切/翻转/扭曲(2D 独有):正值向坐标轴正向拉伸,默认元素中心点固定,拉伸右下角点,面积保持不变进行扭曲
+transform-origin 改变参考点
+### 动画
+定义:@keyframes 动画序列{ 关键帧{ 属性:目标值} .... }
+关键帧可以用from to 关键字,也可以用百分比
+引用:animation: 动画序列名持续时间过渡类型延迟时间循环次数是否反向动画之外状态
+过渡类型animation-timing-function: linear | ease-in-out | steps(n); 实现步进,此时动画不连续
+循环次数animation-iteration-count:n | infinte; 可设定具体次数或无限循环
+[面试]动画外状态animation-fill-mode: forwards | backwords | both;
+说明:forwards 在动画结束后保持最后状态(100%状态),backwords 会在延迟开始之前先执行最初状态(0%状态,无延迟
+时,没有明显效果),both 会存在上述两种情况
+是否反向animation-direction: alternate 交替| reverse 反向| normal 正常
+常用简写:animation: move 5s [2s] linear infinite [alternate]
+
+### 媒体查询
+查询到当前屏幕的宽度,针对不同的屏幕宽度设置不同的样式来适应不同屏幕.重置浏览器大小时,页面也会根据浏览器的
+宽度和高度重新渲染页面.
 
 ## CSS布局
+
+
 ### table布局（简单）
 ### 技巧性布局（难）
 #### float浮动+margin
@@ -90,8 +174,10 @@ float对自身的影响：
 - viewport
 - 隐藏，折行，自适应空间
 - rem/viewport/media query
-
 - 媒体查询
+  - @media screen [not|only]? and (media feature) { CSS-Code; }
+media feature :max(min)-height (width),为了实现向上兼容,常用min-width,从小写到大
+  - 媒体查询调用不同css 文件:<link rel="stylesheet" media=" screen and|not|only (media feature)" href="mystylesheet.css">
 ```css
 .container{padding:0 15px; margin:0 auto;}
 .container:before{

@@ -339,6 +339,7 @@ www.elong.com
                 - demo2:父元素设置BFC可以清除浮动(计算BFC高度时，浮动元素也会参与计算)
 
 
+- 负边距，会重叠。(margin为负)
 
 ## DOM事件
 - 基本概念：DOM事件(DOM标准)的级别
@@ -1164,3 +1165,81 @@ console.log(obj2)
     - 为H5、客户端讲解算法并协助完成开发
     - 和PHP、PM同学在一天的时间内快速支持足彩竞猜活动
     - 和leader独立负责彩票PC站
+
+## 前端方向、
+- 入门级
+
+- 中高级
+    - React+Node
+    - React+视频
+    - React+游戏
+    - ES6+游戏（node都不用学）
+    - 视频/游戏/实时通信
+
+## 真题解析
+- 从“九宫格”考CSS综合实力
+    - reset重置默认样式
+    - DOM结构不要只想到div，可以用ul li
+    - 布局：table-cell兼容性最好，绝对定位和inline变通性差，flex和grid说明新技术掌握较好
+    - 盒模型：加边框和居中这些需要手写预测错误
+    - css高级选择器：加hover后又出现问题
+- 总结考点
+    - flex布局
+    - box-sizing
+    - css选择器
+    - z-index
+    - 负边距
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/minireset.css/0.0.2/minireset.min.css">
+    <title>Document</title>
+    <style>
+        .grid{
+            display:flex;
+            flex-wrap:wrap;
+            width:300px;
+        }
+        .grid>dd{
+            box-sizing: border-box;
+            border:4px solid grey;
+            text-align: center;
+            line-height: 100px;
+            height: 100px;
+            width:100px;
+            margin-left:-4px;
+            margin-top:-4px;
+        }
+        .grid>dd:nth-child(-n+3){
+            margin-top:0;
+        }
+        .grid>dd:nth-child(3n+1){
+            margin-left:0;
+        }
+        .grid>dd:hover{
+            border-color:red;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <dl class="grid">
+        <dd>1</dd>
+        <dd>2</dd>
+        <dd>3</dd>
+        <dd>4</dd>
+        <dd>5</dd>
+        <dd>6</dd>
+        <dd>7</dd>
+        <dd>8</dd>
+        <dd>9</dd>
+    </dl>
+</body>
+</html>
+```
+<img :src="$withBase('/img/九宫格.jpg')">
+- “一个函数”

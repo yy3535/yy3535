@@ -1241,5 +1241,11 @@ console.log(obj2)
 </body>
 </html>
 ```
-<img :src="$withBase('/img/九宫格.jpg')">
+
+![九宫格](img/九宫格.jpg)
+<!-- - <img :src="$withBase('/img/算法.png')" > -->
+<!-- <img :src="$withBase('/foo.png')" alt="foo"> -->
+<!-- <img :src="$withBase('/img/九宫格.jpg')" > -->
+
+
 - “一个函数”

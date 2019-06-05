@@ -110,7 +110,8 @@ class Compiler{
             // 是否是指令
             if(this.isDirective(name)){
                 let [,directive]=name.split('-');
-                CompileUtil[directive](node,expr,this.vm);
+                let [directiveName,eventName]=directive.split(':');
+                CompileUtil[directiveName](node,expr,this.vm,eventName);
             }
         })
     }
@@ -141,7 +142,9 @@ class Compiler{
 }
 CompileUtil={
     getVal(vm,expr){
-        return expr.split('.').reduce((data,current)=>{
+        let arr=expr.split('.');
+        if(arr.length===0) return vm.$data[expr]
+        return arr.reduce((data,current)=>{
             return data[current];
         },vm.$data)
     },
@@ -170,13 +173,27 @@ CompileUtil={
         let value=this.getVal(vm,expr)
         fn(node,value)
     },
-    html(){
-        // node.innerHTML=xxx
+    html(node,expr,vm){
+        // node节点 expr表达式 vm当前实例
+        // v-model的输入框赋值数据 node.value=xxx
+        let fn=this.updater['htmlUpdater']
+        // 给输入框加一个观察者，如果稍后数据更新了会触发此方法，会拿新值给输入框赋值
+        new Watcher(vm,expr,(newVal)=>{
+            fn(node,newVal);
+        })
+        // 根据表达式取数据
+        let value=this.getVal(vm,expr)
+        fn(node,value)
     },
     getContentValue(vm,expr){
         // 遍历表达式，将内容重新替换成完整的内容，返回
         return expr.replace(/\{\{(.+?)\}\}/g,(...args)=>{
             return this.getVal(vm,args[1]);
+        })
+    },
+    on(node,expr,vm,eventName){
+        node.addEventListener(eventName,(e)=>{
+            vm[expr].call(vm,e)
         })
     },
     text(node,expr,vm){
@@ -192,6 +209,9 @@ CompileUtil={
         fn(node,content);
     },
     updater:{
+        htmlUpdater(node,value){
+            node.innerHTML=value;
+        },
         modelUpdater(){
             node.value=value;
         },
@@ -210,7 +230,8 @@ class Vue{
         // vue的$el,$data,$option实例方法
         this.$el=options.el;
         this.$data=options.data;
-
+        let computed=options.computed;
+        let methods=options.methods;
         if(this.$el){
             // 数据劫持（把数据全部转化成用Object.defineProperty来定义）
             new IntersectionObserver(this.$data);
@@ -225,6 +246,14 @@ class Vue{
                 })
             }
 
+            // methods实现
+            for(let key in methods){
+                Object.defineProperty(this,key,{
+                    get:()=>{
+                        return methods[key]
+                    }
+                })
+            }
             // 把数据获取操作 VM上的取值操作都代理到vm.$data
             this.proxyVm(this.$data);
             
@@ -239,6 +268,10 @@ class Vue{
                 get(){
                     // 进行了转化操作
                     return data[key];
+                },
+                // 设置代理方法
+                set(newVal){
+                    data[key]=newVal;
                 }
             })
         }

@@ -7,45 +7,93 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/minireset.css/0.0.2/minireset.min.css">
     <title>Document</title>
     <style>
-        .grid{
-            display:flex;
-            flex-wrap:wrap;
+        .listBox>li{
+            border:1px solid grey;
             width:300px;
+            padding:3px;
+            padding-right:15px;
+            margin-bottom: 5px;
+            position: relative;
         }
-        .grid>dd{
-            box-sizing: border-box;
-            border:4px solid grey;
-            text-align: center;
-            line-height: 100px;
-            height: 100px;
-            width:100px;
-            margin-left:-4px;
-            margin-top:-4px;
-        }
-        .grid>dd:nth-child(-n+3){
-            margin-top:0;
-        }
-        .grid>dd:nth-child(3n+1){
-            margin-left:0;
-        }
-        .grid>dd:hover{
-            border-color:red;
-            z-index: 1;
+        .listBox>li>.del{
+            position: absolute;
+            right:3px;
+            top:0px;
+            width:15px;
+            height: 100%;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <dl class="grid">
-        <dd>1</dd>
-        <dd>2</dd>
-        <dd>3</dd>
-        <dd>4</dd>
-        <dd>5</dd>
-        <dd>6</dd>
-        <dd>7</dd>
-        <dd>8</dd>
-        <dd>9</dd>
-    </dl>
+    <ul class="listBox">
+        <li><span>内容1内容1内容1内容1内容1内容1内容1内容1</span><i class="del">x</i></li>
+        <li><span>内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2</span><i class="del">x</i></li>
+        <li><span>内容3</span><i class="del">x</i></li>
+        <li><span>内容4</span><i class="del">x</i></li>
+    </ul>
+    <hr>
+    <ul class="listBox">
+        <li><span>内容1内容1内容1内容1内容1内容1内容1内容1</span><i class="del">x</i></li>
+        <li><span>内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2</span><i class="del">x</i></li>
+        <li><span>内容3</span><i class="del">x</i></li>
+        <li><span>内容4</span><i class="del">x</i></li>
+    </ul>
 </body>
-
+<script>
+    // 非面对对象方式（代码耦合严重，逻辑不清楚，维护困难）
+    // function list(sel){
+    //     let lists=Array.from(document.querySelectorAll(sel));
+    //     lists.forEach((item,index)=>{
+    //         item.addEventListener('click',function(e){
+    //             if(e.target.className.indexOf('del')!==-1){
+    //                 item.removeChild(e.target.parentNode)
+    //             }
+    //         })
+    //     })
+    // }
+    // window.addEventListener('DOMContentLoaded',function(){
+    //     list('.listBox');
+    // })
+    // ES5面对对象方式
+    // function List(sel){
+    //     let self=this;
+    //     this.lists=Array.from(document.querySelectorAll(sel));
+    //     this.lists.forEach((item,index)=>{
+    //         item.addEventListener('click',function(e){
+    //             if(e.target.className.indexOf('del')!==-1){
+    //                 self.removeItem.call(item,e.target)
+    //             }
+    //         })
+    //     })
+    //     // 注意：箭头函数this和定义有关，和谁调用没关系
+    //     this.removeItem=function(target){
+    //         this.removeChild(target.parentNode);
+    //     }
+    // }
+    // window.addEventListener('DOMContentLoaded',function(){
+    //     new List('.listBox');
+    // })
+    // ES6面对对象方式
+    class List {
+        constructor(sel){
+            let self=this;
+            this.els=Array.from(document.querySelectorAll(sel));
+            this.els.forEach((item,index)=>{
+                item.addEventListener('click',(e)=>{
+                    if(e.target.className.indexOf('del')!==-1){
+                        self.removeItem.call(item,e.target)
+                    }
+                })
+            })
+        }
+        removeItem(target){
+            this.removeChild(target.parentNode);
+        }
+        
+    }
+    window.addEventListener('DOMContentLoaded',function(){
+        new List(".listBox");
+    })
+</script>
 </html>

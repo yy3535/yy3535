@@ -49,93 +49,43 @@ HTML 是一个有既定标签标准的 XML 格式，标签的名字、层级关�
 【附带一个 chrome Element 的截图】
 
 ### DOM 节点操作
-
-#### 获取 DOM 节点
-
-```javascript
-var div1 = document.getElementById('div1') // 元素
-var divList = document.getElementsByTagName('div')  // 集合
-console.log(divList.length)
-console.log(divList[0])
-
-var containerList = document.getElementsByClassName('.container') // 集合
-var pList = document.querySelectorAll('p') // 集合
-```
-
-#### prototype
-
-DOM 节点就是一个 JS 对象，它符合之前讲述的对象的特征 ———— 可扩展属性
-
-```javascript
+- DOM 节点就是一个 JS 对象
+- nodeType 区分过滤text标签，=1是p，=3是text
+- nodeName=#text是text，=p是p
+```js
+ // 获取DOM节点
+var div1 = document.getElementById('div1')
+ // 获取DOM节点的集合
+var divList = document.getElementsByTagName('div')
+var containerList = document.getElementsByClassName('.container')
 var pList = document.querySelectorAll('p')
-var p = pList[0]
-console.log(p.style.width)  // 获取样式
-p.style.width = '100px'  // 修改样式
-console.log(p.className)  // 获取 class
-p.className = 'p1'  // 修改 class
-
-// 获取 nodeName 和 nodeType
+// 获取property和修改property(改变 JS 对象)
+console.log(p.style.width) 
+console.log(p.className) 
 console.log(p.nodeName)
 console.log(p.nodeType)
-```
-
-#### Attribute
-
-property 的获取和修改，是直接改变 JS 对象，而 Attibute 是直接改变 html 的属性。两种有很大的区别
-
-```javascript
-var pList = document.querySelectorAll('p')
-var p = pList[0]
-p.getAttribute('data-name')
-p.setAttribute('data-name', 'imooc')
+p.style.width = '100px'  
+p.className = 'p1'
+// 获取设置属性(Attibute 是改变 html 的属性)
 p.getAttribute('style')
 p.setAttribute('style', 'font-size:30px;')
-```
-
-### DOM 树操作
-
-新增节点
-
-```javascript
-var div1 = document.getElementById('div1')
-// 添加新节点
+// 创建节点
 var p1 = document.createElement('p')
 p1.innerHTML = 'this is p1'
-div1.appendChild(p1) // 添加新创建的元素
+// 添加新节点
+div1.appendChild(p1) 
 // 移动已有节点
-var p2 = document.getElementById('p2')
 div1.appendChild(p2)
-```
-
-获取父元素
-
-```javascript
-var div1 = document.getElementById('div1')
+// 获取父节点
 var parent = div1.parentElement
-```
-
-获取子元素
-
-```javascript
-var div1 = document.getElementById('div1')
+// 获取子节点
 var child = div1.childNodes
-```
-
-删除节点
-
-```javascript
-var div1 = document.getElementById('div1')
+// 删除节点
 var child = div1.childNodes
 div1.removeChild(child[0])
 ```
 
-还有其他操作的API，例如获取前一个节点、获取后一个节点等，但是面试过程中经常考到的就是上面几个。
-
-nodeType 区分过滤text标签，=1是p，=3是text
-
-nodeName=#text是text，=p是p
-
-<!-- ### DOM事件
+### DOM事件
 
 |属性|	描述	|
 | :------| ------: | :------: |
@@ -148,7 +98,7 @@ onpageshow|	该事件在用户访问页面时触发	|
 onpagehide|	该事件在用户离开当前网页跳转到另外一个页面时触发	|
 onresize|	窗口或框架被重新调整大小。	|
 onscroll|	当文档被滚动时发生的事件。	|
-onunload|	用户退出页面。|  -->
+onunload|	用户退出页面。| 
 
 ## 解答
 
@@ -162,22 +112,12 @@ onunload|	用户退出页面。|  -->
 - 获取父节点 获取子节点
 - 新增节点，删除节点
 
-### DOM 节点的 Attribute 和 property 有何区别
-
-- property 只是一个 JS 属性的修改
-- attr 是对 html 标签属性的修改
-  
-
 ## 02-BOM操作
-
-DOM 是浏览器针对下载的 HTML 代码进行解析得到的 JS 可识别的数据对象。而 BOM（浏览器对象模型）是浏览器本身的一些信息的设置和获取，例如获取浏览器的宽度、高度，设置让浏览器跳转到哪个地址。
-
-- navigator
-- screen
-- location
-- history
-
-这些对象就是一堆非常简单粗暴的 API 没人任何技术含量，讲起来一点意思都没有，大家去 MDN 或者 w3school 这种网站一查就都明白了。面试的时候，面试官基本不会出太多这方面的题目，因为只要基础知识过关了，这些 API 即便你记不住，上网一查也都知道了。
+- BOM（浏览器对象模型）
+  - navigator
+  - screen
+  - location
+  - history
 
 ```javascript
 // navigator
@@ -286,11 +226,18 @@ bindEvent(body, 'click', function (e) {
 
 如果我们在`p1` `div1` `body`中都绑定了事件，它是会根据 DOM 的结构，来冒泡从下到上挨个执行的。但是我们使用`e.stopPropatation()`就可以阻止冒泡。
 
-### 代理
-
-我们设定一种场景，如下代码，一个`<div>`中包含了若干个`<a>`，而且还能继续增加。那如何快捷方便的为所有的`<a>`绑定事件呢？
-
+### 事件代理
+- 使用
+  - e.target// 目标DOM节点
+  - e.target.nodeName=='A'// 目标DOM节点的节点名称(筛选a标签)
+  - e.target.className// 目标DOM节点的类名
+  - e.target.innerHTML// 目标DOM节点的内容
+  - e.target.innerText// 目标DOM节点的内容
+- 代理的优点
+  - 使代码简洁
+  - 减少浏览器的内存占用
 ```html
+<!-- 例 -->
 <div id="div1">
     <a href="#">a1</a>
     <a href="#">a2</a>
@@ -298,23 +245,18 @@ bindEvent(body, 'click', function (e) {
     <a href="#">a4</a>
 </div>
 <button>点击增加一个 a 标签</button>
+<script>
+    var div1 = document.getElementById('div1')
+    div1.addEventListener('click', function (e) {
+        var target = e.target
+        if (target.nodeName === 'A') {
+            alert(target.innerHTML)
+        }
+    })
+</script>
 ```
-
-这里就会用到事件代理，我们要监听`<a>`的事件，但要把具体的事件绑定到`<div>`上，然后看事件的触发点，是不是`<a>`
-
 ```javascript
-var div1 = document.getElementById('div1')
-div1.addEventListener('click', function (e) {
-    var target = e.target
-    if (e.nodeName === 'A') {
-        alert(target.innerHTML)
-    }
-})
-```
-
-那我们现在完善一下之前写过的通用事件绑定函数，加上事件代理
-
-```javascript
+// 通用事件绑定函数
 function bindEvent(elem, type, selector, fn) {
     if (fn == null) {
         fn = selector
@@ -332,28 +274,18 @@ function bindEvent(elem, type, selector, fn) {
         }
     })
 }
-```
-
-然后这样使用
-
-```js
 // 使用代理
 var div1 = document.getElementById('div1')
 bindEvent(div1, 'click', 'a', function (e) {
     console.log(this.innerHTML)
 })
-
-// 不适用代理
+// 不使用代理
 var a = document.getElementById('a1')
 bindEvent(div1, 'click', function (e) {
     console.log(a.innerHTML)
 })
 ```
 
-最后，使用代理的优点
-
-- 使代码简洁
-- 减少浏览器的内存占用
 
 ## 解答
 

@@ -1140,6 +1140,288 @@ console.log(obj2)
     - dep的作用：有一个列表，可以添加，可以通知。
     -watcher：会动态改变Dep.target，
 
+```js
+// 观察者（发布订阅）
+class Dep {
+    constructor(){
+        // 存放所有的watcher
+        this.subs=[];
+    }
+    // 订阅
+    addSub(watcher){
+        this.subs.push(watcher);
+    }
+    // 发布
+    notify(){
+        this.subs.forEach(watcher=>watcher.update());
+    }
+}
+class Watcher{
+    constructor(vm,expr,cb){
+        this.vm=vm;
+        this.expr=expr;
+        this.cb=cb;
+        // 默认先存放老值
+        this.oldValue=this.get();
+
+    }
+    get(){
+        // 先把自己放在this上
+        Dep.target=this;
+        // 再把这个观察者和数据关联起来
+        let value=CompileUtil.getVal(this.vm,this.expr);
+        Dep.target=null;
+        return value;
+    }
+    update(){
+        let newVal=CompileUtil.getVal(this.vm,this.expr);
+        if(newVal!==this.oldValue){
+            this.cb(newVal);
+        }
+    }
+}
+
+// 数据劫持
+class Observer {
+    constructor(data){
+        this.Observer(data);
+    }
+    observer(data){
+        // 是对象才观察
+        if(data&&typeof data=='object'){
+            for(let key in data){
+                this.defineReactive(data,key,data[key]);
+            }
+        }
+    }
+    defineReactive(obj,key,value){
+        this.observer(value)
+        // 给每一个属性都加上一个具有发布订阅的功能
+        let dep=new Dep();
+        Object.defineProperty(obj,key,{
+            get(){
+                // 创建watcher时，会取到对应的内容，并且把watcher放到了全局上
+                Dep.target&&dep.addSub(Dep.target);
+                return value;
+            },
+            set:(newVal)=>{
+                if(newVal!=value){
+                    this.observer(newVal);
+                    value=newVal;
+                    dep.notify();
+                }
+            }
+        })
+    }
+}
+
+
+// 编译模板
+class Compiler{
+    constructor(el,vm){
+        // 是否是元素节点
+        this.el=this.isElementNode(el)?el:document.querySelector(el);
+        // 把节点移到内存中
+        let fragment=this.node2fragment(this.el);
+
+        // 把节点中的内容进行替换
+
+        // 用数据编译模板
+        this.compile(fragment);
+        // 把编译好的内容塞回页面
+    }
+    compile(node){
+        let childNodes=node.childNodes;
+        [...childNodes].forEach(child=>{
+            
+            if(this.isElementNode(child)){
+                // 元素节点
+                this.compileElement(child)
+                // 继续用数据编译元素节点的子节点
+                this.compile(child)
+            }else{
+                // 文本节点
+                this.compileText(child)
+            }
+        })
+    }
+    compileElement(node){
+        let attributes=node.attributes;
+        // 类数组转数组
+        [...attributes].forEach(attr=>{
+            let {name,value:expr}=attr;
+            // 是否是指令
+            if(this.isDirective(name)){
+                let [,directive]=name.split('-');
+                let [directiveName,eventName]=directive.split(':');
+                CompileUtil[directiveName](node,expr,this.vm,eventName);
+            }
+        })
+    }
+    compileText(node){
+        // 是否包含{{}}
+        let content = node.textContent;
+        // 找到所有文本
+        if(/\{\{(.+?)\}\}/.test(content)){
+            CompileUtil['text'](node,expr,vm);
+        }
+
+    }
+    isDirective(attrName){
+        return attrName.startWith('v-');
+    }
+    isElementNode(node){
+        return node.nodeType===1;
+    }
+    
+    node2fragment(node){
+        let fragment=document.createDocumentFragment();
+        let firstChild;
+        while(firstChild=node.firstChild){
+            fragment.appendChild(firstChild);
+        }
+        return fragment;
+    }
+}
+CompileUtil={
+    getVal(vm,expr){
+        let arr=expr.split('.');
+        if(arr.length===0) return vm.$data[expr]
+        return arr.reduce((data,current)=>{
+            return data[current];
+        },vm.$data)
+    },
+    setValue(vm,expr,value){
+        return expr.split('.').reduce((data,current,index,arr)=>{
+            if(index==arr.length-1){
+                return data[current]=value;
+            }
+            return data[current];
+        },vm.$data)
+    },
+    model(node,expr,vm){
+        // node节点 expr表达式 vm当前实例
+        // v-model的输入框赋值数据 node.value=xxx
+        let fn=this.updater['modelUpdater']
+        // 给输入框加一个观察者，如果稍后数据更新了会触发此方法，会拿新值给输入框赋值
+        new Watcher(vm,expr,(newVal)=>{
+            fn(node,newVal);
+        })
+        // 页面变化更新数据变化
+        node.addEventListener('input',(e)=>{
+            let value=e.target.value;
+            this.setValue(vm,expr,value)
+        })
+        // 根据表达式取数据
+        let value=this.getVal(vm,expr)
+        fn(node,value)
+    },
+    html(node,expr,vm){
+        // node节点 expr表达式 vm当前实例
+        // v-model的输入框赋值数据 node.value=xxx
+        let fn=this.updater['htmlUpdater']
+        // 给输入框加一个观察者，如果稍后数据更新了会触发此方法，会拿新值给输入框赋值
+        new Watcher(vm,expr,(newVal)=>{
+            fn(node,newVal);
+        })
+        // 根据表达式取数据
+        let value=this.getVal(vm,expr)
+        fn(node,value)
+    },
+    getContentValue(vm,expr){
+        // 遍历表达式，将内容重新替换成完整的内容，返回
+        return expr.replace(/\{\{(.+?)\}\}/g,(...args)=>{
+            return this.getVal(vm,args[1]);
+        })
+    },
+    on(node,expr,vm,eventName){
+        node.addEventListener(eventName,(e)=>{
+            vm[expr].call(vm,e)
+        })
+    },
+    text(node,expr,vm){
+        let fn=this.updater['textUpdater'];
+        let content=expr.replace(/\{\{(.+?)\}\}/g,(...args)=>{
+            // 给表达式每个人都加上观察者
+            new Watcher(vm,args[1],()=>{
+                // 返回一个全的字符串
+                this.getContentValue(vm,expr);
+            })
+            return this.getVal(vm,args[1]);
+        })
+        fn(node,content);
+    },
+    updater:{
+        htmlUpdater(node,value){
+            node.innerHTML=value;
+        },
+        modelUpdater(){
+            node.value=value;
+        },
+        htmlUpdater(){
+
+        },
+        textUpdater(node,value){
+            node.textContent=value;
+        }
+    }
+}
+
+// 基类 调度
+class Vue{
+    constructor(options){
+        // vue的$el,$data,$option实例方法
+        this.$el=options.el;
+        this.$data=options.data;
+        let computed=options.computed;
+        let methods=options.methods;
+        if(this.$el){
+            // 数据劫持（把数据全部转化成用Object.defineProperty来定义）
+            new IntersectionObserver(this.$data);
+
+
+            // computed实现
+            for(let key in computed){
+                Object.defineProperty(this.$data,key,{
+                    get(){
+                        return computed[key].call(this);
+                    }
+                })
+            }
+
+            // methods实现
+            for(let key in methods){
+                Object.defineProperty(this,key,{
+                    get:()=>{
+                        return methods[key]
+                    }
+                })
+            }
+            // 把数据获取操作 VM上的取值操作都代理到vm.$data
+            this.proxyVm(this.$data);
+            
+            // 编译模板
+            new Compiler(this.$el,this);
+        }
+    }
+    // 实现了可以通过vm取到对应的值，直接拿值
+    proxyVm(data){
+        for(let key in data){
+            Object.defineProperty(this,key,{
+                get(){
+                    // 进行了转化操作
+                    return data[key];
+                },
+                // 设置代理方法
+                set(newVal){
+                    data[key]=newVal;
+                }
+            })
+        }
+    }
+}
+```
+
 ## 业务能力
 - 项目难点，亮点，解决手段，半小时内说完，语言组织好
 - 主动描述或者被动回答：
@@ -1248,4 +1530,135 @@ console.log(obj2)
 <!-- <img :src="$withBase('/img/九宫格.jpg')" > -->
 
 
-- “一个函数”
+- “一道函数考察基本功”
+```js
+function Foo(){
+    getName=function(){console.log(1)}
+    return this;
+}
+Foo.getName=function(){console.log(2)}
+Foo.prototype.getName=function(){console.log(3)}
+var getName=function(){console.log(4)}
+function getName(){console.log(5)}
+
+Foo.getName();// 2
+getName();// 4(变量提升，所以执行时函数声明会在函数赋值前面)
+Foo().getName();// 1(没有let，所以是全局变量，考察作用域，window.getName重新赋值了，所以是1)
+getName();// 1(同上)
+new Foo.getName();// 2(点的优先级高于无参数new，所以=>`new function(){console.log(2)}`)
+new Foo().getName();// 3(点的优先级等于有参数new，所以先new Foo()，再执行原型链上的getName)
+new new Foo().getName();// 3(先带参new和.=>new function(){console.log(3)})
+```
+    - 知识点
+        - 函数和类
+        - 原型链
+        - 运算符优先级
+        - 作用域
+        - 变量提升
+
+- 阿里笔试题
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/minireset.css/0.0.2/minireset.min.css">
+    <title>Document</title>
+    <style>
+        .listBox>li{
+            border:1px solid grey;
+            width:300px;
+            padding:3px;
+            padding-right:15px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        .listBox>li>.del{
+            position: absolute;
+            right:3px;
+            top:0px;
+            width:15px;
+            height: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <ul class="listBox">
+        <li><span>内容1内容1内容1内容1内容1内容1内容1内容1</span><i class="del">x</i></li>
+        <li><span>内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2</span><i class="del">x</i></li>
+        <li><span>内容3</span><i class="del">x</i></li>
+        <li><span>内容4</span><i class="del">x</i></li>
+    </ul>
+    <hr>
+    <ul class="listBox">
+        <li><span>内容1内容1内容1内容1内容1内容1内容1内容1</span><i class="del">x</i></li>
+        <li><span>内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2</span><i class="del">x</i></li>
+        <li><span>内容3</span><i class="del">x</i></li>
+        <li><span>内容4</span><i class="del">x</i></li>
+    </ul>
+</body>
+<script>
+    // 非面对对象方式（代码耦合严重，逻辑不清楚，维护困难）
+    function list(sel){
+        let lists=Array.from(document.querySelectorAll(sel));
+        lists.forEach((item,index)=>{
+            item.addEventListener('click',function(e){
+                if(e.target.className.indexOf('del')!==-1){
+                    item.removeChild(e.target.parentNode)
+                }
+            })
+        })
+    }
+    window.addEventListener('DOMContentLoaded',function(){
+        list('.listBox');
+    })
+    // ES5面对对象方式
+    function List(sel){
+        let self=this;
+        this.lists=Array.from(document.querySelectorAll(sel));
+        this.lists.forEach((item,index)=>{
+            item.addEventListener('click',function(e){
+                if(e.target.className.indexOf('del')!==-1){
+                    self.removeItem.call(item,e.target)
+                }
+            })
+        })
+        // 注意：箭头函数this和定义有关，和谁调用没关系
+        this.removeItem=function(target){
+            this.removeChild(target.parentNode);
+        }
+    }
+    window.addEventListener('DOMContentLoaded',function(){
+        new List('.listBox');
+    })
+    // ES6面对对象方式
+    class List {
+        constructor(sel){
+            let self=this;
+            this.els=Array.from(document.querySelectorAll(sel));
+            this.els.forEach((item,index)=>{
+                item.addEventListener('click',(e)=>{
+                    if(e.target.className.indexOf('del')!==-1){
+                        self.removeItem.call(item,e.target)
+                    }
+                })
+            })
+        }
+        removeItem(target){
+            this.removeChild(target.parentNode);
+        }
+    }
+    window.addEventListener('DOMContentLoaded',function(){
+        new List(".listBox");
+    })
+</script>
+</html>
+```
+- 复用性设计
+- 事件代理
+- 事件绑定（不光定义，还要考虑性能）
+- 渲染机制
+- 递归（常用技能）

@@ -460,7 +460,7 @@
 
 ## 箭头函数
 
-没有this指向 没有arguments
+没有this指向(this和定义有关，和谁调用无关) 没有arguments
 
 一个参数可以省略圆括号
 

@@ -113,6 +113,10 @@ console.log(!!a)
 	//这里相当于obj.a===null||obj.a===undefined,简写形式
 }**
 
+### 运算符
+- 优先级
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
 ## 答题
 
 ### JS中使用`typeof`能得到的哪些类型

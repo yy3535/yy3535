@@ -117,6 +117,8 @@ console.log(!!a)
 - 优先级
 
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+
+- 求余%
 ## 答题
 
 ### JS中使用`typeof`能得到的哪些类型
@@ -1004,6 +1006,23 @@ Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览
 | 筛选 | filter,every,some |
 | 转换成数组 | Array.from |
 
+- toString() 方法可把数组转换为字符串，并返回结果。
+
+注意： 数组中的元素之间用逗号分隔。
+
+- concat() 方法用于连接两个或多个数组。
+
+该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本。
+```js
+arrayObject.concat(arrayX,arrayX,......,arrayX)
+```
+- Array.slice() 
+
+方法可从已有的数组中返回选定的元素。
+```js
+// 包前不包后[start,end)
+arrayObject.slice(start,end)
+```
 - Array.splice
 ```js
 array.splice(index,howmany,item1,.....,itemX)
@@ -1116,6 +1135,42 @@ a1.fill(7)
 console.log(‘%s‘, a1)// 7,7,7,7,7,7,7,7,7,7,7
 ```
 
+Array​.from()
+Array​.isArray()
+Array.of()
+Array​.prototype​.concat()
+Array​.prototype​.copy​Within()
+Array​.prototype​.entries()
+Array​.prototype​.every()
+Array​.prototype​.fill()
+Array​.prototype​.filter()
+Array​.prototype​.find()
+Array​.prototype​.find​Index()
+Array​.prototype​.flat()
+Array​.prototype​.flatMap()
+Array​.prototype​.for​Each()
+Array​.prototype​.includes()
+Array​.prototype​.indexOf()
+Array​.prototype​.join()
+Array​.prototype​.keys()
+Array​.prototype​.last​IndexOf()
+Array​.prototype​.map()
+Array​.prototype​.pop()
+Array​.prototype​.push()
+Array​.prototype​.reduce()
+Array​.prototype​.reduce​Right()
+Array​.prototype​.reverse()
+Array​.prototype​.shift()
+Array​.prototype​.slice()
+Array​.prototype​.some()
+Array​.prototype​.sort()
+Array​.prototype​.splice()
+Array​.prototype​.toLocale​String()
+Array​.prototype​.toString()
+Array​.prototype​.unshift()
+Array​.prototype​.values()
+Array​.prototype​[@@iterator]()
+
 ### 字符串常用 API
 
 | 功能 | API |
@@ -1124,10 +1179,69 @@ console.log(‘%s‘, a1)// 7,7,7,7,7,7,7,7,7,7,7
 | 合并，切割 | concat,slice[),subString[),subStr,splite |
 | 匹配 | match,replace,search,startsWith |
 | 格式化 | toLowerCase,toUpperCase,trim,repeat |
+- fromCharCode()
+- from CodePoint()
+- charAt()
+- charCodeAt()
+- codePointAt()
+- concat()
+- endsWith()
+- includes()
+- indexOf()
+- lastIndexOf()
+- localeCompare()
+- match() 
+
+可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
+
+返回匹配结果的数组。该数组的内容依赖于 regexp 是否具有全局标志 g。
+
+stringObject.match(searchvalue)
+stringObject.match(regexp)
+- matchAll()
+- normalize()
+- padEnd()
+- padStart()
+- repeat
+let resultString = str.repeat(count);
+```js
+"abc".repeat(-1)     // RangeError: repeat count must be positive and less than inifinity
+"abc".repeat(0)      // ""
+"abc".repeat(1)      // "abc"
+"abc".repeat(2)      // "abcabc"
+```
+
+- replace()
+- search()
+- slice()
+- small()
+- split() 
+
+用于把一个字符串分割成字符串数组。
+
+stringObject.split(separator,howmany)
+
+separator	必需。字符串或正则表达式
+- startsWith()
+- substring()
+- toLocaleLowerCase()
+- toLocaleUpperCase()
+- toLowerCase()
+- toString()
+- toUpperCase()
+- trim()
+- trimRight()
+- trimLeft()
+- valueOf()
+- [@@iterator]()
+- raw()
+
+
+
 
 
 ### 对象常用 API
-
+- obj.xxx，xxx只能是字符串，不能是变量，变量情况要用[xxx]
 - for-in
 
 ```javascript

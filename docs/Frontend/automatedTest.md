@@ -1,4 +1,4 @@
-# 自动化测试Jest
+# js单元测试的一门语言Jest
 
 ```js
 npm install --save-dev jest
@@ -32,4 +32,13 @@ test('adds 1 + 2 to equal 3', () => {
 ```js
 PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
+```
+
+```js
+// lesson1.test.js
+import revertByWorld from '../../code/string/lesson1'
+
+test('revertByWorld:Let\'s take LeetCode contest', () => {
+  expect(revertByWorld("Let's take LeetCode contest")).toBe("s'teL ekat edoCteeL tsetnoc")
+})
 ```

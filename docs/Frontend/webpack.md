@@ -1,22 +1,22 @@
 # webpack
 
-## 模块打包机
-    - 代码转换：TypeScript 编译成 JavaScript、SCSS 编译成 CSS 等。
-    - 文件优化：压缩 JavaScript、CSS、HTML 代码，压缩合并图片等。
-    - 代码分割：提取多个页面的公共代码、提取首屏不需要执行部分的代码让其异步加载。
-    - 模块合并：在采用模块化的项目里会有很多个模块和文件，需要构建功能把模块分类合并成一个文件。
-    - 自动刷新：监听本地源代码的变化，自动重新构建、刷新浏览器。
-    - 代码校验：在代码被提交到仓库前需要校验代码是否符合规范，以及单元测试是否通过。
-    - 自动发布：更新完代码后，自动构建出线上发布代码并传输给发布系统。
+## 功能:模块打包机
+- 代码转换：TypeScript 编译成 JavaScript、SCSS 编译成 CSS 等。
+- 文件优化：压缩 JavaScript、CSS、HTML 代码，压缩合并图片等。
+- 代码分割：提取多个页面的公共代码、提取首屏不需要执行部分的代码让其异步加载。
+- 模块合并：在采用模块化的项目里会有很多个模块和文件，需要构建功能把模块分类合并成一个文件。
+- 自动刷新：监听本地源代码的变化，自动重新构建、刷新浏览器。
+- 代码校验：在代码被提交到仓库前需要校验代码是否符合规范，以及单元测试是否通过。
+- 自动发布：更新完代码后，自动构建出线上发布代码并传输给发布系统。
   
-## 安装
-- yarn add webpack webpack-cli 
-- yarn init
-    - 默认有内置配置，默认打包index.js成main.js
-    - 打包原理：从index.js按require顺序一层一层打包（commonjs规范）
+## 使用
+### yarn add webpack webpack-cli 
+### yarn init
+- 默认有内置配置，默认打包index.js成main.js
+- 打包原理：从index.js按require顺序一层一层打包（commonjs规范）
 
-- npx webpack
-    - 会执行nodemodules/bin/webpack.cmd，打包
+### npx webpack
+- 会执行nodemodules/bin/webpack.cmd，打包
 ```json
 // package.json
 {
@@ -29,12 +29,13 @@
 }
 ```
 
-- npx webpack --mode development
-    - mode默认production，会压缩代码，development，开发模式，不压缩代码
-- 根目录新建webpack.config.js
-  - 配置文件只能用commonjs规范（基于node）
-  - 如果修改了配置文件名字，就需要`npx webpack --config new-name`来打包
+### npx webpack --mode development
+- mode默认production，会压缩代码，development，开发模式，不压缩代码
+### 根目录新建webpack.config.js
+- 配置文件只能用commonjs规范（基于node）
+- 如果修改了配置文件名字，就需要`npx webpack --config new-name`来打包
 ```js
+// webpack.config.js
 let path=require('path');
 // 引入插件
 let HtmlWebpackPlugin=require('html-webpack-plugin');
@@ -71,6 +72,8 @@ module.exports={
         filename:'[name].js',
         // 静态文件带8位哈希值，避免缓存
         filename:'[name].[hash:8].js',
+        // 打包时在所有文件地址前加域名
+        publicPath:'https://www.baidu.com'
     },
     // 开发服务的配置
     devServer:{
@@ -110,9 +113,20 @@ module.exports={
         }),
         // 抽离样式为link插件
         new MiniCssExtractPlugin({
-            filename:'main.css'
+            filename:'main.css',
+            // 放到css目录下
+            filename:'/css/main.css',
+        }),
+        // 给每个模块都注入一个变量(每个模块都可以用)
+        new webpack.ProvidePlugin({
+            // 注入变量$
+            '$':'jquery'
         })
     ],
+    // 直接用，有语法提示，webpack不打包
+    externals:{
+        jquery:'$'
+    },
     // 加载器
     modules:{
         // 规则
@@ -186,22 +200,25 @@ module.exports={
 }
 ```
 
-```cmd
+```html
 <!-- 安装插件 -->
 yarn add html-webpack-plugin -D
 yarn add mini-css-extract-plugin -D
 yarn add postcss-loader autoprefixer -D
 ```
 
-```cmd
+```html
 <!-- 安装加载器 -->
 yarn add css-loader style-loader
 yarn add @babel/core @babel/preset-env babel-loader
+yarn add file-loader -D
+yarn add html-withimg-loader -D
+yarn add url-loader -D
 <!-- 安装代码校验 -->
 yarn add eslint eslint-loader
 ```
 
-```cmd
+```html
 <!-- 安装babel的插件 -->
 yarn add @babel/plugin-proposal-class-properties
 yarn add @babel/plugin-proposal-decorators
@@ -264,10 +281,119 @@ str.includes('o');// es7
     "env": {}
 }
 ```
+### 引入图片（三种方式）
+- js中
+```js
+// 不使用webpack,打包时图片并不会打包进去
+// index.js
+let img =new Image();
+img.src="./qq.png";
+document.body.appendChild(img);
+```
+```js
+// 使用webpack
+// index.js
+// 引入时会自动在dist目录创建一个md5戳名的图片(e19d49fe430ea8cb76e29811bebdd8c.png)
+import qq from './qq.png';
+let img =new Image();
+img.src=qq;
+document.body.appendChild(img);
+// webpack.config.js
+modules:{
+    rules:[
+        // 图片加载器.file-loader(图片拷贝),可用url-loader代替，url-loader会调用file-loader
+        {
+            test:/\.(png|gif|jpg)/,
+            use:'url-loader',
+            use:{
+                loader:'url-loader',
+                options:{
+                    // 超过100k大小的会转化成图片file-loader,小于的转成base64
+                    limit:100*1024,
+                    // 图片放在img文件夹下（需要启动服务才能显示，dist目录下输入http-server启动服务）
+                    outPutPath:'/img',
+                    // 打包时只在图片地址前加域名
+                    publicPath:'https://www.baidu.com'
+                }
+            }
+        },
+    ]
+}
+```
+- background url
+    - 同上用file-loader可以解决
+```js
+// style.css
+#back{
+    width:100px;height:100px;
+    
+    background:url('./qq.png');
+    background-size:cover;
+}
+// index.js
+import './style.css'
+// index.html
+<div id="back"></div>
+```
+- <img src="" alt=""/>>
+    - 用html-withimg-loader解决
+```js
+// index.html
+// <img src="e19d49fe430ea8cb76e29811bebdd8c.png" alt="">
+<img src="./qq.png" />
+// webpack.config.js
+modules:{
+    rules:[
+        // html图片加载器.html-withimg-loader(图片拷贝)
+        {
+            test:/\.html/,
+            use:'html-withimg-loader'
+        },
+    ]
+}
+```
 
-- 启动开发服务
+- 注意：webpack打包后，会优先运行dist文件夹下的代码，而不是src本地的。
+
+### 让导入的模块暴露到window上
+- yarn add jquery
+```js
+// index.js
+import $ from 'jquery'
+// 可以在模块中使用，但是没有window.$
+console.log($)
+```
+- expose-loader直接引用
+```js
+yarn add expose-loader
+```
+```js
+// index.js
+import $ from 'expose-loader?$!jquery'
+```
+- expose-loader在webpack配置
+```js
+// webpack.config.js
+module:{
+    rules:[
+        {
+            test:require.resolve('jquery'),
+            use:{
+                loader:'expose-loader?$',
+            }
+        }
+    ]
+}
+```
+- webpack插件ProvidePlugin
+- webpack配置externals
+- 直接在index.html用script标签引用jquery
+
+## 
+
+### 启动开发服务
 ```cmd
 yarn add webpack-dev-server -D
 ```
-  - npx webpack-dev-server
+- npx webpack-dev-server
     - 启动开发服务（修改后可及时更新页面。打包的页面存在内存里，并不打包出来）

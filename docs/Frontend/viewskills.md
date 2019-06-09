@@ -1119,12 +1119,12 @@ Object.defineProperty(obj2,'key',{
 });
 console.log(obj2)
 ```
-        【重要】：
-            1. object.defineProperty的用法要熟记于心
-            2. object.defineProperty与reflect.defineProperty的区别
-                - 前一个es5用法，返回一个新对象。 后一个es6用法，返回一个布尔值
-            3. object.defineProperty要会手写
-    - 页面到数据的更新-->内置了input事件（以前需要自己写input事件）
+- 【重要】：
+1. object.defineProperty的用法要熟记于心
+2. object.defineProperty与reflect.defineProperty的区别
+    - 前一个es5用法，返回一个新对象。 后一个es6用法，返回一个布尔值
+3. object.defineProperty要会手写
+- 页面到数据的更新-->内置了input事件（以前需要自己写input事件）
 
 - 使用了什么设计模式？
 <img :src="$withBase='/img/MVVM设计模式.png'">
@@ -1163,7 +1163,6 @@ class Watcher{
         this.cb=cb;
         // 默认先存放老值
         this.oldValue=this.get();
-
     }
     get(){
         // 先把自己放在this上
@@ -1214,8 +1213,6 @@ class Observer {
         })
     }
 }
-
-
 // 编译模板
 class Compiler{
     constructor(el,vm){
@@ -1265,7 +1262,6 @@ class Compiler{
         if(/\{\{(.+?)\}\}/.test(content)){
             CompileUtil['text'](node,expr,vm);
         }
-
     }
     isDirective(attrName){
         return attrName.startWith('v-');
@@ -1273,7 +1269,6 @@ class Compiler{
     isElementNode(node){
         return node.nodeType===1;
     }
-    
     node2fragment(node){
         let fragment=document.createDocumentFragment();
         let firstChild;
@@ -1366,7 +1361,6 @@ CompileUtil={
         }
     }
 }
-
 // 基类 调度
 class Vue{
     constructor(options){
@@ -1378,8 +1372,6 @@ class Vue{
         if(this.$el){
             // 数据劫持（把数据全部转化成用Object.defineProperty来定义）
             new IntersectionObserver(this.$data);
-
-
             // computed实现
             for(let key in computed){
                 Object.defineProperty(this.$data,key,{
@@ -1388,7 +1380,6 @@ class Vue{
                     }
                 })
             }
-
             // methods实现
             for(let key in methods){
                 Object.defineProperty(this,key,{
@@ -1459,7 +1450,8 @@ class Vue{
     - 视频/游戏/实时通信
 
 ## 真题解析
-- 从“九宫格”考CSS综合实力
+### 从“九宫格”考CSS综合实力
+- 注意点
     - reset重置默认样式
     - DOM结构不要只想到div，可以用ul li
     - 布局：table-cell兼容性最好，绝对定位和inline变通性差，flex和grid说明新技术掌握较好
@@ -1527,10 +1519,11 @@ class Vue{
 ![九宫格](img/九宫格.jpg)
 <!-- - <img :src="$withBase('/img/算法.png')" > -->
 <!-- <img :src="$withBase('/foo.png')" alt="foo"> -->
-<!-- <img :src="$withBase('/img/九宫格.jpg')" > -->
+<img :src="$withBase('/img/九宫格.jpg')" >
 
 
-- “一道函数考察基本功”
+### “一道函数考察基本功”
+
 ```js
 function Foo(){
     getName=function(){console.log(1)}
@@ -1549,14 +1542,14 @@ new Foo.getName();// 2(点的优先级高于无参数new，所以=>`new function
 new Foo().getName();// 3(点的优先级等于有参数new，所以先new Foo()，再执行原型链上的getName)
 new new Foo().getName();// 3(先带参new和.=>new function(){console.log(3)})
 ```
-    - 知识点
-        - 函数和类
-        - 原型链
-        - 运算符优先级
-        - 作用域
-        - 变量提升
+- 知识点
+    - 函数和类
+    - 原型链
+    - 运算符优先级
+    - 作用域
+    - 变量提升
 
-- 阿里笔试题
+### 阿里笔试题
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -1662,3 +1655,41 @@ new new Foo().getName();// 3(先带参new和.=>new function(){console.log(3)})
 - 事件绑定（不光定义，还要考虑性能）
 - 渲染机制
 - 递归（常用技能）
+
+### flat函数设计（一道‘js算法’提升软实力）
+请写出下面
+```js
+var arr=['a',['b','c'],2,['d','e','f'],'g',3,4];//a,b,c,2,d,e,f,g,3,4
+```
+```js
+// 利用递归
+function arrConvert3(arr){
+    let newArr=[];
+    let each=function(oldarr){
+        oldarr.forEach((item,index)=>{
+            if(item instanceof Array){
+                each(item);
+            }else{
+                newArr.push(item)
+            }
+        })
+    }
+    each(arr)
+    return newArr;
+}
+// 利用类型转换
+function flat(arr){
+    return arr+'';
+}
+// valueOf类型转换
+Array.prototype.valueOf=function (){
+    return this.join(',');
+}
+var flat=function (arr){
+    return arr+'';
+}
+// 利用遍历器
+let arr=['a',['b','c'],2,[['d',['z','8','0']],'e','f'],'g',3,4];
+console.log('原来',arr)
+console.log('现在',flat(arr))
+```

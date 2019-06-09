@@ -2,13 +2,13 @@
 
 ## 安装VuePress
 
-```
+```js
 npm install -D vuepress
 ```
 
 ## 新建如下文件
 
-```
+```md
 project
 ├─── docs
 │   ├── README.md
@@ -17,7 +17,7 @@ project
 
 ## 在docs/README.md中添加代码
 
-```
+```md
 # my first vuepress
 ```
 
@@ -41,13 +41,13 @@ npm run dev
 ![img](https://upload-images.jianshu.io/upload_images/7704547-40844c80b175f261.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/247/format/webp)
 - 生成静态的 HTML 文件
 
-```
+```js
 npm run build
 //文件默认被生成在 .vuepress/dist，可通过config.js dest 字段修改。
 ```
 
 ## 创建如下文件
-```
+```js
 project
 ├─── docs //根目录，也是vuepress要解析的文件夹
 │   ├── README.md //首页页面
@@ -60,7 +60,7 @@ project
 ```
 
 ## config.js基本配置
-```
+```js
 module.exports = {
     // base 会自动添加到以 / 开头的所有 URL 中,默认'/'
     base: '/note/',
@@ -76,7 +76,7 @@ module.exports = {
 ```
 
 ## 主页布局
-```
+```js
 ---
 home: true
 heroImage: /hero.png
@@ -96,7 +96,7 @@ footer: MIT Licensed | Copyright © 2018-present Evan You
 之后的任何其他内容将在功能部分之后呈现。
 
 ## 顶部导航栏和侧边栏配置
-```
+```js
 module.exports = {
     ...
 //主题配置
@@ -206,7 +206,7 @@ themeConfig: {
 ## 页面单独自定义  
 用---包起来
 
-```
+```js
 ---
 //页面覆盖提取标题深度
 sidebarDepth: 2
@@ -238,7 +238,7 @@ editLink: false
 
 ## CSS覆盖
 创建一个 `.vuepress/override.styl` 文件,有几个颜色变量可以调整：
-```
+```js
 // 显示默认值
 $accentColor = #3eaf7c
 $textColor = #2c3e50
@@ -256,7 +256,7 @@ $codeBgColor = #282c34
 - 相对路径
 - 基础路径
 会在基础路径后寻找`.vuepress/public`路径下的文件
-```vue
+```html
 <img :src="$withBase('/foo.png')" alt="foo">
 ```
 

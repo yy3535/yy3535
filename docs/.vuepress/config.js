@@ -79,6 +79,13 @@ module.exports = {
              "automatedTest",
           ]
         },
+        {
+          title: '其他',
+          collapsable: false,
+          children: [
+             "other",
+          ]
+        },
         // '/Frontend/',
         // {
         //   title: 'jswebapi',

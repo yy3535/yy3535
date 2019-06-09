@@ -352,22 +352,24 @@ computed只有绑定的数据变了才会执行，method做绑定时所有数据
 - watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
 
 ### computed实现双向绑定
-```js
+```html
 全选：<input type="checkbox" v-model="checkAll">
 <input type="checkbox" v-for="(item,key) in checks" v-model="item.value" :key="key">
-data:{
-  checks:[{value:true},{value:false},{value:true},]
-},
-computed:{
-  checkAll:{
-    get(){
-      return this.checks.every(check=>check.value)
-    },
-    set(kvalue){
-      this.checks.forEach(check=>check.value=value);
+<script>
+  data:{
+    checks:[{value:true},{value:false},{value:true},]
+  },
+  computed:{
+    checkAll:{
+      get(){
+        return this.checks.every(check=>check.value)
+      },
+      set(kvalue){
+        this.checks.forEach(check=>check.value=value);
+      }
     }
   }
-}
+</script>
 ```
 
 ## 生命周期
@@ -1865,15 +1867,6 @@ export default {
 
 
 ## express,jsonwebtoken(jwt),bodyparser
-
-
-
-
-
-
-
-
-
 
 
 ## axios 获取数据

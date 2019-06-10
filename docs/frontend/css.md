@@ -74,29 +74,30 @@ reset.css
 - RGBA:该透明度不会被继承，区别于opacity
 
 ### 文本阴影:
-text-shadow:none | <shadow> [ , <shadow> ]* 可以多阴影,逗号隔开
-<shadow> = <length>{2,3} && <color>? {Xoffset 可负、Yoffset 可负、blur 不可负}、颜色
+- text-shadow
+  - none | shadow [ , shadow ]* 
+  - 可以多阴影,逗号隔开
 ### 盒模型:
 box-sizing:content-box(标准模式盒模型) | border-box(怪异模式盒模型)
 ### 盒子阴影:
-box-shadow:none | <shadow> [ , <shadow> ]* 可以有多个阴影
-<shadow> = inset? && <length>{2,4} && <color>? 内阴影、{Xoffset 可负、Yoffset 可负、blur 不可负、外延可负}、颜色
+box-shadow:none | shadow [ , shadow ]* 可以有多个阴影
+shadow = inset? && length{2,4} && color? 内阴影、{Xoffset 可负、Yoffset 可负、blur 不可负、外延可负}、颜色
 ### 边框圆角:
-border-radius:[ <length> | <percentage> ]{1,4} [ / [ <length> | <percentage> ]{1,4} ]?
+border-radius:[ length | percentage ]{1,4} [ / [ length | percentage ]{1,4} ]?
 按上左(top-left)、上右(top-right)、下右(bottom-right)、下左(bottom-left)的顺序作用于四个角
 ### 边框图片:
-border-image:<' border-image-source '> || <' border-image-slice '> [ / <' border-image-width '> | / <' border-image-width '>? / <'
-border-image-outset '> ]? || <' border-image-repeat '>
+border-image:' border-image-source ' || ' border-image-slice ' [ / ' border-image-width ' | / ' border-image-width '? / '
+border-image-outset ' ]? || ' border-image-repeat '
 source:图像路径url
-[面试]slice:内偏移(分割方式) [ <number> | <percentage> ]{1,4} && fill?指定从上,右,下,左方位来分隔图像,将图像分成4 个角,4 条边
+[面试]slice:内偏移(分割方式) [ number | percentage ]{1,4} && fill?指定从上,右,下,左方位来分隔图像,将图像分成4 个角,4 条边
 和中间区域共9 份,中间区域始终是透明的(即没图像填充),加上关键字fill 后按border-image-repeat 设定填充
 
 width:边框厚度,将裁切的图片缩放至设定厚度,然后在边框中显示,超出border-width 部分不显示
 outset:扩张,设置后图像在原本基础上向外延展设定值后再显示,不允许负值(少用)
 repeat:平铺,默认stretch 拉伸;repeat 平铺但不缩放;round 平铺且自适应缩放大小;space 平铺且自适应缩放间距
 ### 渐变:
-线性渐变linear-gradient:( [<point> || <angle>,]? <stop>, <stop> [, <stop>]* )
-径向渐变radial-gradient:([ [ <shape> || <size> ] [ at <position> ]? , | at <position>, ]?<color-stop>[ , <color-stop> ]+)
+线性渐变linear-gradient:( [point || angle,]? stop, stop [, stop]* )
+径向渐变radial-gradient:([ [ shape || size ] [ at position ]? , | at position, ]?color-stop[ , color-stop ]+)
 注意:渐变色不是单一颜色,不能使用backgroud-color 设置,只能使用background 设置
 间隔分明实现,red 0%,red 33.3%,green 33.3%,green 66.6%,blue 66.6%,blue 100%
 [面试]径向渐变中的size:渐变终止的地方(要能看到明显的起点终点来判定是哪种,默认最远角)
@@ -114,7 +115,7 @@ transition: property duration timing-function delay;
 坐标轴:x 向右为正,y 向下文正,z 向屏幕外为正
 3D 变换比2D 变换相比:多个Z 轴,合写语法需要写上默认值,此处不做详细说明
 translate 平移:正值向坐标轴正向平移,负值向坐标轴反向平移;默认参考元素左上角
-scale 缩放:比值,1 为不缩放,>1 为放大,<1 为缩小;默认参考元素中心点
+scale 缩放:比值,<1 为不缩放,>1 为放大,1 为缩小;默认参考元素中心点
 rotate 旋转:正向面对某坐标轴,正值为顺时针旋转,负值为逆时针旋转;默认参考元素中心点
 skew 斜切/翻转/扭曲(2D 独有):正值向坐标轴正向拉伸,默认元素中心点固定,拉伸右下角点,面积保持不变进行扭曲
 transform-origin 改变参考点

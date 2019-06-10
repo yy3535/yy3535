@@ -919,49 +919,84 @@ console.log(5)
 ## 05其他基础知识知识点
 
 ### 正则表达式
-
-`test`函数的用法
-
+- 正则对象
+  - 正则对象可以匹配变量
+```js
+var patt=new RegExp(pattern,modifiers);
+var re = new RegExp("\\w+");
+let reg = new RegExp(`^(${j}${o})`)//j,o都是变量
+```
+- 直接用
+```js
+var patt=/pattern/modifiers;
+var re = /\w+/;
+```
+- `test`
 ```javascript
 var ua = navigator.userAgent
 var reg = /\bMicroMessenger\b/i
 console.log(reg.test(ua))
 ```
 
-用于`replace`的示例
-
+- `replace`
 ```javascript
 function trim(str) {
     return str.replace(/(^\s+)|(\s+$)/g, '')
 }
 ```
 
-`match`函数的用法
-
+`match`
 ```javascript
 var url = 'http://www.abc.com/path/xxx.html?a=10&b=20&c=30#topic'  // 后面的 #topic 也可能没有
 var reg = /\?(.+?)(#|$)/
 var matchResult = url.match(reg)
 console.log(matchResult[1]) // a=10&b=20&c=30
 ```
-
+#### 规则
 - 特殊字符
-  
+
 |符号|含义|
 |:---|:---|
 |^|匹配字符串的开始位置，方括号表达式中标识不接受该字符集合|
-|$||
-|()||
-|[]||
-|.||
-|\\||
-|\|||
-|$||
+|$|匹配字符串的结尾|
+|()|字表达式的开始和结束的位置|
+|[]|范围，中括号表达式|
+|.|匹配除\n外的任何单字符|
+|\\|转义符|
+|\||两者之间选一|
+
 - 限定符
+
+|符号|含义|
+|:---|:---|
+|{n}|匹配n次|
+|{n,}|至少匹配n次|
+|{n,m}|匹配n-m次|
+|*|匹配前面的子表达式>=0次，相当于{0,}|
+|+|匹配前面的子表达式>=0次，相当于{1,}|
+|?|匹配前面的子表达式0次或1次，相当于{0,1}|
 
 - 非打印字符
 
-------
+|符号|含义|
+|:---|:---|
+|\n|换行符|
+|\s|空白符（包括空格、制表符、换页符）|
+|\S|非空白符|
+|\t|制表符|
+|\b|字与空格之间的位置|
+|\B|非单词边界|
+|\w|单词字符，等同于字符集合[a-zA-Z0-9_]|
+|\W|非单词字符|
+|\d|数字|
+|\D|非数字|
+
+- 其他
+|符号|含义|
+|:---|:---|
+|\1+|匹配一个以上相同的字符|
+
+- [30分钟学会正则表达式](https://deerchao.net/tutorials/regex/regex.htm)
 
 ### 日期函数
 
@@ -1066,6 +1101,7 @@ console.log(result)
 ```
 
 - Array.sort
+  - 默认从小到大arr.sort()
 ```javascript
 var arr = [1,4,2,3,5]
 var arr2 = arr.sort(function(a, b) {

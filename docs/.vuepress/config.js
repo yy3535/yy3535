@@ -65,6 +65,13 @@ module.exports = {
           ]
         },
         {
+          title: 'JS数据结构与算法',
+          collapsable: false,
+          children: [
+             "algorithm",
+          ]
+        },
+        {
           title: '小工具',
           collapsable: false,
           children: [

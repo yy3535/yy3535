@@ -42,6 +42,8 @@ let HtmlWebpackPlugin=require('html-webpack-plugin');
 let MiniCssExtractPlugin=require('mini-css-extract-plugin');
 let UgligyJsPlugin=require('uglifyjs-webpack-plugin');
 let OptimizeCssAssetsPlugin=require('optimize-css-assets-webpack-plugin');
+let CleanWebpackPlugin=require('clean-webpack-plugin');
+let webpack=require('webpack');
 module.exports={
     // 生产模式
     mode:'production',
@@ -88,6 +90,9 @@ module.exports={
     },
     // 插件(插件配置去npm.org.com找)
     plugins:[
+        // 每次打包前删除某个目录（最好放最上面）
+        new CleanWebpackPlugin('./dist'),
+
         // 自动生成一个html文件来引用入口文件
         new HtmlWebpackPlugin({
             // 以下二选一
@@ -121,12 +126,35 @@ module.exports={
         new webpack.ProvidePlugin({
             // 注入变量$
             '$':'jquery'
-        })
+        }),
+        // 打包后的文件最前面包含这样一个注释
+        new webpack.BannerPlugin('make 2017 by yy')
     ],
     // 直接用，有语法提示，webpack不打包
     externals:{
         jquery:'$'
     },
+    // 源码映射（方便调试错误。源代码和打包后的代码做映射，本地调试生产环境时使用。一般生产环境不使用）
+    // 单独创建一个源码映射文件,并且指定错误的行和列
+    devtool:'source-map',
+    // 在打包文件中加入源码，不分离，文件会很大
+    devtool:'eval-source-map',
+    // 不分离，不定位到列(很少用)
+    devtool:'cheap-module-source-map',
+    // 分离，不定位到列(较多)
+    devtool:'cheap-module-eval-source-map'
+
+    // 边改边打包，监控修改后自动打包，上线紧急时节约时间
+    watch:true,
+    watchOptions:{
+        // 监控间隔时间
+        poll:1000,
+        // 防抖节流（修改时间间隔小于2s不打包）
+        aggregateTimeout:2000,
+        // 避免安装个包后也打包
+        ignored:/node_modules/,
+    }
+
     // 加载器
     modules:{
         // 规则
@@ -205,6 +233,7 @@ module.exports={
 yarn add html-webpack-plugin -D
 yarn add mini-css-extract-plugin -D
 yarn add postcss-loader autoprefixer -D
+yarn add clean-webpack-plugin -D
 ```
 
 ```html

@@ -15,37 +15,100 @@
 </body>
 <script>
 var hasGroupsSizeX = function(deck) {
-    if(deck.length>1){
-        var obj={};
-        var lengthList=[];
-        deck.forEach(item=>{
-            if(!obj[item]){
-                obj[item]=1;
-            }else{
-                obj[item]++;
-            }
-        })
-        for(key in obj){
-            lengthList.push(obj[key]);
-        }
-        if(String(lengthList[0]).repeat(lengthList.length)===lengthList.join('')){
-            return true;
+    // 我的。。。。。。。。。。。。。。。。。。。。。
+    // if(deck.length>1){
+    //     var obj={};
+    //     var lengthList=[];
+    //     deck.forEach(item=>{
+    //         if(!obj[item]){
+    //             obj[item]=1;
+    //         }else{
+    //             obj[item]++;
+    //         }
+    //     })
+    //     function gcd(a,b){
+    //         if(b===0){
+    //             return a
+    //         }else{
+    //             return gcd(b,a%b)
+    //         }
+    //     }
+    //     for(key in obj){
+    //         lengthList.push(obj[key]);
+    //     }
+    //     if(String(lengthList[0]).repeat(lengthList.length)===lengthList.join('')){
+    //         return true;
+    //     }else{
+    //         gcd
+    //         var x=Math.min(...lengthList);
+    //         var isOk=true;
+    //         lengthList.forEach(item=>{
+    //             if((item!==x)&&(item%x!==0)){
+    //                 isOk=false;
+    //             }
+    //         })
+    //         return isOk;
+    //     }
+    // }else{
+    //     return false
+    // }
+
+    // 老师的1.。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
+    // // 存储每张卡牌的总数
+    // // 修改排序的方式修改为直接统计每个相同字符的数量，思路不变（LeetCode测试用例）
+    // let group = []
+    // let tmp = {}
+    // arr.forEach(item => {
+    //     tmp[item] = tmp[item] ? tmp[item] + 1 : 1
+    // })
+    // for (let v of Object.values(tmp)) {
+    //     group.push(v)
+    // }
+    // // 此时group已经存放的是每张牌的总数了（数组只遍历一遍，避免了排序和正则的耗时）
+    // // 求两个数的最大公约数
+    // let gcd = (a, b) => {
+    //     if (b === 0) {
+    //     return a
+    //     } else {
+    //     return gcd(b, a % b)
+    //     }
+    // }
+    // while (group.length > 1) {
+    //     let a = group.shift()
+    //     let b = group.shift()
+    //     let v = gcd(a, b)
+    //     if (v === 1) {
+    //     return false
+    //     } else {
+    //     group.unshift(v)
+    //     }
+    // }
+    // return group.length ? group[0] > 1 : false
+    
+    // 老师的2.。。。。。。。。。。。。。。。。。。。。。。。。。。。
+    // 卡牌排序，为了让相同的牌在一起方便分组 
+    let str=arr.sort().join('');
+    // 分组
+    let group=str.match(/(\d)\1+/g);
+    // 求两个数的最大公约数
+    let gcd=(a,b)=>{
+        if(b===0){
+            return a
         }else{
-            var a=lengthList.join(',')
-            var x=Math.min(7,2);
-            var isOk=true;
-            lengthList.forEach(item=>{
-                if((item!==x)&&(item%x!==0)){
-                    isOk=false;
-                }
-            })
-            return isOk;
+            return gcd(b,a%b)
         }
-    }else{
-        return false
     }
-    
-    
+    while(group.length>1){
+        let a=group.shift().length
+        let b=group.shift().length
+        let v=gcd(a,b)
+        if(v===1){
+            return false
+        }else{
+            group.unshift('0',repeat(v))
+        }
+    }
+    return group.length?group[0].length>1:false
 };
     console.log(hasGroupsSizeX([1,1,2,2,2,2]))
     

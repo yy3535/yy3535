@@ -87,6 +87,27 @@ module.exports={
         progress:true,
         // 压缩文件
         compress:'true',
+        // dev-server开启之前
+        before(app){
+            // dev-server自带的模拟数据（用的时候注意把proxy注释掉）
+            app.get('/api/user',function(req,res){
+                res.send({age:19})
+            })
+        }
+        // 代理
+        proxy:{
+            // 带/api的都代理到http://localhost:3000。
+            '/api','http://localhost:3000',
+        },
+        proxy:{
+            '/api':{
+                target:'http://localhost:3000',
+                pathRewrite:{
+                    // 把路径中的/api去掉
+                    '/api':''
+                }
+            }
+        }
     },
     // 插件(插件配置去npm.org.com找)
     plugins:[
@@ -426,3 +447,31 @@ yarn add webpack-dev-server -D
 ```
 - npx webpack-dev-server
     - 启动开发服务（修改后可及时更新页面。打包的页面存在内存里，并不打包出来）
+- 内置了express
+
+
+### 代理
+- 通过webpack的dev-server配置proxy，前端实现跨域（见webpack配置）
+- 通过node中间件`webpack-dev-middleware`，后端实现跨域
+```js
+// server.js
+let express=require('express');
+let middle=require('webpack-dev-middleware');
+let app=express();
+let webpack=require('webpack');
+let config=require('./webpack.config.js');
+app.use(middle())
+app.get('/api/user',(req,res)=>{
+    res.json({name:'zfpx'});
+})
+app.listen(3000)
+```
+```js
+// index.js
+let xhr=new XMLHttpRequest();
+xhr.open('get','/api/user',true);
+xhr.onload=function(){
+    console.log(xhr.response)
+}
+xhr.send();
+```

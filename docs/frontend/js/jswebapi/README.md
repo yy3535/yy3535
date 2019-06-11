@@ -525,9 +525,10 @@ cookie 本身不是用来做服务器端存储的（计算机领域有很多这�
 
 ## 07-jquery 相关
 
-移动端使用 zepto，使用方法和 jquery 一样。API 地址 http://jquery.cuishifeng.cn/
+- 移动端使用 zepto，使用方法和 jquery 一样。API 地址 http://jquery.cuishifeng.cn/
 
-直接代码演示即可，无需准备PPT
+- jquery文档：jquery123
+- jquery插件：jq22
 
 ### DOM 操作
 
@@ -642,4 +643,26 @@ $.ajax({
 })
 ```
 
+#### XML
+
+```js
+$(xml).find("student").each(function(i){
+    //获取id节点
+    var id=$(this).children("id"),
+    //获取节点文本
+        id_value=id.text(),
+    //获取student下的email属性。
+        email=$(this).attr("email");
+    //构造HTML字符串，通过append方法添加进之前建立代码片段
+    frag.append("<li>"+id_value+"-"+email+"</li>");
+});
+```
+- excel转为xml
+  - 选项中勾选开发工具
+  - 新建一个xml模板，两个数据以上，列名写好
+  - 点击源，添加映射，把列拖入表格中
+  - 填入数据
+  - 另存为xml
+- 问题：转日期出错？？？
+- 上线后本地能获取为json文件为对象的json数据不能变为对象了（是不是hbuilder的问题？？？）
 

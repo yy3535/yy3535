@@ -131,6 +131,14 @@ transform-origin 改变参考点
 是否反向animation-direction: alternate 交替| reverse 反向| normal 正常
 常用简写:animation: move 5s [2s] linear infinite [alternate]
 
+- background
+
+```js
+background: #00ff00 url('smiley.gif') no-repeat fixed center; 
+```
+```js
+background:bg-color bg-image position/bg-size bg-repeat bg-origin bg-clip bg-attachment initial|inherit;
+```
 ### 媒体查询
 查询到当前屏幕的宽度,针对不同的屏幕宽度设置不同的样式来适应不同屏幕.重置浏览器大小时,页面也会根据浏览器的
 宽度和高度重新渲染页面.

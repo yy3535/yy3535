@@ -16,16 +16,24 @@
 - a
 - form/input/select/textarea/button
 
-- head里面的标签
-```
-//编码格式
+### head里面的标签
+- meta
+```html
 <meta charset="utf-8">
-//移动端适应
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-//url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 <a>、<img>、<link>、<form> 标签中的 URL)
+```
+- url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 <a>、<img>、<link>、<form> 标签中的 URL)
+```html
 <base href="http://www.baidu.com" target="_blank">
 ```
-
+- viewport
+  - width/height：和：控制 viewport 的大小，可以指定的一个值，如 600，或者特殊的值，如 device-width 为设备的宽度/高度（单位为缩放为 100% 时的 CSS 的像素）。
+  - initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。(1.0)
+  - maximum-scale：允许用户缩放到的最大比例。(1.0)
+  - minimum-scale：允许用户缩放到的最小比例。(1.0)
+  - user-scalable：用户是否可以手动缩放(no)
+````html
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+```
 ## 元素的重要属性
 - a[href,target]
 - img[src,alt]//路径，无图像时替代文本

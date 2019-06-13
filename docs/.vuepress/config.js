@@ -10,7 +10,7 @@ module.exports = {
     logo: '/img/logo.jpg',
     editLinkText: "编辑此页",
     lastUpdated: "上次更新",
-    // sidebarDepth: 4, 
+    sidebarDepth: 2, 
     nav: [
       { text: '前端', link: '/Frontend/' },
       { text: '后端', link: '/Backend/' },

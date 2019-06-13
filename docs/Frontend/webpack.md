@@ -65,6 +65,22 @@ module.exports={
         main:'./src/index.js',
         other:'./src/other.js',
     },
+    // 解析查找路径require()（console.log(module.paths)可以打印出查找文件顺序)
+    resolve:{
+        // 引用模块目录(先去node_modules再去vendor找)
+        module:[path.resolve('node_modules'),path.resolve('vendor')],
+        // 后缀名(找文件名顺序变为先找js再json再css)
+        extensions:['.js','.json','.css'],
+        // 主文件
+        mainFields:['main','browser'],
+        // 入口文件
+        mainFiles:['index.js'],
+        // 别名
+        alias:{
+            // 直接import 'bootstrap'即可
+            bootstrap:'bootstrap/dist/css/bootstrap.css'
+        }
+    },
     // 打包出口
     output:{
         // 路径（必须为绝对路径）
@@ -149,7 +165,12 @@ module.exports={
             '$':'jquery'
         }),
         // 打包后的文件最前面包含这样一个注释
-        new webpack.BannerPlugin('make 2017 by yy')
+        new webpack.BannerPlugin('make 2017 by yy'),
+        // 拷贝一些不用打包的静态资源去指定位置
+        new CopyWebpackPlugin([{
+            from:'./src/ppt',
+            to:path.resolve(__dirname,'dist')
+        }])
     ],
     // 直接用，有语法提示，webpack不打包
     externals:{
@@ -178,6 +199,8 @@ module.exports={
 
     // 加载器
     modules:{
+        // 哪些不进行模块解析（比如自己写的js,用的很少）
+        noParse:/jquery/,
         // 规则
         // use值有三种['style-loader'],'style-loader',[{loader:'style-loader',...options或者query}]
         rules:[
@@ -255,6 +278,7 @@ yarn add html-webpack-plugin -D
 yarn add mini-css-extract-plugin -D
 yarn add postcss-loader autoprefixer -D
 yarn add clean-webpack-plugin -D
+yarn add copy-webpack-plugiin -D
 ```
 
 ```html
@@ -451,7 +475,7 @@ yarn add webpack-dev-server -D
 
 
 ### 代理
-- 通过webpack的dev-server配置proxy，前端实现跨域（见webpack配置）
+- 通过webpack的dev-server配置proxy，前端实现跨域（见webpack配置）（一般用这个）
 - 通过node中间件`webpack-dev-middleware`，后端实现跨域
 ```js
 // server.js
@@ -460,8 +484,11 @@ let middle=require('webpack-dev-middleware');
 let app=express();
 let webpack=require('webpack');
 let config=require('./webpack.config.js');
-app.use(middle())
-app.get('/api/user',(req,res)=>{
+let compiler=webpack(config);
+app.use(middle(compiler));
+
+
+app.get('/user',(req,res)=>{
     res.json({name:'zfpx'});
 })
 app.listen(3000)
@@ -474,4 +501,106 @@ xhr.onload=function(){
     console.log(xhr.response)
 }
 xhr.send();
+```
+
+### 生产环境和开发环境区分
+- 
+```js
+// index.js
+let url='';
+if(PRODUCTION==='dev'){
+    url='http://www.zf.cn';
+}else{
+    url='http://localhost:3000';
+}
+```
+```js
+// webpack.config.js
+plugins:[
+    // 定义环境变量(要写字符串，会自动去掉'')
+    new webpack.DefinePlugin({
+        PRODUCTION:'true',
+        // 赋值为字符串
+        PRODUCTION:JSON.stringify('dev'),
+        // 2
+        EXPRESSION:'1+1',
+    })
+]
+```
+- 区分webpack.config.js文件(去掉config)
+```js
+yarn add webpack-merge -D
+```
+```js
+// webpack.dev.js
+let base=require('./webpack.base.js');
+let merge=require('webpack-merge');
+module.exports=merge(base,{
+    mode:'development',
+    devtools:'sourse-map',
+})
+```
+```js
+// 使用，注意需要加两次--
+npm run build -- --config webpack.dev.js
+```
+```js
+// webpack.prod.js
+let base=require('./webpack.base.js');
+let merge=require('webpack-merge');
+module.exports=merge(base,{
+    mode:'production',
+    optimization:{
+        minimizer:[
+            new UglifyJs
+        ]
+    }
+})
+```
+```js
+npm run build -- --config webpack.prod.js
+```
+
+### dll动态链接库
+- xxx.dll,如react,react-dom,react-router-dom登不需要改动的包做成xxx.dll文件上线直接放上去，体积不变，开发时打包速度明显变快
+```js
+// webpack.react.js
+let path=require('path');
+// webpack内置插件，所以不需要安装
+let webpack=require('webpack/lib/DllPlugin');
+module.exports={
+    entry:{
+        react:['react','react-dom']
+    },
+    output:{
+        filename:'_dll_[name].js',
+        path:path.resolve(__dirname,'dist'),
+        // 导出到exports对象上，exports[_dll_a=function(){}()，写this挂到this上
+        libraryTarget:'commonjs',
+        library:'_dll_[name]',
+    },
+    plugins:[
+        // 声明动态链接库
+        new webpack.DllPlugin({
+            // 产生出去的是个json文件
+            name:'_dll_[name]',
+            path:path.resolve(__dirname,'dist','mainfest.json')
+        })
+    ]
+}
+```
+```js
+// webpack.config.js
+let ReferencePlugin=require('webpack/lib/DllReferencePlugin');
+
+plugins:[
+    new ReferencePlugin({
+        mainifest:path.resolve(__diraname,'dist','mainifest.json')
+    })
+]
+
+```
+```html
+// index.html
+<script src='_dll_react.js'></script>
 ```

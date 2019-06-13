@@ -21,7 +21,7 @@
 ```html
 <meta charset="utf-8">
 ```
-- url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 <a>、<img>、<link>、<form> 标签中的 URL)
+- url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 `<a>`、`<img>`、`<link>`、`<form>` 标签中的 URL)
 ```html
 <base href="http://www.baidu.com" target="_blank">
 ```

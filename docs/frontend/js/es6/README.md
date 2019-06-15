@@ -594,3 +594,13 @@ window.isNaN('abc');// true
 Number.isNaN('abc');// false
 ```
 
+## 第三方模块
+### moment
+- 时间的插件(12345676543245 YYYY-MM-DD)
+  - 可以算相对时间 多语言
+```js
+yarn add moment
+import moment from 'moment'
+moment.locale('zh-cn');
+console.log(moment().fromNow());
+```

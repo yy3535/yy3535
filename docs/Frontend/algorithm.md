@@ -50,6 +50,15 @@ var reverseWords = function(s) {
     }).join(' ');
 };
 ```
+```js
+var reverseWords = function(s) {
+    // 重写以上
+    if (str.length < 1) return ''
+    return str.match(/[\S]+/g).map(item => {
+        return item.split('').reverse().join('')
+    }).join(' ')
+};
+```
 ### 计数二进制子串
 ```js
 给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。
@@ -76,25 +85,33 @@ s.length 在1到50,000之间。
 s 只包含“0”或“1”字符。
 ```
 - 写出所有情况，然后找出规律
+  - 00110011--->0011
+  - 0110011 --->01
+  - 110011  --->1100
+  - 10011   --->10
+  - 0011    --->0011
+  - 011     --->01
+  - 11      --->
+  - 1       --->
 ```js
-function xx(str){
+var countBinarySubstrings=function(str){
     // 建立数据结构，堆栈，保存数据
     let r = []
-    // 给定任意子输入都返回第一个符合条件的子串
+    // 给一个字符串返回第一个符合条件的子串
     let match = (str) => {
-    let j = str.match(/^(0+|1+)/)[0]
-    // 与运算1变0，0变1
-    let o = (j[0] ^ 1).toString().repeat(j.length)
-    // 正则对象中可以使用模板字符串来用变量
-    let reg = new RegExp(`^(${j}${o})`)
-    if (reg.test(str)) {
-        // 返回匹配到的第一个结果
-        return RegExp.$1
-    } else {
-        return ''
+      let j = str.match(/^(0+|1+)/)[0]
+      // 与运算1变0，0变1
+      let o = (j[0] ^ 1).toString().repeat(j.length)
+      // 正则对象中可以使用模板字符串来用变量
+      let reg = new RegExp(`^(${j}${o})`)
+      if (reg.test(str)) {
+          // 返回匹配到的第一个结果
+          return RegExp.$1
+      } else {
+          return ''
+      }
     }
-    }
-    // 通过for循环控制程序运行的流程
+    // 依次把最前面的数字去掉
     for (let i = 0, len = str.length - 1; i < len; i++) {
         let sub = match(str.slice(i))
         if (sub) {
@@ -103,7 +120,7 @@ function xx(str){
     }
     return r
 }
-xx('00101')
+countBinarySubstrings('00101')
 ```
 - 知识点
     - slice
@@ -114,6 +131,20 @@ xx('00101')
 
 ## 基础算法-数组
 ### 公式运算（电话号码的组合）
+
+给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。
+
+给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+
+![电话号码组合](./img/17_telephone_keypad.png)
+
+示例:
+
+输入："23"
+输出：["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+说明:
+尽管上面的答案是按字典序排列的，但是你可以任意选择答案输出的顺序。
+
 - 找出规律：只要前两项合并好,替代原来数组，再继续和后面合并
 - 写出程序伪代码
 ```js

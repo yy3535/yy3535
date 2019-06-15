@@ -243,7 +243,7 @@ fs.readFile('note.md','utf-8',function(){
 - module.exports
 ```js
 //1.js
-module.export="zfpx"
+module.exports="zfpx"
 ```
 ```js
 //2.module.js
@@ -252,6 +252,11 @@ let str=require('./1.js')
 let r=require('./user')
 //内置模块
 ```
+:::warning 注意
+- es6 export default/export 
+- node(es5) module.exports
+:::
+
 ### 模块化原理--闭包
 - seajs、requirejs都是闭包，node也是为了模块化，所以在每个文件外面套了个闭包，这个函数把文件中的`this`指向更改为`module.exports`
 ```js

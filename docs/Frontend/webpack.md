@@ -9,7 +9,7 @@
 - 代码校验：在代码被提交到仓库前需要校验代码是否符合规范，以及单元测试是否通过。
 - 自动发布：更新完代码后，自动构建出线上发布代码并传输给发布系统。
   
-## 使用
+## 基本使用
 ### yarn add webpack webpack-cli 
 ### yarn init
 - 默认有内置配置，默认打包index.js成main.js
@@ -561,6 +561,8 @@ module.exports=merge(base,{
 npm run build -- --config webpack.prod.js
 ```
 
+## 打包优化
+
 ### dll动态链接库
 - xxx.dll,如react,react-dom,react-router-dom登不需要改动的包做成xxx.dll文件上线直接放上去，体积不变，开发时打包速度明显变快
 ```js
@@ -604,3 +606,166 @@ plugins:[
 // index.html
 <script src='_dll_react.js'></script>
 ```
+
+### exclude include
+
+### IgnorePlugin
+```js
+let webpack=require('webpack');
+plugins:[
+    // 约定哪个包不要再引入了，自己采取引用哪个包
+    new webpack.IgnorePlugin(/\.\/locale/,/moment/);
+]
+```
+```js
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn')// 距离当前时间过去了多久
+```
+
+### 多线程打包
+- 进程里包括线程
+- 进程里包括一条主线程，node中可以开子进程，一般不会超过当前cpu核数(i5 4 i7 8，默认开4个)
+- 较复杂的项目才使用，小项目打包时间会变慢
+```js
+let Happypack=require('happypack');
+module:{
+    rules:[
+        {
+            test:/\.js$/,
+            exclude:/node_modules/,
+            include:path.resolve('src'),
+            use:'happypack/loader?id=js'
+        },
+        {
+            test:/\.css$/,use:'happypack/loader?id=css'
+        }
+    ]
+},
+plugins:[
+    // 多线程打包
+    new Happypack({
+        id:'js',
+        use:{
+            loader:'babel-loader',
+            options:{
+                presets:[
+                    "@babel/preset-env"
+                ]
+            }
+        }
+    }),
+    new Happypack({
+        id:'css',
+        use:['style-loader','css-loader']
+    })
+]
+```
+
+### webpack3需要处理的一些情况(webpack4自动处理)
+- tree shanking(树上的叶子没用的去掉)和把变量尽可能最小化
+  - webpack4
+    - 必须使用import语法，require不支持（所以前端不要使用require语法，可能会导致代码多余）
+    - 生产模式配置了`optimization`并且有配置内容会自动去掉，并且会把变量尽可能最小化，开发模式不会去掉
+  - webpack3
+    - 使用scope hosting工具解决
+```js
+// cakc.js
+let add=(a,b)=>{
+    return 'sum'+(a+b)
+}
+let minus=(a,b)=>{
+    return 'minus'+(a+b)
+}
+export {add,minus}
+```
+```js
+// index.js
+import {add} from './calc';
+```
+
+### 提取公共代码的插件 webpack4 配置优化项 webpack3 使用插件
+- 多入口页面使用。
+```js
+// index.js
+import './a';
+import './b';
+import jquery from jquery;
+```
+```js
+// other.js
+import './a';
+import './b';
+import jquery from jquery;
+```
+```js
+// about.js
+import jquery from jquery;
+```
+```js
+module.exports={
+    optimization:{
+        // 分割代码，缓存用 把a和b打包成一个文件，并缓存下来
+        splitChunks:{
+            cacheGroups:{
+                // 普通模块打包
+                common:{
+                    // 入口中有公共的抽离
+                    chunks:'initial',,
+                    // 只要有字节是公用的就提取
+                    minSize:0,
+                    // 最少重复引用多少次才提取
+                    minChunks:2
+                },
+                // 第三方模块打包
+                vendor:{
+                    // 优先级（先打包第三方模块）
+                    priority:1,
+                    test:/node_modules/,
+                    chunks:'initial',
+                    minSize:0,
+                    minChunks:2,
+                }
+            }
+        }
+    }
+}
+```
+
+## webpack实现动态懒加载js
+- import() 
+  - 动态加载js,草案中的方法，现在需要引用插件`@babel/plugin-syntax-dynamic-import`才能使用
+```js
+btn.addEventListener('click',function(){
+    import('./use').then(data=>{
+        // use.js中的代码挂载default上。
+        console.log(data.default)
+    })
+})
+```
+```js
+rules:[
+    // 需要在webpack中配置动态加载js的插件
+    {
+        test:/\.js$/,
+        use:[{
+            loader:'babel-loader',
+            options:{
+                presets:[],
+                plugins:[
+                    "@babel/plugin-syntax-dynamic-import"
+                ]
+            }
+        }]
+    }
+]
+```
+
+- 原理
+  - JSONP加载js
+  - 第一步 window['webpackJsonp'].push=webpackJsonpCallback;把json的回调挂载window上
+  - 第二步 调用__webpack_require__.e 告诉内部加载0.js，并且返回的是一个promise
+  - 第三步 在modules的属性上把当前的0.js放在modules的对象内
+  - 第四步 __webpack_require__.bind(null,'./src/use.js')引用这个use.js。__webpack_exports__[\"default\"]='hello' exports.default='hello';
+  - 第五步 下一次then就可以拿到这个exports对象 通过.default拿到异步加载的结果
+
+## webpack 手写

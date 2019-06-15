@@ -16,7 +16,7 @@ module.exports = {
       { text: '后端', link: '/Backend/' },
       { text: '运维', link: '/Operation/' },
       // { text: '关于', link: '/About/' },
-      { text: '待整理', link: '/Todo/' },
+      // { text: '待整理', link: '/Todo/' },
       // { text: '随想', link: '/Thought/' },
       { text: 'GitHub', link: 'https://github.com/yy3535/yy3535' },
     ],

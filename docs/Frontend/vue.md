@@ -1863,6 +1863,9 @@ export default {
 
 ## jsonwebtoken(jwt)
 
+
+
+
 ## iview,axios
 
 
@@ -1870,6 +1873,119 @@ export default {
 
 
 ## axios 获取数据
+```js
+// 简单api
+axios.request(config)
+axios.get(url[, config])
+axios.delete(url[, config])
+axios.head(url[, config])
+axios.options(url[, config])
+axios.post(url[, data[, config]])
+axios.put(url[, data[, config]])
+axios.patch(url[, data[, config]])
+
+// 定制config(只有url是必须得，类型默认GET)(一般使用这种方便统一配置)
+axios.create([config])
+const instance = axios.create({
+  baseURL: 'https://some-domain.com/api/',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+axios#request(config)
+axios#get(url[, config])
+axios#delete(url[, config])
+axios#head(url[, config])
+axios#options(url[, config])
+axios#post(url[, data[, config]])
+axios#put(url[, data[, config]])
+axios#patch(url[, data[, config]])
+axios#getUri([config])
+
+// 发送请求配置
+见官方文档
+
+// 返回格式
+{
+  // `data` is the response that was provided by the server
+  data: {},
+
+  // `status` is the HTTP status code from the server response
+  status: 200,
+
+  // `statusText` is the HTTP status message from the server response
+  statusText: 'OK',
+
+  // `headers` the headers that the server responded with
+  // All header names are lower cased
+  headers: {},
+
+  // `config` is the config that was provided to `axios` for the request
+  config: {},
+
+  // `request` is the request that generated this response
+  // It is the last ClientRequest instance in node.js (in redirects)
+  // and an XMLHttpRequest instance the browser
+  request: {}
+}
+
+// 拦截器
+// Add a request interceptor
+axios.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    return config;
+  }, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  });
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response;
+  }, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+  });
+
+```
+```js
+// ajaxRequest.js
+import axios from 'axios';
+class AjaxRequest{
+  constructor(){
+    this.baseURL=process.env.NODE_ENV=='production'?'/':'http://localhost:3000';
+    this.timeout=3000;
+  }
+  // 合并配置项
+  merge(options){
+    return {...options,baseURL:this.baseURL,timeout:this.timeout}
+  }
+  setInterceptor(instance){
+    // 如果上一个promise返回了一个常量，会作为下一个promise的输入
+    instance.interceptors.response.use((res)=>{
+      return res.data
+    })
+  }
+  request(options){
+    let instance=axios.create();
+    this.setInterceptor(instance);
+    let config=this.merge(options);
+    return instance(config);
+  }
+}
+export default new AjaxRequest
+
+// api/user.js
+import axios from '../libs/ajaxRequest';
+// 放置接口
+export const getUser=()=>{
+  axios.request({
+    url:'/user',
+    method:'get'
+  })
+}
+
+```
 
 ## jwt 实现 权限 vuex+jwt 鉴权
 

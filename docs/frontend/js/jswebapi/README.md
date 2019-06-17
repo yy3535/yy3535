@@ -409,7 +409,20 @@ callbackName({x:100, y:200})
 这是需要在服务器端设置的，现在推崇的跨域解决方案是这一种，比 JSONP 简单许多。
 
 ```js
-response.setHeader("Access-Control-Allow-Origin", "http://localhost:8011");  // 第二个参数填写允许跨域的域名称，不建议直接写 "*"
+// server.js
+// express 跨域
+app.use((req,res,next)=>{
+    // 请求来源
+    res.header("Access-Control-Allow-Origin","http://localhost:8080");
+    // 接受的请求类型
+    res.header("Access-Control-Allow-Methods","GET,HEAD,OPTIONS,POST,PUT");
+    // 跨域设置
+    res.header("Access-Control-Allow-Headers","Origin,X-Requested-With,Content-Type,Accept,Authorization");
+})
+```
+
+```js
+response.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");  // 第二个参数填写允许跨域的域名称，不建议直接写 "*"
 response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
 response.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
 

@@ -540,7 +540,7 @@ cookie 本身不是用来做服务器端存储的（计算机领域有很多这�
 
 - 移动端使用 zepto，使用方法和 jquery 一样。API 地址 http://jquery.cuishifeng.cn/
 
-- jquery文档：jquery123
+- jquery文档：jquery123,http://tool.oschina.net/apidocs/apidoc?api=jquery
 - jquery插件：jq22
 
 ### DOM 操作

@@ -922,15 +922,26 @@ console.log(5)
 - 正则对象
   - 正则对象可以匹配变量
 ```js
-var patt=new RegExp(pattern,modifiers);
-var re = new RegExp("\\w+");
+// pattern 正则表达式的文本
+// flags(g:全局匹配 i:忽略大小写 m：多行)
+// 字面量(参数不用引号)
+/pattern/flags
+// 构造函数(参数需要引号)
+new RegExp(pattern [, flags])
+// 工厂符号
+RegExp(pattern [, flags])
+
+/ab+c/i;
+new RegExp('ab+c', 'i');
+new RegExp(/ab+c/, 'i');
 let reg = new RegExp(`^(${j}${o})`)//j,o都是变量
-```
-- 直接用
-```js
-var patt=/pattern/modifiers;
+
+// 以下等价(字符串里需要转义)
+var re = new RegExp("\\w+");
 var re = /\w+/;
 ```
+
+
 - `test`
 ```javascript
 var ua = navigator.userAgent
@@ -954,68 +965,6 @@ console.log(matchResult[1]) // a=10&b=20&c=30
 ```
 #### 规则
 - 默认前一次匹配的结束是下一次匹配的开始
-
-- 特殊字符
-
-|符号|含义|
-|:---|:---|
-|^|匹配字符串的开始位置，中括号中表示非|
-|$|匹配字符串的结尾|
-|()|字表达式的开始和结束的位置|
-|[]|范围,中括号表达式|
-|.|匹配除\n外的任何单字符|
-|\\|转义符|
-|\||两者之间选一|
-
-- 限定符
-
-|符号|含义|
-|:---|:---|
-|{n}|匹配n次|
-|{n,}|至少匹配n次|
-|{n,m}|匹配n-m次|
-|*|匹配前面的子表达式>=0次，相当于{0,}|
-|+|匹配前面的子表达式>=1次，相当于{1,}|
-|?|匹配前面的子表达式0次或1次，相当于{0,1}|
-
-- 非打印字符
-
-|符号|含义|
-|:---|:---|
-|\n|换行符|
-|\s|空白符（包括空格、制表符、换页符）|
-|\S|非空白符|
-|\t|制表符|
-|\b|字与空格之间的位置|
-|\B|非单词边界|
-|\w|单词字符，等同于字符集合[a-zA-Z0-9_]|
-|\W|非单词字符|
-|\d|数字|
-|\D|非数字|
-
-- 其他
-|符号|含义|
-|:---|:---|
-|\1+|匹配一个以上相同的字符|
-
-- [30分钟学会正则表达式](https://deerchao.net/tutorials/regex/regex.htm)
-
-- 分组
-|符号|含义|
-|:---|:---|
-|X ?|	X 0次或1次|
-|(abc)? |0个或1个abc |
-|X *|	X 零次或多次|
-|X +|	X 一次或多次|
-|X { n }|	X 等于n 次|
-|X { n ,}|	X 大于等于 n 次|
-|X { n , m }|	X 大于等于 n 次，小于等于 m 次|
-
-:::tip
-多个字符重复：
-:::
-  - 捕获组
-  - 非捕获组
 
 #### 字符类
 - []中括号表示范围
@@ -1055,23 +1004,23 @@ console.log(matchResult[1]) // a=10&b=20&c=30
   - 勉强：尽量少地匹配目标串
   - 侵占：尽量多地匹配目标串，且不能回退
 
-```js
-// 目标串：xfooxxxxxxfoo
-// 贪婪模式：.*foo
-// 匹配一个（*f尽量多地全部字符串匹配，然后到foo，没有字符串了，就回退一个，再回退一个，直到回退三个时满足条件，然后就匹配了一个）
-// 勉强模式：*?foo
-// 匹配两个（第一个字符不是f，所以勉强地吞下一个x，然后第二个开始发现是foo，所以第一次匹配是xfoo,然后第二次吞下很多个xxx后发现xxxxxxfoo符合，所以共匹配两次）
-// 侵占模式：.*+foo
-// 匹配0个（一次性匹配所有字符，不回退，所以后面的foo没有字符串了）
+```md
+目标串：xfooxxxxxxfoo
+贪婪模式：.*foo
+匹配一个（*f尽量多地全部字符串匹配，然后到foo，没有字符串了，就回退一个，再回退一个，直到回退三个时满足条件，然后就匹配了一个）
+勉强模式：*?foo
+匹配两个（第一个字符不是f，所以勉强地吞下一个x，然后第二个开始发现是foo，所以第一次匹配是xfoo,然后第二次吞下很多个xxx后发现xxxxxxfoo符合，所以共匹配两次）
+侵占模式：.*+foo
+匹配0个（一次性匹配所有字符，不回退，所以后面的foo没有字符串了）
 ```
-```js
-// 目标串：232hjdhfd7474$
-// 贪婪模式：\w+[a-z]
-// 匹配一个
-// 勉强模式：\w+?[a-z]
-// 匹配三个
-// 侵占模式：\w++[a-z]
-// 匹配0个
+```md
+目标串：232hjdhfd7474$
+贪婪模式：\w+[a-z]
+匹配一个
+勉强模式：\w+?[a-z]
+匹配三个
+侵占模式：\w++[a-z]
+匹配0个
 ```
 
 #### 捕获组
@@ -1079,7 +1028,7 @@ console.log(matchResult[1]) // a=10&b=20&c=30
 - 作用：
   - 方便程序获取指定组的匹配
   - 反向引用时调用
-- 比如在((A)(B(C)))中，按左括号从左到右来数，有四个分组
+- 比如在((A)(B(C)))中，按左括号从左到右来数，有四个括号
   - 1:((A)(B(C)))// 表示整个表达式
   - 2:(A)
   - 3:(B(C))
@@ -1100,9 +1049,72 @@ console.log(matchResult[1]) // a=10&b=20&c=30
 ```
 
 #### 非捕获组
-- 以(?)开头的组是非捕获组，不计算在分组里面(括号里第一个是?就不计算在分组里面)
-- 好处：不会将匹配到的字符存储在内存中，从而节省内存
+- 概要
+  - 分组括号里第一个是?就是非捕获组(不计算在分组里面)
+  - 好处：不会将匹配到的字符存储在内存中，从而节省内存
+- 分类
+  - `(?:Pattern)`
+```js
+// 匹配industry或者Industries
+// 这种情况有分组
+industr(y|ies)
+// 改为没有分组的(节省内存)
+industr(?:y|ies)
+```
+  - 零宽度断言
 
+    |表达式|含义|
+    |----|----|
+    |x(?=y)|仅匹配被y跟随的x。|
+    |x(?!y)|仅匹配不被y跟随的x。|
+    <!-- |(?<=X)|反向肯定预查|
+    |(?<!X)|反向否定预查| -->
+    - 例：正则表达式(?<!4)56(?=9)
+      - 答：文本56前面不能是4，后面必须是9组成，因此5569匹配，4569不匹配
+    - 例：提取字符串da12bka3434bdca4343bdca234bm中包含在字符a和b之间的数字，但是这个a之前的字符不能是c，b后面的字符必须是d才能提取。
+      - 答：通过添加分组拿到分组内容 [^c]a(\d+)bd，通过零宽度断言，去掉前后分组，拿到剩下中间的一个分组 (?<=[^c]a)\d+(?=bd)
+
+
+  - 模式修政符
+    - 可组合搭配使用
+  
+    |表达式|含义|
+    |----|----|
+    |i|不区分大小写|
+    |g|全局匹配|
+    |m||
+    |s||
+    |x||
+    |e||
+
+#### 边界匹配器
+|表达式|含义|
+|----|----|
+|^|行首|
+|$|行尾|
+|\b|匹配一个单词边界|
+|\B|匹配非单词边界|
+```md
+I say thank you
+thank you 
+thank you all the same
+<!-- 查找以thank开头的行 ^thank 匹配两项-->
+
+<!-- 查找以thank开头以same结尾的行 ^thank.*same$ 匹配一项 -->
+```
+
+#### RegExp.​$1...$9
+- 值为String类型
+- 返回上一次正则表达式匹配中，第n个子表达式所匹配的文本。（只保存最前面的9个匹配文本。）
+
+#### 综合实例
+- URL
+```md
+/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+<!-- http或者https开头，http和https可有可无，数字或者小写字母或者.或者-有一个及以上，然后.，然后2-6个小写字母或者.的字符串，然后单词或者空格或者.或者-有0个及以上，整个分组0个及以上，然后/有或者没有，结束。 -->
+/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([?=&\/\w \.-]*)*\/?$/
+<!-- 修改加上?=&后可匹配带参数url -->
+```
 ### 日期函数
 
 日期函数最常用的 API 如下
@@ -1325,6 +1337,7 @@ Array​.prototype​[@@iterator]()
 | 合并，切割 | concat,slice[),subString[),subStr,splite |
 | 匹配 | match,replace,search,startsWith |
 | 格式化 | toLowerCase,toUpperCase,trim,repeat |
+
 - fromCharCode()
 - from CodePoint()
 - charAt()
@@ -1336,38 +1349,24 @@ Array​.prototype​[@@iterator]()
 - indexOf()
 - lastIndexOf()
 - localeCompare()
-- match() 
 
-可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
-
-返回匹配结果的数组。该数组的内容依赖于 regexp 是否具有全局标志 g。
-
-stringObject.match(searchvalue)
-stringObject.match(regexp)
 - matchAll()
 - normalize()
 - padEnd()
 - padStart()
-- repeat
-let resultString = str.repeat(count);
+- repeat(count)
+  - 重复字符串多少遍，参数必须为正数
 ```js
-"abc".repeat(-1)     // RangeError: repeat count must be positive and less than inifinity
+stringObject.repeat(count);
+"abc".repeat(-1)     // RangeError: 必须为正数
 "abc".repeat(0)      // ""
 "abc".repeat(1)      // "abc"
 "abc".repeat(2)      // "abcabc"
 ```
 
-- replace()
-- search()
 - slice()
 - small()
-- split() 
 
-用于把一个字符串分割成字符串数组。
-
-stringObject.split(separator,howmany)
-
-separator	必需。字符串或正则表达式
 - startsWith()
 - substring()
 - toLocaleLowerCase()
@@ -1381,9 +1380,19 @@ separator	必需。字符串或正则表达式
 - valueOf()
 - [@@iterator]()
 - raw()
-
-
-
+<!-- 可用正则表达式的方法 -->
+- str.split([separator[, limit]])
+  - 把一个字符串按分隔符分割成字符串数组
+  - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。)
+  - limit【可选】返回数组的最大长度
+- str.replace(regexp|substr, newSubStr|function)
+  - 替换
+- str.search(regexp)
+  - 对正则表达式和指定字符串进行匹配搜索
+  - 匹配成功，返回首次匹配项的索引，否则返回-1
+- str.match(regexp)
+  - 可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
+  - 返回匹配结果的数组（数组的内容看regexp是否加了全局标志g）
 
 
 ### 对象常用 API

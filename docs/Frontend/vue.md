@@ -102,6 +102,62 @@ observer(obj)
 obj.age.age='zf'
 ```
 
+```js
+//老的原理
+let obj={name:'zfpx',age:9};
+function update(){
+  console.log('数据更新了')
+}
+function observer(obj){
+  if(typeof obj!=='object'){
+    return obj;//普通值不需要观察
+  }
+  for(let key in obj){
+    defineReactive(obj,key,obj[key]);
+  }
+}
+//把对象中的所有属性都采用Object.defineProperty方式来定义
+function defineReactive(obj,key,value){
+observer(value);//递归确认值是否是对象
+  Object.defineProperty(obj,key,{
+    get(){
+      return value;
+    },
+    set(val){
+      update();
+      if(value!=val) value=val
+    }
+  })
+}
+observer(obj);
+obj.name=100;
+console.log(obj.name)
+obj.name.name='zfpx1';
+
+//现在的原理：proxy 代理 es6语法 mobx observer
+好处：
+- Object.defineProperty不支持数组，而proxy可监控到数组的变化
+- 不存在的属性添加时依然可以监控
+坏处：
+- 兼容性不好，Object.defineProperty是es5语法
+//let arr=[1,2,3]
+let obj={}
+let p=new Proxy(obj,{
+  get(target,key,proxy){//第三个参数一般不用，调用了会陷入死循环
+    return Reflect.get(target,key);//第二种写法
+    //第一种写法：return target[key]
+  },
+  set(target,key,value){
+  if(key==='length') return true;
+    return Reflect.set(target,key,value);
+  }
+})
+//p.push(4);
+p.name='hello';
+
+```
+
+
 ## vue实例上的方法
 ### vm.$el 
 
@@ -1948,27 +2004,52 @@ axios.interceptors.response.use(function (response) {
   });
 
 ```
+
+
+## jwt 实现 权限 vuex+jwt 鉴权
+
 ```js
 // ajaxRequest.js
 import axios from 'axios';
 class AjaxRequest{
   constructor(){
     this.baseURL=process.env.NODE_ENV=='production'?'/':'http://localhost:3000';
+    // 超时时间
     this.timeout=3000;
+    // 每次的请求
+    this.queue={};
   }
   // 合并配置项
   merge(options){
     return {...options,baseURL:this.baseURL,timeout:this.timeout}
   }
-  setInterceptor(instance){
+  setInterceptor(instance,url){
     // 如果上一个promise返回了一个常量，会作为下一个promise的输入
     instance.interceptors.response.use((res)=>{
+      // 每次请求成功后，都删除队列里的路径
+      delete this.queue[url];
+      if(Object.keys(this.queue).length===0){
+        // loading控制
+        store.commit('hideLoading');
+      }
+      // 更改返回的数据结构
       return res.data
+    })
+    
+    instance.interceptors.request.use((config)=>{
+      // 更改请求头
+      config.headers.Authorization='xxx';
+      if(Object.keys(this.queue).length===0){
+        // loading控制
+        store.commit('showLoading');
+      }
+      this.queue[url]=url;
+      return config
     })
   }
   request(options){
     let instance=axios.create();
-    this.setInterceptor(instance);
+    this.setInterceptor(instance,options.url);
     let config=this.merge(options);
     return instance(config);
   }
@@ -1986,8 +2067,24 @@ export const getUser=()=>{
 }
 
 ```
+```js
+// store.js
+state:{
+  isShowLoading:false
+},
+mutations:{
+  showLoading(state){
+    state.isShowLoading=true;
+  },
+  hideLoading(state){
+    state.isShowLoading=false;
+  }
+},
+actions:{
 
-## jwt 实现 权限 vuex+jwt 鉴权
+}
+```
+
 
 ## 报错
 - No ESLint configuration found

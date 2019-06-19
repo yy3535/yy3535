@@ -1335,56 +1335,26 @@ Array​.prototype​[@@iterator]()
 | :------| ------: |
 | 查找 | indexOf,lastIndexOf,includes,charAt |
 | 合并，切割 | concat,slice[),subString[),subStr,splite |
-| 匹配 | match,replace,search,startsWith |
+| 匹配 | match,replace,search,startsWith,endsWith |
 | 格式化 | toLowerCase,toUpperCase,trim,repeat |
 
-- fromCharCode()
-- from CodePoint()
+#### 查找
 - charAt()
-- charCodeAt()
-- codePointAt()
-- concat()
-- endsWith()
 - includes()
 - indexOf()
 - lastIndexOf()
-- localeCompare()
 
-- matchAll()
-- normalize()
-- padEnd()
-- padStart()
-- repeat(count)
-  - 重复字符串多少遍，参数必须为正数
-```js
-stringObject.repeat(count);
-"abc".repeat(-1)     // RangeError: 必须为正数
-"abc".repeat(0)      // ""
-"abc".repeat(1)      // "abc"
-"abc".repeat(2)      // "abcabc"
-```
-
+#### 合并、切割
+- concat()
 - slice()
-- small()
-
-- startsWith()
 - substring()
-- toLocaleLowerCase()
-- toLocaleUpperCase()
-- toLowerCase()
-- toString()
-- toUpperCase()
-- trim()
-- trimRight()
-- trimLeft()
-- valueOf()
-- [@@iterator]()
-- raw()
-<!-- 可用正则表达式的方法 -->
 - str.split([separator[, limit]])
   - 把一个字符串按分隔符分割成字符串数组
   - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。)
   - limit【可选】返回数组的最大长度
+- startsWith()
+- endsWith()
+#### 匹配
 - str.replace(regexp|substr, newSubStr|function)
   - 替换
 - str.search(regexp)
@@ -1394,12 +1364,109 @@ stringObject.repeat(count);
   - 可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
   - 返回匹配结果的数组（数组的内容看regexp是否加了全局标志g）
 
+#### 格式化
+- str.repeat(count)
+  - 重复字符串多少遍，参数必须为正数
+    ```js
+    "abc".repeat(-1)     // RangeError: 必须为正数
+    "abc".repeat(0)      // ""
+    "abc".repeat(1)      // "abc"
+    "abc".repeat(2)      // "abcabc"
+    ```
+- toLocaleLowerCase()
+- toLocaleUpperCase()
+- toLowerCase()
+- toString()
+- toUpperCase()
+- trim()
+- trimRight()
+- trimLeft()
+- valueOf()
+
 
 ### 对象常用 API
-- obj.xxx，xxx只能是字符串，不能是变量，变量情况要用[xxx]
-- for-in
+#### Object 构造函数的方法
+- Object.assign(target, ...sources)
+  通过复制一个或多个对象来创建一个新的对象。
+  ```js
+  const obj = { a: 1 };
+  const copy = Object.assign({}, obj);
+  console.log(copy); // { a: 1 }
+  ```
+- Object.create()
+  - 使用指定的原型对象和属性创建一个新对象。
+- Object.defineProperty()
+  - 在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。
+    - 添加的属性不可修改
+    - 属性无法看到但是可以取到（可以枚举）
+  - 描述符
+    - configurable(为true时属性描述符才能被改变，属性也能被删除。默认false)
+    - enumerable(为true时出现在对象的枚举属性中，默认false)。
+    - 数据描述符和存取描述符二选一
+      - 数据描述符
+        - value(任意javascript值,默认undefined)
+        - writable(为true时value能被修改，默认false)
+      - 存取描述符
+        - get
+          - 给属性提供 getter 的方法，访问属性时被执行
+          - 默认undefined
+          - 没有参数传入，会传入this对象
+        - set
+          - 给属性提供 setter 的方法，属性值修改时触发
+          - 默认undefined
+          - 一个参数：新值
 
-```javascript
+  ```js
+  let obj={}
+  let temp;
+  // get第一种写法
+  Object.defineProperty(obj,'name',{
+    get(){
+        return temp
+    },
+    set(val){
+        temp=val;
+    }
+  })
+  // get第二种写法
+  let obj={
+    temp:'',
+    get PI(){
+      return this.temp
+    },
+    set PI(val){
+      this.temp=val;
+    }
+  }
+  obj.name='小明'
+  ```
+  :::tip 使用场景
+  - class的实现
+  - vue的MVVM
+  - mobx
+  - 装饰器
+  - koa
+  :::
+- Object.keys()
+  - 返回一个包含所有给定对象自身可枚举属性名称的数组。
+- Object.setPrototypeOf()
+  - 设置对象的原型（即内部 [[Prototype]] 属性）。
+
+#### Object 实例的方法
+- Object.prototype.hasOwnProperty()
+  - 返回一个布尔值 ，表示某个对象是否含有指定的属性，而且此属性非原型链继承的。
+- Object.prototype.isPrototypeOf()
+  - 返回一个布尔值，表示指定的对象是否在本对象的原型链中。
+- Object.prototype.toString()
+  - 返回对象的字符串表示。
+- Object.prototype.valueOf()
+  - 返回指定对象的原始值。
+
+
+:::tip 注意
+- obj.xxx(xxx是变量要用[xxx])
+- for-in
+```js
 var obj = {
     x: 100,
     y: 200,
@@ -1407,12 +1474,64 @@ var obj = {
 }
 var key
 for (key in obj) {
-    // 注意这里的 hasOwnProperty，再讲原型链时候讲过了
     if (obj.hasOwnProperty(key)) {
         console.log(key, obj[key])
     }
 }
 ```
+:::
+
+### Function API
+- 实例的方法
+  - Function.prototype.apply(thisArg, [argsArray])
+    - 在一个对象的上下文中应用另一个对象的方法
+    - 参数能够以数组形式传入。(数组元素将作为单独的参数传给 func 函数)
+  - Function.prototype.call(thisArg, arg1, arg2, ...)
+    - 在一个对象的上下文中应用另一个对象的方法
+    - 参数能够以列表形式传入。
+  - Function.prototype.bind(thisArg[, arg1[, arg2[, ...]]])
+    - 在一个对象的上下文中应用另一个对象的方法
+:::warning 注意
+call()方法的作用和 apply() 方法区别
+- call()方法接受的是`参数列表`
+- apply()方法接受的是一个`参数数组`
+:::
+:::tip 注
+- 利用apply展开数组
+```js
+var numbers = [5, 6, 2, 3, 7];
+var max = Math.max.apply(null, numbers);
+console.log(max);
+// expected output: 7
+var min = Math.min.apply(null, numbers);
+console.log(min);
+// expected output: 2
+```
+:::
+
+### delete 操作符
+- delete expression
+    - 断开引用来间接
+    - 所有情况都返回true，除非属性是一个自己不可配置的属性
+```js
+// 例：
+delete object.property 
+delete object['property']
+```
+:::tip 注意
+- 如果删除的属性不存在，delete不会起作用，但仍会返回true
+- delete操作只会在自身的属性上起作用(不会删除原型链上的属性)
+- 删除一个数组元素时，数组的长度不受影响
+```
+```js
+var trees = ["redwood","bay","cedar","oak","maple"];
+delete trees[3];
+if (3 in trees) {
+   // 这里不会执行
+}
+```
+:::
+
 
 ## 解答
 
@@ -1453,12 +1572,6 @@ var random = random.slice(0, 10)
 console.log(random)
 ```
 
-
-
-背诵字符串的方法
-
-
-
 ### 写一个能遍历对象和数组的`forEach`函数
 
 遍历数组使用`forEach`，而遍历对象使用`for in`，但是在实际开发中，可以使用一个函数就遍历两者，jquery 就有这样的函数
@@ -1494,7 +1607,7 @@ forEach(obj, function (key, value) {
 ```
 
 ### 实现一个深拷贝
-```
+```js
 function deepCopy(obj){
     //递归跳出去的条件，不加的话就相当于死循环
     if(typeof obj!='object'){
@@ -1517,7 +1630,7 @@ function deepCopy(obj){
 
 ### 其他面试题
 - setTimeout设置为0有什么作用？
-```
+```js
 var fuc = [1,2,3];
 for(var i in fuc){
   setTimeout(function(){console.log(fuc[i])},0);

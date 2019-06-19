@@ -1099,26 +1099,7 @@ for(var i=0;i<4;i++){
     - 先聊MVC,再聊MVVM的定义,
 - 双向绑定是什么原理，可以写出来吗？
     - 数据到页面的更新-->Object.defineProperty的更新回调（以前需要使用模板引擎）
-```js
-Object.defineProperty(obj,prop,descriptor)
-descriptor
-MVVM框架中用的get set（其中检查新值和旧值如果不一样，修改）
-// 
-var obj1={};
-var descriptor=Object.create(null);
-descriptor.value='static';
-Object.defineProperty(obj1,'key',descriptor);
-console.log(obj1)
-// 显式
-var obj2={};
-Object.defineProperty(obj2,'key',{
-    enumerable:true,
-    configurable:false,
-    writable:false,
-    value:'static',
-});
-console.log(obj2)
-```
+
 - 【重要】：
 1. object.defineProperty的用法要熟记于心
 2. object.defineProperty与reflect.defineProperty的区别

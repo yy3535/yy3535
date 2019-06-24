@@ -942,17 +942,23 @@ console.log(5)
 - RegExp.prototype.exec(str)
     - 在一个指定字符串中执行一个搜索匹配。返回一个结果数组(匹配的第一个字符串)或 null，并改变lastIndex(再次执行exec时开始搜索的位置)
     ```js
+    const RE_DATE = /(\d{4})-(\d{2})-(\d{2})/;
+    const matchObj = RE_DATE.exec('1999-12-31');
     // 返回结果
     [
         // 匹配的第一个字符串
-        0: "RUNOOB"
-        // 括号中的分组捕获
+        0: "1999-12-31"
+        // 所有分组
+        1: "1999"
+        2: "12"
+        3: "31"
+        // 设置了具名组后的括号中的分组捕获
         groups: undefined
         // 匹配到的字符位于原始字符串的基于0的索引值
-        index: 18
+        index: 0
         // 原始字符串	
-        input: "Hello Hello world!RUNOOBHelRUNOOBloHelloHello"
-        length: 1
+        input: "1999-12-31"
+        length: 4
     ]
     ```
 - RegExp.prototype.test(str)
@@ -964,7 +970,11 @@ console.log(5)
     ```
 - RegExp.prototype.unicode[ES6]
     - 返回是否设置了u修饰符。
-- 
+- RegExp.prototype.sticky[ES6]
+    - 返回是否设置了y修饰符
+- RegExp.prototype.flags[ES6]
+    - 返回正则表达式的修饰符
+
 #### 字符串的正则方法
 4个方法：match()、replace()、search()、split()
 #### 规则
@@ -1034,6 +1044,8 @@ console.log(5)
   - 2:(A)
   - 3:(B(C))
   - 4:(C)
+- 具名组匹配（为每一个组匹配指定一个名字）
+    - 在圆括号内部，模式的头部添加“问号 + 尖括号 + 组名”（?<year>），就可以在exec方法返回结果的groups属性上引用该组名。数字序号（matchObj[1]）依然有效。
 
 #### 反向引用
 - 使用反斜线\后跟一个数字来表示。数字用来表示需要引用的分组组号
@@ -1062,12 +1074,12 @@ industr(y|ies)
 industr(?:y|ies)
 ```
 #### 零宽度断言
-|表达式|含义|
-|----|----|
-|x(?=y)|仅匹配被y跟随的x。|
-|x(?!y)|仅匹配不被y跟随的x。|
-<!-- |(?<=X)|反向肯定预查|
-|(?<!X)|反向否定预查| -->
+|表达式|含义|添加时间|
+|----|----|----|
+|x(?=y)|先行断言，仅匹配被y跟随的x。||
+|x(?!y)|先行否定断言，仅匹配不被y跟随的x。||
+|(?<=y)x|后行断言，仅匹配x在y后面|ES6|
+|(?<!y)x|后行否定断言，仅匹配x不在y后面|ES6|
 - 例：正则表达式(?<!4)56(?=9)
     - 答：文本56前面不能是4，后面必须是9组成，因此5569匹配，4569不匹配
 - 例：提取字符串da12bka3434bdca4343bdca234bm中包含在字符a和b之间的数字，但是这个a之前的字符不能是c，b后面的字符必须是d才能提取。
@@ -1081,8 +1093,8 @@ industr(?:y|ies)
 |----|----|-----|
 |i|不区分大小写||
 |g|全局匹配||
-|m|||
-|s|||
+|m|多行修饰符，使^和$匹配每一行的行首和行尾||
+|s|设置为dotAll模式，使.可以匹配任意单个字符|ES6|
 |x|||
 |e|||
 |u|处理大于\uFFFF的 Unicode 字符|ES6|
@@ -1107,6 +1119,32 @@ thank you all the same
 - 值为String类型
 - 返回上一次正则表达式匹配中，第n个子表达式所匹配的文本。（只保存最前面的9个匹配文本。）
 
+#### \p{...}和\P{...}
+- 允许正则表达式匹配符合 Unicode 某种属性的所有字符
+- 这两种类只对 Unicode 有效，所以使用的时候一定要加上u修饰符。
+- 由于 Unicode 的各种属性非常多，所以这种新的类的表达能力非常强。
+    ```js
+    // 匹配所有数字
+    const regex = /^\p{Number}+$/u;
+    regex.test('²³¹¼½¾') // true
+    regex.test('㉛㉜㉝') // true
+    regex.test('ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ') // true
+    // 匹配所有空格
+    \p{White_Space}
+
+    // 匹配各种文字的所有字母，等同于 Unicode 版的 \w
+    [\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}]
+
+    // 匹配各种文字的所有非字母的字符，等同于 Unicode 版的 \W
+    [^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}]
+
+    // 匹配 Emoji
+    /\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu
+
+    // 匹配所有的箭头字符
+    const regexArrows = /^\p{Block=Arrows}+$/u;
+    regexArrows.test('←↑→↓↔↕↖↗↘↙⇏⇐⇑⇒⇓⇔⇕⇖⇗⇘⇙⇧⇩') // true
+    ```
 #### 综合实例
 - URL
 ```md

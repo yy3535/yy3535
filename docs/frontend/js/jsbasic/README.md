@@ -919,53 +919,56 @@ console.log(5)
 ## 05其他基础知识知识点
 
 ### 正则表达式
-- 正则对象
-  - 正则对象可以匹配变量
-```js
-// pattern 正则表达式的文本
-// flags(g:全局匹配 i:忽略大小写 m：多行)
-// 字面量(参数不用引号)
-/pattern/flags
-// 构造函数(参数需要引号)
-new RegExp(pattern [, flags])
-// 工厂符号
-RegExp(pattern [, flags])
-
-/ab+c/i;
-new RegExp('ab+c', 'i');
-new RegExp(/ab+c/, 'i');
-let reg = new RegExp(`^(${j}${o})`)//j,o都是变量
-
-// 以下等价(字符串里需要转义)
-var re = new RegExp("\\w+");
-var re = /\w+/;
-```
-
-
-- `test`
-```javascript
-var ua = navigator.userAgent
-var reg = /\bMicroMessenger\b/i
-console.log(reg.test(ua))
-```
-
-- `replace`
-```javascript
-function trim(str) {
-    return str.replace(/(^\s+)|(\s+$)/g, '')
-}
-```
-
-`match`
-```javascript
-var url = 'http://www.abc.com/path/xxx.html?a=10&b=20&c=30#topic'  // 后面的 #topic 也可能没有
-var reg = /\?(.+?)(#|$)/
-var matchResult = url.match(reg)
-console.log(matchResult[1]) // a=10&b=20&c=30
-```
+#### 正则对象
+- 正则对象可以匹配变量，pattern 正则表达式的文本，flags(g:全局匹配 i:忽略大小写 m：多行)
+- 三种方式
+    - 字面量
+        - /xyz/i
+    - 构造函数（返回一个正则表达式字面量）
+        - 参数是字符串(字符串里需要转义`new RegExp("\\w+")`)
+            - `var regex = new RegExp('xyz', 'i');` 等价于 `var regex = /xyz/i;`
+        - 参数是正则表示式
+            - `var regex = new RegExp(/xyz/i);` 等价于 `var regex = /xyz/i;`
+        - 参数是正则表示式时第二个参数添加修饰符[ES6]
+            - `new RegExp(/abc/ig, 'i')` i覆盖了ig
+    - 工厂符号
+        - RegExp('xyz' ,i)
+- 注意点
+    - 正则表达式里有变量
+    ```js
+    let reg = new RegExp(`^(${j}${o})`)
+    ```
+#### 正则api:
+- RegExp.prototype.exec(str)
+    - 在一个指定字符串中执行一个搜索匹配。返回一个结果数组(匹配的第一个字符串)或 null，并改变lastIndex(再次执行exec时开始搜索的位置)
+    ```js
+    // 返回结果
+    [
+        // 匹配的第一个字符串
+        0: "RUNOOB"
+        // 括号中的分组捕获
+        groups: undefined
+        // 匹配到的字符位于原始字符串的基于0的索引值
+        index: 18
+        // 原始字符串	
+        input: "Hello Hello world!RUNOOBHelRUNOOBloHelloHello"
+        length: 1
+    ]
+    ```
+- RegExp.prototype.test(str)
+    - 执行一个检索，用来查看正则表达式与指定的字符串是否匹配。返回 true 或 false。
+    ```js
+    var str = 'abc'
+    var reg = /^a/i
+    console.log(reg.test(str))
+    ```
+- RegExp.prototype.unicode[ES6]
+    - 返回是否设置了u修饰符。
+- 
+#### 字符串的正则方法
+4个方法：match()、replace()、search()、split()
 #### 规则
 - 默认前一次匹配的结束是下一次匹配的开始
-
 #### 字符类
 - []中括号表示范围
   - `[a-zA-Z],[abc],[cf]at`,
@@ -998,7 +1001,6 @@ console.log(matchResult[1]) // a=10&b=20&c=30
  <!-- ![量词模式](../../img/三种模式.jpg) -->
  <img :src="$withBase('/img/三种模式.jpg')" alt="foo">
 
-
 - 量词模式
   - 贪婪：尽量多的匹配目标字符串，且能够回退
   - 勉强：尽量少地匹配目标串
@@ -1022,7 +1024,6 @@ console.log(matchResult[1]) // a=10&b=20&c=30
 侵占模式：\w++[a-z]
 匹配0个
 ```
-
 #### 捕获组
 - 捕获组：使用括号作为单独的单元来对待的一种方式，可通过程序方便地拿到分组对应的匹配内容
 - 作用：
@@ -1047,7 +1048,6 @@ console.log(matchResult[1]) // a=10&b=20&c=30
 <div id="vId">我知道<未来>的<a>路</a>很<a>不好走</a></div>
 // 匹配一次（([a-zA-Z]+)是前面的标签名，.*?勉强模式匹配多个非换行字符的标签属性,(.|\n)*.?勉强模式匹配标签中间内容，\1重复前面的标签名）
 ```
-
 #### 非捕获组
 - 概要
   - 分组括号里第一个是?就是非捕获组(不计算在分组里面)
@@ -1061,31 +1061,32 @@ industr(y|ies)
 // 改为没有分组的(节省内存)
 industr(?:y|ies)
 ```
-  - 零宽度断言
+#### 零宽度断言
+|表达式|含义|
+|----|----|
+|x(?=y)|仅匹配被y跟随的x。|
+|x(?!y)|仅匹配不被y跟随的x。|
+<!-- |(?<=X)|反向肯定预查|
+|(?<!X)|反向否定预查| -->
+- 例：正则表达式(?<!4)56(?=9)
+    - 答：文本56前面不能是4，后面必须是9组成，因此5569匹配，4569不匹配
+- 例：提取字符串da12bka3434bdca4343bdca234bm中包含在字符a和b之间的数字，但是这个a之前的字符不能是c，b后面的字符必须是d才能提取。
+    - 答：通过添加分组拿到分组内容 [^c]a(\d+)bd，通过零宽度断言，去掉前后分组，拿到剩下中间的一个分组 (?<=[^c]a)\d+(?=bd)
 
-    |表达式|含义|
-    |----|----|
-    |x(?=y)|仅匹配被y跟随的x。|
-    |x(?!y)|仅匹配不被y跟随的x。|
-    <!-- |(?<=X)|反向肯定预查|
-    |(?<!X)|反向否定预查| -->
-    - 例：正则表达式(?<!4)56(?=9)
-      - 答：文本56前面不能是4，后面必须是9组成，因此5569匹配，4569不匹配
-    - 例：提取字符串da12bka3434bdca4343bdca234bm中包含在字符a和b之间的数字，但是这个a之前的字符不能是c，b后面的字符必须是d才能提取。
-      - 答：通过添加分组拿到分组内容 [^c]a(\d+)bd，通过零宽度断言，去掉前后分组，拿到剩下中间的一个分组 (?<=[^c]a)\d+(?=bd)
 
+#### 模式修政符
+- 可组合搭配使用
 
-  - 模式修政符
-    - 可组合搭配使用
-  
-    |表达式|含义|
-    |----|----|
-    |i|不区分大小写|
-    |g|全局匹配|
-    |m||
-    |s||
-    |x||
-    |e||
+|表达式|含义|添加时间|
+|----|----|-----|
+|i|不区分大小写||
+|g|全局匹配||
+|m|||
+|s|||
+|x|||
+|e|||
+|u|处理大于\uFFFF的 Unicode 字符|ES6|
+|y|与g修饰符类似，也是全局匹配，但匹配必须从剩余的第一个位置开始|ES6|
 
 #### 边界匹配器
 |表达式|含义|
@@ -1098,9 +1099,8 @@ industr(?:y|ies)
 I say thank you
 thank you 
 thank you all the same
-<!-- 查找以thank开头的行 ^thank 匹配两项-->
-
-<!-- 查找以thank开头以same结尾的行 ^thank.*same$ 匹配一项 -->
+<!-- 查找以thank开头的行：^thank，匹配两项-->
+<!-- 查找以thank开头以same结尾的行：^thank.*same$，匹配一项 -->
 ```
 
 #### RegExp.​$1...$9
@@ -1331,19 +1331,50 @@ Array​.prototype​[@@iterator]()
 
 ### 字符串常用 API
 
-| 功能 | API |
-| :------| ------: |
-| 查找 | indexOf,lastIndexOf,includes,charAt |
-| 合并，切割 | concat,slice[),subString[),subStr,splite |
-| 匹配 | match,replace,search,startsWith,endsWith |
-| 格式化 | toLowerCase,toUpperCase,trim,repeat |
+| 功能 | ES5 API |ES6 API|
+| :------| ------: |-----:|
+| 查找 | indexOf,lastIndexOf,charAt,  |String.fromCodePoint,codePointAt,includes,startsWith,endsWith|
+| 合并，切割 | concat,slice[),subString[),subStr,splite ||
+| 匹配 | match,replace,search|matchAll|
+| 格式化 | toLowerCase,toUpperCase,trim,repeat|String.fromCodePoint, String.raw,codePointAt,padStart,padEnd,trimStart,trimEnd|
 
 #### 查找
 - charAt()
-- includes()
+- charCodeAt()
 - indexOf()
 - lastIndexOf()
 
+- String.fromCodePoint()
+    - 可以识别大于0xFFFF的字符，弥补了String.fromCharCode()方法的不足。
+    - 多个参数，会被合并成一个字符串返回。
+    - 与codePointAt()方法相反，定义在String对象上，codePointAt方法定义在字符串的实例对象上。
+    ```js
+    String.fromCodePoint(0x20BB7)
+    // "𠮷"
+    String.fromCodePoint(0x78, 0x1f680, 0x79) === 'x\uD83D\uDE80y'
+    // true
+    ```
+- str.codePointAt()
+    - 返回一个字符的码点（能够正确处理 4 个字节储存的字符）
+     - 是测试一个字符由两个字节还是由四个字节组成的最简单方法
+```js
+var s = "𠮷";
+
+s.length // 2
+s.charAt(0) // ''
+s.charAt(1) // ''
+s.charCodeAt(0) // 55362
+s.charCodeAt(1) // 57271
+``` 
+- includes()
+    - 返回布尔值，表示是否找到了参数字符串。
+    - 支持第二个参数，表示开始搜索的位置。
+- startsWith()
+    - 返回布尔值，表示参数字符串是否在原字符串的头部。
+    - 支持第二个参数，表示开始搜索的位置。
+- endsWith()
+    - 返回布尔值，表示参数字符串是否在原字符串的尾部。
+    - 支持第二个参数，表示开始搜索的位置。
 #### 合并、切割
 - concat()
 - slice()
@@ -1352,8 +1383,6 @@ Array​.prototype​[@@iterator]()
   - 把一个字符串按分隔符分割成字符串数组
   - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。)
   - limit【可选】返回数组的最大长度
-- startsWith()
-- endsWith()
 #### 匹配
 - str.replace(regexp|substr, newSubStr|function)
   - 替换
@@ -1364,15 +1393,11 @@ Array​.prototype​[@@iterator]()
   - 可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
   - 返回匹配结果的数组（数组的内容看regexp是否加了全局标志g）
 
+- str.matchAll()
+    - 返回一个正则表达式在当前字符串的所有匹配
+
 #### 格式化
-- str.repeat(count)
-  - 重复字符串多少遍，参数必须为正数
-    ```js
-    "abc".repeat(-1)     // RangeError: 必须为正数
-    "abc".repeat(0)      // ""
-    "abc".repeat(1)      // "abc"
-    "abc".repeat(2)      // "abcabc"
-    ```
+
 - toLocaleLowerCase()
 - toLocaleUpperCase()
 - toLowerCase()
@@ -1382,8 +1407,52 @@ Array​.prototype​[@@iterator]()
 - trimRight()
 - trimLeft()
 - valueOf()
+- String.fromCharCode()
+    - 从 Unicode 码点返回对应字符(不能识别码点大于0xFFFF的字符)
+```js
+String.fromCharCode(0x20BB7)
+// "ஷ"
+```
 
+- String.raw() 
+    - 返回一个斜杠都被转义（即斜杠前面再加一个斜杠）的字符串
+- str.repeat(count)
+    - 返回一个新字符串，表示将原字符串重复n次。参数必须为正数
+    ```js
+    "abc".repeat(-1)     // RangeError: 必须为正数
+    "abc".repeat(0)      // ""
+    "abc".repeat(1)      // "abc"
+    "abc".repeat(2)      // "abcabc"
+    ```
+- normalize()
+    - 将字符的不同表示方法统一为同样的形式，这称为 Unicode 正规化。
+```js
+'\u01D1'.normalize() === '\u004F\u030C'.normalize()
+// true
+```
+- str.padStart()，str.padEnd()
+    - 如果某个字符串不够指定长度，会在头部或尾部补全。padStart()用于头部补全，padEnd()用于尾部补全。
+    - 如果原字符串的长度，等于或大于最大长度，则字符串补全不生效，返回原字符串。
+    - 省略第二个参数，默认使用空格补全长度
+    - 用途
+        - 为数值补全指定位数
+        - 提示字符串格式
+```js
+'x'.padStart(5, 'ab') // 'ababx'
+'x'.padStart(4, 'ab') // 'abax'
 
+'x'.padEnd(5, 'ab') // 'xabab'
+'x'.padEnd(4, 'ab') // 'xaba'
+```
+```js
+// 提示字符串格式
+12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
+'09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
+```
+- str.trimStart()，str.trimEnd()
+    - trimStart()消除字符串头部的空格
+    - trimEnd()消除尾部的空格。
+    - 返回新字符串，不修改原始字符串。
 ### 对象常用 API
 #### Object 构造函数的方法
 - Object.assign(target, ...sources)

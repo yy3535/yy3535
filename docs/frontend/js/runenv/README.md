@@ -331,32 +331,28 @@ document.addEventListener('DOMContentLoaded', function () {
   - 攻击类型
     - 反射型
       - 发出请求时，XSS代码出现在URL中，作为输入提交到服务器端，服务器端解析后响应，XSS代码随响应内容一起传回浏览器，最好浏览器解析执行XSS代码。
-```js
-// index.js
-router.get('/', function(req, res, next) {
-  // 关闭浏览器的XSS拦截
-  res.set('X-XSS-Protection',0)
-  res.render('index', { title: 'Express',xss:req.query.xss });
-});
+      ```js
+      // index.js
+      router.get('/', function(req, res, next) {
+        // 关闭浏览器的XSS拦截
+        res.set('X-XSS-Protection',0)
+        res.render('index', { title: 'Express',xss:req.query.xss });
+      });
 
-// index.ejs
-<div class="">
-    <%- xss %>
-</div>
+      // index.ejs
+      <div class="">
+          <%- xss %>
+      </div>
 
-// 篡改页面内容，自动触发
-`http://localhost:3000/?xss=<img src="null" onerror="alert(1)"/>`
-// 篡改页面内容，引诱触发
-`http://localhost:3000/?xss=<p onclick="alert('点我')">点我</p>`
-// 篡改页面内容，最简单的广告插入
-`http://localhost:3000/?xss=<iframe src="//baidu.com/t.html"></iframe>`
-```
+      // 篡改页面内容，自动触发
+      `http://localhost:3000/?xss=<img src="null" onerror="alert(1)"/>`
+      // 篡改页面内容，引诱触发
+      `http://localhost:3000/?xss=<p onclick="alert('点我')">点我</p>`
+      // 篡改页面内容，最简单的广告插入
+      `http://localhost:3000/?xss=<iframe src="//baidu.com/t.html"></iframe>`
+      ```
     - 存储型
       - 和反射型XSS差别在于，提交的代码会存储在服务器端（数据库，内存，文件系统等），下次请求目标页面时不用再提交XSS代码
-```js
-
-
-```
   - 攻击方式
     - 盗用cookie，获取敏感信息
     - 破坏页面结构，插入一些内容

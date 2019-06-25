@@ -83,3 +83,6 @@ git reset --hard 98abc5a
     - git commit -m -a
     - git push origin master
 
+
+## npm install 出现 ChromeDriver installation failed Error with http(s) request: Error: read ETIMEDOUT
+- 执行 npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver

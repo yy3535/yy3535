@@ -119,6 +119,7 @@ console.log('haha')//
 - 基于v8引擎，执行效率高，不高的地方用c写，c++模块扩展
 - 使用事件驱动，非阻塞式I/O模型
 - npm包管理器，是全球最大的开源库生态系统
+  - 版本：npm install  --save  esri-loader@1
 ### Node缺点：
 - 脆，主线程挂了，就完蛋了
 ### 什么场合用Node框架

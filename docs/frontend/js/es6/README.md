@@ -558,11 +558,6 @@ function testable(target) {
 }
 MyTestableClass.isTestable // true
 ```
-## 箭头函数
-- 没有this指向(this和定义有关，和谁调用无关) 没有arguments
-- 一个参数可以省略圆括号
-- 可以省略return和{}，如果返回的是一个对象，要用小括号包裹起来
-
 ## Symbol
 - 是第七种js数据类型(js的数据类型：`number` `string` `boolean` `null` `undefined` `object`)
 - 一般用作常量，每次拿到的都不一样

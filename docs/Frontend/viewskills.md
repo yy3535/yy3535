@@ -418,7 +418,7 @@ ev.dispatchEvent(eve);
   - Undefined
   - Number
   - String
-  - Symbol(ES6新增)
+  - Symbol[ES6]
 - 对象
   - Object
 

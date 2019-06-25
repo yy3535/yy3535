@@ -4,34 +4,11 @@
 ## 01-变量类型和计算知识点
 
 ### 变量类型
-
-JS变量最基本的分类就是**值类型**和**引用类型**，两者有何区别呢，可以通过例子看出来。
+**值类型**和**引用类型**
 
 **值类型：string,boolean,number,undefined**
 
 **引用类型：object(date,RegExp),array,function,null**
-
-以下是值类型的一个例子
-
-```javascript
-var a = 100
-var b = a
-a = 200
-console.log(b)
-```
-
-以下是引用类型的一个例子
-
-```javascript
-var a = {age:20}
-var b = a
-b.age = 21
-console.log(a.age)
-```
-
-`typeof`可以知道一个值类型是什么类型，而对于引用类型，它就无能为力了。但是它可以将引用类型区分出`function`，为什么 ———— 因为`function`相对于其他引用类型（如对象、数组）来说，具有非常特殊的意义，JS 中的函数非常重要，接下来的原型、作用域都会深入讲解函数。
-
-JS 中的某些表现，就已经体现了函数的特殊意义，例如：对象和数组，JS中没有内置的（不考虑 JS-WEB-API），而函数却内置了很多，例如 `Object` `Array` `Boolean` `Number` `String` `Function` `Date` `RegExp` `Error`。这些函数 JS 本身就有，要是没有它们，就没法愉快的写 JS 代码了。因为他们是基础数据类型的构造函数（后面会讲解）
 
 **`typeof`可以区分类型有`number` `string` `boolean` `undefined`（值类型） `function` `object`（引用类型）**
 
@@ -39,80 +16,73 @@ JS 中的某些表现，就已经体现了函数的特殊意义，例如：对�
 // 特例
 typeof null // object 因为 null 也是引用类型。null 就相当于引用类型中的 undefined
 ```
+### 变量计算
+#### 二进制和八进制表示法[ES6]
+- 用前缀0b（或0B）和0o（或0O）表示。
+  ```js
+  0b111110111 === 503 // true
+  0o767 === 503 // true
+  ```
+#### Number API[ES6,全局方法移到了Number对象上]
+- Number.isFinite()
+  - 检查一个数值是否为有限的（finite）
+- Number.isNaN()
+  - 检查一个值是否为NaN
+- Number.parseInt()
+- Number.parseFloat() 
+- Number.isInteger()
+  - 判断一个数值是否为整数。
+  - 不是数值，返回false
+  - 25 和 25.0 被视为同一个值
+  - 数据精度的要求较高，不建议使用
+- Number.EPSILON
+  - 表示一个极小的常量（是 JavaScript 能够表示的最小精度）
+- Number.isSafeInteger()
+  - 判断一个整数是否落在这个范围之内。
+  - Number.MAX_SAFE_INTEGER（范围上限）
+  - Number.MIN_SAFE_INTEGER（范围下限）
 
-那么针对第二个例子，如何将`a`的内容复制给`b`，并且保证`b`的修改不会影响到`a`呢？那就需要**深度复制**，意思就是对`a`的属性进行递归遍历，再依次复制，这块我们会放在后面专门讲解。
+#### Math对象
 
-### 变量计算（此处为值类型的计算）
+Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览器缓存，比如频繁访问一个链接，就在链接后加一个random()
+| 功能 | API |
+| :------| ------: |
+| random() | [0,1) |
+| ceil(x) | 向上取整 |
+| floor(x) | 向下取整 |
+| round(x) | 四舍五入 |
+| abs(x) | 绝对值 |
+| max(x,y,z,...n) | 求最大值 |
+| min(x,y,z...n) | 求最小值 |
 
-> 本节专门讲解值类型的计算，引用类型的计算放在后面作为“JS 算法”统一讲解。
-
-组简单的计算，就是数字的加减乘除、字符串的拼接和替换，这个太简单了，这里不提了。但是 JS 在值类型的运算过程中，特别需要注意和利用**强制类型转换**这一特性，有以下场景：
-
-- **字符串拼接**
-- **`==`**
-- **逻辑运算（`if` `!` `||` `&&`）**
-
-字符串拼接最常见的错误如下，特别要注意。如何规避呢 ———— 对进行计算的变量通过`typeof`来判断类型 ———— 太麻烦？编码本身就是一个体力活！
-
-- **字符串拼接**
-
-```javascript
-var a = 100 + 10   // 110
-var b = 100 + '10' // '10010'
-```
-
-接下来，`==`也会进行强制类型转换，如
-
-- **`==`**
-
-```javascript
-//==
-100 == '100'   // true
-0 == ''  // true
-null == undefined  // true
-```
-
-针对`100 == '100'`就是和拼接字符串一样的类型转换，而针对下面两个例子，就是一个逻辑运算上的强制类型转换（马上会讲解）。所以，要求你写 JS 代码时，所有的地方都要使用`===`而不能使用`==`，但是阅读 jquery 源码后我发现一个特例，就是`obj.a == null`，使用很简洁。
-
-最后，逻辑运算中的强制类型转换，先以`if`为例说明
-
-- **逻辑运算（`if` `!` `||` `&&`）**
-
-```javascript
-//if语句
-var a = true
-if (a) {
-    // ....
-}
-var b = 100
-if (b) {
-    // ....
-}
-var c = ''
-if (c) {
-    // ....
-}
-```
-
-所有经过`if`判断的变量，都会进行逻辑运算的强制类型转换，转换为`true`或者`false`。
-
-- **逻辑运算（`if` `!` `||` `&&`）**
-
-```javascript
-//逻辑运算符
-console.log(10 && 0)  // 0
-console.log('' || 'abc')  // 'abc'
-console.log(!window.abc)  // true
-
-// 判断一个变量会被当做 true 还是 false
-var a = 100
-console.log(!!a)
-```
-
-**if(obj.a==null){
-	//这里相当于obj.a===null||obj.a===undefined,简写形式
-}**
-
+以下ES6新增：
+- Math.trunc() 
+  - 去除一个数的小数部分，返回整数部分
+  - 非数值，内部Number方法将其先转为数值。
+  - 空值和无法截取整数的值，返回NaN
+- Math.sign()
+  - 判断一个数到底是正数、负数、还是零。对于非数值，会先将其转换为数值。
+  - 参数为正数，返回+1；
+  - 参数为负数，返回-1；
+  - 参数为 0，返回0；
+  - 参数为-0，返回-0;
+  - 其他值，返回NaN。
+- Math.cbrt()
+  - 计算一个数的立方根
+  - 内部也是先使用Number方法将其转为数值
+- Math.fround() 
+  - 返回一个数的32位单精度浮点数形式。
+- Math.hypot() 
+  - 返回所有参数的平方和的平方根。
+- 对数方法
+- 双曲函数方法
+- 指数运算符（**）
+  - 右结合，多个指数运算符连用时，是从最右边开始计算的。
+    ```js
+    // 相当于 2 ** (3 ** 2)
+    2 ** 3 ** 2
+    // 512
+    ```
 ### 运算符
 - 优先级
 
@@ -122,8 +92,6 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Oper
 ## 答题
 
 ### JS中使用`typeof`能得到的哪些类型
-
-针对这个题目，可以通过以下程序进行验证
 
 ```javascript
 typeof undefined // undefined
@@ -155,8 +123,6 @@ null === undefined // false
 if (obj.a == null) {  // 这里相当于 obj.a === null || obj.a === undefined ，简写形式
 }
 ```
-
-编程是需要绝对严谨的态度，我们只在这一个地方让它进行类型转换，来简化我们的写法，因为这个场景非常简单和固定。而其他场景下，我们都必须使用`===`，除非有特殊的业务需要。
 
 ### JS中有哪些内置函数 —— 数据封装类对象
 
@@ -952,8 +918,13 @@ console.log(5)
         1: "1999"
         2: "12"
         3: "31"
-        // 设置了具名组后的括号中的分组捕获
+        // 设置了具名组，并且该组有匹配时的分组捕获
         groups: undefined
+        groups: {
+            year:1999,
+            month:12,
+            day:31
+        }
         // 匹配到的字符位于原始字符串的基于0的索引值
         index: 0
         // 原始字符串	
@@ -976,7 +947,7 @@ console.log(5)
     - 返回正则表达式的修饰符
 
 #### 字符串的正则方法
-4个方法：match()、replace()、search()、split()
+5个方法：match()、replace()、search()、split()、matchAll()
 #### 规则
 - 默认前一次匹配的结束是下一次匹配的开始
 #### 字符类
@@ -1044,9 +1015,52 @@ console.log(5)
   - 2:(A)
   - 3:(B(C))
   - 4:(C)
-- 具名组匹配（为每一个组匹配指定一个名字）
+- 具名组匹配（为每一个组匹配指定一个名字）[ES6]
     - 在圆括号内部，模式的头部添加“问号 + 尖括号 + 组名”（?<year>），就可以在exec方法返回结果的groups属性上引用该组名。数字序号（matchObj[1]）依然有效。
+    - 如果具名组as没有找到匹配，那么matchObj.groups.as属性值就是undefined，并且as这个键名在groups是始终存在的。
+    ```js
+    const RE_OPT_A = /^(?<as>a+)?$/;
+    const matchObj = RE_OPT_A.exec('');
 
+    matchObj.groups.as // undefined
+    'as' in matchObj.groups // true
+    ```
+    - 利用具名组解构赋值(直接从匹配结果上为变量赋值)
+    ```js
+    let {groups: {one, two}} = /^(?<one>.*):(?<two>.*)$/u.exec('foo:bar');
+    one  // foo
+    two  // bar
+    ```
+    - 利用具名组替换（使用$<组名>引用具名组。）
+      - 第二个参数是字符串
+        ```js
+        let re = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u;
+        '2015-01-02'.replace(re, '$<day>/$<month>/$<year>')
+        // '02/01/2015'
+        ```
+      - 第二个参数是函数。具名组匹配新增了最后一个函数参数(具名组构成的一个对象)。函数内部可以直接对这个对象进行解构赋值。
+      ```JS
+      '2015-01-02'.replace(re, (
+          matched, // 整个匹配结果 2015-01-02
+          capture1, // 第一个组匹配 2015
+          capture2, // 第二个组匹配 01
+          capture3, // 第三个组匹配 02
+          position, // 匹配开始的位置 0
+          S, // 原字符串 2015-01-02
+          groups // 具名组构成的一个对象 {year, month, day}
+      ) => {
+          let {day, month, year} = groups;
+          return `${day}/${month}/${year}`;
+      });
+      ```
+    - 引用（两种引用语法可以同时使用）
+      -  \k<组名>
+      -  数字引用（\1）
+        ```js
+        const RE_TWICE = /^(?<word>[a-z]+)!\k<word>!\1$/;
+        RE_TWICE.test('abc!abc!abc') // true
+        RE_TWICE.test('abc!abc!ab') // false
+        ```
 #### 反向引用
 - 使用反斜线\后跟一个数字来表示。数字用来表示需要引用的分组组号
 ```js
@@ -1169,18 +1183,6 @@ dt.getMinutes()  // 分钟（0 - 59）
 dt.getSeconds()  // 秒（0 - 59）
 ```
 
-### Math
-
-Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览器缓存，比如频繁访问一个链接，就在链接后加一个random()
-| 功能 | API |
-| :------| ------: |
-| random() | [0,1) |
-| ceil(x) | 向上取整 |
-| floor(x) | 向下取整 |
-| round(x) | 四舍五入 |
-| abs(x) | 绝对值 |
-| max(x,y,z,...n) | 求最大值 |
-| min(x,y,z...n) | 求最小值 |
 
 ### 数组常用 API
 
@@ -1424,6 +1426,22 @@ s.charCodeAt(1) // 57271
 #### 匹配
 - str.replace(regexp|substr, newSubStr|function)
   - 替换
+  - 第二个参数是字符串
+  - 第二个参数是函数
+  ```js
+  '2015-01-02'.replace(re, (
+        matched, // 整个匹配结果 2015-01-02
+        capture1, // 第一个组匹配 2015
+        capture2, // 第二个组匹配 01
+        capture3, // 第三个组匹配 02
+        position, // 匹配开始的位置 0
+        S, // 原字符串 2015-01-02
+        groups // 具名组构成的一个对象 {year, month, day}[ES6]
+    ) => {
+        let {day, month, year} = groups;
+        return `${day}/${month}/${year}`;
+    });
+  ```
 - str.search(regexp)
   - 对正则表达式和指定字符串进行匹配搜索
   - 匹配成功，返回首次匹配项的索引，否则返回-1
@@ -1432,7 +1450,9 @@ s.charCodeAt(1) // 57271
   - 返回匹配结果的数组（数组的内容看regexp是否加了全局标志g）
 
 - str.matchAll()
-    - 返回一个正则表达式在当前字符串的所有匹配
+    - 如果一个正则表达式在字符串里面有多个匹配，一般使用g修饰符或y修饰符，在循环里面逐一取出。
+    - 返回一个正则表达式在当前字符串的所有匹配(返回一个遍历器,用for...of循环)
+    - 转数组（...运算符或Array.from方法）
 
 #### 格式化
 
@@ -1598,6 +1618,7 @@ for (key in obj) {
     - 参数能够以列表形式传入。
   - Function.prototype.bind(thisArg[, arg1[, arg2[, ...]]])
     - 在一个对象的上下文中应用另一个对象的方法
+
 :::warning 注意
 call()方法的作用和 apply() 方法区别
 - call()方法接受的是`参数列表`
@@ -1616,6 +1637,94 @@ console.log(min);
 ```
 :::
 
+ES6语法：
+
+#### 函数参数的默认值[ES6]
+- 参数默认值是惰性求值的(每次都重新计算默认值表达式的值)
+```js
+function Point(x = 0, y = 0) {
+  this.x = x;
+  this.y = y;
+}
+
+const p = new Point();
+p // { x: 0, y: 0 }
+```
+- 与解构赋值默认值结合使用
+```js
+// 写法一
+function m1({x = 0, y = 0} = {}) {
+  return [x, y];
+}
+
+// 写法二
+function m2({x, y} = { x: 0, y: 0 }) {
+  return [x, y];
+}
+```
+  - 两种写法都对函数的参数设定了默认值，区别是写法一函数参数的默认值是空对象，但是设置了对象解构赋值的默认值；写法二函数参数的默认值是一个有具体属性的对象，但是没有设置对象解构赋值的默认值。
+- 如果传入undefined，将触发该参数等于默认值，null则没有这个效果。
+- 指定了默认值后，length属性将失真。
+  ```js
+  (function (a, b, c = 5) {}).length // 2
+  ```
+- 设置了参数的默认值，函数进行声明初始化时，参数会形成一个单独的作用域（context）。等到初始化结束，这个作用域就会消失。
+- 应用
+  - 可以指定某一个参数不得省略，如果省略就抛出一个错误
+  - 可以将参数默认值设为undefined，表明这个参数是可以省略的。
+#### rest 参数[ES6]
+- 形式为`...变量名`，用于获取函数的多余参数
+- arguments是类数组，rest参数是真数组
+- rest 参数之后不能再有其他参数（即只能是最后一个参数），否则会报错。
+- 函数的length属性，不包括 rest 参数。
+```js
+// arguments变量的写法
+function sortNumbers() {
+  return Array.prototype.slice.call(arguments).sort();
+}
+// rest参数的写法
+const sortNumbers = (...numbers) => numbers.sort();
+```
+```js
+(function(...a) {}).length  // 0
+```
+#### 函数内严格模式
+- 规定只要函数参数使用了默认值、解构赋值、或者扩展运算符，那么函数内部就不能显式设定为严格模式，否则会报错。
+
+#### 函数的name属性
+- 函数的name属性，返回该函数的函数名。（ES6才将其写入了标准）
+```js
+function foo() {}
+foo.name // "foo"
+```
+- 如果将一个匿名函数赋值给一个变量
+```js
+var f = function () {};
+// ES5
+f.name // ""
+// ES6
+f.name // "f"
+```
+
+#### 箭头函数
+
+- 一个参数可以省略圆括号
+- 可以省略return和{}，如果返回的是一个对象，要用小括号包裹起来
+- 用处
+  - 简化回调函数
+    ```js
+    // 正常函数写法
+    [1,2,3].map(function (x) {
+    return x * x;
+    });
+    // 箭头函数写法
+    [1,2,3].map(x => x * x);
+    ```
+- 注意点
+  - 函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。 在箭头函数中，this指向是固定的
+  - 不可以当作构造函数(就是不可以使用new命令)
+  - 没有arguments,可以用 rest 参数代替。
+
 ### delete 操作符
 - delete expression
     - 断开引用来间接
@@ -1629,7 +1738,6 @@ delete object['property']
 - 如果删除的属性不存在，delete不会起作用，但仍会返回true
 - delete操作只会在自身的属性上起作用(不会删除原型链上的属性)
 - 删除一个数组元素时，数组的长度不受影响
-```
 ```js
 var trees = ["redwood","bay","cedar","oak","maple"];
 delete trees[3];

@@ -1313,7 +1313,7 @@ Array.reduce(function(total,currentValue,index,arr),initialValue)
 
 
 - Array.from
-from() 方法用于通过拥有 length 属性的对象或可迭代的对象来返回一个数组。
+  - 通过拥有 length 属性的对象或可迭代的对象来返回一个数组。
 ```js
 Array.from(object, mapFunction, thisValue)
 ```
@@ -1367,7 +1367,6 @@ Array​.prototype​.toLocale​String()
 Array​.prototype​.toString()
 Array​.prototype​.unshift()
 Array​.prototype​.values()
-Array​.prototype​[@@iterator]()
 
 ### 字符串常用 API
 
@@ -1743,8 +1742,19 @@ function f(x){
     - 尾调用自身，就称为尾递归。
     - 递归非常耗费内存，很容易发生“栈溢出”错误。对于尾递归来说，由于只存在一个调用帧，所以永远不会发生“栈溢出”错误。
     - ES6规定所有实现必须部署“尾调用优化”。
+#### 函数参数的尾逗号 
+-  允许函数的最后一个参数有尾逗号。
+```js
+function clownsEverywhere(
+  param1,
+  param2,
+) { /* ... */ }
 
-
+clownsEverywhere(
+  'foo',
+  'bar',
+);
+```
 ### delete 操作符
 - delete expression
     - 断开引用来间接

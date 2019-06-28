@@ -1669,41 +1669,38 @@ new Vue({
 12. 用创建好的实例调用 beforeRouteEnter 守卫中传给 next 的回调函数。
 
 
-#### 拦截登录
+#### 登录拦截设置session，cookie，未登录去登陆页
 - 设置路由备注，在全局beforeEach中拦截
-```js
-//routes.js
-{
-    path:'/profile',
-    name:'profile',
-    component:()=>import('_v/Profile.vue'),
-    //路由元信息(备注)
-    meta:{needLogin:true}
-},
-```
 ```js
 //main.js
 router.beforeEach((to,from,next)=>{
-  //是否需要登录
-  let flag=to.matched.some(match=>match.meta&&match.meta.needLogin);
-  //是否已登录
-  let isLogin=localStorage.getItem('login');
-  console.log(flag,isLogin)
-  
-  if(flag){//需要登录
-    if(isLogin){
-      next()
+  if(to.path!=='/login'&&!store.user){
+    let sessionUser=sessionStorage.getItem('user')&&JSON.parse(sessionStorage.getItem('user'));
+    if(sessionUser){
+      store.commit('user',sessionUser);
     }else{
-      next('/login')
+      router.push('/login');
     }
-  }else{//不需要登录
-    next()
   }
-  //是登陆页且已经登录
-  if(to.name==='login'&&isLogin){
-    next('/')
-  }
+  next();
 })
+```
+
+#### 设置空白页
+```js
+// router/index.js
+{
+  name: '登录',
+  path: '/login',
+  component: LoginPage,
+  meta:{blankPage:true}
+},
+```
+```js
+// App.vue
+<router-view v-if="$route.meta.blankPage" />
+<el-container v-else style="height:100%;">
+</el-container>
 ```
 
 #### 路由面试考点

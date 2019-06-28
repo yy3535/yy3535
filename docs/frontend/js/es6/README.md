@@ -698,4 +698,5 @@ yarn add moment
 import moment from 'moment'
 moment.locale('zh-cn');
 console.log(moment().fromNow());
+moment(str).format('YYYY-MM-DD HH:mm:ss');// 获取'YYYY-MM-DD HH:mm:ss'格式的时间
 ```

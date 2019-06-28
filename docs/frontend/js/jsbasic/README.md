@@ -1016,7 +1016,7 @@ console.log(5)
   - 3:(B(C))
   - 4:(C)
 - 具名组匹配（为每一个组匹配指定一个名字）[ES6]
-    - 在圆括号内部，模式的头部添加“问号 + 尖括号 + 组名”（?<year>），就可以在exec方法返回结果的groups属性上引用该组名。数字序号（matchObj[1]）依然有效。
+    - 在圆括号内部，模式的头部添加`问号 + 尖括号 + 组名（?<year>）`，就可以在exec方法返回结果的groups属性上引用该组名。数字序号（matchObj[1]）依然有效。
     - 如果具名组as没有找到匹配，那么matchObj.groups.as属性值就是undefined，并且as这个键名在groups是始终存在的。
     ```js
     const RE_OPT_A = /^(?<as>a+)?$/;

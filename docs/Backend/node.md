@@ -193,7 +193,7 @@ process.stdin.on('data',function(data){
   ​	console.log('nextTick');
   })
 
-  - process 环境变量 env 参数 argv：webpack definePlugin原理就是通过这个实现
+  - process 环境变量 env 参数 argv：webpack definePlugin原理就是通过这个实现(process.env.NODE_ENV)
 
   ```js
   //yargs把执行命令的时候传递参数解析成对象，可以自己手动将其变成对象

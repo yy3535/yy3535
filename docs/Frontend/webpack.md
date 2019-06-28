@@ -350,7 +350,10 @@ str.includes('o');// es7
         "no-const-assign": 2,
         "no-constant-condition": 2,
         "no-control-regex": 2,
-        "no-debugger": 2
+        "no-debugger": 2,
+        // 禁止空行
+        'no-trailing-spaces':0,
+        
     },
     "env": {}
 }

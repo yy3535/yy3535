@@ -1186,188 +1186,272 @@ dt.getSeconds()  // 秒（0 - 59）
 
 ### 数组常用 API
 
-| 功能 | API |
-| :------| ------: |
-| 合并、切割 | concat,join,slice |
-| 添加 | unshift(从头),push(从末尾) |
-| 删除 | shift(从头),pop(从末尾) |
-| 删除并添加 | splice |
-| 排序 | sort,reverse |
-| 转换 | toString,toLocaleString,toSource,ValueOf |
-| 遍历 | map,forEach,reduce |
-| 筛选 | filter,every,some |
-| 转换成数组 | Array.from |
+| 功能 | API | es6 |
+| :------| ------: | ------: |
+| 合并、切割 | concat,join,slice |  |
+| 添加 | unshift(从头),push(从末尾) |  |
+| 删除 | shift(从头),pop(从末尾) |  |
+| 删除并添加 | splice | copy​Within |
+| 排序 | sort,reverse |  |
+| 遍历 | map,forEach,reduce | entries,keys,values |
+| 筛选 | filter,every,some |  |
+| 查找 | indexOf,last​IndexOf | find,find​Index |
+| 转换 | toString,toLocaleString,toSource,ValueOf |  |
+| 自带 | Array​.isArray | Array.from,Array.of |
 
-- toString() 方法可把数组转换为字符串，并返回结果。
 
-注意： 数组中的元素之间用逗号分隔。
 
-- concat() 方法用于连接两个或多个数组。
-
-该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本。
-```js
-arrayObject.concat(arrayX,arrayX,......,arrayX)
-```
-- Array.slice() 
-
-方法可从已有的数组中返回选定的元素。
-```js
-// 包前不包后[start,end)
-arrayObject.slice(start,end)
-```
-- Array.splice
-```js
-array.splice(index,howmany,item1,.....,itemX)
-// 返回被删除的元素的数组。
-```
-
-- Array.forEach
-
-遍历数组的所有元素
-```javascript
-var arr = [1,2,3]
-arr.forEach(function (item, index) {
-    console.log(index, item)
-})
-```
-
-- Array.every
-
-判断所有的数组元素，都满足一个条件
-```javascript
-var arr = [1,2,3]
-var result = arr.every(function (item, index) {
-    if (item < 4) {
-        return ture
-    }
-})
-console.log(result)
-```
-
-- Array.some
-
-判断所有的数组元素，只要有一个满足条件即可
-```javascript
-var arr = [1,2,3]
-var result = arr.some(function (item, index) {
-    if (item < 2) {
-        return ture
-    }
-})
-console.log(result)
-```
-
-- Array.sort
+#### 数组自带方法
+- Array​.isArray()
+##### ES6新增
+- Array​.from(object, mapFunction, thisValue)
+  - 将非数组转为数组（`拥有 length 属性的对象（类数组对象）`和`可迭代的对象`）。
+  - 第二个参数(类似map方法),用来对每个元素进行处理，将处理后的值放入返回的数组。
+  - 第三个参数，用来绑定map方法中用到的this。
+- Array.of()
+  - 替代Array()或new Array()
+  - Array()
+    - 参数为1个时，会指定数组的长度
+  - Array.of()
+    - 参数为1个时，依然是一个数组
+  ```js
+  Array(3) // [, , ,]
+  Array.of(1) // [1]
+  ```
+#### 实例方法
+##### ES5
+:::warning 合并、切割
+- Array​.prototype​.concat(arrayX,arrayX,......,arrayX)
+  - 返回被连接数组的一个副本。
+  - 不改变现有的数组
+- Array​.prototype​.join()
+- Array​.prototype​.slice(start,end)
+  - 返回选定的元素。
+  - 包前不包后
+  - start负数指倒数开始，end不指定就是到最后
+:::
+:::warning 添加
+- Array​.prototype​.unshift()
+- Array​.prototype​.push()
+:::
+:::warning 删除
+- Array​.prototype​.shift()
+- Array​.prototype​.pop()
+:::
+:::warning 删除并添加
+- Array​.prototype​.splice(index,howmany,item1,.....,itemX)
+  - 返回被删除的元素的数组。
+:::
+:::warning 排序
+- Array​.prototype​.sort()
   - 默认从小到大arr.sort()
-```javascript
-var arr = [1,4,2,3,5]
-var arr2 = arr.sort(function(a, b) {
-    // 从小到大排序
-    return a - b
-    // 从大到小排序
-    // return b - a
-})
-console.log(arr2)
-```
+    ```js
+    arr.sort(function(a, b) {
+            // 从小到大排序
+            return a - b
+            // 从大到小排序
+            // return b - a
+        })
+    ```
+- Array​.prototype​.reverse()
+:::
+:::warning 遍历
+- Array​.prototype​.map(function(currentValue,index,arr){},this.Value)
+  - 对数组每个元素进行操作，创建一个新数组
+    ```js
+    var arr2 = arr.map(function(item, index) {
+        return '<b>' + item + '</b>'
+    })
+     ```
+- Array​.prototype​.for​Each(function (item, index) {})
+  - 遍历数组的所有元素
+- Array​.prototype​.reduce(function(total,currentValue,index,arr){},initialValue)
+  - 第一个函数返回总值和每一项的计算，对数组进行计算后得到结果
+    ```js
+    Array.reduce()
+    ```
+- Array​.prototype​.reduce​Right()
+:::
+:::warning 筛选
+- Array​.prototype​.filter(function(currentValue,index,arr){},this.Value)
+  - 第一个函数返回筛选条件，筛选符合条件的元素
+  ```js
+    var arr2 = arr.filter(function (item, index) {
+        if (item >= 2) {
+            return true
+        }
+    })
+  ```
+- Array​.prototype​.every()
+  - 所有的数组元素，都满足一个条件
+    ```js
+    arr.every(function (item, index) {
+        if (item < 4) {
+            return ture
+        }
+    })
+    ```
+- Array​.prototype​.some()
+  - 只要有一个满足条件即可
+    ```js
+    arr.some(function (item, index) {
+        if (item < 2) {
+            return ture
+        }
+    })
+    ```
+- Array​.prototype​.indexOf()
+- Array​.prototype​.last​IndexOf()
+:::
+:::warning 转换
+- Array​.prototype​.toString()
+  - 把数组转换为字符串，并返回结果。(数组中的元素之间用逗号分隔)
+- Array​.prototype​.toLocale​String()
+:::
 
-- Array.map
+##### ES6新增
+- Array​.prototype​.copy​Within(target, start = 0, end = this.length)
+  - 在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。
+  - 会修改当前数组
+  ```js
+  [1, 2, 3, 4, 5].copyWithin(0, 3)
+  // [4, 5, 3, 4, 5]
+  ```
+- Array​.prototype​.find()
+  - 第一个参数是一个回调函数，所有数组成员依次执行该回调函数，
+  - 找出第一个返回值为true的成员，返回该成员。没有符合条件的，返回undefined。
+  - 第二个参数（回调函数中的this指向）
+    ```js
+    [1, 5, 10, 15].find(function(value, index, arr) {
+        return value > 9;
+    }) // 10
+    ```
+- Array​.prototype​.find​Index()
+  - 第一个参数是一个回调函数，所有数组成员依次执行该回调函数，
+  - 返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1。
+  - 第二个参数（回调函数中的this指向）
+    ```js
+    [1, 5, 10, 15].findIndex(function(value, index, arr) {
+        return value > 9;
+        }) // 2
+    ```
+    :::tip 和indexOf区别
+        - indexOf:找不到NaN
+        - find,findIndex:可以借助Object.is方法找到。
+    :::
+- Array​.prototype​.fill(value, start, end)
+  - 使用给定值，填充一个数组。
+  - start：填充起始位置，可以省略。end：填充结束位置，可以省略，实际结束位置是end-1。
+    ```js
+    let a1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    a1.fill(7) // 7,7,7,7,7,7,7,7,7,7,7
+    ```
+- Array​.prototype​.entries()
+  - 键值对遍历
+  - 返回一个遍历器对象,可以用for...of循环进行遍历
+  ```js
+  for (let [index, elem] of ['a', 'b'].entries()) {
+    console.log(index, elem);
+  }
+  ```
+- Array​.prototype​.keys()
+  - 键名遍历
+  - 返回一个遍历器对象,可以用for...of循环进行遍历
+  ```js
+  for (let index of ['a', 'b'].keys()) {
+    console.log(index);
+  }
+  ```
+- Array​.prototype​.values()
+  - 键值遍历
+  - 返回一个遍历器对象,可以用for...of循环进行遍历
+  ```js
+  for (let elem of ['a', 'b'].values()) {
+    console.log(elem);
+  }
+  ```
+- Array​.prototype​.includes()
+  - 返回某个数组是否包含给定的值
+  - 第二个参数为负数，则表示倒数的位置
+  :::tip
+  - indexOf:-1不直观，NaN误判
+  - includes：直观，NaN准确判断
+  :::
+- Array​.prototype​.flat()
+  - 返回一个新数组，将嵌套的数组“拉平”，变成一维的数组
+  - 第一个参数是整数，表示想要拉平的层数，默认为1。(Infinity表示不管多少层都拉平)
+  ```js
+  [1, [2, [3]]].flat(Infinity)
+  // [1, 2, 3]
+  ```
+- Array​.prototype​.flatMap()
+  - 对原数组的每个成员执行一个函数（相当map），然后对返回值组成的数组执行flat()方法。
+  - 第二个参数绑定遍历函数里面的this。
+  - flatMap只能展开一层数组。
+  ```js
+  arr.flatMap(function callback(currentValue[, index[, array]]) {
+    // ...
+  }[, thisArg])
+  // 相当于 [[[2]], [[4]], [[6]], [[8]]].flat()
+  [1, 2, 3, 4].flatMap(x => [[x * 2]])
+  // [[2], [4], [6], [8]]
+  ```
 
-第一个函数返回对数组每个元素进行操作，创建一个新数组
-```
-Array.map(function(currentValue,index,arr),this.Value)
-```
-```javascript
-var arr = [1,2,3,4]
-var arr2 = arr.map(function(item, index) {
-    // 将元素重新组装，并返回
-    return '<b>' + item + '</b>'
-})
-console.log(arr2)
-```
-
-- Array.filter
-
-第一个函数返回筛选条件，筛选符合条件的元素。
-
-```
-Array.filter(function(currentValue,index,arr),this.Value)
-```
-
-```javascript
-var arr = [1,2,3]
-var arr2 = arr.filter(function (item, index) {
-    // 通过某一个条件过滤数组
-    if (item >= 2) {
-        return true
-    }
-})
-console.log(arr2)
-```
-
-- Array.reduce
-
-第一个函数返回总值和每一项的计算，对数组进行计算后得到结果
+#### 扩展运算符（数组）[ES6]
+- 三个点（...）,将一个数组转为用逗号分隔的参数序列。
 ```js
-Array.reduce(function(total,currentValue,index,arr),initialValue)
+console.log(...[1, 2, 3])
+// 1 2 3
+function push(array, ...items) {
+  array.push(...items);
+}
 ```
+- 可以放置表达式。
+- 如果扩展运算符后面是一个空数组，则不产生任何效果。
+- 只有函数调用时，扩展运算符才可以放在圆括号中，否则会报错。
+- 替代函数的 apply 方法
+  - 由于扩展运算符可以展开数组，所以不再需要apply方法，将数组转为函数的参数了。
+    ```js
+    // ES5 的写法
+    Math.max.apply(null, [14, 3, 77])
 
+    // ES6 的写法
+    Math.max(...[14, 3, 77])
 
-- Array.from
-  - 通过拥有 length 属性的对象或可迭代的对象来返回一个数组。
-```js
-Array.from(object, mapFunction, thisValue)
-```
-- Array.fill(value, start, end)
-    - value：填充值。
-    - start：填充起始位置，可以省略。
-    - end：填充结束位置，可以省略，实际结束位置是end-1。
-```js
-// 采用一个默认值填初始化数组。
-const a1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-a1.fill(7)
-console.log(‘%s‘, a1)// 7,7,7,7,7,7,7,7,7,7,7
-```
+    // 等同于
+    Math.max(14, 3, 77);
+    ```
+- 数组的扩展运算符应用
+  - 复制数组（浅拷贝）
+    ```js
+    // 写法一
+    const a2 = [...a1];
+    // 写法二
+    const [...a2] = a1;
+    ```
+  - 合并数组（浅拷贝）
+    ```js
+    // ES5 的合并数组
+    arr1.concat(arr2, arr3);
+    // [ 'a', 'b', 'c', 'd', 'e' ]
 
-- Array.slice(start,end)
-  - start 必需，负数指倒数开始
-  - end 可选，不指定就是到最后
-  - 返回一个新的数组，包含从 start 到 end （不包括该元素）的 arrayObject 中的元素。
+    // ES6 的合并数组
+    [...arr1, ...arr2, ...arr3]
+    // [ 'a', 'b', 'c', 'd', 'e' ]
+    ```
+  - 将字符串转为数组（能够正确识别四个字节的 Unicode 字符。`Array.from()`也可以）
+    ```js
+    [...'hello']
+    // [ "h", "e", "l", "l", "o" ]
+    ```
+  - 将任意有Iterator接口的对象转为数组（如node节点集合,set map集合等）
+    :::tip
+    - 扩展运算符：转有`可迭代的对象`为数组
+    - Array.from：转`拥有 length 属性的对象（类数组对象）`和`可迭代的对象`为数组
+    :::
 
-Array​.from()
-Array​.isArray()
-Array.of()
-Array​.prototype​.concat()
-Array​.prototype​.copy​Within()
-Array​.prototype​.entries()
-Array​.prototype​.every()
-Array​.prototype​.fill()
-Array​.prototype​.filter()
-Array​.prototype​.find()
-Array​.prototype​.find​Index()
-Array​.prototype​.flat()
-Array​.prototype​.flatMap()
-Array​.prototype​.for​Each()
-Array​.prototype​.includes()
-Array​.prototype​.indexOf()
-Array​.prototype​.join()
-Array​.prototype​.keys()
-Array​.prototype​.last​IndexOf()
-Array​.prototype​.map()
-Array​.prototype​.pop()
-Array​.prototype​.push()
-Array​.prototype​.reduce()
-Array​.prototype​.reduce​Right()
-Array​.prototype​.reverse()
-Array​.prototype​.shift()
-Array​.prototype​.slice()
-Array​.prototype​.some()
-Array​.prototype​.sort()
-Array​.prototype​.splice()
-Array​.prototype​.toLocale​String()
-Array​.prototype​.toString()
-Array​.prototype​.unshift()
-Array​.prototype​.values()
-
+#### 将空位转为undefined[ES6]
+- ES6 明确将空位转为undefined。
 ### 字符串常用 API
 
 | 功能 | ES5 API |ES6 API|
@@ -1511,14 +1595,26 @@ String.fromCharCode(0x20BB7)
     - trimEnd()消除尾部的空格。
     - 返回新字符串，不修改原始字符串。
 ### 对象常用 API
+#### 属性
+- 属性名
+  - obj.xxx(xxx是变量要用[xxx])
+- 属性遍历
+  - for-in
+    ```js
+    var obj = {
+        x: 100,
+        y: 200,
+        z: 300
+    }
+    var key
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            console.log(key, obj[key])
+        }
+    }
+    ```
 #### Object 构造函数的方法
-- Object.assign(target, ...sources)
-  通过复制一个或多个对象来创建一个新的对象。
-  ```js
-  const obj = { a: 1 };
-  const copy = Object.assign({}, obj);
-  console.log(copy); // { a: 1 }
-  ```
+##### ES5
 - Object.create()
   - 使用指定的原型对象和属性创建一个新对象。
 - Object.defineProperty()
@@ -1541,7 +1637,7 @@ String.fromCharCode(0x20BB7)
           - 给属性提供 setter 的方法，属性值修改时触发
           - 默认undefined
           - 一个参数：新值
-
+  - 使用场景(`class的实现``vue的MVVM``mobx``装饰器``koa`)
   ```js
   let obj={}
   let temp;
@@ -1566,13 +1662,23 @@ String.fromCharCode(0x20BB7)
   }
   obj.name='小明'
   ```
-  :::tip 使用场景
-  - class的实现
-  - vue的MVVM
-  - mobx
-  - 装饰器
-  - koa
-  :::
+##### ES6新增
+- Object.is(val1,val2)
+  - 与严格比较运算符（===）基本一致(区别：`+0不等于-0`和`NaN等于自身`。)
+  ```js
+  Object.is(+0, -0) // false
+  Object.is(NaN, NaN) // true
+  ```
+- Object.assign(target, ...sources)
+  - 合并对象
+  - 只拷贝源对象的自身属性（不拷贝继承属性），也不拷贝不可枚举的属性（enumerable: false）。
+  ```js
+  const target = { a: 1 };
+  const source1 = { b: 2 };
+  const source2 = { c: 3 };
+  Object.assign(target, source1, source2);
+  target // {a:1, b:2, c:3}
+  ```
 - Object.keys()
   - 返回一个包含所有给定对象自身可枚举属性名称的数组。
 - Object.setPrototypeOf()
@@ -1588,24 +1694,6 @@ String.fromCharCode(0x20BB7)
 - Object.prototype.valueOf()
   - 返回指定对象的原始值。
 
-
-:::tip 注意
-- obj.xxx(xxx是变量要用[xxx])
-- for-in
-```js
-var obj = {
-    x: 100,
-    y: 200,
-    z: 300
-}
-var key
-for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
-        console.log(key, obj[key])
-    }
-}
-```
-:::
 
 ### Function API
 - 实例的方法

@@ -399,53 +399,235 @@ tag(['Hello ', ' world ', ''], 15, 50);
 ## 正则的扩展
 - 见正则基础
 
+
+## 数值的扩展
+- 见变量部分
+## 函数的扩展
+- 见函数API
+## 数组的扩展
+- 见数组API
+## 对象的扩展
+### 属性
+#### 属性的写法
+- 简洁表示法
+  - 直接写变量（属性名为变量名, 属性值为变量的值）
+  - 简写函数
+  ```js
+  const o = {
+    method() {return "Hello!";}
+  };
+  const o = {
+    method: function() {return "Hello!";}
+  };
+  ```
+- 属性名表达式
+  - 属性名的两种写法`obj.foo = true;`和`obj['a' + 'bc'] = 123;`
+  - 字面量方式(大括号)定义对象，ES6规定可用`['a' + 'bc']`定义属性
+  ```js
+  let propKey = 'foo';
+  let obj = {
+    [propKey]: true,
+    ['a' + 'bc']: 123
+  };
+  let obj = {
+    ['h' + 'ello']() {
+      return 'hi';
+    }
+  };
+  ```
+:::warning
+- 属性名表达式与简洁表示法，不能同时使用
+:::
+#### 函数属性的name属性
+- 方法的name属性返回函数名
+- 方法使用了取值函数（getter）和存值函数（setter），返回值是方法名前加上get和set。
+- bind方法创造的函数，name属性返回bound加上原函数的名字
+- Function构造函数创造的函数，name属性返回anonymous。
+
+#### 属性遍历
+:::tip
+- 可枚举性
+  - 对象的每个属性都有一个描述对象（Descriptor），用来控制该属性的行为。`Object.getOwnPropertyDescriptor`方法可以获取该属性的描述对象。其中有个`enumerable`为false即不可枚举。
+  ```js
+  //  {
+  //    value: 123,
+  //    writable: true,
+  //    enumerable: true,
+  //    configurable: true
+  //  }
+  ```
+- 不可枚举的属性
+  - 所有 Class 的原型的方法都是不可枚举的。
+  - toString
+  - length
+- 忽略不可枚举属性的方法
+  - for...in循环：只遍历对象自身的和继承的可枚举的属性。
+  - Object.keys()：返回对象自身的所有可枚举的属性的键名。
+  - JSON.stringify()：只串行化对象自身的可枚举的属性。
+  - Object.assign()： 忽略enumerable为false的属性，只拷贝对象自身的可枚举的属性。
+:::
+- 属性遍历的五种方法
+  - for...in
+  - Object.keys(obj)
+  - Object.getOwnPropertyNames(obj)
+  - Object.getOwnPropertySymbols(obj)
+  - Reflect.ownKeys(obj)
+### super 关键字
+- 指向当前对象的原型对象
+```js
+const proto = {
+  foo: 'hello'
+};
+const obj = {
+  foo: 'world',
+  find() {
+    return super.foo;
+  }
+};
+Object.setPrototypeOf(obj, proto);
+obj.find() // "hello"
+```
+- 注意
+  - 只能用在对象的方法之中
+
+### 扩展运算符（对象）[ES2018]
+#### 解构赋值
+
+#### 扩展运算符
+- 数组是特殊的对象，所以对象的扩展运算符也可以用于数组。
+- 扩展运算符后面不是对象，则会自动将其转为对象。
+- 对象的扩展运算符等同于使用Object.assign()方法。
+- 后面可以跟表达式。
+:::tip
+- 完整克隆一个对象（对象实例的属性+对象原型的属性）
+```js
+// 写法一
+const clone1 = {
+  __proto__: Object.getPrototypeOf(obj),
+  ...obj
+};
+// 写法二
+const clone2 = Object.assign(
+  Object.create(Object.getPrototypeOf(obj)),
+  obj
+);
+// 写法三
+const clone3 = Object.create(
+  Object.getPrototypeOf(obj),
+  Object.getOwnPropertyDescriptors(obj)
+)
+```
+:::
+- 用处
+  - 拷贝对象(另辟一个空间)
+    ```js
+    let obj={name:'zfpx',age:9};
+    let school={...obj}
+    ```
+    :::tip 深拷贝与浅拷贝
+    - 浅拷贝(对象的对象引用地址还是同一个)
+      - 扩展运算符`...`
+      - Object.assign
+    - 深拷贝
+      - $.extend
+      - 实现深拷贝(通过递归)
+        ```js
+        let obj={a:b:{abc:abc}}
+        function deepClone(obj){
+          if(obj===null) return null;
+          if(typeof obj!='object') return obj;
+          if(obj instanceof RegExp) return new RegExp(obj);
+          if(obj instanceof Date) return new Date(obj);
+          let newObj=new obj.constructor;
+          for(let key in obj){
+            newObj[key]=deepClone(obj[key]);
+          }
+          return newObj
+        }
+        let newReg=deepClone(obj);
+        console.log(newReg);
+        ```
+    :::
+  - 合并对象
+  ```js
+  let ab = { ...a, ...b };
+  // 等同于
+  let ab = Object.assign({}, a, b);
+  ```
+## 对象的新增方法
+- 见对象API
+
+
+## Symbol
+- 是第七种js数据类型(js的数据类型：`number` `string` `boolean` `null` `undefined` `object`)
+- 一般用作常量，每次拿到的都不一样
+```js
+console.log(typeof Symbol());//symbol
+console.log(Symbol()===Symbol());//false
+console.log(Symbol('a')===Symbol('a'));//false
+const a1=Symbol.for('a');//声明一个Symbol
+console.log(Symbol.keyFor(a1))//a ,取值
+```
+
+## map set 集合
+### set
+- 放的东西不能重复(数组可重复)，可以被迭代
+```js
+//数组去重
+let arr=[1,2,3,3,2,1]
+console.log(new Set(arr));
+```
+:::tip 常见面试题
+```js
+//并集
+let arr1=[1,2,3,3,2,1];
+let arr2=[4,5,6];
+let s=[...new Set([...arr1,arr2])];//Symbol.iterator
+console.log(s)//1,2,3,4,5,6
+```
+```js
+//交集
+let s1=new Set(arr1);
+let s2=new Set(arr2);
+let r=[...s1].filter(item=>{//如果返回true表示留下
+  return s2.has(item);
+})
+console.log(r);
+```
+```js
+//差集
+let r=[...s1].filter(item=>{//如果返回true表示留下
+  return !s2.has(item);
+})
+console.log(r);
+```
+:::
+- Set的方法
+```js
+let s=new Set([1,2,3]);
+s.add(5);
+s.clear();
+s.delete(2);
+```
+### map
+- 一样，不能放重复的数据
+```js
+let map=new Map();
+map.set('js',['nodejs'])
+map.set('js',['js1'])//覆盖
+console.log(map);
+map.forEach((item,key)=>{
+  console.log(item,key)
+})
+```
+
+
 ## 扩展运算符`…`
 - `...`的作用就是删掉外面的{}
 
 ### 用于对象的展开(es7)
-- 拷贝对象(另辟一个空间)
-  ```js
-  let obj={name:'zfpx',age:9};
-  let school={...obj}
-  ```
-  :::tip 深拷贝与浅拷贝
 
-  - 浅拷贝(对象的对象引用地址还是同一个)
-    - 扩展运算符`...`
-    - Object.assign
-  - 深拷贝
-    - $.extend
-    - 实现深拷贝(通过递归)
-      ```js
-      let obj={a:b:{abc:abc}}
-      function deepClone(obj){
-        if(obj===null) return null;
-        if(typeof obj!='object') return obj;
-        if(obj instanceof RegExp) return new RegExp(obj);
-        if(obj instanceof Date) return new Date(obj);
-        let newObj=new obj.constructor;
-        for(let key in obj){
-          newObj[key]=deepClone(obj[key]);
-        }
-        return newObj
-      }
-      let newReg=deepClone(obj);
-      console.log(newReg);
-      ```
-  :::
-- 合并对象
-  ```js
-  let school={...obj,...obj1};
-  ```
 ### 用于数组的展开
-- [...arr1,...arr2]
-  - 原理：concat(arr1,arr2)
-   ```js
-   // 以前展开数组方法？
-   Math.max.apply(Math,arr)
-   // 现在展开数组方法
-   Math.max(...arr)
-   ```
 ### 用于剩余运算符
 - 只能放在函数的最后一个参数，如sum(b,…arg)
 ```js
@@ -557,68 +739,6 @@ function testable(target) {
   target.isTestable = true;
 }
 MyTestableClass.isTestable // true
-```
-## Symbol
-- 是第七种js数据类型(js的数据类型：`number` `string` `boolean` `null` `undefined` `object`)
-- 一般用作常量，每次拿到的都不一样
-```js
-console.log(typeof Symbol());//symbol
-console.log(Symbol()===Symbol());//false
-console.log(Symbol('a')===Symbol('a'));//false
-const a1=Symbol.for('a');//声明一个Symbol
-console.log(Symbol.keyFor(a1))//a ,取值
-```
-
-## map set 集合
-### set
-- 放的东西不能重复(数组可重复)，可以被迭代
-```js
-//数组去重
-let arr=[1,2,3,3,2,1]
-console.log(new Set(arr));
-```
-:::tip 常见面试题
-```js
-//并集
-let arr1=[1,2,3,3,2,1];
-let arr2=[4,5,6];
-let s=[...new Set([...arr1,arr2])];//Symbol.iterator
-console.log(s)//1,2,3,4,5,6
-```
-```js
-//交集
-let s1=new Set(arr1);
-let s2=new Set(arr2);
-let r=[...s1].filter(item=>{//如果返回true表示留下
-  return s2.has(item);
-})
-console.log(r);
-```
-```js
-//差集
-let r=[...s1].filter(item=>{//如果返回true表示留下
-  return !s2.has(item);
-})
-console.log(r);
-```
-:::
-- Set的方法
-```js
-let s=new Set([1,2,3]);
-s.add(5);
-s.clear();
-s.delete(2);
-```
-### map
-- 一样，不能放重复的数据
-```js
-let map=new Map();
-map.set('js',['nodejs'])
-map.set('js',['js1'])//覆盖
-console.log(map);
-map.forEach((item,key)=>{
-  console.log(item,key)
-})
 ```
 
 

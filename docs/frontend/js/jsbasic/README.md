@@ -1615,7 +1615,7 @@ String.fromCharCode(0x20BB7)
     ```
 #### Object 构造函数的方法
 ##### ES5
-- Object.create()
+- Object.create(proto, [propertiesObject])
   - 使用指定的原型对象和属性创建一个新对象。
 - Object.defineProperty()
   - 在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。
@@ -1679,11 +1679,77 @@ String.fromCharCode(0x20BB7)
   Object.assign(target, source1, source2);
   target // {a:1, b:2, c:3}
   ```
-- Object.keys()
-  - 返回一个包含所有给定对象自身可枚举属性名称的数组。
-- Object.setPrototypeOf()
-  - 设置对象的原型（即内部 [[Prototype]] 属性）。
+  :::tip
+  - 注意点
+    - 浅拷贝
+    - 同名属性覆盖
+    - 可以处理数组（会把数组视为对象）
+    - 如果复制的是个取值函数，会先求值再复制
+  - 用途
+    - 为对象添加属性
+    - 为对象添加方法
+    - 克隆对象（只克隆对象自身的值）
+    - 合并对个对象
+    - 为属性指定默认值
+        ```js
+        const DEFAULTS = {
+        logLevel: 0,
+        outputFormat: 'html'
+        };
+        function processContent(options) {
+        options = Object.assign({}, DEFAULTS, options);
+        console.log(options);
+        // ...
+        }
+        ```
+    :::
 
+
+- Object.getOwnPropertyDescriptors() 
+    - 返回指定对象所有自身属性（非继承属性）的描述对象。
+    - 用途
+        - 解决Object.assign()无法正确拷贝get属性和set属性的问题。（配合Object.defineProperties()方法）
+        - 配合Object.create()方法，将对象属性克隆到一个新对象。这属于浅拷贝。
+- __proto__属性
+  - 用来读取或设置当前对象的prototype对象。
+  - 最好使用下面的`Object.setPrototypeOf()（写操作）`、`Object.getPrototypeOf()（读操作）`、`Object.create()（生成操作）`代替。
+- Object.setPrototypeOf(object, prototype)
+  - 设置对象的原型（即内部 [[Prototype]] 属性）。
+- Object.getPrototypeOf(obj)
+  - 读取一个对象的原型对象
+- Object.keys(obj)
+  - 返回一个包含所有给定对象自身可枚举属性名称的数组。
+  - for...of循环
+- Object.values(obj)
+  - 返回一个包含所有给定对象自身可枚举属性值的数组。
+  - for...of循环
+- Object.entries(obj)
+  - 返回一个包含所有给定对象自身可枚举属性键值的数组。
+  - for...of循环
+  - 另一个用处：将对象转为真正的Map结构
+    ```js
+    const obj = { foo: 'bar', baz: 42 };
+    const map = new Map(Object.entries(obj));
+    map // Map { foo: "bar", baz: 42 }
+    ```
+- Object.fromEntries() 
+  - 将一个键值对数组转为对象。
+    ```js
+    Object.fromEntries([
+        ['foo', 'bar'],
+        ['baz', 42]
+    ])
+    // { foo: "bar", baz: 42 }
+    ```
+  - 用处
+    - 将键值对的数据结构还原为对象（特别适合将 Map 结构转为对象）
+    - 配合URLSearchParams对象，将查询字符串转为对象。
+    ```js
+    Object.fromEntries(new URLSearchParams('foo=bar&baz=qux'))
+    // { foo: "bar", baz: "qux" }
+    ```
+- Object.getOwnPropertySymbols(obj)
+    - 返回一个数组，成员是当前对象的所有用作属性名的 Symbol 值。
 #### Object 实例的方法
 - Object.prototype.hasOwnProperty()
   - 返回一个布尔值 ，表示某个对象是否含有指定的属性，而且此属性非原型链继承的。

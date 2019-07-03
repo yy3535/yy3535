@@ -998,9 +998,70 @@ const promise = new Promise(function(resolve, reject) {
 
 ### 构造函数方法
 - Promise()
-- Promise.all()
-  - 将多个 Promise 实例，包装成一个新的 Promise 实例。
 
+- Promise.all([p1,p2,p3]) 
+  - 所有成员返回成功才会成功，有一个失败就失败
+  - 将多个 Promise 实例，包装成一个新的 Promise 实例
+  - 参数是具有 Iterator 接口的对象，且每个成员都是Promise实例(不是会自使用resolve转)
+  - 如果作为参数的 Promise 实例，自己定义了catch方法，那么它一旦被rejected，并不会触发Promise.all()的catch方法。
+  ```js
+  const p1 = new Promise((resolve, reject) => {
+    resolve('hello');
+  })
+  .then(result => result);
+  const p2 = new Promise((resolve, reject) => {
+    throw new Error('报错了');
+  })
+  .then(result => result);
+  Promise.all([p1, p2])
+  .then(result => console.log(result))
+  .catch(e => console.log(e));
+  // Error: 报错了
+  ```
+- Promise.race([p1,p2,p3]) 
+  - 将多个 Promise 实例，包装成一个新的 Promise 实例。
+  - 参数是具有 Iterator 接口的对象，且每个成员都是Promise实例(不是会自使用resolve转)
+  - 只要有一个参数promise状态改变，就产生结果
+```js
+const p = Promise.race([
+  fetch('/resource-that-may-take-a-while'),
+  new Promise(function (resolve, reject) {
+    setTimeout(() => reject(new Error('request timeout')), 5000)
+  })
+]);
+p
+.then(console.log)
+.catch(console.error);
+```
+- Promise.resolve()
+  - 将现有对象转为 状态为resolved 的Promise 对象
+  - then会立即执行
+  ```js
+  Promise.resolve('foo')
+  // 等价于
+  new Promise(resolve => resolve('foo'))
+  ```
+  - 四种参数
+    - 参数是一个 Promise 实例（直接返回这个实例）
+    - 参数是一个thenable对象（将这个对象转为 Promise 对象，然后立即执行thenable对象的then方法。）
+    - 参数不是具有then方法的对象，或根本就不是对象（则Promise.resolve方法返回一个新的 Promise 对象，状态为resolved。）
+    - 不带有任何参数（返回一个resolved状态的 Promise 对象。）
+    :::warning 快速得到一个promise对象
+    希望得到一个 Promise 对象，比较方便的方法就是直接调用Promise.resolve()方法。
+    :::
+- Promise.reject(reason)
+  - 返回一个状态为rejected的Promise 实例
+  - 回调函数立即执行
+  - 参数会作为reject的理由，变成后续方法的参数。
+```js
+const p = Promise.reject('出错了');
+// 等同于
+const p = new Promise((resolve, reject) => reject('出错了'))
+p.then(null, function (s) {
+  console.log(s)
+});
+// 出错了
+```
 
 ### 实例方法
 - Promise.prototype.then()
@@ -1043,6 +1104,7 @@ const promise = new Promise(function(resolve, reject) {
     .finally(() => {···});
   ```
 
+
 ### Promise实现一个Ajax操作
 ```js
 const getJSON = function(url) {
@@ -1076,11 +1138,482 @@ getJSON("/posts.json").then(function(json) {
 });
 ```
 
+### 应用
+- 加载图片
+  - 将图片的加载写成一个Promise，一旦加载完成，Promise的状态就发生变化。
+- Generator 函数与 Promise 的结合
+- 同步和异步同样处理
+  - Promise.try提案
 
+## Iterator和for..of循环
+### 概念
+  - 统一的接口机制，来处理所有不同的数据结构（Array,Object,Map,Set）。任何数据结构只要部署 Iterator 接口，就可以完成遍历操作`for...of`
+### Iterator接口
+- 一个数据结构只要具有Symbol.iterator属性，就可以认为是“可遍历的”（iterable）（Symbol.iterator属性名是symbol内置对象，属性值是个函数，执行这个函数，就会返回一个遍历器。）
+```js
+const obj = {
+  [Symbol.iterator] : function () {
+    return {
+      next: function () {
+        return {
+          value: 1,
+          done: true
+        };
+      }
+    };
+  }
+};
+```
+### 具备Iterator接口的数据结构
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的 arguments 对象
+- NodeList 对象
+```js
+// 手动遍历
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
 
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: 'c', done: false }
+iter.next() // { value: undefined, done: true }
+```
+:::warning 类数组（存在数值键名和length属性）部署 Iterator 接口
+Symbol.iterator方法引用数组的 Iterator 接口。
+```js
+let iterable = {
+  0: 'a',
+  1: 'b',
+  2: 'c',
+  length: 3,
+  [Symbol.iterator]: Array.prototype[Symbol.iterator]
+};
+for (let item of iterable) {
+  console.log(item); // 'a', 'b', 'c'
+}
+```
+:::
+### 调用Iterator接口的场合
+- 任何接受数组作为参数的场合（数组的遍历会调用遍历器接口）
+  - for...of
+  - Array.from()
+  - Map(), Set(), WeakMap(), WeakSet()（比如new Map([['a',1],['b',2]])）
+  - Promise.all()
+  - Promise.race()
+- 解构赋值
+- 扩展运算符
+- yield*
 
+### 遍历器对象部署的方法
+- next()
+- return
+  - 如果for...of循环提前退出（通常是因为出错，或者有break语句），就会调用return方法。(如果一个对象在完成遍历前，需要清理或释放资源，就可以部署return方法。)
+- throw
+  - 配合 Generator 函数使用
 
+### for...of循环
+- 数组
+  - 代替forEach方法
+  - for...in循环读取键名，for...of循环读取键值
+  - for...in返回所有属性，for...of只返回具有数字索引的属性
+- Set和Map
+  - 遍历的顺序是按照各个成员被添加进数据结构的顺序
+  - Set 结构遍历时，返回的是一个值， Map 结构遍历时，返回的是一个数组(数组的两个成员分别为当前 Map 成员的键名和键值)
+:::warning 遍历语法总结
+- for循环（麻烦）
+- forEach(无法中途跳出循环，break和return都无效)
+- for...in(遍历键名)
+  - 会遍历手动添加的其他键，甚至包括原型链上的键。
+  - 可能会以任意顺序遍历键名。
+- for...of
+  - 语法简洁，没有for...in的缺点。
+  - 可以与break、continue和return配合使用。
+  - 提供了遍历所有数据结构的统一操作接口。
 
+:::
+
+## Generator 函数的语法
+### 概念
+- 状态机，封装了多个内部状态
+- 调用后返回一个遍历器对象（遍历器生成函数），可以依次遍历 Generator 函数内部的每一个状态。
+- function关键字与函数名之间有一个星号(没有规定是哪个位置)，函数体内部使用yield表达式（定义不同的内部状态）
+- 分段执行，调用遍历器对象的next方法进入下一个状态（yield表达式是暂停执行的标记）
+- next()
+  - 遇到yiedl或者return返回一个有value(内部状态的值)和done(是否遍历结束)属性的对象。
+```js
+function* helloWorldGenerator() {
+  yield 'hello';
+  yield 'world';
+  return 'ending';
+}
+var hw = helloWorldGenerator();
+hw.next()
+// { value: 'hello', done: false }
+hw.next()
+// { value: 'world', done: false }
+hw.next()
+// { value: 'ending', done: true }
+hw.next()
+// { value: undefined, done: true }
+```
+
+#### yield表达式
+- yield表达式只能用在 Generator 函数里面
+- yiedl具备记忆位置功能，return不具备
+- 如果用在另一个表达式之中，必须放在圆括号里面。
+- 用作函数参数或放在赋值表达式的右边，可以不加括号。
+
+#### Iterator接口赋值Generator
+- 可以把 Generator 赋值给对象的Symbol.iterator属性(Generator 函数就是遍历器生成函数)
+
+### next()方法
+  - 带一个参数，该参数就会被当作上一个yield表达式的返回值。
+### 构造函数
+- Generator.prototype.throw()
+  - 在函数体外抛出错误，然后在 Generator 函数体内捕获。
+  - 接受一个参数，该参数会被catch语句接收，建议抛出Error对象的实例。
+```js
+var g = function* () {
+  try {
+    yield;
+  } catch (e) {
+    console.log('内部捕获', e);
+  }
+};
+
+var i = g();
+i.next();
+
+try {
+  i.throw('a');
+  i.throw('b');
+} catch (e) {
+  console.log('外部捕获', e);
+}
+// 内部捕获 a
+// 外部捕获 b
+```
+
+- Generator.prototype.return() 
+  - 返回给定的值(参数)，并且终结遍历 Generator 函数。
+
+:::warning next(),throw(),return
+- 让 Generator 函数恢复执行，并且使用不同的语句替换yield表达式。
+  - next()是将yield表达式替换成一个值。
+  - throw()是将yield表达式替换成一个throw语句。
+  - return()是将yield表达式替换成一个return语句。
+:::
+
+### Generator函数里执行Generator函数。
+- yiedl* 表达式
+```js
+function* bar() {
+  yield 'x';
+  yield* foo();
+  yield 'y';
+}
+
+// 等同于
+function* bar() {
+  yield 'x';
+  yield 'a';
+  yield 'b';
+  yield 'y';
+}
+
+// 等同于
+function* bar() {
+  yield 'x';
+  for (let v of foo()) {
+    yield v;
+  }
+  yield 'y';
+}
+
+for (let v of bar()){
+  console.log(v);
+}
+// "x"
+// "a"
+// "b"
+// "y"
+```
+### 作为对象属性
+```js
+let obj = {
+  * myGeneratorMethod() {
+    ···
+  }
+};
+// 等同于
+let obj = {
+  myGeneratorMethod: function* () {
+    // ···
+  }
+};
+```
+
+### 作为状态机
+- Generator 是实现状态机的最佳结构。
+- 不用外部变量保存状态，因为它本身就包含了一个状态信息（目前是否处于暂停态）
+```js
+// ES5状态机
+var ticking = true;
+var clock = function() {
+  if (ticking)
+    console.log('Tick!');
+  else
+    console.log('Tock!');
+  ticking = !ticking;
+}
+// Generator状态机
+var clock = function* () {
+  while (true) {
+    console.log('Tick!');
+    yield;
+    console.log('Tock!');
+    yield;
+  }
+};
+```
+
+### 应用（可以暂停函数执行，返回任意表达式的值。）
+- 异步操作的同步化表达
+  ```js
+  function* main() {
+    var result = yield request("http://some.url");
+    var resp = JSON.parse(result);
+      console.log(resp.value);
+  }
+  function request(url) {
+    makeAjaxCall(url, function(response){
+      it.next(response);
+    });
+  }
+  var it = main();
+  it.next();
+  ```
+- 控制流管理
+```js
+// Promise实现
+Promise.resolve(step1)
+  .then(step2)
+  .then(step3)
+  .then(step4)
+  .then(function (value4) {
+    // Do something with value4
+  }, function (error) {
+    // Handle any error from step1 through step4
+  })
+  .done();
+
+// Generator改善
+function* longRunningTask(value1) {
+  try {
+    var value2 = yield step1(value1);
+    var value3 = yield step2(value2);
+    var value4 = yield step3(value3);
+    var value5 = yield step4(value4);
+    // Do something with value4
+  } catch (e) {
+    // Handle any error from step1 through step4
+  }
+}
+```
+- 部署 Iterator 接口
+- 作为数据结构
+  - 可以看作是一个数组结构
+    ```js
+    function* doStuff() {
+      yield fs.readFile.bind(null, 'hello.txt');
+      yield fs.readFile.bind(null, 'world.txt');
+      yield fs.readFile.bind(null, 'and-such.txt');
+    }
+    // 像数组一样用for of遍历
+    for (task of doStuff()) {
+      // task是一个函数，可以像回调函数那样使用它
+    }
+    ```
+
+## Generator 函数的异步应用
+### ES5的异步处理方法
+- 回调函数
+- 事件监听
+- 发布/订阅
+- Promise 对象
+  - 不是新的语法功能，而是一种新的写法，允许将回调函数的嵌套，改成链式调用。
+  - 代码冗余（原来的任务被 Promise 包装了一下，不管什么操作，一眼看去都是一堆then）原来的语义变得很不清楚。
+
+### 传统异步编程的解决方案（多任务的解决方案）协程
+  - 概念
+    - 第一步，协程A开始执行。
+    - 第二步，协程A执行到一半，进入暂停，执行权转移到协程B。
+    - 第三步，（一段时间后）协程B交还执行权。
+    - 第四步，协程A恢复执行
+
+### 协程在ES6中的实现（Generator 函数）
+- 可以交出函数的执行权（即暂停执行）。
+  -  Generator 函数就是一个封装的异步任务，或者说是异步任务的容器。异步操作需要暂停的地方，都用yield语句注明。
+
+### co模块
+- 自动执行Genrerator函数
+  - 接受 Generator 函数作为参数，返回一个 Promise 对象。
+  - 源码：利用递归执行next不停进行then回调
+```js
+var gen = function* () {
+  var f1 = yield readFile('/etc/fstab');
+  var f2 = yield readFile('/etc/shells');
+  console.log(f1.toString());
+  console.log(f2.toString());
+};
+var co = require('co');
+co(gen);
+co(gen).then(function (){
+  console.log('Generator 函数执行完成');
+});
+```
+```js
+// co源码
+function co(gen) {
+  var ctx = this;
+
+  return new Promise(function(resolve, reject) {
+    if (typeof gen === 'function') gen = gen.call(ctx);
+    if (!gen || typeof gen.next !== 'function') return resolve(gen);
+  });
+}
+function co(gen) {
+  var ctx = this;
+
+  return new Promise(function(resolve, reject) {
+    if (typeof gen === 'function') gen = gen.call(ctx);
+    if (!gen || typeof gen.next !== 'function') return resolve(gen);
+
+    onFulfilled();
+    function onFulfilled(res) {
+      var ret;
+      try {
+        ret = gen.next(res);
+      } catch (e) {
+        return reject(e);
+      }
+      next(ret);
+    }
+  });
+}
+function next(ret) {
+  if (ret.done) return resolve(ret.value);
+  var value = toPromise.call(ctx, ret.value);
+  if (value && isPromise(value)) return value.then(onFulfilled, onRejected);
+  return onRejected(
+    new TypeError(
+      'You may only yield a function, promise, generator, array, or object, '
+      + 'but the following object was passed: "'
+      + String(ret.value)
+      + '"'
+    )
+  );
+}
+```
+- 支持并发的异步操作
+  - 要把并发的操作都放在数组或对象里面，跟在yield语句后面。
+```js
+// 数组的写法
+co(function* () {
+  var res = yield [
+    Promise.resolve(1),
+    Promise.resolve(2)
+  ];
+  console.log(res);
+}).catch(onerror);
+
+// 对象的写法
+co(function* () {
+  var res = yield {
+    1: Promise.resolve(1),
+    2: Promise.resolve(2),
+  };
+  console.log(res);
+}).catch(onerror);
+```
+
+## async函数
+### 是 Generator 函数的语法糖。
+```js
+// Generator
+const gen = function* () {
+  const f1 = yield readFile('/etc/fstab');
+  const f2 = yield readFile('/etc/shells');
+  console.log(f1.toString());
+  console.log(f2.toString());
+};
+// async
+const asyncReadFile = async function () {
+  const f1 = await readFile('/etc/fstab');
+  const f2 = await readFile('/etc/shells');
+  console.log(f1.toString());
+  console.log(f2.toString());
+};
+```
+- 改善
+  - 内置执行器（Generator 函数，需要调用next方法，或者用co模块，才能真正执行）。
+  - 更好的语义
+  - 更广的适用性（await后可以是 Promise 对象和原始类型的值，co模块的yield后只能是Thunk函数或Promise对象）
+  - 返回值是Promise(Generator 函数的返回值是 Iterator 对象)
+  - z总之：async函数完全可以看作多个异步操作，包装成的一个 Promise 对象，而await命令就是内部then命令的语法糖。
+### 基本用法
+- async函数返回一个 Promise 对象，可以使用then方法添加回调函数。当函数执行的时候，一旦遇到await就会先返回，等到异步操作完成，再接着执行函数体内后面的语句。
+- async函数内部的异步操作执行完，才会执行then方法指定的回调函数。
+```js
+async function getTitle(url) {
+  let response = await fetch(url);
+  let html = await response.text();
+  return html.match(/<title>([\s\S]+)<\/title>/i)[1];
+}
+getTitle('https://tc39.github.io/ecma262/').then(console.log)
+// "ECMAScript 2017 Language Specification"
+```
+
+### await命令
+- await命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，就直接返回对应的值。
+- 错误处理
+  - 将其放在try...catch代码块之中
+  - 有多个await命令，可以统一放在try...catch结构中。
+- 注意点
+  - 最好把await命令放在try...catch代码块中。（await命令后面的Promise对象，运行结果可能是rejected）
+  - 多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。
+    ```js
+    // 多个await
+    let foo = await getFoo();
+    let bar = await getBar();
+    // 写法一
+    let [foo, bar] = await Promise.all([getFoo(), getBar()]);
+    // 写法二
+    let fooPromise = getFoo();
+    let barPromise = getBar();
+    let foo = await fooPromise;
+    let bar = await barPromise;
+    ```
+  - await命令只能用在async函数之中
+    - 如果将forEach方法的参数改成async函数，也有问题。正确的写法是采用for循环。
+  - async 函数可以保留运行堆栈。
+### async函数实现原理
+- 将 Generator 函数和自动执行器，包装在一个函数里。
+```js
+async function fn(args) {
+  // ...
+}
+// 等同于
+function fn(args) {
+  return spawn(function* () {
+    // ...
+  });
+}
+```
 ## 扩展运算符`…`
 - `...`的作用就是删掉外面的{}
 

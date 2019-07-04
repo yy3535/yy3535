@@ -1614,18 +1614,215 @@ function fn(args) {
   });
 }
 ```
+
+
+
 ## 扩展运算符`…`
 - `...`的作用就是删掉外面的{}
 
 ### 用于对象的展开(es7)
 ### 用于数组的展开
 ### 用于剩余运算符
-## class类
+## Class 的基本语法
+### 简介
+#### 生成实例对象的传统方法是通过构造函数。
+#### ES6引入了 Class（类）这个概念，作为对象的模板。【只是一个语法糖】
+- 与ES5一致的
+  - 让对象原型的写法更加清晰、更像面向对象编程的语法。不需要加上function这个关键字,方法之间不需要逗号分隔(构造函数的另一种写法)
+  - 类的数据类型就是函数，类本身就指向构造函数。
+  - 使用也是对类使用new命令
+  - 类的所有方法都定义在类的prototype属性上面。(Object.assign方法一次向类添加多个方法)
+  - prototype对象的constructor属性，直接指向“类”的本身，
+- 与ES5不一致的
+  - 类的内部所有定义的方法，都是不可枚举的
+  - 类必须使用new调用，否则会报错（普通构造函数不用new也可以执行）
+```js
+// ES5
+function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+Point.prototype.toString = function () {
+  return '(' + this.x + ', ' + this.y + ')';
+};
+var p = new Point(1, 2);
+// ES6
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  toString() {
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+```
+```js
+class Point {
+  // ...
+}
+typeof Point // "function"
+Point === Point.prototype.constructor // true
+
+class Point {
+  constructor() {
+    // ...
+  }
+  toString() {
+    // ...
+  }
+  toValue() {
+    // ...
+  }
+}
+// 等同于
+Point.prototype = {
+  constructor() {},
+  toString() {},
+  toValue() {},
+};
+```
+#### constructor【与ES5一致】
+- 默认方法，如果定义，会添加一个空的constructor方法。（通过new命令生成对象实例时，自动调用该方法。）
+- 默认返回实例对象（即this），可以指定返回另外一个对象。
+#### 类的实例【与ES5一致】
+  - 使用new命令
+  - 实例的属性除非显式定义在其本身（this对象上），否则都是定义在原型上（class上）。
+#### 取值函数（getter）和存值函数（setter）【与ES5一致】
+- 对某个属性设置存值函数和取值函数，拦截该属性的存取行为。
+  - 存值函数和取值函数是设置在属性的 Descriptor 对象上的。
+```js
+class MyClass {
+  constructor() {
+    // ...
+  }
+  get prop() {
+    return 'getter';
+  }
+  set prop(value) {
+    console.log('setter: '+value);
+  }
+}
+let inst = new MyClass();
+inst.prop = 123;
+// setter: 123
+inst.prop
+// 'getter'
+```
+#### 属性表达式
+- 类的属性名，可以采用表达式。
+#### Class用表达式形式定义
+- 类的名字只在 Class 的内部可用，指代当前类。在 Class 外部，只能用变量名引用。
+- 可简写省略名字
+```js
+const MyClass = class Me {
+  getClassName() {
+    return Me.name;
+  }
+};
+const MyClass = class { /* ... */ };
+```
+#### 注意
+- 类和模块的内部，默认是严格模式
+- 类不存在变量提升（hoist）
+- 类函数的许多特性都被Class继承，包括name属性
+- 如果某个方法之前加上星号（*），就表示该方法是一个 Generator 函数。
+- 类的方法内部如果含有this，它默认指向类的实例。
+
+### 静态方法（不会被实例继承，而是直接通过类来调用）
+- 在一个方法前，加上static关键字
+### 静态属性()
+- ES6 明确规定，Class 内部只有静态方法，没有静态属性。只能采取这种方法
+- 有提案提供像静态方法一样的static关键字
+```js
+class Foo {
+}
+Foo.prop = 1;
+Foo.prop // 1
+```
+### 实例属性
+- 定义
+  - 定义在constructor()方法里面
+  - 定义在类的最顶层（这时，不需要在实例属性前面加上this。）
+  ```js
+  class IncreasingCounter {
+    _count = 0;
+    get value() {
+      console.log('Getting the current value!');
+      return this._count;
+    }
+    increment() {
+      this._count++;
+    }
+  }
+  ```
+
+### 私有方法和私有属性
+- 只能在类的内部访问的方法和属性，外部不能访问。
+- ES6 不提供，可以采取以下三种方法模拟实现，（#语法目前在提案中）
+  - 在命名上加以区别。
+  - 将私有方法移出模块
+  - 利用Symbol值的唯一性，将私有方法的名字命名为一个Symbol值。
+
+### new.target 属性
+- 用在构造函数之中，返回new命令作用于的那个构造函数。
+- 如果构造函数不是通过new命令或Reflect.construct()调用的，new.target会返回undefined，
+- 可以用来确定构造函数是怎么调用的。
+
+## Class 的继承
+### 简介
+- 通过extends关键字实现继承
+- super关键字表示父类的构造函数
+- 子类必须在constructor方法中调用super方法
+  - 子类自己的this对象，必须先通过父类的构造函数完成塑造，得到与父类同样的实例属性和方法，然后再对其进行加工，加上子类自己的实例属性和方法。如果不调用super方法，子类就得不到this对象。
+  :::warning ES5继承和ES6继承区别
+  - ES5 先创造子类的实例对象this，然后再将父类的方法添加到this上面（Parent.apply(this)）。
+  - ES6 先将父类实例对象的属性和方法，加到this上面，然后再用子类的构造函数修改this。
+  :::
+```js
+class Point {
+}
+class ColorPoint extends Point {
+  constructor(x, y, color) {
+    super(x, y); // 调用父类的constructor(x, y)
+    this.color = color;
+  }
+  toString() {
+    return this.color + ' ' + super.toString(); // 调用父类的toString()
+  }
+}
+```
+### 获取父类
+- 判断一个类是否继承了另一个类。
+```js
+Object.getPrototypeOf(ColorPoint) === Point
+// true
+```
+### super 关键字
+- 作为函数，代表父类的构造函数，用来继承父类方法
+- 作为对象
+  - 在普通方法中，指向父类的原型对象；在静态方法中，指向父类。
+### 类的 prototype 属性和__proto__属性
+- 作为构造函数的语法糖，同时有prototype属性和__proto__属性，因此同时存在两条继承链。
+  - 子类的__proto__属性，表示构造函数的继承，总是指向父类。
+  - 子类prototype属性的__proto__属性，表示方法的继承，总是指向父类的prototype属性。
+
+### 原生构造函数（js内置构造函数）的继承
+- 原生构造函数是指语言内置的构造函数，通常用来生成数据结构。
+  - Boolean()
+  - Number()
+  - String()
+  - Array()
+  - Date()
+  - Function()
+  - RegExp()
+  - Error()
+  - Object()
+
+
+
 
 ### es5中的类
-- 原生的构造函数
-- 类必须要大写
-- es5中可以当做函数来调用，es6中类只能new
 ```js
 function Animal(type){
   this.type=type;

@@ -44,7 +44,8 @@ typeof null // object 因为 null 也是引用类型。null 就相当于引用�
 
 #### Math对象
 
-Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览器缓存，比如频繁访问一个链接，就在链接后加一个random()
+- Math 最常用的只有一个 API —— 
+
 | 功能 | API |
 | :------| ------: |
 | random() | [0,1) |
@@ -55,7 +56,11 @@ Math 最常用的只有一个 API —— `Math.random()`，常用于清除浏览
 | max(x,y,z,...n) | 求最大值 |
 | min(x,y,z...n) | 求最小值 |
 
+- Math.random()
+  - 常用于清除浏览器缓存，比如频繁访问一个链接，就在链接后加一个random()
+
 以下ES6新增：
+
 - Math.trunc() 
   - 去除一个数的小数部分，返回整数部分
   - 非数值，内部Number方法将其先转为数值。
@@ -1500,8 +1505,10 @@ s.charCodeAt(1) // 57271
     - 支持第二个参数，表示开始搜索的位置。
 #### 合并、切割
 - concat()
-- slice()
-- substring()
+- slice(start,end)
+  - 提取字符串的某个部分，并以新的字符串返回被提取的部分。
+- substring(start,stop)
+  - 提取字符串中介于两个指定下标之间的字符。
 - str.split([separator[, limit]])
   - 把一个字符串按分隔符分割成字符串数组
   - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。)
@@ -2046,3 +2053,17 @@ for(var i in fuc){
 用处就在于我们可以改变任务的执行顺序！因为浏览器会在执行完当前任务队列中的任务，再执行setTimeout队列中积累的的任务。
 
 通过设置任务在延迟到0s后执行，就能改变任务执行的先后顺序，延迟该任务发生，使之异步执行。
+
+
+
+<td rowspan="@(item.ClassTests.Count == 0 ? 1 : item.ClassTests.Count)">
+						@if (item == null){
+							@("无学生信息")
+						}else{
+							@if (item.StuName.length<3){
+								@(item.StuName.slice(0,1)+'*')
+							}else{
+								@(item.StuName.slice(0,1)+'*'+@(item.StuName.slice(-1))
+							}
+						}
+					</td>

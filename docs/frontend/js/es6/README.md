@@ -1819,6 +1819,297 @@ Object.getPrototypeOf(ColorPoint) === Point
   - Error()
   - Object()
 
+### Mixin模式的实现
+- Mixin
+  - 多个对象合成一个新的对象，新对象具有各个组成成员的接口。
+```js
+// 将多个类的接口“混入”（mix in）另一个类。
+function mix(...mixins) {
+  class Mix {
+    constructor() {
+      for (let mixin of mixins) {
+        copyProperties(this, new mixin()); // 拷贝实例属性
+      }
+    }
+  }
+
+  for (let mixin of mixins) {
+    copyProperties(Mix, mixin); // 拷贝静态属性
+    copyProperties(Mix.prototype, mixin.prototype); // 拷贝原型属性
+  }
+
+  return Mix;
+}
+
+function copyProperties(target, source) {
+  for (let key of Reflect.ownKeys(source)) {
+    if ( key !== 'constructor'
+      && key !== 'prototype'
+      && key !== 'name'
+    ) {
+      let desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
+    }
+  }
+}
+```
+
+## Module的语法
+### 概述
+- ES6之前，CommonJS 和 AMD 两种。前者用于服务器，后者用于浏览器。
+- ES6 在语言标准的层面上，实现了模块功能，而且得相当简单，完全可以取代 CommonJS 和 AMD 规范，成为浏览器和服务器通用的模块解决方案。
+:::warning 区别
+- CMD和AMD运行时才能确定模块的依赖关系，输入时必须查找对象属性，而ES6编译时就能确定
+```js
+// CommonJS模块(整体加载fs模块（即加载fs的所有方法），生成一个对象（_fs），然后再从这个对象上面读取 3 个方法。
+// “运行时加载”，因为只有运行时才能得到这个对象)
+// CommonJS 模块输出的是值的缓存，不存在动态更新，
+let { stat, exists, readFile } = require('fs');
+
+// ES6模块(从fs模块加载 3 个方法，其他方法不加载。
+// “编译时加载”或者静态加载,编译时就完成模块加载)
+// 值动态更新
+import { stat, exists, readFile } from 'fs';
+```
+:::
+- ES6模块优点
+  - 静态加载
+  - 不再需要UMD模块格式了，将来服务器和浏览器都会支持 ES6 模块格式。
+  - 将来浏览器的新 API 就能用模块格式提供
+  - 不再需要对象作为命名空间（比如Math对象），可以通过模块提供。
+- 注意
+  - ES6的模块自动采用严格模式
+  - ES6模块中，顶层的this指向undefined(不应该在顶层代码使用this)
+
+### export命令
+- 一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。如果希望外部能够读取模块内部的某个变量，就必须使用export关键字输出该变量。
+- 可使用as重命名
+- export命令规定的是对外的接口，所以输出的必须是接口（必须在接口名与模块内部变量之间建立一一对应的关系，通过接口取到值，而不能直接输出值）
+- export语句输出的接口，与其对应的值是动态绑定关系（通过该接口，可以取到模块内部实时的值）
+- export命令可以出现在模块的任何位置，只要处于模块顶层就可以。如果处于块级作用域内，就会报错
+```js
+// 写法一
+export var firstName = 'Michael';
+export var lastName = 'Jackson';
+export function multiply(x, y) {
+  return x * y;
+};
+// 写法二（优先考虑）
+var firstName = 'Michael';
+var lastName = 'Jackson';
+function v1() { ... }
+export { firstName, lastName, v1 as streamV1 };
+```
+```js
+// 报错
+var m = 1;
+export m;
+// 报错
+function f() {}
+export f;
+// 写法一
+export var m = 1;
+// 写法二
+var m = 1;
+export {m};
+// 写法三
+var n = 1;
+export {n as m};
+// 正确
+export function f() {};
+// 正确
+function f() {}
+export {f};
+
+export var foo = 'bar';
+setTimeout(() => foo = 'baz', 500);// 输出变量foo，值为bar，500毫秒后变成baz
+```
+### import命令
+- 接受一对大括号，里面指定要从其他模块导入的变量名。大括号里面的变量名，必须与被导入模块对外接口的名称相同。
+- 使用as关键字，将输入的变量重命名。
+- 输入的变量是只读的(不允许在加载模块的脚本里面，改写接口。但对象的属性是可以改写的。改写后其他模块也能读取，所以很难查错)
+- from，位置，.js后缀可以省略，只是模块名，必须有配置文件，告诉js引擎该模块的位置
+- import命令具有提升效果，会提升到整个模块的头部，首先执行。
+- import是静态执行，所以不能使用表达式和变量（运行时才能得到结果的语法）
+- 没有from,import语句会执行所加载的模块
+- 多次重复执行同一句import语句，只会执行一次
+```js
+// main.js
+import { firstName, lastName, year } from './profile.js';
+import { lastName as surname } from './profile.js';
+import 'lodash';
+function setName(element) {
+  element.textContent = firstName + ' ' + lastName;
+}
+```
+### 模块的整体加载
+- 用星号（*）指定一个对象，所有输出值都加载在这个对象上面。
+```js
+// circle.js
+export function area(radius) {
+  return Math.PI * radius * radius;
+}
+export function circumference(radius) {
+  return 2 * Math.PI * radius;
+}
+```
+```js
+import * as circle from './circle';
+console.log('圆面积：' + circle.area(4));
+console.log('圆周长：' + circle.circumference(14));
+```
+### export default命令
+- import命令后面，不使用大括号。可以指定任意名字。
+- 无需知道模块里有哪些属性和方法即可加载模块。
+- 本质是将后面的值，赋给default变量，然后系统允许你为它取任意名字。
+  - 后面不能跟变量声明语句
+  - 可以直接将一个值写在export default之后。
+  - 可以同时输入默认方法和其他接口
+  - 可以用来输出类
+```js
+// export-default.js
+export default function () {
+  console.log('foo');
+}
+export function each(obj, iterator, context) {
+  // ···
+}
+export { each as forEach };
+```
+```js
+// import-default.js
+import customName from './export-default';
+import _, { each, forEach } from 'lodash';
+customName(); // 'foo'
+```
+
+### export 与 import 的复合写法 
+- 如果在一个模块之中，先输入后输出同一个模块，import语句可以与export语句写在一起。
+- 写成一行以后，foo和bar实际上并没有被导入当前模块，只是相当于对外转发了这两个接口，导致当前模块不能直接使用foo和bar。
+```js
+export { foo, bar } from 'my_module';
+
+// 可以简单理解为
+import { foo, bar } from 'my_module';
+export { foo, bar };
+```
+
+- 模块接口改名
+```js
+export { foo as myFoo } from 'my_module';
+```
+- 整体输出
+```js
+export * from 'my_module';
+// 默认接口
+export { default } from 'foo';
+```
+- 具名接口改为默认接口
+```js
+export { es6 as default } from './someModule';
+// 等同于
+import { es6 } from './someModule';
+export default es6;
+```
+- 默认接口改名为具名接口
+```js
+export { default as es6 } from './someModule';
+```
+- 下面三种import语句，没有对应的复合写法。
+```js
+import * as someIdentifier from "someModule";
+import someIdentifier from "someModule";
+import someIdentifier, { namedIdentifier } from "someModule";
+```
+#### 模块的继承
+```js
+// circleplus.js
+// 继承了circle模块。
+export * from 'circle';
+export var e = 2.71828182846;
+export default function(x) {
+  return Math.exp(x);
+}
+```
+
+
+#### 跨模块常量
+- const声明的常量只在当前代码块有效。
+- 如果想设置跨模块的常量（即跨多个文件），或者说一个值要被多个模块共享
+  - 建一个专门的constants目录
+  - 将这些文件输出的常量，合并在index.js里面。
+  - 使用的时候，直接加载index.js
+```js
+// constants/db.js
+export const db = {
+  url: 'http://my.couchdbserver.local:5984',
+  admin_username: 'admin',
+  admin_password: 'admin password'
+};
+// constants/user.js
+export const users = ['root', 'admin', 'staff', 'ceo', 'chief', 'moderator'];
+```
+```js
+// constants/index.js
+export {db} from './db';
+export {users} from './users';
+```
+```js
+// script.js
+import {db, users} from './constants/index';
+```
+
+### import()
+- require是运行时加载模块，import命令无法取代require的动态加载功能。
+```js
+// require到底加载哪一个模块，只有运行时才知道。
+const path = './' + fileName;
+const myModual = require(path);
+```
+- 提案，建议引入import()函数，完成动态加载。
+  - 返回一个 Promise 对象。
+  - import()类似于 Node 的require方法，区别主要是前者是异步加载，后者是同步加载。
+- 适用场合
+  - 按需加载。
+  - 条件加载
+  - 动态的模块路径
+
+## Module的加载实现
+### 浏览器加载
+- 传统方法
+  - `<script>`标签打开`defer`或`async`属性，脚本就会异步加载。(渲染引擎遇到这一行命令，就会开始下载外部脚本，但不会等它下载和执行，而是直接执行后面的命令。)
+  :::warning defer和async区别
+  defer是“渲染完再执行”，能保证加载顺序，async是“下载完就执行”，无法保证加载顺序。
+  :::
+  ```js
+  <script src="path/to/myModule.js" defer></script>
+  <script src="path/to/myModule.js" async></script>
+  ```
+
+- ES6模块加载规则
+  - 使用`<script>`标签，加入`type="module"`属性
+    - 对于`type="module"`的默认（defer）异步加载
+    
+    ```js
+    <script type="module" src="./foo.js"></script>
+    ```
+  - 内嵌脚本
+  ```js
+  <script type="module">
+    import utils from "./utils.js";
+    // other code
+  </script>
+  ```
+
+### ES6 模块与 CommonJS 模块的差异
+- CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
+- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
+
+### Node加载
+- 概述
+  - 
+
+
 
 
 
@@ -1849,33 +2140,7 @@ console.log(cat.eat)
 Cat.prototype=new Animal();
 let cat=new Cat('哺乳类');
 ```
-### es6中的类
-- 只能new
-```js
-class Animal{
-  constructor(type){
-    this.type=type;
-  }
-  //添加公共属性
-  eat(){
-    console.log(this);
-  }
-}
-//继承原型和公共方法，extends里面内置了call，也实现了继承共有属性
-Class Cat extends Animal{
-  //静态方法，子类可继承
-  static flag(){
-      return '好玩'
-  }
-  constructor(type){
-    super(type);//继承必须写这句，相当于Animal.call(this.type);
-  }
-}
-Animal.prototype.eat=...//不需要用这种方法，直接在类里添加即可
-Animal()//出错 构造函数Animal只能通过new来调用
-let animal=new Animal('哺乳类');
-let cat=new Cat('哺乳类')
-```
+
 ### 用es5实现es6Class类
 ```js
 function _classCallCheck(sub,constr){

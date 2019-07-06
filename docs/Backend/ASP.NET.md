@@ -1,5 +1,10 @@
 # ASP.NET
 
+## C#
+### 注意
+- ''char
+- ""string
+
 
 ## 路由
 - visual studio编辑器中打开在某个页面，启动时会自动打开开着的那个页面
@@ -18,7 +23,7 @@
 #### 隐式 Razor 表达式
 - 以 @ 开头，后跟 C# 代码
 - 不能包含空格
-```c#
+```csharp
 <p>@DateTime.Now</p>
 <p>@DateTime.IsLeapYear(2016)</p>
 ```
@@ -30,7 +35,7 @@
     - 表达式
 - 全部使用C#语法
 
-```c#
+```csharp
 <td rowspan="@(item.ClassTests.Count == 0 ? 1 : item.ClassTests.Count)">
     @{
         var name = "";

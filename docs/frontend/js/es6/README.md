@@ -2107,7 +2107,148 @@ const myModual = require(path);
 
 ### Node加载
 - 概述
-  - 
+  - Node 与 ES6 模块格式是不兼容的。
+  - 要求 ES6 模块采用.mjs后缀文件名。(require命令不能加载.mjs文件,.mjs文件里面也不能使用require命令)
+
+- 内部变量
+  - ES6 模块之中不能使用 CommonJS 模块的特有的一些内部变量。
+    - this关键字。
+      - ES6 模块之中，顶层的this指向undefined；CommonJS 模块的顶层this指向当前模块，
+    - arguments
+    - require
+    - module
+    - exports
+    - __filename
+    - __dirname
+
+- ES6 模块加载 CommonJS 模块
+  - Node 的import命令加载 CommonJS 模块，会自动将module.exports属性，当作export default xxx。
+  ```js
+  // a.js
+  module.exports = {
+    foo: 'hello',
+    bar: 'world'
+  };
+  // 等同于
+  export default {
+    foo: 'hello',
+    bar: 'world'
+  };
+  ```
+
+- CommonJS 模块加载 ES6 模块
+  - 使用import()函数,ES6 模块的所有输出接口，会成为输入对象的属性。
+  ```js
+  // es.mjs
+  let foo = { bar: 'my-default' };
+  export default foo;
+  // cjs.js
+  const es_namespace = await import('./es.mjs');
+  // es_namespace = {
+  //   get default() {
+  //     ...
+  //   }
+  // }
+  console.log(es_namespace.default);
+  // { bar:'my-default' }
+  ```
+- 循环加载
+  - a脚本的执行依赖b脚本，而b脚本的执行又依赖a脚本。
+  - CommonJS 模块一旦出现某个模块被"循环加载"，就只输出已经执行的部分，还未执行的部分不会输出。
+  - 需要开发者自己保证，真正取值的时候能够取到值。需要开发者自己保证，真正取值的时候能够取到值。
+
+### ES6 模块的转码 
+- 浏览器目前还不支持 ES6 模块，为了现在就能使用，可以将其转为 ES5 的写法。
+#### 转码方法
+- Babel
+- ES6 module transpiler
+- SystemJS
+
+### 编程风格
+#### 块级作用域
+- let取代var
+- 在let和const之间，建议优先使用const，尤其是在全局环境，不应该设置变量，只应设置常量。
+- 所有的函数都应该设置为常量。
+#### 字符串
+- 静态字符串一律使用单引号或反引号，不使用双引号。
+- 动态字符串使用反引号。
+#### 解构赋值
+- 使用数组成员对变量赋值时，优先使用解构赋值。
+- 函数的参数如果是对象的成员，优先使用解构赋值。
+- 如果函数返回多个值，优先使用对象的解构赋值，而不是数组的解构赋值。这样便于以后添加返回值，以及更改返回值的顺序。
+
+#### 对象
+- 单行定义的对象，最后一个成员不以逗号结尾。多行定义的对象，最后一个成员以逗号结尾。
+- 对象尽量静态化，一旦定义，就不得随意添加新的属性。如果添加属性不可避免，要使用Object.assign方法。
+- 如果对象的属性名是动态的，可以在创造对象的时候，使用属性表达式定义。
+- 对象的属性和方法，尽量采用简洁表达法
+
+#### 数组
+- 使用扩展运算符（...）拷贝数组。
+- 使用 Array.from 方法，将类似数组的对象转为数组。
+
+#### 函数
+- 立即执行函数可以写成箭头函数的形式。
+- 那些使用匿名函数当作参数的场合，尽量用箭头函数代替。因为这样更简洁，而且绑定了 this。
+- 箭头函数取代Function.prototype.bind，不应再用 self/_this/that 绑定 this。
+- 简单的、单行的、不会复用的函数，建议采用箭头函数。如果函数体较为复杂，行数较多，还是应该采用传统的函数写法。
+- 所有配置项都应该集中在一个对象，放在最后一个参数，布尔值不可以直接作为参数。
+- 不要在函数体内使用 arguments 变量，使用 rest 运算符（...）代替。
+- 使用默认值语法设置函数参数的默认值。
+
+#### Map结构
+- 区分 Object 和 Map，只有模拟现实世界的实体对象时，才使用 Object。如果只是需要key: value的数据结构，使用 Map 结构。因为 Map 有内建的遍历机制。
+
+#### Class
+- 用 Class，取代需要 prototype 的操作
+- 使用extends实现继承
+#### 模块
+- Module 语法是 JavaScript 模块的标准写法，使用import取代require。
+- 使用export取代module.exports。
+- export default与普通的export不要同时使用。
+- 不要在模块输入中使用通配符。因为这样可以确保你的模块之中，有一个默认输出（export default）。
+- 如果模块默认输出一个函数，函数名的首字母应该小写。
+- 如果模块默认输出一个对象，对象名的首字母应该大写。
+
+
+#### ESLint 的使用
+- 安装
+```js
+$ npm i -g eslint
+```
+- 安装 Airbnb 语法规则，以及 import、a11y、react 插件。
+```js
+$ npm i -g eslint-config-airbnb
+$ npm i -g eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react
+```
+- 根目录下新建一个.eslintrc文件，配置 ESLint。
+```js
+{
+  "extends": "eslint-config-airbnb"
+}
+```
+- 即可使用以上规则检查文件
+
+### 异步遍历器
+
+### ArrayBuffer
+- 是 JavaScript 操作二进制数据的一个接口。
+
+### 最新提案
+
+### 修饰器
+- Decorator 提案经过了大幅修改，目前还没有定案
+```js
+@testable
+class MyTestableClass {
+  // ...
+}
+function testable(target) {
+  target.isTestable = true;
+}
+MyTestableClass.isTestable // true
+```
+
 
 
 

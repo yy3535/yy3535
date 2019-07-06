@@ -2056,14 +2056,3 @@ for(var i in fuc){
 
 
 
-<td rowspan="@(item.ClassTests.Count == 0 ? 1 : item.ClassTests.Count)">
-						@if (item == null){
-							@("无学生信息")
-						}else{
-							@if (item.StuName.length<3){
-								@(item.StuName.slice(0,1)+'*')
-							}else{
-								@(item.StuName.slice(0,1)+'*'+@(item.StuName.slice(-1))
-							}
-						}
-					</td>

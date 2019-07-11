@@ -69,6 +69,8 @@
 
 ### 把之前所有新东方的项目整理，所有代码消化成自己的，并且做优化。
 
+### 优能一对一系统
+- (http://ynsuzhou.xdf.cn/)（admin/1234,023950/123456,zhongxiaoou@xdf.cn/123456）
 ### 优能一对一移动端
 - 登录功能，用cookie和sessionStorage优化，刷新vuex数据消失功能优化
 #### 190611（需要整理）（http://suzhou.xdf.cn/zhuanti/xdfcls2019/index.html）
@@ -83,7 +85,7 @@
   - http-server启动服务以便能够用ajax获取数据？？？
   - 看专题wx支付页面，转成自己的作品。
 ### 新东方课酬（绩效）查询平台
-![课酬平台](./img/课酬（绩效）查询平台.jpg)
+![课酬平台](./img/dollarsSystem.jpg)
 - layui table多级表头
 ```css
 /*layui 多级表头样式问题*/

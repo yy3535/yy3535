@@ -232,7 +232,7 @@ export default (str) => {
 - 看题目
     - 答案都是排序的，所以需要先排序
     - 相同数字过多需要拆分，是最大公约数即可
-![最大公约数](./img/最大公约数.jpg)
+![最大公约数](./img/divisor.jpg)
 ```js
 // 
 export default (arr)=>{
@@ -360,7 +360,7 @@ export default (arr,n)=>{
      给定编码总位数为 n 的格雷编码序列，其长度为 2n。当 n = 0 时，长度为 20 = 1。
      因此，当 n = 0 时，其格雷编码序列为 [0]。
 ```
-![格雷编码](./img/格雷编码.jpg)
+![格雷编码](./img/Gray.jpg)
 ```js
 export default (n)=>{
   // 递归函数，用来算输入为n的格雷编码序列
@@ -494,7 +494,7 @@ export default (s,p)=>{
 ```
 
 ## 排序类
-![各类排序](./img/各类排序.jpg)
+![各类排序](./img/sort1.jpg)
 - 时间复杂度
     - 运行的次数(常数：O(1)，线性关系O(n),倍数关系：O(n*2))
 - 空间复杂度
@@ -934,7 +934,7 @@ export default (arr)=>{
 ]
 输出: 6
 ```
-![最大矩形](./img/最大矩形.png)
+![最大矩形](./img/biggestRectangle.png)
 ```js
 export default (arr)=>{
     let result=[]
@@ -1182,7 +1182,7 @@ export default (tasks, n) => {
   - 链表由一系列结点（元素）组成，结点可以在运行时动态生成。每个结点包括两个部分：`存储数据元素的数据域`和`存储下一个结点地址的指针域`。
 - js中没有链表结构
   - 数组可以充当队列，可以充当堆栈，但是不能充当链表
-![排序](./img/排序.jpg)
+![排序](./img/quicksortOfLinkedLists.png)
 ### 排序链表
 ```js
 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
@@ -1459,7 +1459,7 @@ export default (arr) => {
 ]
 ```
 - 找到456这个轴，交换后再以753为轴，交换后即可
-![旋转图像](./img/旋转图像.png)
+![旋转图像](./img/rotateImage.png)
 ```js
 export default (arr) => {
     // 获取n的维度
@@ -1488,7 +1488,7 @@ export default (arr) => {
 ## 数据结构之二叉树
 - 特性
   - 一个节点只有两个子节点，左节点和右节点
-![二叉树](./img/二叉树.png)
+![二叉树](./img/binaryTree.png)
 - 实现二叉树结构
 ```js
 // 二叉树的节点
@@ -1557,7 +1557,7 @@ export {
    \   \
    3    3
 ```
-![对称二叉树](./img/对称二叉树.png)
+![对称二叉树](./img/symmetric-binary-tree.png)
 - 左定点的左节点等于右定点的右节点，以此类推
 ```js
 // 二叉树的节点

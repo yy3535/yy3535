@@ -44,3 +44,5 @@ module.exports={
 ## es6,7-->es5
 babeljs.io中try it out
 
+## JS-CSS-HTML Formatter
+保存时格式化代码

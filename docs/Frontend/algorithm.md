@@ -409,8 +409,1253 @@ export default (n)=>{
 解释: 可由子字符串 "abc" 重复四次构成。 (或者子字符串 "abcabc" 重复两次构成。)
 ```
 - 用正则去做
-- 
+/^(\w+)\1+$/即为对应正则表达式
+```js
+export default (str)=>{
+    var reg=/^(\w+)\1+$/
+    return reg.test(str)
+}
+```
 
 
 ### 正则表达式匹配
+```js
+给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+
+'.' 匹配任意单个字符
+'*' 匹配零个或多个前面的那一个元素
+所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+
+说明:
+
+s 可能为空，且只包含从 a-z 的小写字母。
+p 可能为空，且只包含从 a-z 的小写字母，以及字符 . 和 *。
+示例 1:
+
+输入:
+s = "aa"
+p = "a"
+输出: false
+解释: "a" 无法匹配 "aa" 整个字符串。
+示例 2:
+
+输入:
+s = "aa"
+p = "a*"
+输出: true
+解释: 因为 '*' 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 'a'。因此，字符串 "aa" 可被视为 'a' 重复了一次。
+示例 3:
+
+输入:
+s = "ab"
+p = ".*"
+输出: true
+解释: ".*" 表示可匹配零个或多个（'*'）任意字符（'.'）。
+示例 4:
+
+输入:
+s = "aab"
+p = "c*a*b"
+输出: true
+解释: 因为 '*' 表示零个或多个，这里 'c' 为 0 个, 'a' 被重复一次。因此可以匹配字符串 "aab"。
+示例 5:
+
+输入:
+s = "mississippi"
+p = "mis*is*p*."
+输出: false
+```
+- 一个字符一个字符对比，对比完一个扔掉一组，然后重复刚才的动作
+- 三种情况：无模式，有模式*,有模式.
+
+```js
+export default (s,p)=>{
+    let isMatch=(s,p)=>{
+        // 边界情况，如果s和p都为空，说明处理结束，返回true，否则返回false
+        if(p.length<=0){
+            return !s.length
+        }
+        // 判断p模式字符串的第一个字符和s字符串的第一个字符是不是匹配
+        let match=false
+        if(s.length>0&&(p[0]===s[0]||p[0]==='.')){
+            match=true
+        }
+        // p有模式的
+        if(p.length>1&&p[1]==='*'){
+            // 第一种情况：s*匹配0个字符
+            // 第二种情况：s*匹配1个字符，递归下去，用来表示s*匹配多个s
+            return isMatch(s,p.slice(2))||(match && isMatch(s.slice(1),p))
+        }else{
+            return match && isMatch(s.slice(1),p.slice(1))
+        }
+    }
+    return isMatch(s,p)
+}
+```
+
+## 排序类
+![各类排序](./img/各类排序.jpg)
+- 时间复杂度
+    - 运行的次数(常数：O(1)，线性关系O(n),倍数关系：O(n*2))
+- 空间复杂度
+    - 占用的内存(常数：o1,线性关系O(n),倍数关系O(n*2))
+### 冒泡排序（先把最大值冒出来，再把倒数第二大的冒出来，以此类推
+）
+- 比较相邻的元素。如果第一个比第二个大，就交换他们两个。
+- 对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
+- 针对所有的元素重复以上的步骤，除了最后一个。
+- 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较
+- <img :src="$withBase('/img/bubbleSort.gif')">
+```js
+function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len - 1; i++) {
+        for (var j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j+1]) {        // 相邻元素两两对比
+                var temp = arr[j+1];        // 元素交换
+                arr[j+1] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+    return arr;
+}
+```
+### 选择排序（选中最小的值，和第一个交换，再选中第二小的值，和第二个交换，以此类推）
+    - 首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。
+    - 再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
+    - 重复第二步，直到所有元素均排序完毕。
+    - <img :src="$withBase('/img/selectionSort.gif')">
+```js
+function selectionSort(arr) {
+    var len = arr.length;
+    var minIndex, temp;
+    for (var i = 0; i < len - 1; i++) {
+        minIndex = i;
+        for (var j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {     // 寻找最小的数
+                minIndex = j;                 // 将最小数的索引保存
+            }
+        }
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+    }
+    return arr;
+}
+```
+### 922.按奇偶排序
+```js
+给定一个非负整数数组 A， A 中一半整数是奇数，一半整数是偶数。
+
+对数组进行排序，以便当 A[i] 为奇数时，i 也是奇数；当 A[i] 为偶数时， i 也是偶数。
+
+你可以返回任何满足上述条件的数组作为答案。
+
+ 
+
+示例：
+
+输入：[4,2,5,7]
+输出：[4,5,2,7]
+解释：[4,7,2,5]，[2,5,4,7]，[2,7,4,5] 也会被接受。
+ 
+
+提示：
+
+2 <= A.length <= 20000
+A.length % 2 == 0
+0 <= A[i] <= 1000
+```
+```js
+export default (arr)=>{
+    // 升序排序
+    arr.sort((a,b)=>a-b)
+    // 声明一个空数组用来存储奇偶排序后的数组
+    let r=[]
+    // 记录奇数，偶数位下标
+    let odd=1
+    let even=0
+    // 对数组进行遍历
+    arr.forEach(item=>{
+        if(item%2===1){
+            r[odd]=item
+            odd+=2
+        }else{
+            r[even]=item
+            even+=2
+        }
+    })
+    return r
+}
+```
+sort(compareFunction)
+- 如果没有指明 compareFunction ，那么元素会按照转换为的字符串的诸个字符的Unicode位点进行排序。例如 "Banana" 会被排列到 "cherry" 之前。当数字按由小到大排序时，9 出现在 80 之前，但因为（没有指明 compareFunction），比较的数字会先被转换为字符串，所以在Unicode顺序上 "80" 要比 "9" 要靠前。
+- 指定了compareFunction，a-b从小到大，b-a从大到小
+### 数组中的第K个最大元素
+```js
+在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+
+示例 1:
+
+输入: [3,2,1,5,6,4] 和 k = 2
+输出: 5
+示例 2:
+
+输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
+输出: 4
+说明:
+
+你可以假设 k 总是有效的，且 1 ≤ k ≤ 数组的长度。
+```
+```js
+export default (arr)=>{
+    return arr.sort((a,b)=>b-a)[k-1]
+}
+```
+```js
+// 更高性能的办法
+export default (arr)=>{
+    let len=arr.length
+    for(let i=len,;i<len-k;i--){
+        for(let j=0;j<i;j++){
+            temp=arr[j]
+            if(temp>arr[j+1]){
+                arr[j]=arr[j+1]
+                arr[j+1]=temp
+            }
+        }
+    }
+    return arr[len-(k-1)]
+}
+```
+- 一定要吃透基本排序法
+
+
+
+### 最大间距
+```js
+给定一个无序的数组，找出数组在排序之后，相邻元素之间最大的差值。
+
+如果数组元素个数小于 2，则返回 0。
+
+示例 1:
+
+输入: [3,6,9,1]
+输出: 3
+解释: 排序后的数组是 [1,3,6,9], 其中相邻元素 (3,6) 和 (6,9) 之间都存在最大差值 3。
+示例 2:
+
+输入: [10]
+输出: 0
+解释: 数组元素个数小于 2，因此返回 0。
+说明:
+
+你可以假设数组中所有元素都是非负整数，且数值在 32 位有符号整数范围内。
+请尝试在线性时间复杂度和空间复杂度的条件下解决此问题。
+```
+```js
+export default (arr)=>{
+    if(arr.length<2) return 0
+    let len=arr.length-1
+    let max=0;
+    for(let i=len;i>=0;i--){
+        for(let j=0;j<i;j++){
+            let temp=arr[j]
+            if(arr[j]>arr[j+1]){
+                arr[j]=arr[j+1]
+                arr[j+1]=temp
+            }
+            if(i<len){
+                let space=arr[j+1]-arr[j]
+                if(space>max){
+                    max=space
+                }
+            }
+        }
+    }
+    return max
+}
+```
+
+
+
+### 缺失的第一个正数
+```js
+给定一个未排序的整数数组，找出其中`没有出现的``最小的``正整数`。
+
+示例 1:
+
+输入: [1,2,0]
+输出: 3
+示例 2:
+
+输入: [3,4,-1,1]
+输出: 2
+示例 3:
+
+输入: [7,8,9,11,12]
+输出: 1
+说明:
+
+你的算法的时间复杂度应为O(n)，并且只能使用常数级别的空间。
+```
+
+```js
+export default (arr)=>{
+    // 过滤掉非正整数
+    arr=arr.filter(item=>item>0)
+    // 正整数数组是不是为空
+    if(arr.length){
+        // 升序，方便取最小值
+        arr.sort((a,b)=>a-b)
+        // 第一个元素不为1，返回1
+        if(arr[0]!==1){
+            return 1
+        }else{
+            // 从左边开始遍历，只要下一个元素和当前元素差值>1，返回当前元素加1
+            for(let i=0,len=arr.length-1;i<len;i++){
+                if(arr[i+1]-arr[i]>1){
+                    return arr[i]+1
+                }
+            }
+            // 如果是连续正整数，则返回最后一个元素加1
+            return arr.pop()+1
+        }
+    }else{
+        return 1
+    }
+}
+```
+```js
+// 使用选择排序
+export default (arr)=>{
+    // 过滤掉非正整数
+    arr=arr.filter(item=>item>0)
+    // 实现选择排序，先拿到最小值，如果第一个元素不是1直接返回1，如果是1，就要比相邻元素差值
+    for(let i=0,len=arr.length,min;i<len;i++){
+        min=arr[i]
+        for(let j=i+1;j<len;j++){
+            if(arr[j]<min){
+                let c=min
+                min=arr[j]
+                arr[j]=c
+            }
+        }
+        arr[i]=min
+        if(i>0){
+            if(arr[i]-arr[i-1]>1){
+                return arr[i-1]+1
+            }
+        }else{
+            if(min!==1){
+                return 1
+            }
+        }
+    }
+    return arr.length?arr.pop()+1:1
+}
+```
+## 基础算法之递归类
+### 复原IP地址
+```js
+给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
+
+示例:
+
+输入: "25525511135"
+输出: ["255.255.11.135", "255.255.111.35"]
+```
+- IP由4部分构成，每部分范围0~255（递归）
+```js
+export default (str)=>{
+    // 保存所有符合条件的ip
+    let r=[]
+    // 递归函数
+    let search=(cur,sub)=>{
+        if(cur.length===4&&cur.join('')===str){
+            r.push(cur.join('.'))
+        }else{
+            for(let i=0,len=Math.min(3,sub.length),tmp;i<len;i++){
+                tmp=sub.substr(0,i+1)
+                if(tmp<256){
+                    search(cur.concat([tmp]),sub.substr(i+1))
+                }
+            }
+        }
+    }
+    search([],str)
+    return r
+}
+
+```
+- 递归的本质
+  - 每一个处理过程是相同的
+  - 输入输出是相同的
+  - 处理次数未知
+### 与所有单词相关联的字符串
+```js
+给定一个字符串 s 和一些长度相同的单词 words。找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置。
+
+注意子串要与 words 中的单词完全匹配，中间不能有其他字符，但不需要考虑 words 中单词串联的顺序。
+
+示例 1：
+
+输入：
+  s = "barfoothefoobarman",
+  words = ["foo","bar"]
+输出：[0,9]
+解释：
+从索引 0 和 9 开始的子串分别是 "barfoor" 和 "foobar" 。
+输出的顺序不重要, [9,0] 也是有效答案。
+示例 2：
+
+输入：
+  s = "wordgoodgoodgoodbestword",
+  words = ["word","good","best","word"]
+输出：[]
+```
+```js
+export default (str,words)=>{
+    // 保存结果
+    let result=[]
+    // 记录数组的长度，做边界条件计算
+    let num=words.length
+    // 递归函数体
+    let range=(r,_arr)=>{
+        if(r.length===num){
+            result.push(r)
+        }else{
+            _arr.forEach((item,idx)=>{
+                // 当前元素踢出去，留下剩下的
+                let tmp=[].concat(_arr)
+                tmp.splice(idx,1)
+                range(r.concat(item),tmp)
+            })
+        }
+    }
+    range([], words)
+    // [0,9,-1]
+    return result.map(item=>{
+        return str.indexOf(item.join(''))
+    }).filter(item=>item!==-1).sort()
+}
+```
+
+## 数据结构之栈
+- 栈的概念
+  - 线性表，运算受限（仅允许一端的插入和删除）
+### 棒球比赛
+```js
+你现在是棒球比赛记录员。
+给定一个字符串列表，每个字符串可以是以下四种类型之一：
+1.整数（一轮的得分）：直接表示您在本轮中获得的积分数。
+2. "+"（一轮的得分）：表示本轮获得的得分是前两轮有效 回合得分的总和。
+3. "D"（一轮的得分）：表示本轮获得的得分是前一轮有效 回合得分的两倍。
+4. "C"（一个操作，这不是一个回合的分数）：表示您获得的最后一个有效 回合的分数是无效的，应该被移除。
+
+每一轮的操作都是永久性的，可能会对前一轮和后一轮产生影响。
+你需要返回你在所有回合中得分的总和。
+
+示例 1:
+
+输入: ["5","2","C","D","+"]
+输出: 30
+解释: 
+第1轮：你可以得到5分。总和是：5。
+第2轮：你可以得到2分。总和是：7。
+操作1：第2轮的数据无效。总和是：5。
+第3轮：你可以得到10分（第2轮的数据已被删除）。总数是：15。
+第4轮：你可以得到5 + 10 = 15分。总数是：30。
+示例 2:
+
+输入: ["5","-2","4","C","D","9","+","+"]
+输出: 27
+解释: 
+第1轮：你可以得到5分。总和是：5。
+第2轮：你可以得到-2分。总数是：3。
+第3轮：你可以得到4分。总和是：7。
+操作1：第3轮的数据无效。总数是：3。
+第4轮：你可以得到-4分（第三轮的数据已被删除）。总和是：-1。
+第5轮：你可以得到9分。总数是：8。
+第6轮：你可以得到-4 + 9 = 5分。总数是13。
+第7轮：你可以得到9 + 5 = 14分。总数是27。
+注意：
+
+输入列表的大小将介于1和1000之间。
+列表中的每个整数都将介于-30000和30000之间。
+```
+```js
+export default (arr)=>{
+    // 用数组来实现堆栈结构，pop,push(从后面添加，从后面删除)
+    let result=[]
+    // 上一轮的数据
+    let pre1
+    // 上上轮的数据
+    let pre2
+    // 对数组进行遍历，遍历的目的是处理得分
+    arr,forEach(item=>{
+        switch(item){
+            case 'C':
+                if(result.length){
+                    result.pop()
+                }
+                break
+            case 'D':
+                pre1=result.pop()
+                result.push(pre1,pre1*2)
+                break
+            case '+':
+                pre1=result.pop()
+                pre2=result.pop()
+                result.push(pre2,pre1,pre1+pre2)
+                break
+            default:
+                result.push(item*1)
+                break
+        }
+    })
+    return result.reduce((total,num)=>{total+num})
+}
+```
+
+### 最大矩形
+```js
+给定一个仅包含 0 和 1 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+
+示例:
+
+输入:
+[
+  ["1","0","1","0","0"],
+  ["1","0","1","1","1"],
+  ["1","1","1","1","1"],
+  ["1","0","0","1","0"]
+]
+输出: 6
+```
+![最大矩形](./img/最大矩形.png)
+```js
+export default (arr)=>{
+    let result=[]
+    let reg=/1{2,}/g
+    // 把二维数组重新表达，把相邻的1提取处理（起始点+截止点）
+    arr=arr.map(item=>{
+        let str=item.join('')
+        let r=reg.exec(str)
+        let rs=[]
+        while(r){
+            rs.push([r.index,r.index+r[0].length-1])
+            r=reg.exec(str)
+        }
+        return rs
+    })
+    // 通过递归计算相邻的矩阵
+    let maxRect=(arr,result,n=1)=>{
+        // 弹出第一行
+        let top=arr.pop()
+        // 弹出第二行
+        let next=arr.pop()
+        // 记录第一行的每一个起始点和截止点
+        let tt
+        // 记录第二行的每一个起始点和截止点
+        let nn
+        // 记录交叉的起始索引
+        let start
+        // 记录交叉的截止索引
+        let end
+        n++
+        for(let i=0,il=top.length;i<il;i++){
+            tt=tip[i]
+            for(let j=0,jl=next.length;i<jl;j++){
+                nn=next[j]
+                width=Math.min(tt[1],nn[1])-Math.max(tt[0],nn[0])
+                if(width>maxWidth){
+                    maxWidth=width
+                    start=Math.max(tt[0],nn[0])
+                    end=Math.min(tt[1],nn[1])
+                }
+            }
+        }
+        // 如果没有找到交叉点
+        if(start===undefined||end===undefined){
+            if(n<3){
+                return false
+            }else{
+                width=top[0][1]-top[0][0]+1
+                if(width>1){
+                    result.push((n-1)*width)
+                }
+            }
+        }else{
+            arr.push([start,end])
+            maxRect(arr,result,n++)
+        }
+    }
+    while(arr.length>1){
+        maxRect([].concat(arr),result)
+        arr.pop()
+    }
+    // 取最大值
+    let max=0
+    let item=result.pop()
+    while(item){
+        if(item>max){
+            max=item
+        }
+        item=result.pop()
+    }
+    return 0
+}
+```
+
+
+
+
+
+
+
+
+## 数据结构之队列
+- 特殊的线性表，只允许在表的前端删除，表的后端插入（先进先出）
+
+### 设计循环队列
+```js
+设计你的循环队列实现。 循环队列是一种线性数据结构，其操作表现基于 FIFO（先进先出）原则并且队尾被连接在队首之后以形成一个循环。它也被称为“环形缓冲器”。
+
+循环队列的一个好处是我们可以利用这个队列之前用过的空间。在一个普通队列里，一旦一个队列满了，我们就不能插入下一个元素，即使在队列前面仍有空间。但是使用循环队列，我们能使用这些空间去存储新的值。
+
+你的实现应该支持如下操作：
+
+MyCircularQueue(k): 构造器，设置队列长度为 k 。
+Front: 从队首获取元素。如果队列为空，返回 -1 。
+Rear: 获取队尾元素。如果队列为空，返回 -1 。
+enQueue(value): 向循环队列插入一个元素。如果成功插入则返回真。
+deQueue(): 从循环队列中删除一个元素。如果成功删除则返回真。
+isEmpty(): 检查循环队列是否为空。
+isFull(): 检查循环队列是否已满。
+ 
+示例：
+
+MyCircularQueue circularQueue = new MycircularQueue(3); // 设置长度为 3
+
+circularQueue.enQueue(1);  // 返回 true
+
+circularQueue.enQueue(2);  // 返回 true
+
+circularQueue.enQueue(3);  // 返回 true
+
+circularQueue.enQueue(4);  // 返回 false，队列已满
+
+circularQueue.Rear();  // 返回 3
+
+circularQueue.isFull();  // 返回 true
+
+circularQueue.deQueue();  // 返回 true
+
+circularQueue.enQueue(4);  // 返回 true
+
+circularQueue.Rear();  // 返回 4
+
+提示：
+
+所有的值都在 0 至 1000 的范围内；
+操作数将在 1 至 1000 的范围内；
+请不要使用内置的队列库。
+```
+```js
+export default class MyCircularQueue {
+    constructor (k) {
+        // 保存数据长度为k的数据结构
+        this.list=Array(k)
+        // 队首的指针
+        this.front=0
+        // 队尾的指针
+        this.rear=0
+        // 队列的长度
+        this.max=k
+    }
+    enQueue (num) {
+        if(this.isFull()){
+            return false
+        }else{
+            this.list[this.rear]=num
+            this.rear=(this.rear+1)%this.max
+            return true
+        }
+    }
+    deQueue () {
+        let v=this.list[this.front]
+        this.list[this.front]=''
+        this.front=(this.front+1)%this.max
+        return v
+    }
+    isEmpty () {
+        return this.front===this.rear&&!this.list[this.front]
+    }
+    isFull () {
+        return this.front===this.rear&&!!this.list[this.front]
+    }
+    Front () {
+        return this.list[this.front]
+    }
+    Rear () {
+        let rear=this.rear-1
+
+        return this.list[rear<0?this.max-1:rear]
+    }
+}
+```
+### 任务调度器
+```js
+给定一个用字符数组表示的 CPU 需要执行的任务列表。其中包含使用大写的 A - Z 字母表示的26 种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1 个单位时间内执行完。CPU 在任何一个单位时间内都可以执行一个任务，或者在待命状态。
+
+然而，两个相同种类的任务之间必须有长度为 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+
+你需要计算完成所有任务所需要的最短时间。
+
+示例 1：
+
+输入: tasks = ["A","A","A","B","B","B"], n = 2
+输出: 8
+执行顺序: A -> B -> (待命) -> A -> B -> (待命) -> A -> B.
+注：
+
+任务的总个数为 [1, 10000]。
+n 的取值范围为 [0, 100]。
+```
+```js
+export default (tasks, n) => {
+    let q = ''
+    let Q = {}
+    tasks.forEach(item => {
+        if (Q[item]) {
+            Q[item]++
+        } else {
+            Q[item] = 1
+        }
+    })
+    while (1) {
+        let keys = Object.keys(Q)
+        if (!keys[0]) {
+            break
+        }
+        // n+1为一组
+        let tmp = []
+        for (let i = 0; i <= n; i++) {
+            let max = 0
+            let key
+            let pos
+            // 从所有的任务中找到未处理数最大的，优先安排
+            keys.forEach((item, idx) => {
+                if (Q[item] > max) {
+                    max = Q[item]
+                    key = item
+                    pos = idx
+                }
+            })
+            if (key) {
+                tmp.push(key)
+                keys.splice(pos, 1)
+                Q[key]--;
+                if (Q[key] < 1) {
+                    delete Q[key]
+                }
+            } else {
+                break
+            }
+        }
+        q += tmp.join('').padEnd(n + 1, '-')
+    }
+    // A--A--A--
+    q = q.replace(/-+$/g, '')
+    return q.length
+}
+```
+
+## 数据结构之链表
+- 知识点
+    - 如何手动地创建一个链表的数据结构(NodeList)
+    - 知道链表如何排序(sort)
+    - 如何检测链表是否是闭环的
+- 概念
+  - 链表由一系列结点（元素）组成，结点可以在运行时动态生成。每个结点包括两个部分：`存储数据元素的数据域`和`存储下一个结点地址的指针域`。
+- js中没有链表结构
+  - 数组可以充当队列，可以充当堆栈，但是不能充当链表
+![排序](./img/排序.jpg)
+### 排序链表
+```js
+在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+
+示例 1:
+
+输入: 4->2->1->3
+输出: 1->2->3->4
+示例 2:
+
+输入: -1->5->3->4->0
+输出: -1->0->3->4->5
+```
+```js
+![链表的快速排序](./img/链表的快速排序.png)
+```
+```js
+// 声明链表的节点
+
+class Node {
+    constructor(value) {
+        this.val = value;
+        this.next = undefined
+    }
+}
+
+// 声明链表的数据结构
+
+class NodeList {
+    constructor(arr) {
+        // 声明链表的头部节点
+        let head = new Node(arr.shift())
+        let next = head
+        arr.forEach(item => {
+            next.next = new Node(item)
+            next = next.next
+        })
+        return head
+    }
+}
+
+// 交换两个节点的值
+let swap = (p, q) => {
+    let val = p.val
+    p.val = q.val
+    q.val = val
+}
+
+// 寻找基准元素的节点
+let partion = (begin, end) => {
+    let val = begin.val
+    let p = begin
+    let q = begin.next
+    while (q !== end) {
+        if (q.val < val) {
+            p = p.next
+            swap(p, q)
+        }
+        q = q.next
+    }
+    // 让基准元素跑到中间去
+    swap(p, begin)
+    return p
+}
+
+export default function sort(begin, end) {
+    if (begin !== end) {
+        let part = partion(begin, end)
+        sort(begin, part)
+        sort(part.next, end)
+    }
+}
+
+export {
+    Node,
+    NodeList
+}
+```
+```js
+// 拿到头指针
+let head =new NodeList([4,1,3,2,7,9,10,12,6])
+// 对头指针进行排序
+sort(head)
+let res=[]
+let next=head
+while(next){
+    res.push(next.val)
+    next=next.next
+}
+console.log(res)// [1,2,3,4,6,7,9,10,12]
+```
+### 环形链表
+```js
+给定一个链表，判断链表中是否有环。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+
+示例 1：
+
+输入：head = [3,2,0,-4], pos = 1
+输出：true
+解释：链表中有一个环，其尾部连接到第二个节点。
+
+示例 2：
+
+输入：head = [1,2], pos = 0
+输出：true
+解释：链表中有一个环，其尾部连接到第一个节点。
+
+示例 3：
+
+输入：head = [1], pos = -1
+输出：false
+解释：链表中没有环。
+
+进阶：
+
+你能用 O(1)（即，常量）内存解决此问题吗？
+```
+- 环形检测原理
+  - 两个指针一个快，一个慢，同时出发。快的和慢的相遇
+  - 快的在慢的后面
+```js
+// 声明链表的节点
+class Node {
+    constructor(value) {
+        this.val = value;
+        this.next = undefined
+    }
+}
+
+// 声明链表的数据结构
+class NodeList {
+    constructor(arr) {
+        // 声明链表的头部节点
+        let head = new Node(arr.shift())
+        let next = head
+        arr.forEach(item => {
+            next.next = new Node(item)
+            next = next.next
+        })
+        return head
+    }
+}
+
+export default function isCircle(head) {
+    // 慢指针
+    let slow = head
+        // 快指针
+    let fast = head.next
+    while (1) {
+        if (!fast || !fast.next) {
+            return false
+        } else if (fast === slow || fast.next === slow) {
+            return true
+        } else {
+            slow = slow.next
+            fast = fast.next.next
+        }
+    }
+}
+export {
+    Node,
+    NodeList
+}
+```
+```js
+// 检测
+let head=new NodeList([6,1,2,5,7,9])
+// 设置环状
+head.next.next.next.next.next.next=head.next
+console.log(isCircle(head))// true
+```
+## 数据结构之矩阵
+- 二维矩阵
+
+
+### 螺旋矩阵
+```js
+给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+
+示例 1:
+
+输入:
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+输出: [1,2,3,6,9,8,7,4,5]
+示例 2:
+
+输入:
+[
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9,10,11,12]
+]
+输出: [1,2,3,4,8,12,11,10,9,5,6,7]
+```
+- 拆解成一步一步的，而且要拆成每一步是相同的
+  - 第一圈是第一行全部，第二行到倒数第二行是第一个和最后一个，最后一行全部，接着里面的作为一个新的矩阵，继续重复这个步骤。
+```js
+export default (arr) => {
+    // 处理每一圈的数据遍历过程
+    let map = (arr, r = []) => {
+        for (let i = 0, len = arr.length; i < len; i++) {
+            if (i === 0) {
+                r = r.concat(arr[i])
+            } else if (i === len - 1) {
+                r = r.concat(arr[len - 1].reverse())
+            } else {
+                r.push(arr[i].pop())
+            }
+        }
+        arr.shift()
+        arr.pop()
+        for (let i = arr.length - 1; i >= 0; i--) {
+            r.push(arr[i].shift())
+        }
+        if (arr.length) {
+            return map(arr, r)
+        } else {
+            return r
+        }
+    }
+    return map(arr, [])
+}
+```
+
+
+
+### 旋转图像
+```js
+给定一个 n × n 的二维矩阵表示一个图像。
+
+将图像顺时针旋转 90 度。
+
+说明：
+
+你必须在原地旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要使用另一个矩阵来旋转图像。
+
+示例 1:
+
+给定 matrix = 
+[
+  [1,2,3],
+  [4,5,6],
+  [7,8,9]
+],
+
+原地旋转输入矩阵，使其变为:
+[
+  [7,4,1],
+  [8,5,2],
+  [9,6,3]
+]
+示例 2:
+
+给定 matrix =
+[
+  [ 5, 1, 9,11],
+  [ 2, 4, 8,10],
+  [13, 3, 6, 7],
+  [15,14,12,16]
+], 
+
+原地旋转输入矩阵，使其变为:
+[
+  [15,13, 2, 5],
+  [14, 3, 4, 1],
+  [12, 6, 8, 9],
+  [16, 7,10,11]
+]
+```
+- 找到456这个轴，交换后再以753为轴，交换后即可
+![旋转图像](./img/旋转图像.png)
+```js
+export default (arr) => {
+    // 获取n的维度
+    let vecor = arr.length
+        // 垂直翻转
+    for (let i = 0, len = vecor / 2; i < len; i++) {
+        for (let j = 0, tmp; j < vecor; j++) {
+            tmp = arr[i][j]
+            arr[i][j] = arr[vecor - i - 1][j]
+            arr[vecor - i - 1][j] = tmp
+        }
+    }
+    // 对角线翻转
+    for (let i = 0; i < vecor; i++) {
+        for (let j = 0, tmp; j < i; j++) {
+            tmp = arr[i][j]
+            arr[i][j] = arr[j][i]
+            arr[j][i] = tmp
+        }
+    }
+    return arr
+}
+```
+
+
+## 数据结构之二叉树
+- 特性
+  - 一个节点只有两个子节点，左节点和右节点
+![二叉树](./img/二叉树.png)
+- 实现二叉树结构
+```js
+// 二叉树的节点
+class Node {
+    constructor(val) {
+        this.val = val
+        this.left = this.right = undefined
+    }
+}
+
+class Tree {
+    constructor(data) {
+        // 临时存储所有节点，方便寻找父子节点
+        let nodeList = []
+            // 顶节点
+        let root
+        for (let i = 0, len = data.length; i < len; i++) {
+            let node = new Node(data[i])
+            nodeList.push(node)
+            if (i > 0) {
+                // 计算当前节点属于哪一层
+                let n = Math.floor(Math.sqrt(i + 1))
+                    // 记录当前层的起始点
+                let q = Math.pow(2, n) - 1
+                    // 记录上一层的起始点
+                p = Math.pow(2, n - 1) - 1
+                    // 找到当前节点的父节点
+                let parent = nodeList[p + Math.floor((i - q) / 2)]
+                    // 将当前节点和上一层的父节点做关联
+                if (parent.left) {
+                    parent.right = node
+                } else {
+                    parent.left = node
+                }
+            }
+        }
+        root = nodeList.shift()
+            // 释放数组
+        nodeList.length = 0
+        return root
+    }
+}
+
+export default Tree
+
+export {
+    Node
+}
+```
+### 对称二叉树
+```js
+给定一个二叉树，检查它是否是镜像对称的。
+
+例如，二叉树 [1,2,2,3,4,4,3] 是对称的。
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:
+
+    1
+   / \
+  2   2
+   \   \
+   3    3
+```
+![对称二叉树](./img/对称二叉树.png)
+- 左定点的左节点等于右定点的右节点，以此类推
+```js
+// 二叉树的节点
+class Node {
+    constructor(val) {
+        this.val = val
+        this.left = this.right = undefined
+    }
+}
+
+class Tree {
+    constructor(data) {
+        // 临时存储所有节点，方便寻找父子节点
+        let nodeList = []
+            // 顶节点
+        let root
+        for (let i = 0, len = data.length; i < len; i++) {
+            let node = new Node(data[i])
+            nodeList.push(node)
+            if (i > 0) {
+                // 计算当前节点属于哪一层
+                let n = Math.floor(Math.sqrt(i + 1))
+                    // 记录当前层的起始点
+                let q = Math.pow(2, n) - 1
+                    // 记录上一层的起始点
+                p = Math.pow(2, n - 1) - 1
+                    // 找到当前节点的父节点
+                let parent = nodeList[p + Math.floor((i - q) / 2)]
+                    // 将当前节点和上一层的父节点做关联
+                if (parent.left) {
+                    parent.right = node
+                } else {
+                    parent.left = node
+                }
+            }
+        }
+        root = nodeList.shift()
+            // 释放数组
+        nodeList.length = 0
+        return root
+    }
+    static isSymmetry(root) {
+        if (!root) {
+            return true
+        }
+        let walk = (left, right) => {
+            if (!left && !right) {
+                return true
+            }
+            if ((left && !right) || (!left && right) || (left.val !== right.val)) {
+                return false
+            }
+            return walk(left.left, right.right) && walk(left.right, right.left)
+        }
+        return walk(root.left, root.right)
+    }
+}
+
+export default Tree
+
+export {
+    Node
+}
+```
+```js
+let root =new Tree([1,2,2,3,4,4,3])
+console.log(Tree.isSymmetry(root))
+```
+### 验证二叉搜索树
+```js
+给定一个二叉树，判断其是否是一个有效的二叉搜索树。
+
+假设一个二叉搜索树具有如下特征：
+
+节点的左子树只包含小于当前节点的数。
+节点的右子树只包含大于当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树。
+示例 1:
+
+输入:
+    2
+   / \
+  1   3
+输出: true
+示例 2:
+
+输入:
+    5
+   / \
+  1   4
+     / \
+    3   6
+输出: false
+解释: 输入为: [5,1,4,null,null,3,6]。
+     根节点的值为 5 ，但是其右子节点值为 4 。
+```
+
+## 数据结构之堆
+
+## 数据结构之栈
 

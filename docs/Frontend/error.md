@@ -1,7 +1,13 @@
-# 工作
-
+# 准则
+- 要对自己所有做的东西有要求，自己做的东西要做到极致，做到自己非常满意。
+- 做了就要做最好的。无论会不会被用，无论是做什么用。
+- 因为只有做到最好，才死的慢。才能被留用。
+- git提交要注释，以后查找方便
 ## 工作内容
 
+## 工作内容
+### 学生信息管理系统（http://stsuzhou.xdf.cn/Login/IndexAdmin）（用户名：admin 密码：0000）
+- 修改了一些显示
 ### 端午节发放福利问卷调查（http://suzhou.xdf.cn/zhuanti/Welfare/index.html）
 - 背景
   - 人力部门一直使用问卷星做福利发放问卷调查，但是有些人没有交工会费，问卷星不能筛选没有交工会费的人，所以需要我们自己做一个能筛选是否在工会名单里的页面。
@@ -65,3 +71,34 @@
 
 ### 优能一对一移动端
 - 登录功能，用cookie和sessionStorage优化，刷新vuex数据消失功能优化
+#### 190611（需要整理）（http://suzhou.xdf.cn/zhuanti/xdfcls2019/index.html）
+- 技术栈
+  - 使用jquery，自己写的筛选下拉框组件
+  - 纯手写H5页面
+  - 比较紧急，花费一天
+- 功能
+  - xml数据做成表格并分组显示
+  - 筛选功能
+- 问题
+  - http-server启动服务以便能够用ajax获取数据？？？
+  - 看专题wx支付页面，转成自己的作品。
+### 新东方课酬（绩效）查询平台
+![课酬平台](./img/课酬（绩效）查询平台.jpg)
+- layui table多级表头
+```css
+/*layui 多级表头样式问题*/
+.layui-table thead th {
+    background-color: #f2f2f2 !important;
+}
+.layui-table tbody tr:hover{
+    background-color:#fff !important;
+}
+.layui-table td, .layui-table th{
+    position:static !important;
+}
+```
+- 点击定位，返回顶部
+- 点击隐藏其他无关紧要的，返回顶部后全部显示
+
+### 巡更系统（http://pxsuzhou.xdf.cn/）
+

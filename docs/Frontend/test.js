@@ -1,35 +1,25 @@
-export default (arr) => {
-    // 钱箱
-    let hand = []
-        // 是否还有顾客
-    while (arr.length) {
-        // 取出最前面顾客的钱
-        let money = arr.shift()
-        if (money === 5) {
-            hand.push(money)
-        } else {
-            // 手里的零钱降序排列
-            // 需要的找零
-            let change = mone - 5
-            for (let i = 0, len = hand.length; i < len; i++) {
-                if (hand[i] <= change) {
-                    change -= hand[i]
-                    hand.splice(i, 1)
-                        // 删除了元素，数组的长度发生了变化，要维持刚才的i不变
-                    i--
-                }
-                if (change === 0) {
-                    break
-                }
-            }
-            // 没有足够的零钱给顾客
-            if (change !== 0) {
-                return false
+// k是中转次数
+export default (src, dst, k) => {
+    // 对n个城市m个航班做飞行说明
+    let fights = [
+        [0, 1, 100],
+        [1, 2, 100],
+        [0, 2, 500]
+    ]
+    let cheap = (src, dst, k) => {
+        // 找到dst的前一站
+        let prev = fights.filter(item => item[1] === dst)
+        let min = Math.min.apply(null, prev.map(item => {
+            // 从dst往前找，找到了起始城市
+            if (item[0] === src && k > -1) {
+                return item[2]
+            } else if (k === 0 && item[0] !== src) {
+                return Number.MAX_SAFE_INTEGER
             } else {
-                // 顾客的钱收起来
-                hand.push(money)
+                return item[2] + cheap(src, item[0], k - 1)
             }
-        }
+        }))
+        return min
     }
-    return true
+    return cheap(src, dst, k) || -1
 }

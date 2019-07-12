@@ -1654,8 +1654,569 @@ console.log(Tree.isSymmetry(root))
 解释: 输入为: [5,1,4,null,null,3,6]。
      根节点的值为 5 ，但是其右子节点值为 4 。
 ```
+- 所有的子树跳出来，看看是不是左边小右边大。如果所有都满足，那整个树都满足了
+```js
+// 二叉树的节点
+class Node {
+    constructor(val) {
+        this.val = val
+        this.left = this.right = undefined
+    }
+}
 
+class Tree {
+    constructor(data) {
+        let root = new Node(data.shift())
+            // 遍历所有的数据，逐渐插入到当前这课搜索树中去
+        data.forEach(item => {
+            this.insert(root, item)
+        })
+        return root
+    }
+    insert(node, data) {
+        if (node.val > data) {
+            if (node.left === undefined) {
+                node.left = new Node(data)
+            } else {
+                this.insert(node.left, data)
+            }
+        } else {
+            if (node.right === undefined) {
+                node.right = new Node(data)
+            } else {
+                this.insert(node.right, data)
+            }
+        }
+    }
+    static walk(root) {
+        if (!root.left && !root.right) {
+            return true
+        } else if (((root.left && root.val < root.left.val) || (root.right && root.val > root.right.val))) {
+            return false
+        } else {
+            return Tree.walk(root.left) && Tree.walk(root.right)
+        }
+    }
+}
+export default Tree
+export {
+    Node
+}
+```
+- 二叉搜索树对于排序有很大参考。
+    - 做好了排序后，插入和删除非常好操作。
 ## 数据结构之堆
+- 概念
+    - 必须是完全二叉树(n-1层必须是满二叉树)
+    - 任一结点的值是其子树所有结点的最大值或最小值
+    - 堆不是堆栈，堆类似二叉树(有一定特征的二叉树)
+- 作用
+    - 利用堆做排序和查找
+- 堆排序
+    - 父节点i
+    - 子节点(左)2*i+1
+    - 子节点(右)2*i+2
+![堆](./img/堆.jpg)
+![堆排序](./img/堆排序.jpg)
+```js
+class Heap {
+    constructor(data) {
+        this.data = data
+    }
+    sort() {
+            let iArr = thhis.data
+            let n = iArr.lenth
+            if (n <= 1) {
+                return iArr
+            } else {
+                for (let i = Math.florr(n / 2); i >= 0; i--) {
+                    Heap.maxHeapify(iArr, i, n)
+                }
+                for (let j = 0; j < n; j++) {
+                    Heap.swap(iArr, 0, n - 1 - j)
+                    Heap.maxHeapify(iArr, 0, n - 1 - j)
+                }
+                return iArr
+            }
+        }
+        // 交换两个元素
+    static swap(arr, a, b) {
+            if (a === b) {
+                return ''
+            }
+            let c = arr[a]
+            arr[a] = arr[b]
+            arr[b] = c
+        }
+        // 构建最大堆
+    static maxHeapify(Arr, i, size) {
+        // 左节点（索引）
+        let l = i * 2 + 1
+            // 右节点
+        let r = i * 2 + 2
+        let largest = i
+            // 父节点i分别和左节点l和右节点r做比较取最大
+        if (l <= size && Arr[l] > Arr[largest]) {
+            largest = l
+        }
+        if (r <= size && Arr[r] > Arr[largest]) {
+            largest = r
+        }
+        if (largest != i) {
+            Heap.swap(Arr, i, largest)
+            Heap.maxHeapify(Arr, largest, size)
+        }
+    }
+}
+export default Heap
+```
+### 根据字符出现频率排序
+- 用堆排序做这题时间复杂度和空间复杂度是最低的
+```js
+给定一个字符串，请将字符串里的字符按照出现的频率降序排列。
 
-## 数据结构之栈
+示例 1:
 
+输入:
+"tree"
+
+输出:
+"eert"
+
+解释:
+'e'出现两次，'r'和't'都只出现一次。
+因此'e'必须出现在'r'和't'之前。此外，"eetr"也是一个有效的答案。
+示例 2:
+
+输入:
+"cccaaa"
+
+输出:
+"cccaaa"
+
+解释:
+'c'和'a'都出现三次。此外，"aaaccc"也是有效的答案。
+注意"cacaca"是不正确的，因为相同的字母必须放在一起。
+示例 3:
+
+输入:
+"Aabb"
+
+输出:
+"bbAa"
+
+解释:
+此外，"bbaA"也是一个有效的答案，但"Aabb"是不正确的。
+注意'A'和'a'被认为是两种不同的字符。
+```
+
+```js
+class Heap {
+    constructor(str) {
+        let map = new Map()
+        str.split('').forEach(item => {
+            if (map.has(item)) {
+                map.set(item, map.get(item) + 1)
+            } else {
+                map.set(item, 1)
+            }
+        })
+        this.map = map
+        this.data = Arr.from(map.values())
+    }
+    sort() {
+        let iArr = this.data
+        let n = iArr.lenth
+        if (n <= 1) {
+            return iArr
+        } else {
+            for (let i = Math.florr(n / 2); i >= 0; i--) {
+                Heap.maxHeapify(iArr, i, n)
+            }
+            for (let j = 0; j < n; j++) {
+                Heap.swap(iArr, 0, n - 1 - j)
+                Heap.maxHeapify(iArr, 0, n - 1 - j)
+            }
+            return iArr
+        }
+    }
+    toString() {
+            let arr = this.sort()
+            let str = []
+            while (arr.length) {
+                let top = arr.pop()
+                for (let [k, v] of this.map) {
+                    if (v === top) {
+                        str.push(k.repeat(v))
+                        this.map.delete(k)
+                        break
+                    }
+                }
+            }
+            return str.join('')
+        }
+        // 交换两个元素
+    static swap(arr, a, b) {
+            if (a === b) {
+                return ''
+            }
+            let c = arr[a]
+            arr[a] = arr[b]
+            arr[b] = c
+        }
+        // 构建最大堆
+    static maxHeapify(Arr, i, size) {
+        // 左节点（索引）
+        let l = i * 2 + 1
+            // 右节点
+        let r = i * 2 + 2
+        let largest = i
+            // 父节点i分别和左节点l和右节点r做比较取最大
+        if (l <= size && Arr[l] > Arr[largest]) {
+            largest = l
+        }
+        if (r <= size && Arr[r] > Arr[largest]) {
+            largest = r
+        }
+        if (largest != i) {
+            Heap.swap(Arr, i, largest)
+            Heap.maxHeapify(Arr, largest, size)
+        }
+    }
+}
+export default Heap
+```
+
+### 超级丑数
+```js
+编写一段程序来查找第 n 个超级丑数。
+
+超级丑数是指其所有质因数都是长度为 k 的质数列表 primes 中的正整数。
+
+示例:
+
+输入: n = 12, primes = [2,7,13,19]
+输出: 32 
+解释: 给定长度为 4 的质数列表 primes = [2,7,13,19]，前 12 个超级丑数序列为：[1,2,4,7,8,13,14,16,19,26,28,32] 。
+说明:
+
+1 是任何给定 primes 的超级丑数。
+ 给定 primes 中的数字以升序排列。
+0 < k ≤ 100, 0 < n ≤ 106, 0 < primes[i] < 1000 。
+第 n 个超级丑数确保在 32 位有符整数范围内。
+```
+- 概念
+    - 质数
+        - 大于1的自然数中，除了1和他本身没有其他因数
+    - 质因数
+        - 一个数的约数，并且是质数
+    - 丑数
+        - 只包含因子2，3，5的正整数，1也是丑数
+
+- 解题思路
+    - 求解任意整数的质因数
+    - 质因数是否在指定质因数范围内
+    - 是否达到指定个数n
+```js
+// 堆查找
+class Heap {
+    constructor(arr) {
+        this.data = arr
+        this.max = arr.length
+        this.sort()
+    }
+    sort() {
+        let iArr = this.data
+        let n = iArr.lenth
+        if (n <= 1) {
+            return iArr
+        } else {
+            for (let i = Math.florr(n / 2); i >= 0; i--) {
+                Heap.maxHeapify(iArr, i, n)
+            }
+            return iArr
+        }
+    }
+    find(val, i = 0) {
+            let arr = this.data
+            if (val > arr[i] || i > this.max) {
+                return false
+            } else if (val === arr[i]) {
+                return val
+            } else {
+                return this.find(val, i * 2 + 1 || this.find(val, i * 2 + 2))
+            }
+        }
+        // 交换两个元素
+    static swap(arr, a, b) {
+            if (a === b) {
+                return ''
+            }
+            let c = arr[a]
+            arr[a] = arr[b]
+            arr[b] = c
+        }
+        // 构建最大堆
+    static maxHeapify(Arr, i, size) {
+        // 左节点（索引）
+        let l = i * 2 + 1
+            // 右节点
+        let r = i * 2 + 2
+        let largest = i
+            // 父节点i分别和左节点l和右节点r做比较取最大
+        if (l <= size && Arr[l] > Arr[largest]) {
+            largest = l
+        }
+        if (r <= size && Arr[r] > Arr[largest]) {
+            largest = r
+        }
+        if (largest != i) {
+            Heap.swap(Arr, i, largest)
+            Heap.maxHeapify(Arr, largest, size)
+        }
+    }
+}
+export default Heap
+```
+
+```js
+class Ugly {
+    constructor(n, primes) {
+        this.n = n
+        this.primes = new Heap(primes)
+    }
+    getAll() {
+            // 超级丑数列表
+            let res = [1]
+            let i = 2
+            let primes = this.primes
+            while (res.length < this.n) {
+                let arr = Ugly.getPrimes(i)
+                let k = 0
+                let l = arr.length
+                for (; k < l; k++) {
+                    if (!primes.find(arr[k])) {
+                        break
+                    }
+                }
+                // k===l有两种情况（当前数没有质因数或者所有的质因数都在指定列表中）
+                if (k === l) {
+                    if (l === 0) {
+                        if (primes.find(arr[k])) {
+                            res.push(i)
+                        }
+                    } else {
+                        res.push(i)
+                    }
+                }
+                i++
+            }
+            return res[this.n - 1]
+        }
+        // 计算指定正整数n的质因数
+    static getPrimes(n) {
+        let prime = (n) => {
+            // 存储所有的质因数
+            let arr = []
+            for (let i = 2; i < n / 2 + 1; i++) {
+                if (n % i === 0 && !prime(i).length) {
+                    arr.push(i)
+                }
+            }
+            return arr
+        }
+        return prime(n)
+    }
+
+}
+export default Ugly
+```
+
+## 进阶算法（思想）
+- 贪心算法思想
+- 动态规划思想
+
+## 进阶算法之贪心算法
+- 概念
+    - 通过每一步的最优解来达到整体最优解。但不一定是问题的最优解。
+    - 选择的贪心策略必须具备无后效性（某个状态以前的过程不会影响以后的状态，只与当前状态有关）
+- 当一个问题特别抽象，特别复杂的时候，又找不到规律，不知道怎么办，可以考虑贪心算法，通过不断优化策略，靠近最优解。
+### 买卖股票的最佳时机
+```js
+给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+
+设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。
+
+注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+
+示例 1:
+
+输入: [7,1,5,3,6,4]
+输出: 7
+解释: 在第 2 天（股票价格 = 1）的时候买入，在第 3 天（股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。
+     随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6-3 = 3 。
+示例 2:
+
+输入: [1,2,3,4,5]
+输出: 4
+解释: 在第 1 天（股票价格 = 1）的时候买入，在第 5 天 （股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。
+     注意你不能在第 1 天和第 2 天接连购买股票，之后再将它们卖出。
+     因为这样属于同时参与了多笔交易，你必须在再次购买前出售掉之前的股票。
+示例 3:
+
+输入: [7,6,4,3,1]
+输出: 0
+解释: 在这种情况下, 没有交易完成, 所以最大利润为 0。
+```
+
+- 策略1：从最低点买入，在最高点卖出（追求单词利益）
+- 策略2：从低点买入，只要可以赚钱就卖出；不断买卖（追求多次利益，单词利益不够）
+- 策略3：从低点买入，到价格高点卖出，不断买卖（在保证单次利益的基础上，实现多次交易）（最贪）
+
+```js
+export default (prices) => {
+    // 用来保存利润
+    let count = 0
+    for (let i = 0, len = prices.length; i < len; i++) {
+        // 循环i的下一个
+        for (let j = i; j < len - 1; j++) {
+            if (prices[j + 1] > prices[j]) {
+                count += prices[j + 1] - prices[j]
+                i = j
+            } else {
+                i = j
+                break
+            }
+        }
+    }
+    return count
+}
+```
+
+
+### 柠檬水找零
+```js
+在柠檬水摊上，每一杯柠檬水的售价为 5 美元。
+
+顾客排队购买你的产品，（按账单 bills 支付的顺序）一次购买一杯。
+
+每位顾客只买一杯柠檬水，然后向你付 5 美元、10 美元或 20 美元。你必须给每个顾客正确找零，也就是说净交易是每位顾客向你支付 5 美元。
+
+注意，一开始你手头没有任何零钱。
+
+如果你能给每位顾客正确找零，返回 true ，否则返回 false 。
+
+示例 1：
+
+输入：[5,5,5,10,20]
+输出：true
+解释：
+前 3 位顾客那里，我们按顺序收取 3 张 5 美元的钞票。
+第 4 位顾客那里，我们收取一张 10 美元的钞票，并返还 5 美元。
+第 5 位顾客那里，我们找还一张 10 美元的钞票和一张 5 美元的钞票。
+由于所有客户都得到了正确的找零，所以我们输出 true。
+示例 2：
+
+输入：[5,5,10]
+输出：true
+示例 3：
+
+输入：[10,10]
+输出：false
+示例 4：
+
+输入：[5,5,10,10,20]
+输出：false
+解释：
+前 2 位顾客那里，我们按顺序收取 2 张 5 美元的钞票。
+对于接下来的 2 位顾客，我们收取一张 10 美元的钞票，然后返还 5 美元。
+对于最后一位顾客，我们无法退回 15 美元，因为我们现在只有两张 10 美元的钞票。
+由于不是每位顾客都得到了正确的找零，所以答案是 false。
+ 
+
+提示：
+
+0 <= bills.length <= 10000
+bills[i] 不是 5 就是 10 或是 20 
+```
+- 问题：找零钱
+    - 策略1：给钱找零，不区分金额直到找到足够的零钱（追求单词找零）
+    - 策略2：给钱找零，优先给金额大的零钱，尽量把零钱放在手里（追求多次找零）(更贪)
+```js
+export default (arr) => {
+    // 钱箱
+    let hand = []
+        // 是否还有顾客
+    while (arr.length) {
+        // 取出最前面顾客的钱
+        let money = arr.shift()
+        if (money === 5) {
+            hand.push(money)
+        } else {
+            // 手里的零钱降序排列
+            // 需要的找零
+            let change = mone - 5
+            for (let i = 0, len = hand.length; i < len; i++) {
+                if (hand[i] <= change) {
+                    change -= hand[i]
+                    hand.splice(i, 1)
+                        // 删除了元素，数组的长度发生了变化，要维持刚才的i不变
+                    i--
+                }
+                if (change === 0) {
+                    break
+                }
+            }
+            // 没有足够的零钱给顾客
+            if (change !== 0) {
+                return false
+            } else {
+                // 顾客的钱收起来
+                hand.push(money)
+            }
+        }
+    }
+    return true
+}
+```
+- 只需要一个个取值时用while
+- 需要比较等更复杂处理的用for
+## 进阶算法之动态规划
+- 概念
+    - 状态转移方程
+        - 由最优子结构得到的问题的公式
+    - 最优子结构
+        - 问题简化为最简单的情况
+    - 边界
+        - 特殊情况
+- 用途
+    - 不同路径
+    - 最短路径
+### 不同路径II
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+
+现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+
+![机器人路径](./img/robot_maze.png)
+
+网格中的障碍物和空位置分别用 1 和 0 来表示。
+
+说明：m 和 n 的值均不超过 100。
+
+示例 1:
+
+输入:
+[
+  [0,0,0],
+  [0,1,0],
+  [0,0,0]
+]
+输出: 2
+解释:
+3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -> 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右 -> 向右
+### 

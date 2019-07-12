@@ -1,61 +1,35 @@
-// 二叉树的节点
-class Node {
-    constructor(val) {
-        this.val = val
-        this.left = this.right = undefined
-    }
-}
-
-class Tree {
-    constructor(data) {
-        // 临时存储所有节点，方便寻找父子节点
-        let nodeList = []
-            // 顶节点
-        let root
-        for (let i = 0, len = data.length; i < len; i++) {
-            let node = new Node(data[i])
-            nodeList.push(node)
-            if (i > 0) {
-                // 计算当前节点属于哪一层
-                let n = Math.floor(Math.sqrt(i + 1))
-                    // 记录当前层的起始点
-                let q = Math.pow(2, n) - 1
-                    // 记录上一层的起始点
-                p = Math.pow(2, n - 1) - 1
-                    // 找到当前节点的父节点
-                let parent = nodeList[p + Math.floor((i - q) / 2)]
-                    // 将当前节点和上一层的父节点做关联
-                if (parent.left) {
-                    parent.right = node
-                } else {
-                    parent.left = node
+export default (arr) => {
+    // 钱箱
+    let hand = []
+        // 是否还有顾客
+    while (arr.length) {
+        // 取出最前面顾客的钱
+        let money = arr.shift()
+        if (money === 5) {
+            hand.push(money)
+        } else {
+            // 手里的零钱降序排列
+            // 需要的找零
+            let change = mone - 5
+            for (let i = 0, len = hand.length; i < len; i++) {
+                if (hand[i] <= change) {
+                    change -= hand[i]
+                    hand.splice(i, 1)
+                        // 删除了元素，数组的长度发生了变化，要维持刚才的i不变
+                    i--
+                }
+                if (change === 0) {
+                    break
                 }
             }
-        }
-        root = nodeList.shift()
-            // 释放数组
-        nodeList.length = 0
-        return root
-    }
-    static isSymmetry(root) {
-        if (!root) {
-            return true
-        }
-        let walk = (left, right) => {
-            if (!left && !right) {
-                return true
-            }
-            if ((left && !right) || (!left && right) || (left.val !== right.val)) {
+            // 没有足够的零钱给顾客
+            if (change !== 0) {
                 return false
+            } else {
+                // 顾客的钱收起来
+                hand.push(money)
             }
-            return walk(left.left, right.right) && walk(left.right, right.left)
         }
-        return walk(root.left, root.right)
     }
-}
-
-export default Tree
-
-export {
-    Node
+    return true
 }

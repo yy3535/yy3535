@@ -187,3 +187,209 @@ reader.onload=function(e){
 |l|cell超链接对象（.Target保存链接，.Tooltip是工具提示）|
 |s|单元格的样式/主题（如果适用）|
 
+```js
+
+/**
+ * file2JSON.js
+ * @param {*} file 文件流
+ * @param {*} fieldArr 列名数组
+ * @param {*} sheetName sheet名
+ */
+import XLSX from 'xlsx';
+let file2JSON = (file,fieldArr,sheetName) => {
+    return new Promise((resolve,reject)=>{
+        let reader = new FileReader();
+        reader.onload = e => {
+            //取出数据
+            let data = e.target.result;
+            let sheet = XLSX.read(data, {
+                type: "binary"
+            }).Sheets[sheetName];
+            let arr = [];
+            for (let key in sheet) {
+                if (sheet[key].v) arr.push(sheet[key].v);
+            }
+            //按列数分组
+            let columnNum=fieldArr.length;
+            let arrList = [];
+            for (var i = 0, j = arr.length; i < j; i += columnNum) {
+                arrList.push(arr.slice(i, i + columnNum));
+            }
+            arrList.shift();
+            //包装成对象
+            let newArrList = [];
+            arrList.forEach((outerItem, outerIndex) => {
+                let newOuterItem = {};
+                outerItem.forEach((item, index) => {
+                    newOuterItem[fieldArr[index]] = item;
+                });
+                newArrList.push(newOuterItem);
+            });
+            resolve(newArrList);
+        };
+        reader.readAsBinaryString(file);
+    })
+}
+
+export default file2JSON;
+```
+
+```js
+import XLSX from 'xlsx'
+
+let spread={
+    // 展开嵌套一层JSON
+    count(jsonArr){
+        var result = [];
+        jsonArr.forEach((regionItem,regionIndex)=>{
+            if(regionItem.CampusList.length>0){
+                regionItem.CampusList.forEach((campusItem,campusIndex)=>{
+                    let row={};
+                    row[header.count.Campus]=campusItem.Campus;
+                    row[header.count.DailyWatchCount]=campusItem.DailyWatchCount;
+                    row[header.count.MothlyWatchCount]=campusItem.MothlyWatchCount;
+                    row[header.count.WatchCount]=campusItem.WatchCount;
+                    row[header.count.PassRateCount]=campusItem.PassRateCount;
+                    row[header.count.NoCount]=campusItem.NoCount;
+                    row[header.count.CampusPassRate]=campusItem.CampusPassRate;
+                    row[header.count.CampusRank]=campusItem.CampusRank;
+                    row[header.count.Regions]=campusItem.Regions;
+                    row[header.count.RegionPassRate]=campusItem.RegionPassRate;
+                    row[header.count.Rank]=regionItem.Rank;
+                    result.push(row);
+                })
+            }
+        })
+        return result;
+    },
+    noPassList(jsonArr){
+        var result = [];
+        jsonArr.forEach((regionItem,regionIndex)=>{
+            if(regionItem.Region!=="汇总"){
+                if(regionItem.Campus.length>0){
+                    regionItem.Campus.forEach((campusItem,campusIndex)=>{
+                        let row={};
+                        if(campusItem.Campus==="汇总"){// 校区汇总
+                            row[header.noPassList.Region]=regionItem.Region;
+                            row[header.noPassList.Campus]=regionItem.Campus[0].Campus;
+                            row[header.noPassList.Name]="汇总";
+                            row[header.noPassList.ForgottenDay]=campusItem.ForgottenDay;
+                            row[header.noPassList.NoPassDay]=campusItem.NoPassDay;
+                            result.push(row);
+                        }else{// 校区人员
+                            campusItem.NoPassList.forEach((noPassItem,noPassIndex)=>{
+                                row[header.noPassList.Region]=regionItem.Region;
+                                row[header.noPassList.Campus]=campusItem.Campus;
+                                row[header.noPassList.Name]=noPassItem.Name;
+                                row[header.noPassList.ForgottenDay]=noPassItem.ForgottenDay;
+                                row[header.noPassList.NoPassDay]=noPassItem.NoPassDay;
+                                result.push(row);
+                            })
+                        }
+                    })
+                }
+            }else{
+                // 大区汇总
+                let row={};
+                row[header.noPassList.Region]=regionItem.Region;
+                row[header.noPassList.Campus]="汇总";
+                row[header.noPassList.Name]="汇总";
+                row[header.noPassList.ForgottenDay]=regionItem.ForgottenDay;
+                row[header.noPassList.NoPassDay]=regionItem.NoPassDay;
+                result.push(row);
+            }
+        })
+        return result;
+    },
+    detail(jsonArr){
+        let result=[];
+        jsonArr.forEach((item)=>{
+            let row={};
+            row[header.detail.Address]=item.Address;
+            row[header.detail.Time]=item.Time;
+            row[header.detail.Name]=item.Name;
+            row[header.detail.IsForgottenCheck]=item.IsForgottenCheck;
+            row[header.detail.IsNoCheck]=item.IsNoCheck;
+            result.push(row);
+        })
+        return result;
+    }
+}
+let header={
+    "count":{
+        "Campus":"涉及校区",
+        "DailyWatchCount":"计划每天巡检次数",
+        "MothlyWatchCount":"计划每月巡检天数",
+        "WatchCount":"计划巡检次数",
+        "PassRateCount":"手机巡检合格次数",
+        "NoCount":"漏检次数",
+        "CampusPassRate":"巡检合格率",
+        "CampusRank":"全校排名",
+        "Regions":"区域合格率",
+        "RegionPassRate":"区域合格率",
+        "Rank":"区域排名",
+    },
+    "noPassList":{
+        "Region":"大区",
+        "Campus":"校区",
+        "Name":"计划巡检人员",
+        "ForgottenDay":"漏检（天）",
+        "NoPassDay":"未检（天）"
+    },
+    "detail":{
+        "Address":"名字",
+        "Time":"计划时间",
+        "Name":"计划巡检人员",
+        "IsForgottenCheck":"漏检",
+        "IsNoCheck":"未检"
+    }
+}
+
+const exportJsonToExcel = (dataArr,type) =>{
+    console.log(dataArr)
+    if(!dataArr) return;
+    const now = new Date()
+    // 定义导出的格式类型
+    const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+    const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+    // 转成单页(Sheet)数据
+    let data = XLSX.utils.json_to_sheet(spread[type](dataArr));// 
+
+    // 合并单元格
+    // let merges=[];
+    // data["!merges"]=merges;
+
+    wb.Sheets['Sheet1'] = data;
+    saveAs(new Blob([s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" }), `${type}-${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}.${wopts.bookType}`);
+}
+ 
+// 导出excel
+const saveAs = (obj, fileName) => {
+    var tmpa = document.createElement("a");
+    tmpa.download = fileName || "下载";
+    // 绑定a标签
+    const href = URL.createObjectURL(obj); 
+    tmpa.href = href;
+    // 模拟点击实现下载
+    tmpa.click(); 
+    // 延时释放
+    setTimeout(function () { 
+        URL.revokeObjectURL(href); //用URL.revokeObjectURL()来释放这个object URL
+    }, 100);
+}
+
+const s2ab = (s) => {
+    if (typeof ArrayBuffer !== 'undefined') {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    } else {
+        var buf = new Array(s.length);
+        for (var i = 0; i != s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+}
+ 
+export default exportJsonToExcel
+```

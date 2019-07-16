@@ -24,3 +24,18 @@ echo '<template><h1>Hello!</h1></template>' > App.vue
 
 ## npm run dev 时报TypeError: Cannot read property 'compilation' of undefined
 - 升级node版本，因为别人的node版本高，所以安装的包版本高，导致安装时node版本不够高。
+- 这是版本问题。打开项目的package.json文件可以发现，webpack是3.6.0版本，optimize-css-assets-webpack-plugin是5.0.1版本
+  - 解决：npm i optimize-css-assets-webpack-plugin@3.2.0
+- npm run dev 报
+```js
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! hzguanjia@1.0.0 dev: webpack-dev-server --open --inline --progress --config build/webpack.dev.conf.js
+npm ERR! Exit status 1
+npm ERR!
+npm ERR! Failed at the hzguanjia@1.0.0 dev script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\DELL\AppData\Roaming\npm-cache_logs\2019-04-03T06_40_57_606Z-debug.log
+```
+  - 解决：npm install webpack-dev-server@2.9.7 --save-dev

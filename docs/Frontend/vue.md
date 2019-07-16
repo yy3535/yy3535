@@ -2114,3 +2114,37 @@ Vue.http.interceptors.push((request, next) => {
 ```
 - npm install sass-loader -D
 -  npm install node-sass -D
+
+## vue 组件库
+### better-scroll
+```html
+<div class="wrapper">
+  <ul class="content">
+    <li>...</li>
+    <li>...</li>
+    ...
+  </ul>
+  <!-- you can put some other DOMs here, it won't affect the scrolling
+</div>
+```
+- 自动在wrapper中的第一个节点即content上处理滚动，忽略其他元素
+```js
+npm install better-scroll -S # install 1.x
+npm install better-scroll@next -S # install 2.x，with full-featured plugin.
+```
+- 最简单的处理
+  - new BScroll(dom)(第一个参数是dom，但内部也会尝试使用选择器)
+  ```js
+  import BScroll from '@better-scroll/core'
+  let wrapper = document.querySelector('.wrapper')
+  let scroll = new BScroll(wrapper)
+  ```
+- 插件
+  ```js
+  import BScroll from '@better-scroll/core'
+  import PullUp from '@better-scroll/pull-up'
+
+  let bs = new BScroll('.wrapper', {
+    pullUpLoad: true
+  })
+  ```

@@ -1197,7 +1197,7 @@ export default (tasks, n) => {
 输出: -1->0->3->4->5
 ```
 ```js
-![链表的快速排序](./img/链表的快速排序.png)
+![链表的快速排序](./img/quick-sort.png)
 ```
 ```js
 // 声明链表的节点
@@ -1716,8 +1716,8 @@ export {
     - 父节点i
     - 子节点(左)2*i+1
     - 子节点(右)2*i+2
-![堆](./img/堆.jpg)
-![堆排序](./img/堆排序.jpg)
+![堆](./img/heap.jpg)
+![堆排序](./img/heapsort.jpg)
 ```js
 class Heap {
     constructor(data) {

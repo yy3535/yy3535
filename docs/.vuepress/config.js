@@ -92,6 +92,13 @@ module.exports = {
                         "other",
                     ]
                 },
+                {
+                    title: '错误',
+                    collapsable: false,
+                    children: [
+                        "error",
+                    ]
+                },
                 // '/Frontend/',
                 // {
                 //   title: 'jswebapi',
@@ -125,7 +132,8 @@ module.exports = {
                 title: '总结',
                 collapsable: false,
                 children: [
-                    "summary"
+                    "summary",
+                    "xdf"
                 ]
             }],
         }

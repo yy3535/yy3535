@@ -31,12 +31,13 @@
   - maximum-scale：允许用户缩放到的最大比例。(1.0)
   - minimum-scale：允许用户缩放到的最小比例。(1.0)
   - user-scalable：用户是否可以手动缩放(no)
-````html
+```html
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 ```
+
 ## 元素的重要属性
 - a[href,target]
-- img[src,alt]//路径，无图像时替代文本
+- img[src,alt]//路径，无图像时替代文本,width和height只能用百分比和px单位
 - table td[colspan,rowspan]
 - form[target,method,enctype]//在何处打开url,发送http的方法，发送表单数据前编码
 - input[type,value]
@@ -60,6 +61,14 @@
 
 ## 样式初始化
 reset.css
+```html
+<!-- cdn -->
+<link href="https://cdn.bootcss.com/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+```
+```md
+<!-- 下载地址 -->
+https://huruqing.gitee.io/demos/source/reset.css
+```
 
 ## CSS属性
 
@@ -80,7 +89,7 @@ reset.css
     - L：Lightness(亮度)。//0.0% - 100.0%
     - A：Alpha透明度//0~1
 - RGBA:该透明度不会被继承，区别于opacity
-
+- #
 ### 文本阴影:
 - text-shadow
   - none | shadow [ , shadow ]* 
@@ -164,7 +173,7 @@ float对自身的影响：
 - 位置尽量靠左（右）
 
 ##### float两栏布局
-```
+```html
 <div class="container">
     <div class="left">
         左
@@ -191,6 +200,55 @@ float对自身的影响：
 - viewport
 - 隐藏，折行，自适应空间
 - rem/viewport/media query
+  - rem
+    - 将压缩原生js放到head标签中
+    ```html
+    <script>!function(e){function t(a){if(i[a])return i[a].exports;var n=i[a]={exports:{},id:a,loaded:!1};return e[a].call(n.exports,n,n.exports,t),n.loaded=!0,n.exports}var i={};return t.m=e,t.c=i,t.p="",t(0)}([function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var i=window;t["default"]=i.flex=function(normal,e,t){var a=e||100,n=t||1,r=i.document,o=navigator.userAgent,d=o.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i),l=o.match(/U3\/((\d+|\.){5,})/i),c=l&&parseInt(l[1].split(".").join(""),10)>=80,p=navigator.appVersion.match(/(iphone|ipad|ipod)/gi),s=i.devicePixelRatio||1;p||d&&d[1]>534||c||(s=1);var u=normal?1:1/s,m=r.querySelector('meta[name="viewport"]');m||(m=r.createElement("meta"),m.setAttribute("name","viewport"),r.head.appendChild(m)),m.setAttribute("content","width=device-width,user-scalable=no,initial-scale="+u+",maximum-scale="+u+",minimum-scale="+u),r.documentElement.style.fontSize=normal?"50px": a/2*s*n+"px"},e.exports=t["default"]}]);  flex(false,100, 1);</script>
+    ```
+    - 此方案仅适用于移动端web
+    - rem适合写固定尺寸(间距之类)。其余的根据需要换成flex或者百分比。
+    - 一般来讲，使用了这个方案是没必要用媒体查询了
+    - 不要手动设置viewport，该方案自动帮你设置
+    ```js
+    'use strict';
+
+    /**
+    * @param {Boolean} [normal = false] - 默认开启页面压缩以使页面高清;  
+    * @param {Number} [baseFontSize = 100] - 基础fontSize, 默认100px;
+    * @param {Number} [fontscale = 1] - 有的业务希望能放大一定比例的字体;
+    */
+    const win = window;
+    export default win.flex = (normal, baseFontSize, fontscale) => {
+    const _baseFontSize = baseFontSize || 100;
+    const _fontscale = fontscale || 1;
+
+    const doc = win.document;
+    const ua = navigator.userAgent;
+    const matches = ua.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i);
+    const UCversion = ua.match(/U3\/((\d+|\.){5,})/i);
+    const isUCHd = UCversion && parseInt(UCversion[1].split('.').join(''), 10) >= 80;
+    const isIos = navigator.appVersion.match(/(iphone|ipad|ipod)/gi);
+    let dpr = win.devicePixelRatio || 1;
+    if (!isIos && !(matches && matches[1] > 534) && !isUCHd) {
+        // 如果非iOS, 非Android4.3以上, 非UC内核, 就不执行高清, dpr设为1;
+        dpr = 1;
+    }
+    const scale = normal ? 1 : 1 / dpr;
+
+    let metaEl = doc.querySelector('meta[name="viewport"]');
+    if (!metaEl) {
+        metaEl = doc.createElement('meta');
+        metaEl.setAttribute('name', 'viewport');
+        doc.head.appendChild(metaEl);
+    }
+    metaEl.setAttribute('content', `width=device-width,user-scalable=no,initial-scale=${scale},maximum-scale=${scale},minimum-scale=${scale}`);
+    doc.documentElement.style.fontSize = normal ? '50px' : `${_baseFontSize / 2 * dpr * _fontscale}px`;
+    };
+
+    //http://www.jianshu.com/p/b00cd3506782
+
+    //640px以内進行一個自適應
+    ```
 - 媒体查询
   - @media screen [not|only]? and (media feature) { CSS-Code; }
 media feature :max(min)-height (width),为了实现向上兼容,常用min-width,从小写到大
@@ -541,7 +599,6 @@ grid-area: h;
 3. 假设高度去掉，哪个方案不再适用了，
 4. 真正到业务中使用，哪个最实用\
 
-## 找到rem的代码，并背下来
 
 ## less
 xxx.less
@@ -569,3 +626,10 @@ xxx.less
 
 
 
+## 实现各种居中（整理用法和适用场合）
+### 水平居中
+- margin:0 auto
+
+### 垂直居中
+- margin-top设为父级减子级的50%
+- vertical-align:middle

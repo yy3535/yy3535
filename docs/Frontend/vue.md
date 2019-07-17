@@ -2148,3 +2148,6 @@ npm install better-scroll@next -S # install 2.x，with full-featured plugin.
     pullUpLoad: true
   })
   ```
+
+### vue-qr
+- 二维码生成

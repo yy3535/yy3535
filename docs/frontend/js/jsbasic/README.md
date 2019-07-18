@@ -1,29 +1,29 @@
-# 01-JS基础知识
+# JS基础
 [[toc]]
 
-## 01-变量类型和计算知识点
+## 变量
+### 类型
+- 值类型：string,boolean,number,undefined
 
-### 变量类型
-**值类型**和**引用类型**
+- 引用类型：object(date,RegExp),array,function,null（引用类型可以自由设置属性，除了null）
 
-**值类型：string,boolean,number,undefined**
+- `typeof`可以区分类型有`number` `string` `boolean` `undefined`（值类型） `function` `object`（引用类型）
 
-**引用类型：object(date,RegExp),array,function,null**
+- js内置函数（数据封装类对象）
+    - `Object` `Array` `Boolean` `Number` `String` `Function` `Date` `RegExp` `Error`
 
-**`typeof`可以区分类型有`number` `string` `boolean` `undefined`（值类型） `function` `object`（引用类型）**
+- `===`和`==`
+    - `==`会先试图类型转换，然后再比较，`===`不会类型转换
+    - 必须用`===`。
+    - 唯一用`==`的地方：obj.a === null || obj.a === undefined ，简写形式obj.a == null
 
-```javascript
-// 特例
-typeof null // object 因为 null 也是引用类型。null 就相当于引用类型中的 undefined
-```
-### 变量计算
-#### 二进制和八进制表示法[ES6]
+### 二进制和八进制表示法[ES6]
 - 用前缀0b（或0B）和0o（或0O）表示。
   ```js
   0b111110111 === 503 // true
   0o767 === 503 // true
   ```
-#### Number API[ES6,全局方法移到了Number对象上]
+### Number API[ES6,全局方法移到了Number对象上]
 - Number.isFinite()
   - 检查一个数值是否为有限的（finite）
 - Number.isNaN()
@@ -42,9 +42,7 @@ typeof null // object 因为 null 也是引用类型。null 就相当于引用�
   - Number.MAX_SAFE_INTEGER（范围上限）
   - Number.MIN_SAFE_INTEGER（范围下限）
 
-#### Math对象
-
-- Math 最常用的只有一个 API —— 
+### Math对象
 
 | 功能 | API |
 | :------| ------: |
@@ -57,7 +55,7 @@ typeof null // object 因为 null 也是引用类型。null 就相当于引用�
 | min(x,y,z...n) | 求最小值 |
 
 - Math.random()
-  - 常用于清除浏览器缓存，比如频繁访问一个链接，就在链接后加一个random()
+  - 常用于清除浏览器缓存，频繁访问一个链接，就在链接后加一个random()
 
 以下ES6新增：
 
@@ -90,84 +88,17 @@ typeof null // object 因为 null 也是引用类型。null 就相当于引用�
     ```
 ### 运算符
 - 优先级
-
-https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
-
+    - https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+    - new带参数比new无参数优先级高
 - 求余%
-## 答题
 
-### JS中使用`typeof`能得到的哪些类型
+### JSON
+- JSON是一种数据格式。
+- `parse`和`stringify`
 
-```javascript
-typeof undefined // undefined
-typeof 'abc' // string
-typeof 123 // number
-typeof true // boolean
-typeof {}  // object
-typeof [] // object
-typeof null // object
-typeof console.log // function
-```
-
-### 何时使用`===` 何时使用`==`
-
-首先你得明白两者的区别。`==`会先试图类型转换，然后再比较，而`===`不会类型转换，直接比较。如下例子：
-
-```javascript
-1 == '1' // true
-1 === '1' // false
-0 == false // true
-0 === false // false
-null == undefined // true
-null === undefined // false
-```
-
-根据 jQuery 源码中的写法，只推荐在一个地方用`==`，其他地方都必须用`===`。这个用`==`的地方就是：
-
-```javascript
-if (obj.a == null) {  // 这里相当于 obj.a === null || obj.a === undefined ，简写形式
-}
-```
-
-### JS中有哪些内置函数 —— 数据封装类对象
-
-`Object` `Array` `Boolean` `Number` `String` `Function` `Date` `RegExp` `Error`
-
-对于这种问题，回复时能把基本常用的回答上来就可以，没必要背书把所有的都写上。
-
-### JS变量按照存储方式区分为哪些类型，并描述其特点
-
-- 值类型 `undefined` `string` `number` `boolean`
-- 引用类型 `object` `function`
-
-最后补充一点，在 JS 中，所有的引用类型都可以自由设置属性
-
-```javascript
-var obj = {}
-obj.a = 100
-
-var arr = []
-arr.a = 100
-
-function fn() {}
-fn.a = 100
-```
-
-### 如何理解JSON
-
-这个问题，很容易被一些初学者误答。其实，JSON 是什么？从 JS 角度回答，太简单了，`console.log(JSON)`得到`JSON`只是一个对象，有`parse`和`stringify`两个方法，使用也非常简单
-
-```javascript
-JSON.stringify({a:10, b:20})
-JOSN.parse('{"a":10,"b":20}')
-```
-
-我之所以误答，就是怕初学者把这个问题搞大，因为 json 也是一种数据格式，这一点和 xml 一样。但是在 JS 的面试题中，如果问到这个问题，直接说明`parse`和`stringify`两个方法的用法即可，面试官如果有追问，你再去继续回答。
-
-## 02-原型和原型链知识点
+## 原型和原型链
 
 ### 构造函数
-
 ```javascript
 function Foo(name, age) {
     this.name = name
@@ -175,184 +106,61 @@ function Foo(name, age) {
     this.class = 'class-1'
     // return this  // 默认有这一行
 }
-var f = new Foo('zhangsan', 20)
-// var f1 = new Foo('lisi', 22)  // 创建多个对象
+var f1 = new Foo('zhangsan', 20)
+var f2 = new Foo('lisi', 22)
 ```
+- `Foo`是`f`的构造函数,有`name` `age` `class`三个属性
+- 带`new`执行时，函数中的`this`就会变成一个空对象，让程序为其属性赋值，然后最终返回。默认带一个`return this`
+    ```javascript
+    function Foo(name) {
+        this.name = name
+        this.type = 'foo'
+    }
+    var foo = new Foo('beijing')
+    ```
+    - 创建一个新对象
+    - `this`指向这个新对象
+    - 执行代码，即对`this`赋值
+    - 返回`this`
 
-以上示例是通过`new Foo`创建出来一个`f`对象，对象有`name` `age` `class`三个属性，**这样我们就称`Foo`是`f`的构造函数**。构造函数这个概念在高级语言中都存在，它就像一个模板一样，可以创建出若干个示例。
+    - 创建一个新对象。它继承自foo.prototype
+    - 执行foo构造函数里的代码。执行时相应的参数被传入，同时this会被指定为这个新实例。new foo等同于new foo()，只能用在不传递任何参数的情况
+    - 如果构造函数返回了一个对象，那么返回这个对象。否则，返回this
+    ```js
+    var new2=function(func){
+        var o=Object.create(func.prototype);
+        var k=func.call(o);
+        if(typeof k==='object'){
+            return k
+        }else{
+            return o
+        }
+    }
+    ```
+- 其他
+    - `var a = {}`是`var a = new Object()`语法糖
+    - `var a = []`是`var a = new Array()`语法糖
+    - `function Foo(){...}`是`var Foo = new Function(...)`语法糖
 
-函数执行的时候，如果前面带有`new`，那么函数内部的`this`在执行时就完全不一样了，不带`new`的情况我们下一章节会讲到。**带`new`执行时，函数中的`this`就会变成一个空对象，让程序为其属性赋值，然后最终返回。**`return this`是默认执行的，如何验证？———— 你可以最后加一个`return {x:10}`试一下。返回之后，`f`就被赋值成了这个新对象，这样就创建完成了。
-
-### 构造函数 - 扩展
-
-**- `var a = {}`其实是`var a = new Object()`的语法糖
-
-- `var a = []`其实是`var a = new Array()`的语法糖
-- `function Foo(){...}`其实是`var Foo = new Function(...)`的语法糖**
-
-大家看到以上几点，明白我要表达的意思了吗？
-
-**如何判断一个函数是否是一个变量的构造函数呢 ———— 使用`instanceof`**
-
-### 几个要点
-
-以下要点，要全部明白并且记住！！！在此我会详细解释
-
-- **所有的引用类型（数组、对象、函数），都具有对象特性，即可自由扩展属性（除了`null`意外）**
-- **所有的引用类型（数组、对象、函数），都有一个`__proto__`(隐式原型)属性，属性值是一个普通的对象**
-- **所有的函数，都有一个`prototype`（显示原型）属性，属性值也是一个普通的对象**
-- **所有的引用类型（数组、对象、函数），`__proto__`属性值指向它的构造函数的`prototype`属性值**
-
-```javascript
-var obj = {}; obj.a = 100;
-var arr = []; arr.a = 100;
-function fn () {}
-fn.a = 100;
-
-console.log(obj.__proto__);
-console.log(arr.__proto__);
-console.log(fn.__proto__);
-
-console.log(fn.prototype)
-
-console.log(obj.__proto__ === Object.prototype)
-```
+- 判断一个函数是否是一个变量的构造函数
+    - `instanceof`(原理:一层一层往上，能否对应到`xxx.prototype`)(判断数组和伪数组：实际应用中只需要判断`length`属性是否是数字即可)
+    - constructor===构造函数（更准确）
 
 ### 原型
+#### 显示原型和隐式原型
+- 引用类型有一个`__proto__`(隐式原型)属性，属性值是一个普通的对象
+- 函数有一个`prototype`（显示原型）属性，属性值是一个普通的对象
+- 引用类型的`__proto__`属性值指向它的构造函数的`prototype`属性值
 
-我们先将一开始的示例做一下改动，然后看一下执行的效果
-
-```javascript
-// 构造函数
-function Foo(name, age) {
-    this.name = name
-}
-Foo.prototype.alertName = function () {
-    alert(this.name)
-}
-// 创建示例
-var f = new Foo('zhangsan')
-f.printName = function () {
-    console.log(this.name)
-}
-// 测试
-f.printName()
-f.alertName()
-```
-
-执行`printName`时很好理解，但是执行`alertName`时发生了什么？这里再记住一个重点 **当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的`__proto__`（即它的构造函数的`prototype`）中寻找**
-
-那么**如何判断一个这个属性是不是对象本身的属性呢？使用`hasOwnProperty`，常用的地方是遍历一个对象的时候**
-
-```javascript
-var item
-for (item in f) {
-    // 高级浏览器已经在 for in 中屏蔽了来自原型的属性，但是这里建议大家还是加上这个判断，保证程序的健壮性
-    if (f.hasOwnProperty(item)) {
-        console.log(item)
-    }
-}
-```
 
 ### 原型链
+- 当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的`__proto__`（即它的构造函数的`prototype`）中寻找
+- 如果在`f.__proto__`中没有找到`toString`，那么就继续去`f.__proto__.__proto__`中寻找，因为`f.__proto__`是一个普通的对象。这样一直往上找，是一个链式的结构，叫做“原型链”。直到找到最上层`Object.prototype.__proto__ === null`都没有找到，返回`undefined`。
+- 如何判断一个这个属性是不是对象本身的属性呢
+    - 使用`hasOwnProperty`，常用在遍历对象的时候
 
-还是接着上面的示例，执行`f.toString()`时，又发生了什么？因为`f`本身没有`toString()`，并且`f.__proto__`（即`Foo.prototype`）中也没有`toString`。这个问题还是得拿出刚才那句话————**当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的`__proto__`（即它的构造函数的`prototype`）中寻找**
-
-如果在`f.__proto__`中没有找到`toString`，那么就继续去`f.__proto__.__proto__`中寻找，因为`f.__proto__`就是一个普通的对象而已嘛！
-
-这样一直往上找，你会发现是一个链式的结构，所以叫做“原型链”。直到找到最上层都没有找到，那么就宣告失败，返回`undefined`。最上层是什么 ———— `Object.prototype.__proto__ === null`
-
-### 原型链中的`this`
-
-所有的从原型或者更高级的原型中得到、执行的方法，其中的`this`在执行时，就指向了当前这个触发事件执行的对象。因此`printName`和`alertName`中的`this`都是`f`。
-
-### instanceof
-
-- 原理
-  - 如果要计算`f instanceof Foo`是不是正确，就要判断`f`的原型一层一层往上，能否对应到`Foo.prototype`。同理，如果要计算`f instanceof Object`是不是正确，就要判断`f`的原型一层一层往上，能否对应到`Object.prototype`
-
-### 扩展参考
-
-讲解原型和原型链，绝对要参考我之前写过的文章[《深入理解JS原型和闭包系列博客》]
-
-## 答题
-
-### 如何**准确**判断一个变量是数组类型
-
-只有`instanceof`才能判断一个对象是否是真正的数组
-
-```javascript
-var arr = []
-arr instanceof Array // true
-typeof arr // object，typeof 是无法判断是否是数组的
-```
-
-扩展：实际应用中，和数组同样重要、起同样作用并且更加灵活的数据结构还是“伪数组”或者“类数据”（jquery 就用到了）。因此，**在实际应用中，只需要判断`length`属性是否是数字即可。**
-
-```javascript
-var arr = []
-var likeArr = {
-    0: 'aaa',
-    1: 'bbb',
-    2: 'ccc',
-    length: 3
-}
-
-typeof arr.length === 'number' // true
-typeof likeArr.length === 'number' // true
-```
-
-PS：**为何需要要扩展补充？** 在面试过程中，面试官很希望能从你那里得到“惊喜”，即面的他提问的问题，你正确回答之后，还能有所补充，这样你会加分不少。在日常工作中也一样，如果你能在完成工作之后再去考虑如何更有质量、更有效率的完成工作，或者通过本次工作的总结出一种方式，能更好的完成接下来的工作，那你的 leader 绝对高看你一眼。这其实就是我们所说的**积极、主动和工作热情**，光嘴说没用，你得实干。
-
-### 写一个原型链继承的例子
-
-接下来继续回答这个问题。你看其他人的培训或者看书，这个例子一般都会给你弄一些小猫小狗小动物来演示，例如
-
-```javascript
-// 动物
-function Animal() {
-    this.eat = function () {
-        console.log('animal eat')
-    }
-}
-// 狗
-function Dog() {
-    this.bark = function () {
-        console.log('dog bark')
-    }
-}
-Dog.prototype = new Animal()
-// 哈士奇
-var hashiqi = new Dog()
-```
-
-```javascript
-function Elem(id){
-	this.elem=document.getElementById(id)
-}
-Elem.prototype.html=function(val){
-	var elem=this.elem
-	if(val){
-		elem.innerHTML=val
-		return this//链式操作
-	}else{
-		return elem.innerHTML
-	}
-}
-Elem.prototype.on=function(type,fn){
-	var elem=this.elem
-	elem.addEventListener(type,fn)
-}
-var div1=new Elem('detail-page');
-console.log(div1.html())
-div1.html('<p>hello imooc</p>')
-div1.on('click',function(){
-	alert('clicked')
-})
-```
-
-
-
+### 原型链继承
+- 使用案例
 ```javascript
 // 构造函数
 function DomElement(selector) {
@@ -395,71 +203,82 @@ $div.on('click', function() {
 })
 ```
 
-### 描述 new 一个对象的过程
-
-```javascript
-function Foo(name) {
-    this.name = name
-    this.type = 'foo'
-}
-var foo = new Foo('beijing')
-```
-- 创建一个新对象
-- `this`指向这个新对象
-- 执行代码，即对`this`赋值
-- 返回`this`
-
-- 创建一个新对象。它继承自foo.prototype
-- 执行foo构造函数里的代码。执行时相应的参数被传入，同时this会被指定为这个新实例。new foo等同于new foo()，只能用在不传递任何参数的情况
-- 如果构造函数返回了一个对象，那么返回这个对象。否则，返回this
+- 构造函数继承
 ```js
-var new2=function(func){
-    var o=Object.create(func.prototype);
-    var k=func.call(o);
-    if(typeof k==='object'){
-        return k
-    }else{
-        return o
-    }
+// 第一种，借助构造函数实现继承(这种无法继承parent原型对象上的方法)
+function Parent1(){
+    this.name='parent1';
 }
+Parent1.prototype.say=function(){}
+function Child1(){
+    Parent1.call(this);// call,apply改变函数执行上下文，即this
+    this.type='child1';
+}
+// 第二种，借助原型链实现继承(这种继承是继承了同一个parent实例，导致修改的也是同一个)
+function Parent2(){
+    this.name='parent2';
+    this.play=[1,2,3]
+}
+function Child2(){
+    this.type='child2';
+}
+Child2.prototype=new Parent2();
+var s1=new Child2();
+var s2=new Child2();
+s1.play.push(4);
+console.log(s1.play,s2.play)// [1,2,3,4],[1,2,3,4]
+// 第三种，组合继承方式(组合以上两种，避免了以上两个的问题)(缺点：继承时父级构造函数执行了两遍)
+function Parent3(){
+    this.name='parent3'
+}
+function Child3(){
+    Parent3.call(this);
+    this.type='child3';
+}
+Child3.prototype=new Parent3();
+// 组合继承方式优化1(问题：constructorwei指向Child4)
+function Parent4(){
+    this.name='parent4'
+}
+function Child4(){
+    Parent4.call(this);
+    this.type='child4';
+}
+Child4.prototype=Parent4.prototype;
+var s4=new Child4();
+console.log(s4.constructor);// Parent4
+// 组合继承方式优化2(最终方案)
+function Parent5{
+    this.name='parent5'
+}
+function Child5(){
+    Parent5.call(this);
+    this.type='child5';
+}
+Child5.prototype=Object.create(Parent5.prototype);// 隔离父类和子类的原型对象
+Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 ```
+
 ### zepto（或其他框架） 源码中如何使用原型链
+- 重写数组\__proto__，里面要用到原数组属性的直接=Array.prototype.xxx，其余添加它想要添加的方法。
 
-## 03-作用域和闭包知识点
-
-本节我们将全面梳理 JS 代码的执行过程，涉及到的概念有非常多。所以大家一定要耐心听，如果你此前不了解这一块，而通过本教程掌握了这方面知识，对你的基础知识将会有质的提醒。
-
-### 执行上下文
-
-先看下面的例子，你可能会对结果比较差异。当然，我不建议在实际开发中通过这种方式来炫技，我们这里演示纯粹是为了讲解知识点做一个铺垫。
-
-```javascript
-console.log(a)  // undefined
-var a = 100
-
-fn('zhangsan')  // 'zhangsan' 20
-function fn(name) {
-    age = 20
-    console.log(name, age)
-    var age
-}
-```
-
-在一段 JS 脚本（即一个`<script>`标签中）执行之前，会先创建一个**全局执行上下文**环境，先把代码中即将执行的（内部函数的不算，因为你不知道函数何时执行）变量、函数声明（和“函数表达式”的区别）都拿出来。变量先暂时赋值为`undefined`，函数则先声明好可使用。这一步做完了，然后再开始正式执行程序。再次强调，这是在代码执行之前才开始的工作。
-
-另外，一个函数在执行之前，也会创建一个**函数执行上下文**环境，跟**全局上下文**差不多，不过**函数执行上线文**中会多出`this` `arguments`和函数的参数。参数和`arguments`好理解，这里的`this`咱们需要专门讲解。
-
-总结一下
-
-- 范围：一段`<script>`或者一个函数
-- 全局：变量定义，函数声明
-- 函数：变量定义，函数声明，this，arguments
+## 作用域和闭包
+### 变量提升
+- `<script>`中的变量提升：变量定义，函数声明
+    - 在一段 JS 脚本（即一个`<script>`标签中）执行之前，会先创建一个全局执行上下文环境，先把代码中即将执行的变量、函数声明都拿出来。变量先暂时赋值为`undefined`，函数则先声明好可使用。再开始正式执行程序。
+- 函数中的变量提升：变量定义，函数声明，this，arguments
+    - 一个函数在执行之前，也会创建一个**函数执行上下文**环境，跟**全局上下文**差不多，不过**函数执行上线文**中会多出`this` `arguments`和函数的参数。参数和`arguments`好理解，这里的`this`咱们需要专门讲解。
 
 ### this
-
-先搞明白一个很重要的概念 ———— **`this`的值是在执行的时候才能确认，定义的时候不能确认！** 为什么呢 ———— 因为`this`是执行上下文环境的一部分，而执行上下文需要在代码执行之前确定，而不是定义的时候。看如下例子
-
-```javascript
+- this指向决定于在哪里执行，和在哪里定义无关
+    - 全局中this指向window
+    - 构造函数中
+        - 指向当前实例对象
+    - 用于`call` `apply` `bind`
+        - 调用时指定this的指向
+:::warning 注意
+- 对象属性
+```js
 var a = {
     name: 'A',
     fn: function () {
@@ -467,132 +286,19 @@ var a = {
     }
 }
 a.fn()  // this === a
-a.fn.call({name: 'B'})  // this === {name: 'B'}
 var fn1 = a.fn
 fn1()  // this === window
 ```
-
-`this`执行会有不同，主要集中在这几个场景中
-
-- 作为构造函数执行（new的时候，this会是一个空对象，在构造函数中赋值后返回）
-- 作为对象属性执行（可能有三种结果，如上）
-- 作为普通函数执行（可能有两种结果，如下）
-- 用于`call` `apply` `bind`
-
-前两种情况咱们之前都介绍过了，这里只是统一的提出来，汇总一下，不再详细讲了。这里主要说第三种
-
-```javascript
+- 普通函数
+```js
 function fn() {
     console.log(this)
 }
 fn()  // window
-fn.call({a:100})  // {a:100}  和 call 同理的还有 apply bind
 ```
-
-### 作用域
-
-作为有 JS 基础的同学，你应该了解 JS 没有块级作用域。例如
-
-```javascript
-if (true) {
-    var name = 'zhangsan'
-}
-console.log(name)
-```
-
-从上面的例子可以体会到作用域的概念，作用域就是一个独立的地盘，让变量不会外泄、暴露出去。上面的`name`就被暴露出去了，因此，**JS 没有块级作用域，只有全局作用域和函数作用域**。
-
-```javascript
-var a = 100
-function fn() {
-    var a = 200
-    console.log('fn', a)
-}
-console.log('global', a)
-fn()
-```
-
-全局作用域就是最外层的作用域，如果我们写了很多行 JS 代码，变量定义都没有用函数包括，那么他们就全部都在全局作用域中。这样的坏处就是很容易装车。
-
-```javascript
-// 张三写的代码中
-var data = {a:100}
-
-// 李四写的代码中
-var data = {x:true}
-```
-
-这就是为何 jquery zepto 等库的源码，所有的代码都会放在`(function(){....})()`中。因为放在里面的所有变量，都不会被外泄和暴露，不会污染到外面，不会对其他的库或者 JS 脚本造成影响。这是函数作用域的一个体现。
-
-### 作用域链
-
-首先认识一下什么叫做**自由变量**。如下代码中，`console.log(a)`要得到`a`变量，但是在当前的作用域中没有定义`a`（可对比一下`b`）。当前作用域没有定义的变量，这成为**自由变量**。自由变量如何得到 ———— 向父级作用域寻找。
-
-```javascript
-var a = 100
-function fn() {
-    var b = 200
-    console.log(a)
-    console.log(b)
-}
-fn()
-```
-
-如果父级也没呢？再一层一层向上寻找，直到找到全局作用域还是没找到，就宣布放弃。这种一层一层的关系，就是**作用域链**。
-
-```javascript
-var a = 100
-function F1() {
-    var b = 200
-    function F2() {
-        var c = 300
-        console.log(a)
-        console.log(b)
-        console.log(c)
-    }
-    F2()
-}
-F1()
-```
-
-### 闭包
-
-直接看一个例子
-
-```javascript
-function F1() {
-    var a = 100
-    return function () {
-        console.log(a)
-    }
-}
-var f1 = F1()
-var a = 200
-f1()
-```
-
-自由变量将从作用域链中去寻找，但是**依据的是函数定义时的作用域链，而不是函数执行时**，以上这个例子就是闭包。闭包主要有两个应用场景：
-
-- 函数作为返回值，上面的例子就是
-- 函数作为参数传递，看以下例子
-
-```javascript
-function F1() {
-    var a = 100
-    return function () {
-        console.log(a)
-    }
-}
-function F2(f1) {
-    var a = 200
-    console.log(f1())
-}
-var f1 = F1()
-F2(f1)
-```
-
-> 面试题
-```
+::: 
+:::warning 面试题
+```js
 var name = "The Window";
 var object = {
     name : "My Object",
@@ -601,36 +307,84 @@ var object = {
              alert(this.name);
         })();
     },
-
     getName:function(){
         alert(this.name);
     }
 };
 object.getNameFunc();  //The Window
 object.getName();  //My Object
+//函数 getNameFunc 内返回一个闭包，因此 this 指向全局对象，所以 this.name 即为定义在全部作用域下的 name（"The Window"）。
+//函数 getName 内并未返回闭包，因此 this 指向当前对象，所以 this.name 即为当前作用域下的 name（"My Object"）。
 ```
-答：函数 getNameFunc 内返回一个闭包，因此 this 指向全局对象，所以 this.name 即为定义在全部作用域下的 name（"The Window"）。
-而函数 getName 内并未返回闭包，因此 this 指向当前对象，所以 this.name 即为当前作用域下的 name（"My Object"）。
+**this看执行的时候，自由变量看定义的时候**
+:::
+### 作用域
+没有块级作用域，只有全局作用域和函数作用域。
 
-### 扩展阅读
+- 全局作用域
+    - 如果写了很多行 JS 代码，变量定义都没有用函数包括，就全部都在全局作用域中。容易撞车。
+- 防止全局作用域污染
+    - `(function(){....})()`，jquery等使用匿名函数
 
-请参考我之前写过的文章[《深入理解JS原型和闭包系列博客》](http://www.cnblogs.com/wangfupeng1988/p/3977924.html)
+### 作用域链
+- 自由变量
+    - 当前作用域没有定义的变量，叫做自由变量。
+- 作用域链
+    - 自由变量需要向父级作用域寻找。如果父级也没呢？再一层一层向上寻找，直到找到全局作用域。这种一层一层的关系，就是作用域链。
+    - 自由变量按照变量定义时的作用域链
 
+### 闭包
+- 作用域内部调用作用域外部变量
+    - 函数作为返回值
+    ```js
+    function F1() {
+        var a = 100
+        return function () {
+            console.log(a)
+        }
+    }
+    var f1 = F1()
+    var a = 200
+    f1()//100
+    ```
+    - 函数作为参数传递
+    ```js
+    function F1() {
+        var a = 100
+        return function () {
+            console.log(a)
+        }
+    }
+    function F2(f1) {
+        var a = 200
+        console.log(f1())
+    }
+    var f1 = F1()
+    F2(f1)//100
+    ```
+- 闭包的应用
+    - 创造作用域，避免全局污染
+
+```js
+function isFirstLoad() {
+    var _list = []
+
+    return function (id) {
+        if (_list.indexOf(id) >= 0) {
+            return false
+        } else {
+            _list.push(id)
+            return true
+        }
+    }
+}
+// 使用
+var firstLoad = isFirstLoad()
+firstLoad(10) // true
+firstLoad(10) // false
+firstLoad(20) // true
+```
 ## 解题
-
-### 说一下对变量提升的理解
-
-函数执行时会先创建当前的上下文环境，其中这两点会产生“变量提升”的效果
-
-- 变量定义
-- 函数声明
-
-### 说明 this 几种不同的使用场景
-
-- 作为构造函数执行
-- 作为对象属性执行
-- 作为普通函数执行
-- call apply bind
 
 ### 创建 10 个 a 标签，点击的时候弹出来对应的序号
 
@@ -668,34 +422,8 @@ for (i = 0; i < 10; i++) {
 
 上面的回答已经结束了，但是还有一点可以优化，如果能做到，那将会给你加分。提示一下，是关于 DOM 操作的性能问题的。这里先按下不表，等后面讲解性能问题的时候再说。有兴趣的可以先去查查`DocumentFragment`
 
-### 如何理解作用域
 
-根据我之前写过的[《深入理解JS原型和闭包》](http://www.cnblogs.com/wangfupeng1988/p/3977924.html)系列博客，详细讲解作用域和闭包。
-
-### 实际开发中闭包的应用
-
-闭包的实际应用，主要是用来封装变量。即把变量隐藏起来，不让外面拿到和修改。
-
-```javascript
-function isFirstLoad() {
-    var _list = []
-
-    return function (id) {
-        if (_list.indexOf(id) >= 0) {
-            return false
-        } else {
-            _list.push(id)
-            return true
-        }
-    }
-}
-
-// 使用
-var firstLoad = isFirstLoad()
-firstLoad(10) // true
-firstLoad(10) // false
-firstLoad(20) // true
-```
+### 实际开发中
 
 ## 04异步知识点
 

@@ -29,6 +29,7 @@ import warning from './warning'
 const getArticleList = req => {
   // 请求体，用于获取参数
   console.log(req) 
+  const {a,b,c}=JSON.parse(req.body)//post方式传参，get方式需要解析req.url
   let articleList = []
   for (let i = 0; i < 10; i++) {
     let article = {

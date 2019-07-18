@@ -44,15 +44,15 @@
 
 ### Math对象
 
-| 功能 | API |
-| :------| ------: |
-| random() | [0,1) |
-| ceil(x) | 向上取整 |
-| floor(x) | 向下取整 |
-| round(x) | 四舍五入 |
-| abs(x) | 绝对值 |
+| 功能            |      API |
+| :-------------- | -------: |
+| random()        |    [0,1) |
+| ceil(x)         | 向上取整 |
+| floor(x)        | 向下取整 |
+| round(x)        | 四舍五入 |
+| abs(x)          |   绝对值 |
 | max(x,y,z,...n) | 求最大值 |
-| min(x,y,z...n) | 求最小值 |
+| min(x,y,z...n)  | 求最小值 |
 
 - Math.random()
   - 常用于清除浏览器缓存，频繁访问一个链接，就在链接后加一个random()
@@ -692,25 +692,25 @@ console.log(5)
   - `(cla|pa)ss` 表示class或者pass
 
 #### 预定义字符类
-|符号|含义|
-|:---|:---|
-|.|匹配除\n换行符外的任何单字符。匹配包括\n在内的所有字符，使用(.|\n)|
-|\d|数字字符:[0-9]|
-|\D|非数字字符:[^0-9]|
-|\s|空白字符（空格和换行符）:[\f\n\r\t\v]|
-|\S|非空白字符:[^\s]|
-|\w|单词字符:[a-zA-Z_0-9]|
-|\W|非单词字符:[^\w]|
+| 符号 | 含义                                                           |
+| :--- | :------------------------------------------------------------- |
+| .    | 匹配除\n换行符外的任何单字符。匹配包括\n在内的所有字符，使用(. | \n) |
+| \d   | 数字字符:[0-9]                                                 |
+| \D   | 非数字字符:[^0-9]                                              |
+| \s   | 空白字符（空格和换行符）:[\f\n\r\t\v]                          |
+| \S   | 非空白字符:[^\s]                                               |
+| \w   | 单词字符:[a-zA-Z_0-9]                                          |
+| \W   | 非单词字符:[^\w]                                               |
 
 #### 量词
 - 允许指定匹配出现的次数,以下为贪婪模式：
-|符号|含义|
-|:---|:---|
-|X?|匹配X零次或一次|
-|X*|匹配X零次或多次|
-|X+|匹配X一次或多次|
-|X{n,m}|匹配n-m次|
-|X{n,}|匹配X至少n次|
+| 符号   | 含义            |
+| :----- | :-------------- |
+| X?     | 匹配X零次或一次 |
+| X*     | 匹配X零次或多次 |
+| X+     | 匹配X一次或多次 |
+| X{n,m} | 匹配n-m次       |
+| X{n,}  | 匹配X至少n次    |
 
  <!-- ![量词模式](../../img/三种模式.jpg) -->
  <img :src="$withBase('/img/三种模式.jpg')" alt="foo">
@@ -821,12 +821,12 @@ industr(y|ies)
 industr(?:y|ies)
 ```
 #### 零宽度断言
-|表达式|含义|添加时间|
-|----|----|----|
-|x(?=y)|先行断言，仅匹配被y跟随的x。||
-|x(?!y)|先行否定断言，仅匹配不被y跟随的x。||
-|(?<=y)x|后行断言，仅匹配x在y后面|ES6|
-|(?<!y)x|后行否定断言，仅匹配x不在y后面|ES6|
+| 表达式  | 含义                               | 添加时间 |
+| ------- | ---------------------------------- | -------- |
+| x(?=y)  | 先行断言，仅匹配被y跟随的x。       |          |
+| x(?!y)  | 先行否定断言，仅匹配不被y跟随的x。 |          |
+| (?<=y)x | 后行断言，仅匹配x在y后面           | ES6      |
+| (?<!y)x | 后行否定断言，仅匹配x不在y后面     | ES6      |
 - 例：正则表达式(?<!4)56(?=9)
     - 答：文本56前面不能是4，后面必须是9组成，因此5569匹配，4569不匹配
 - 例：提取字符串da12bka3434bdca4343bdca234bm中包含在字符a和b之间的数字，但是这个a之前的字符不能是c，b后面的字符必须是d才能提取。
@@ -836,24 +836,24 @@ industr(?:y|ies)
 #### 模式修政符
 - 可组合搭配使用
 
-|表达式|含义|添加时间|
-|----|----|-----|
-|i|不区分大小写||
-|g|全局匹配||
-|m|多行修饰符，使^和$匹配每一行的行首和行尾||
-|s|设置为dotAll模式，使.可以匹配任意单个字符|ES6|
-|x|||
-|e|||
-|u|处理大于\uFFFF的 Unicode 字符|ES6|
-|y|与g修饰符类似，也是全局匹配，但匹配必须从剩余的第一个位置开始|ES6|
+| 表达式 | 含义                                                          | 添加时间 |
+| ------ | ------------------------------------------------------------- | -------- |
+| i      | 不区分大小写                                                  |          |
+| g      | 全局匹配                                                      |          |
+| m      | 多行修饰符，使^和$匹配每一行的行首和行尾                      |          |
+| s      | 设置为dotAll模式，使.可以匹配任意单个字符                     | ES6      |
+| x      |                                                               |          |
+| e      |                                                               |          |
+| u      | 处理大于\uFFFF的 Unicode 字符                                 | ES6      |
+| y      | 与g修饰符类似，也是全局匹配，但匹配必须从剩余的第一个位置开始 | ES6      |
 
 #### 边界匹配器
-|表达式|含义|
-|----|----|
-|^|行首|
-|$|行尾|
-|\b|匹配一个单词边界|
-|\B|匹配非单词边界|
+| 表达式 | 含义             |
+| ------ | ---------------- |
+| ^      | 行首             |
+| $      | 行尾             |
+| \b     | 匹配一个单词边界 |
+| \B     | 匹配非单词边界   |
 ```md
 I say thank you
 thank you 
@@ -919,18 +919,18 @@ dt.getSeconds()  // 秒（0 - 59）
 
 ### 数组常用 API
 
-| 功能 | API | es6 |
-| :------| ------: | ------: |
-| 合并、切割 | concat,join,slice |  |
-| 添加 | unshift(从头),push(从末尾) |  |
-| 删除 | shift(从头),pop(从末尾) |  |
-| 删除并添加 | splice | copy​Within |
-| 排序 | sort,reverse |  |
-| 遍历 | map,forEach,reduce | entries,keys,values |
-| 筛选 | filter,every,some |  |
-| 查找 | indexOf,last​IndexOf | find,find​Index |
-| 转换 | toString,toLocaleString,toSource,ValueOf |  |
-| 自带 | Array​.isArray | Array.from,Array.of |
+| 功能       |                                      API |                 es6 |
+| :--------- | ---------------------------------------: | ------------------: |
+| 合并、切割 |                        concat,join,slice |                     |
+| 添加       |               unshift(从头),push(从末尾) |                     |
+| 删除       |                  shift(从头),pop(从末尾) |                     |
+| 删除并添加 |                                   splice |         copy​Within |
+| 排序       |                             sort,reverse |                     |
+| 遍历       |                       map,forEach,reduce | entries,keys,values |
+| 筛选       |                        filter,every,some |                     |
+| 查找       |                     indexOf,last​IndexOf |     find,find​Index |
+| 转换       | toString,toLocaleString,toSource,ValueOf |                     |
+| 自带       |                           Array​.isArray | Array.from,Array.of |
 
 
 
@@ -1187,12 +1187,12 @@ function push(array, ...items) {
 - ES6 明确将空位转为undefined。
 ### 字符串常用 API
 
-| 功能 | ES5 API |ES6 API|
-| :------| ------: |-----:|
-| 查找 | indexOf,lastIndexOf,charAt,  |String.fromCodePoint,codePointAt,includes,startsWith,endsWith|
-| 合并，切割 | concat,slice[),subString[),subStr,splite ||
-| 匹配 | match,replace,search|matchAll|
-| 格式化 | toLowerCase,toUpperCase,trim,repeat|String.fromCodePoint, String.raw,codePointAt,padStart,padEnd,trimStart,trimEnd|
+| 功能       |                                  ES5 API |                                                                        ES6 API |
+| :--------- | ---------------------------------------: | -----------------------------------------------------------------------------: |
+| 查找       |              indexOf,lastIndexOf,charAt, |                  String.fromCodePoint,codePointAt,includes,startsWith,endsWith |
+| 合并，切割 | concat,slice[),subString[),subStr,splite |                                                                                |
+| 匹配       |                     match,replace,search |                                                                       matchAll |
+| 格式化     |      toLowerCase,toUpperCase,trim,repeat | String.fromCodePoint, String.raw,codePointAt,padStart,padEnd,trimStart,trimEnd |
 
 #### 查找
 - charAt()
@@ -1239,7 +1239,7 @@ s.charCodeAt(1) // 57271
   - 提取字符串中介于两个指定下标之间的字符。
 - str.split([separator[, limit]])
   - 把一个字符串按分隔符分割成字符串数组
-  - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。)
+  - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。如果没有找到或者省略了分隔符，则该数组包含一个由整个字符串组成的元素)
   - limit【可选】返回数组的最大长度
 #### 匹配
 - str.replace(regexp|substr, newSubStr|function)

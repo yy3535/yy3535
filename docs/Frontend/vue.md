@@ -2151,3 +2151,5 @@ npm install better-scroll@next -S # install 2.x，with full-featured plugin.
 
 ### vue-qr
 - 二维码生成
+
+### 每个页面都想引用一个自己写的插件怎么引入，main里面不行

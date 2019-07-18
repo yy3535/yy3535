@@ -61,7 +61,7 @@
   - 加验证码
   - 移动端app
 ### 巡更系统
-- （http://pxsuzhou.xdf.cn/）
+- （http://suzhou.xdf.cn/zhuanti/xungengscanner/）(zhoumeng11/1234)
 :::warning 负责内容
   - 巡更点基础数据增删改查
   - 巡更记录的增删改查

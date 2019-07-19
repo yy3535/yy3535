@@ -1,57 +1,22 @@
-# 02-JS-WEB-API
+# JS-WEB-API
 [[toc]]
 
-## 01-DOM操作
+## DOM操作
 
-### 从 HTML 到 DOM
+### 本质
+- HTML 是一个有既定标签标准的 XML 格式，标签的名字、层级关系和属性，都被标准化（
+- XML——>一棵树(基本的数据结构)——>HTML
+    - 浏览器把 html 转变成 DOM，html 是一棵树，DOM 也是一棵树。
+    - DOM 就是 JS 能识别的 html 结构，一个普通的 JS 对象或者数组。
 
-#### DOM 的本质
-
-讲 DOM 先从 html 讲起，讲 html 先从 XML 讲起。XML 是一种可扩展的标记语言，所谓可扩展就是它可以描述任何结构化的数据，它是一棵树！
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<note>
-  <to>Tove</to>
-  <from>Jani</from>
-  <heading>Reminder</heading>
-  <body>Don't forget me this weekend!</body>
-  <other>
-    <a></a>
-    <b></b>
-  </other>
-</note>
-```
-
-HTML 是一个有既定标签标准的 XML 格式，标签的名字、层级关系和属性，都被标准化（否则浏览器无法解析）。同样，它也是一棵树。
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    <div>
-        <p>this is p</p>
-    </div>
-</body>
-</html>
-```
-
-我们开发完的 html 代码会保存到一个文档中（一般以`.html`或者`.htm`结尾），文档放在服务器上，浏览器请求服务器，这个文档被返回。因此，最终浏览器拿到的是一个文档而已，文档的内容就是 html 格式的代码。
-
-但是浏览器要把这个文档中的 html 按照标准渲染成一个页面，此时浏览器就需要将这堆代码处理成自己能理解的东西，也得处理成 JS 能理解的东西，因为还得允许 JS 修改页面内容呢。
-
-基于以上需求，浏览器就需要把 html 转变成 DOM，html 是一棵树，DOM 也是一棵树。对 DOM 的理解，可以暂时先抛开浏览器的内部因此，先从 JS 着手，即可以认为 DOM 就是 JS 能识别的 html 结构，一个普通的 JS 对象或者数组。
-
-【附带一个 chrome Element 的截图】
-
-### DOM 节点操作
+### 节点操作
 - DOM 节点就是一个 JS 对象
 - nodeType 区分过滤text标签，=1是p，=3是text
 - nodeName=#text是text，=p是p
+- 包括
+    - 获取节点，以及获取节点的 Attribute 和 property 
+    - 获取父节点 获取子节点
+    - 新增节点，删除节点
 ```js
  // 获取DOM节点
 var div1 = document.getElementById('div1')
@@ -100,19 +65,7 @@ onresize|	窗口或框架被重新调整大小。	|
 onscroll|	当文档被滚动时发生的事件。	|
 onunload|	用户退出页面。| 
 
-## 解答
-
-### DOM 是哪种基本的数据结构？
-
-树
-
-### DOM 操作的常用 API 有哪些
-
-- 获取节点，以及获取节点的 Attribute 和 property 
-- 获取父节点 获取子节点
-- 新增节点，删除节点
-
-## 02-BOM操作
+## BOM操作
 - BOM（浏览器对象模型）
   - navigator
   - screen
@@ -141,8 +94,6 @@ history.back()
 history.forward()
 ```
 
-## 解答
-
 ### 如何检测浏览器的类型
 
 ```javascript
@@ -161,10 +112,9 @@ console.log(location.search)
 console.log(location.hash)
 ```
 
-## 03-事件
+## 事件
 
 ### 事件绑定
-
 ```javascript
 var btn = document.getElementById('btn1')
 btn.addEventListener('click', function (event) {
@@ -173,7 +123,6 @@ btn.addEventListener('click', function (event) {
 ```
 
 #### 通用的事件绑定函数
-
 ```js
 function bindEvent(elem, type, fn) {
     elem.addEventListener(type, fn)
@@ -184,17 +133,8 @@ bindEvent(a, 'click', function(e) {
     alert('clicked')
 })
 ```
-
-#### 关于IE低版本的兼容性
-
-前几年 IE 低版本还占有较高流量的时候，这个函数要写的比较复杂，因为 IE 低版本是使用`attachEvent`来绑定事件的。但是现在 IE 低版本基本也都没人用了，而且主流的网站也都慢慢不支持了，现在还有大部分流量在移动端，也不用考虑这个兼容。
-
-因此，我不建议大家再去详细学习 IE 低版本的事件绑定了，你只需要上网简单一看，知道 IE 低版本不一样，有一些兼容性的问题，知道`attachEvent`这个最主要的函数，就够了。这就足够你去应对当前比较好的面试机会。
-
-但是，如果有一个面试机会非得考察 IE 低版本的各种兼容性问题，你不会也没关系。因为你干脆就放弃这次面试，你面试成功了，进去估计也是天天维护那些老掉牙的支持 IE 低版本的项目，没什么进步空间的。
-
+- IE 低版本是使用`attachEvent`来绑定事件的。
 ### 事件冒泡
-
 ```html
 <body>
     <div id="div1">
@@ -316,7 +256,7 @@ function bindEvent(elem, type, selector, fn) {
 - DOM树形结构
 - 事件会顺着触发元素网上冒泡
 
-### 对于一个无线下拉加载图片的页面，如何给每个图片绑定事件
+### 对于一个无限下拉加载图片的页面，如何给每个图片绑定事件
 
 使用代理，优点
 
@@ -324,7 +264,7 @@ function bindEvent(elem, type, selector, fn) {
 - 减少浏览器的内存占用
 
 
-## 04-ajax
+## ajax
 
 ### XMLHttpRequest
 
@@ -343,41 +283,26 @@ xhr.onreadystatechange = function () {
 }
 xhr.send(null)
 ```
+- IE低版本使用`var xhr = new ActiveXObject("Microsoft.XMLHTTP")`创建，
 
-#### 关于IE低版本的兼容性问题
+- xhr.readyState
+    - 0 - (未初始化）还没有调用send()方法 
+    - 1 -（载入）已调用send()方法，正在发送请求 
+    - 2 -（载入完成）send()方法执行完成，已经接收到全部响应内容
+    - 3 -（交互）正在解析响应内容 
+    - 4 -（完成）响应内容解析完成，可以在客户端调用了 
 
-最后，还得补充一下 IE 低版本的兼容性问题，它使用`var xhr = new ActiveXObject("Microsoft.XMLHTTP")`创建，这里我的建议跟讲事件那个章节一样，查查资料了解一下，不用详细看。如果工作之后不用，最好彻底忘掉，下次面试再扒出来本教程的文档看看就行了。
-
-### 状态码说明
-
-#### readyState
-
-xhr.readyState 的状态吗说明
-
-- 0 - (未初始化）还没有调用send()方法 
-- 1 -（载入）已调用send()方法，正在发送请求 
-- 2 -（载入完成）send()方法执行完成，已经接收到全部响应内容
-- 3 -（交互）正在解析响应内容 
-- 4 -（完成）响应内容解析完成，可以在客户端调用了 
-
-#### status
-
-http 状态吗有 `2xx` `3xx` `4xx` `5xx` 这几种，比较常用的有以下几种
-
-- 200 正常
-- 404 找不到资源
-- 5xx 服务器端出错了
+- xhr.status
+    - 200 正常
+    - 404 找不到资源
+    - 5xx 服务器端出错了
 
 ### 跨域
-
 - 浏览器的同源策略：
-  - 即一个域下的页面中，无法通过 ajax 获取到其他域的接口。
-- url 哪些地方不同算作跨域？
-  - 协议
-  - 域名
-  - 端口
-
-- html中可实现跨域的几个标签
+    - url协议、域名、端口不同，就是跨域
+    - 即一个域下的页面中，无法通过 ajax 获取到其他域的接口。
+    
+- 可实现跨域的几个标签
   - `<script src="xxx">`
     - 可以使用CDN，CDN基本都是其他域的链接。
     - 可以实现JSONP，获取其他域接口的信息。
@@ -388,8 +313,9 @@ http 状态吗有 `2xx` `3xx` `4xx` `5xx` 这几种，比较常用的有以下�
 
 - 所有的跨域请求方式，都需要信息提供方来做出相应的支持和改动
 
-#### JSONP（利用script标签的异步加载来实现的）
-从服务端`http://www.abc.com/?callback=callbackName`下载一段callback函数执行代码，数据作为函数的参数。页面中定义一个`window.callbackName=function(data){}`，函数执行后即可进入callback函数获取到data。
+#### JSONP（利用script标签的跨域特性实现）
+- 从服务端`http://www.abc.com/?callback=callbackName`下载一段callback函数执行代码，数据作为函数的参数。
+- 页面中定义一个`window.callbackName=function(data){}`，函数执行后即可进入callback函数获取到data。
 ```html
 <script>
 // 定义window.callbackName函数
@@ -398,16 +324,12 @@ window.callbackName = function (data) {
 }
 </script>
 ```
-
 ```js
 // 服务端返回函数代码
 callbackName({x:100, y:200})
 ```
 
 #### 服务器端设置 http header
-
-这是需要在服务器端设置的，现在推崇的跨域解决方案是这一种，比 JSONP 简单许多。
-
 ```js
 // server.js
 // express 跨域
@@ -420,7 +342,6 @@ app.use((req,res,next)=>{
     res.header("Access-Control-Allow-Headers","Origin,X-Requested-With,Content-Type,Accept,Authorization");
 })
 ```
-
 ```js
 response.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");  // 第二个参数填写允许跨域的域名称，不建议直接写 "*"
 response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
@@ -430,49 +351,24 @@ response.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS"
 response.setHeader("Access-Control-Allow-Credentials", "true");
 ```
 
-## 解答
-
-### 手动编写一个 ajax，不依赖第三方库
-
-```js
-var xhr = new XMLHttpRequest()
-xhr.open("GET", "/api", false)
-xhr.onreadystatechange = function () {
-    // 这里的函数异步执行，可参考之前 JS 基础中的异步模块
-    if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-            alert(xhr.responseText)
-        }
-    }
-}
-xhr.send(null)
-```
-
-### 跨域的几种实现方式
-
-- JSONP
-- 服务器端设置 http header
-
-
-
-
-
-## 05-websocket
+## websocket
 - 使用
 ```js
 var Socket = new WebSocket(url, [protocol] );
 ```
 
-WebSocket 事件
-事件	描述
-Socket.onopen	连接建立时触发
-Socket.onmessage	客户端接收服务端数据时触发
-Socket.onerror	通信发生错误时触发
-Socket.onclose	连接关闭时触发
-WebSocket 方法
-方法	描述
-Socket.send()	使用连接发送数据
-Socket.close()	关闭连接
+- WebSocket API
+
+|事件|	描述|
+|:-----:|:----:|
+|Socket.onopen|	连接建立时触发|
+|Socket.onmessage|	客户端接收服务端数据时触发|
+|Socket.onerror|	通信发生错误时触发|
+|Socket.onclose|	连接关闭时触发|
+|WebSocket 方法|
+|方法|	描述|
+|Socket.send()|	使用连接发送数据|
+|Socket.close()|	关闭连接|
 
 ```js
 if(window.WebSocket){
@@ -499,10 +395,9 @@ if(window.WebSocket){
         console.log(message);
     }   
 }
-
 ```
 
-## 06-存储
+## 存储
 
 ### cookie、session
 - cookie缺点：
@@ -568,15 +463,12 @@ if(window.WebSocket){
   // 获取sessionStorage
   let sessionUser=sessionStorage.getItem('user')&&JSON.parse(sessionStorage.getItem('user'));
   ```
-## 解答
-
-### 请描述一下 cookie，sessionStorage 和 localStorage 的区别？
-
+#### cookie，sessionStorage 和 localStorage 的区别
 - 容量
 - 是否会携带到 ajax 中
 - API易用性
 
-## 07-jquery 相关
+## jquery
 
 - 移动端使用 zepto，使用方法和 jquery 一样。API 地址 http://jquery.cuishifeng.cn/
 
@@ -590,11 +482,6 @@ if(window.WebSocket){
 ```js
 // 建议是用 $xxx 命名
 var $p1 = $('#p1')
-
-var $div = $('div')
-$div.forEach(function () {
-    console.log(this)
-})
 ```
 
 #### DOM 结构操作
@@ -660,18 +547,15 @@ $.ajax({
 ```
 |项|值|
 |:---|:---|
-|type|类型:String,默认值:GET|
-|url|类型:String,默认值:当前页地址|
-|success|类型:Function，请求成功回调函数|
-|options|类型:Object|
-|async|类型:Boolean,默认值:true,默认异步，注意：同步请求将锁住浏览器，用户其他操作必须等待请求完成才可执行|
-|beforeSend(XHR)|类型:Function,发送请求前修改XMLHttpRequest对象，XMLHttpRequest为唯一参数，如果返回false,可以取消本次ajax请求|
-|cache|类型:Boolean,默认值:true,dataType为script和jsonp时默认为false,设置false将不缓存此页面|
-|contentType|类型:String,默认值:"application/x-www-form-urlencoded",发送信息至服务器时内容编码类型.默认值适合大多数情况.如果你明确的传递了一个content-type 给$.ajax()那么它必行会发送给服务器(即使没有数据要发送)|
-|data|类型:String,发送到服务器的数据,将自动转换为请求字符串格式.GET 请求中将附加在URL 后.查看processData 选项说明以禁止此自动转换.必须为Key/Value 格式,如果为数组,jQuery 将自动为不同值对应同一个名称.如:{foo:["bar1", "bar2"]}转换为’&foo=bar1&foo=bar2’|
-|dataFilter|类型:Function,给AJAX 返回的原始数据的进行预处理的函数.提供data 和type 两个参数,data 是AJAX 返回的原始数据,type 是调用jQuery.ajax 时提供的dataType 参数,函数返回的值将由jQuery 进一步处理|
-|dataType|类型:String,预期服务器返回的数据类型.如果不指定,jQuery 将自动根据HTTP 包MIME 信息来智能判断,比如XML MIME 类型就被识别为XML.在1.4 中,JSON 就会生成一个JavaScript 对象,而script 则会执行这个脚本.随后服务器端返回的数据会根据这个值解析后,传递给回调函数.可用值:`xml`,`html`,`script`,`json`,`jsonp`,`text`,注意：使用JSONP 形式调用函数时,如"myurl?callback=?"jQuery 将自动替换? 为正确的函数名,以执行回调函数.|
-|error|类型:Function,默认值:自动判断(xml 或html), 请求失败时调用此函数|
+|type|默认GET|
+|url|默认当前页地址|
+|success|请求成功回调函数|
+|async|默认true,默认异步|
+|beforeSend(XHR)|发送请求前修改XMLHttpRequest对象，XMLHttpRequest为唯一参数，如果返回false,可以取消本次ajax请求|
+|cache|默认值:true,dataType为script和jsonp时默认为false,设置false将不缓存此页面|
+|contentType|默认"application/x-www-form-urlencoded",发送信息至服务器时内容编码类型|
+|dataType|可用值:`xml`,`html`,`script`,`json`,`jsonp`,`text`,注意：使用JSONP 形式调用函数时,如"myurl?callback=?"jQuery 将自动替换为正确的函数名,以执行回调函数.|
+|error|默认自动判断(xml 或html), 请求失败时调用此函数|
 
 #### JSONP
 提供方提供的数据：
@@ -716,6 +600,6 @@ $(xml).find("student").each(function(i){
   - 点击源，添加映射，把列拖入表格中
   - 填入数据
   - 另存为xml
-- 问题：转日期出错？？？
+- 问题：转日期出错(日期格式统一改为字符串即可)
 - 上线后本地能获取为json文件为对象的json数据不能变为对象了（是不是hbuilder的问题？？？）
 

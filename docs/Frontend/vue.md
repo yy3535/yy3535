@@ -511,62 +511,45 @@ destroyed(){
 ![vue生命周期](/img/lifecycle.png)
 
 ## 组件(component)
-  - data返回函数
-  - 要用闭合标签
-  - 子组件在父组件的模板中使用
-  - 组件名定义时写大驼峰，使用时用`-`连接（因为html标签不能有大写字母）
-### 优点：
-  - 一个页面分为几个组件开发，方便协作，方便维护，可复用
-  - 为了每个组件的数据，互不影响，
-
-### 使用.vue文件开发两种方法
-- 安装vue-cli脚手架
-npm install @vue/cli -g
-
-- 安装service-global
-npm install -g @vue/cli-service-global
-
-```
-vue serve App.vue
-```
-//http://localhost:8080/直接访问组件页面
-
-### 分类
-- 全局组件
-- 局部组件（声明在某个组件之内
-）
+- 组件是可复用的 Vue 实例，且带有一个名字
 ```html
-<!-- 父组件 -->
-<div id='app'>
-  <my-button></my-button>
-  <my-button></my-button>
-  <my-button></my-button>
+<div id="components-demo">
+  <button-counter></button-counter>
+  <button-counter></button-counter>
 </div>
 <script>
-  // 全局组件
-  Vue.component('my-button',{
-    template:`<button>{{msg}}</button>`,
-    data(){
+  // 定义一个名为 button-counter 的新组件
+  Vue.component('button-counter', {
+    data: function () {
       return {
-        msg:'点我啊'
+        count: 0
       }
-    }
+    },
+    template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
   })
-  let vm = new Vue({
-    el:"#app",
-    // 子组件
-    components:{
-      'MyButton':{
-        data(){
-          return {msg:'点我啊'}
-        },
-        template:`<button>{{}}</button>`
-      }
-    }
-  })
+  // 使用组件
+  new Vue({ el: '#components-demo' })
 </script>
 
 ```
+:::warning 注意
+- data 选项必须是一个函数（以此保证每个实例可以维护一份被返回对象的独立的拷贝）
+:::
+
+### 注册
+- 全局注册（Vue.component(...)）和局部注册（父组件内部注册）
+
+:::tip 使用.vue文件开发两种方法
+- 安装vue-cli脚手架
+npm install @vue/cli -g
+- 安装service-global
+npm install -g @vue/cli-service-global
+```js
+vue serve App.vue
+//http://localhost:8080/直接访问组件页面
+```
+:::
+
 ### props(属性父传子)
 - 命名在 HTML 中是 kebab-case 的,在 js 中是 camelCase 的
 - v-bind=对象，传入对象的所有属性
@@ -2117,6 +2100,7 @@ Vue.http.interceptors.push((request, next) => {
 
 ## vue 组件库
 ### better-scroll
+#### 介绍
 ```html
 <div class="wrapper">
   <ul class="content">
@@ -2128,18 +2112,19 @@ Vue.http.interceptors.push((request, next) => {
 </div>
 ```
 - 自动在wrapper中的第一个节点即content上处理滚动，忽略其他元素
+#### 安装
 ```js
 npm install better-scroll -S # install 1.x
 npm install better-scroll@next -S # install 2.x，with full-featured plugin.
 ```
-- 最简单的处理
-  - new BScroll(dom)(第一个参数是dom，但内部也会尝试使用选择器)
+#### 使用
+- 基础滚动
   ```js
   import BScroll from '@better-scroll/core'
-  let wrapper = document.querySelector('.wrapper')
-  let scroll = new BScroll(wrapper)
+  let bs = new BScroll('.wrapper', {
+  })
   ```
-- 插件
+- 增强型滚动
   ```js
   import BScroll from '@better-scroll/core'
   import PullUp from '@better-scroll/pull-up'
@@ -2148,7 +2133,36 @@ npm install better-scroll@next -S # install 2.x，with full-featured plugin.
     pullUpLoad: true
   })
   ```
-
+- 配置项
+  - scrollY 默认true
+  - scrollX 默认false
+  - freeScroll 支持横向和纵向同时滚动
+  - bounce 回弹动画
+  - bounceTime 回弹动画时长
+- API
+  - 属性
+  - 方法
+    - bs.refresh() 
+      - 重新计算 BetterScroll，当 DOM 结构发生变化的时候务必要调用确保滚动的效果正常。
+    - bs.on(type, fn, context)//事件名，回调函数，this指向
+      - 监听当前实例上的钩子函数。如：scroll、scrollEnd 等。
+  - 钩子（事件）
+    - touchEnd
+      - {Object} {x, y} 位置坐标
+      - 鼠标/手指离开。
+    ```js
+    import BScroll from '@better-scroll/core'
+    let scroll = new BScroll('.wrapper', {
+      probeType: 3
+    })
+    function onScroll(pos) {
+        console.log(`Now position is x: ${pos.x}, y: ${pos.y}`)
+    }
+    scroll.on('scroll', onScroll)
+    ```
+    :::warning
+    better-scroll是目前比较好用的开源滚动库,提供很多灵活的api供我们开发各种实用的组件,文档地址(https://ustbhuangyi.github.io/better-scroll/doc/zh-hans/#better-scroll),本次主要用到它提供的pullDownRefresh 和 pullUpLoad api 开启上拉加载和下拉刷新的功能,同时它还提供两个event用于发送请求,pullingUp会在一次上拉加载之后触发,pullingdown 会在一次下拉刷新之后触发,可以在这两个事件中请求数据.这里有一个坑就是,每次上拉或者下拉之后需要调用finishPullUp或finishPullDown来结束这些动作.另外better-scroll在ios系统上快速滚动可能会出现白屏的bug,而且当你滚动暂停的时候回出现抖动,这些可以通过修改配置项useTransition:false解决,better-scroll会开始以js帧动画来渲染滑动效果,以下是代码部分
+    :::
 ### vue-qr
 - 二维码生成
 

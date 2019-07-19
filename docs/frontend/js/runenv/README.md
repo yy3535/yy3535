@@ -1,4 +1,4 @@
-# 04-运行环境
+# 运行环境
 [[toc]]
 ## 页面加载
 
@@ -11,7 +11,7 @@
 - 加载 html 中的静态资源
 - `<script src="/static/js/jquery.js"></script>`
 
-#### 加载一个资源的过程
+#### 从输入url到得到html的过程
 
 - 浏览器根据 DNS 服务器得到域名的 IP 地址
 - 向这个 IP 的机器发送 http 请求
@@ -26,98 +26,11 @@
 - 根据 RenderTree 开始渲染和展示
 - 遇到`<script>`时，会执行并阻塞渲染
 
-### 几个示例
+### 为何要把 css 放在 head 中
 
-#### 最简单的页面
+### 为何要把 JS 放在 body 最后
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    <p>test</p>
-</body>
-</html>
-```
-
-#### 引用 css
-
-css 内容
-
-```css
-div {
-    width: 100%;
-    height: 100px;
-    font-size: 50px;
-}
-```
-
-html 内容
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="test.css">
-</head>
-<body>
-    <div>test</div>
-</body>
-</html>
-```
-
-最后思考为何要把 css 放在 head 中？？？
-
-#### 引入 js
-
-js 内容
-
-```js
-document.getElementById('container').innerHTML = 'update by js'
-```
-
-html 内容
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    <div id="container">default</div>
-    <script src="index.js"></script>
-    <p>test</p>
-</body>
-</html>
-```
-
-思考为何要把 JS 放在 body 最后？？？
-
-#### 有图片
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    <p>test</p>
-    <p><img src="test.png"/></p>
-    <p>test</p>
-</body>
-</html>
-```
-
-引出`window.onload`和`DOMContentLoaded`
+### `window.onload`和`DOMContentLoaded`区别
 
 ```js
 window.addEventListener('load', function () {
@@ -127,20 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOM 渲染完即可执行，此时图片、视频还可能没有加载完
 })
 ```
-
-## 解答
-
-### 从输入url到得到html的详细过程
-
-- 浏览器根据 DNS 服务器得到域名的 IP 地址
-- 向这个 IP 的机器发送 http 请求
-- 服务器收到、处理并返回 http 请求
-- 浏览器得到返回内容
-
-### window.onload 和 DOMContentLoaded 的区别
-
-- 页面的全部资源加载完才会执行，包括图片、视频等
-- DOM 渲染完即可执行，此时图片、视频还没有加载完
 
 ## 性能优化
 - 原则
@@ -283,17 +182,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 ## 安全性
 
-### 题目
+### 推荐书
+- 阅读《白帽子讲web安全》
 
-- 【面试】常见的 web 攻击方式有哪些，简述原理？如何预防？
+### web 攻击方式
 
-### 解决
-
-关于前端安全的知识，建议阅读《白帽子讲web安全》，作者也是一位很传奇的人物，这本书写的浅显易懂，很适合前端工程师阅读。
-
-#### 常见的 web 攻击方式有哪些，简述原理？如何预防？
-
-- SQL注入**。
+- SQL注入
   - 例如做一个系统的登录界面，输入用户名和密码，提交之后，后端直接拿到数据就拼接 SQL 语句去查询数据库。如果在输入时进行了恶意的 SQL 拼装，那么最后生成的 SQL 就会有问题。但是现在稍微大型的一点系统，都不会这么做，从提交登录信息到最后拿到授权，都经过层层的验证。因此，SQL 注入都只出现在比较低端小型的系统上。
 
 - XSS
@@ -337,13 +231,15 @@ document.addEventListener('DOMContentLoaded', function () {
   - 防御措施（让插入的js不可执行）
     - 编码(转义)
       - 对用户输入的数据进行HTML Entity编码，显示为转义字符
-        |     -      |  字符  | 十进制 | 转义字符 |
-        | :--------: | :----: | :----: |
-        |     "      | &#34;  | &quot; |
-        |     &      | &#38;  | &amp;  |
-        |     <      | &#60;  |  &lt;  |
-        |     >      | &#62;  |  &gt;  |
-        | 不断开空格 | &#160; | &nbsp; |
+
+      |-|字符|十进制|转义字符|
+      |:---:|:---:|:---:|:---:|
+      |     "      | \&#34;  | \&quot; |
+      |     &      | \&#38;  | \&amp;  |
+      |     <      | \&#60;  |  \&lt;  |
+      |     >      | \&#62;  |  \&gt;  |
+      | 不断开空格   | \&#160; | \&nbsp; |
+
     - 过滤
       - 移除用户上传的DOM属性，如onerror等
       - 移除用户上传的Style节点、Script节点、Iframe节点等。

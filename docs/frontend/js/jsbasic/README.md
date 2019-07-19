@@ -86,6 +86,17 @@
     2 ** 3 ** 2
     // 512
     ```
+#### 获取随机数，要求是长度一致的字符串格式
+
+使用`Math.random()`可获取字符串，但是返回的是一个小于 1 的小数，而且小数点后面长度不同
+
+```javascript
+var random = Math.random()
+var random = random + '0000000000'  // 后面加上 10 个零
+var random = random.slice(0, 10)
+console.log(random)
+```
+
 ### 运算符
 - 优先级
     - https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
@@ -364,191 +375,68 @@ object.getName();  //My Object
     ```
 - 闭包的应用
     - 创造作用域，避免全局污染
+    ```js
+    function isFirstLoad() {
+        var _list = []
 
-```js
-function isFirstLoad() {
-    var _list = []
-
-    return function (id) {
-        if (_list.indexOf(id) >= 0) {
-            return false
-        } else {
-            _list.push(id)
-            return true
+        return function (id) {
+            if (_list.indexOf(id) >= 0) {
+                return false
+            } else {
+                _list.push(id)
+                return true
+            }
         }
     }
-}
-// 使用
-var firstLoad = isFirstLoad()
-firstLoad(10) // true
-firstLoad(10) // false
-firstLoad(20) // true
-```
-## 解题
-
-### 创建 10 个 a 标签，点击的时候弹出来对应的序号
-
-错误的写法
-
-```javascript
-var i, a
-for (i = 0; i < 10; i++) {
-    a = document.createElement('a')
-    a.innerHTML = i + '<br>'
-    a.addEventListener('click', function (e) {
-        e.preventDefault()
-        alert(i)
-    })
-    document.body.appendChild(a)
-}
-```
-
-正确的写法
-
-```javascript
-var i
-for (i = 0; i < 10; i++) {
-    (function (i) {
-        var a = document.createElement('a')
+    // 使用
+    var firstLoad = isFirstLoad()
+    firstLoad(10) // true
+    firstLoad(10) // false
+    firstLoad(20) // true
+    ```
+    - 创建 10 个 a 标签，点击的时候弹出来对应的序号
+    ```javascript
+    // 错误的写法
+    var i, a
+    for (i = 0; i < 10; i++) {
+        a = document.createElement('a')
         a.innerHTML = i + '<br>'
         a.addEventListener('click', function (e) {
             e.preventDefault()
             alert(i)
         })
         document.body.appendChild(a)
-    })(i)
-}
-```
+    }
+    ```
+    ```javascript
+    // 正确的写法
+    var i
+    for (i = 0; i < 10; i++) {
+        (function (i) {
+            var a = document.createElement('a')
+            a.innerHTML = i + '<br>'
+            a.addEventListener('click', function (e) {
+                e.preventDefault()
+                alert(i)
+            })
+            document.body.appendChild(a)
+        })(i)
+    }
+    ```
+    - `DocumentFragment`优化
 
-上面的回答已经结束了，但是还有一点可以优化，如果能做到，那将会给你加分。提示一下，是关于 DOM 操作的性能问题的。这里先按下不表，等后面讲解性能问题的时候再说。有兴趣的可以先去查查`DocumentFragment`
-
-
-### 实际开发中
-
-## 04异步知识点
+## 异步
 
 ### 什么是异步
-
-先看下面的 demo，根据程序阅读起来表达的意思，应该是先打印`100`，1秒钟之后打印`200`，最后打印`300`。但是实际运营根本不是那么回事。
-
-```javascript
-console.log(100)
-setTimeout(function () {
-    console.log(200)
-}, 1000)
-console.log(300)
-```
-
-再对比以下程序。先打印`100`，再弹出`200`（等待用户确认），最后打印`300`。这个运行效果就符合预期要求。
-
-```javascript
-console.log(100)
-alert(200)  // 1秒钟之后点击确认
-console.log(300)
-```
-
-这俩到底有何区别？———— 第一个示例中间的步骤根本没有阻塞接下来程序的运行，而第二个示例却阻塞了后面程序的运行。前面这种表现就叫做**异步**（后面这个叫做**同步**）
-
-为何需要异步呢？如果第一个示例中间步骤是一个 ajax 请求，现在网络比较慢，请求需要5秒钟。如果是同步，这5秒钟页面就卡死在这里啥也干不了了。
-
-最后，前端 JS 脚本用到异步的场景主要有两个：
-
+异步的场景
 - 定时 `setTimeout` `setInverval`
-- 网络请求，如 `ajax` `<img>`加载
-- 事件绑定（后面会有解释）
+- 网络请求，如 `ajax` `<img>`加载（常用语打点统计）
+- 事件绑定
 
-ajax 代码示例
-
-```javascript
-console.log('start')
-$.get('./data1.json', function (data1) {
-    console.log(data1)
-})
-console.log('end')
-```
-
-img 代码示例（常用语打点统计）
-
-```javascript
-console.log('start')
-var img = document.createElement('img')
-img.onload = function () {
-    console.log('loaded')
-}
-img.src = '/xxx.png'
-console.log('end')
-```
-
-事件绑定
-
-```javascript
-console.log('start')
-document.getElementById('btn1').addEventListener('click', function () {
-    alert('clicked')
-})
-console.log('end')
-```
-
-### 异步和单线程
-
-JS 在客户端运行的时候，只有一个线程可运行，因此想要两件事儿同时干是不可能的。如果没有异步，我们只能同步干，就像第二个示例一样，等待过程中卡住了，但是有了异步就没有问题了。那么单线程是如何实现异步的呢？
-
-```javascript
-console.log(100)
-setTimeout(function () {
-    console.log(200)
-})
-console.log(300)
-```
-
-那上面的示例来说，有以下几点。重点从这个过程中体会**单线程**这个概念，即事情都是一步一步做的，不能两件事儿一起做。
-
-- 执行第一行，打印`100`
-- 执行`setTimeout`后，传入`setTimeout`的函数会被暂存起来，不会立即执行。
-- 执行最后一行，打印`300`
-- 待所有程序执行完，处于空闲状态时，会立马看有没有暂存起来的要执行。
-- 发现暂存起来的`setTimeout`中的函数无需等待时间，就立即来过来执行
-
-下面再来一个`setTimeout`的例子。规则和上面的一样，只不过这里暂存起来的函数，需要等待 1s 之后才能被执行。
-
-```javascript
-console.log(100)
-setTimeout(function () {
-    console.log(200)
-}, 1000)
-console.log(300)
-```
-
-下面再来一个 ajax 的例子。规则也是一样的，只不过这里暂存起来的函数，要等待网络请求返回之后才能被执行，具体时间不一定。
-
-```javascript
-console.log(100)
-$.get('./data.json', function (data) {
-    console.log(200)
-})
-console.log(300)
-```
-
-最后再解释一下事件绑定，如下代码。其实事件绑定的实现原理和上面的是一样的，也是会把时间暂存，但是要等待用户点击只有，才能被执行。原理是一样的，因此事件绑定在原理上来说，可以算作是异步。但是从设计上来说，还是分开好理解一些。
-
-```javascript
-console.log(100)
-$btn.click(function () {
-    console.log(200)
-})
-console.log(300)
-```
-
-**重点：异步的实现机制，以及对单线程的理解**
-
-------
-
-下面的暂时先不讲
+### 异步的实现机制，以及对单线程的理解
 
 ### 异步的问题和解决方案
-
 异步遇到的最大的问题
-
 - callback-hell 
 - 易读性差，即书写顺序和执行顺序不一致
 
@@ -569,31 +457,17 @@ $.get('./data1.json', function (data1) {
 })
 console.log('end')
 ```
-
-不过目前已经有了非常明确的解决方案 —— Promise，并且 Promise 放在 ES6 的标准中了。很遗憾本教程的范围不包括 ES6 ，因为 ES6 包含的内容太多了，放在这个教程中会很庞大，成本太高。
-
-> 要想把异步讲全面，那得单独需要一门课程花5-7个小时去讲解（JS、jquery、ES6、node）。如果这样一讲，那就又带出了ES6的很多知识，又得花额外的时间去讲解，这样算下来，就得10多个小时。
-
-我提供了一个参考链接，如果大家有本节课的基础，再去看参考链接的内容，应该能掌握异步更高级的知识。
-
-### 参考和扩展阅读
-
 - [深入理解 JavaScript 异步系列（1）——基础](http://www.cnblogs.com/wangfupeng1988/p/6513070.html)
 - [深入理解 JavaScript 异步系列（2）—— jquery的解决方案](http://www.cnblogs.com/wangfupeng1988/p/6515779.html)
 - [深入理解 JavaScript 异步系列（3）—— ES6 中的 Promise](http://www.cnblogs.com/wangfupeng1988/p/6515855.html)
 - [深入理解 JavaScript 异步系列（4）—— Generator](http://www.cnblogs.com/wangfupeng1988/p/6532713.html)
 - [深入理解 JavaScript 异步系列（5）—— async await](http://www.cnblogs.com/wangfupeng1988/p/6532734.html)
 
-## 解答
-
-### 同步和异步的区别是什么？分别举一个同步和异步的例子
+### 同步和异步的区别
 
 同步会阻塞代码执行，而异步不会。`alert`是同步，`setTimeout`是异步
 
-### 一个关于`setTimeout`的笔试题
-
-面试题中，`setTimeout`的基本是必会出现的
-
+### 关于`setTimeout`的笔试题
 ```javascript
 // 以下代码执行后，打印出来的结果是什么
 console.log(1)
@@ -606,19 +480,15 @@ setTimeout(function () {
 }, 1000)
 console.log(5)
 ```
+该题目的答案是`1 3 5 2 4`
 
-该题目的答案是`1 3 5 2 4`，不知道跟你答对了没有。具体的原理，我们后面再详细讲解。
-
-### 前端使用异步的场景有哪些
-
+### 前端使用异步的场景
 - setTimeout setInterval
 - 网络请求
-- 事件绑定（可以说一下自己的理解）
+- 事件绑定
 
-## 05其他基础知识知识点
-
-### 正则表达式
-#### 正则对象
+## 内置对象-正则表达式
+### 正则对象
 - 正则对象可以匹配变量，pattern 正则表达式的文本，flags(g:全局匹配 i:忽略大小写 m：多行)
 - 三种方式
     - 字面量
@@ -637,7 +507,7 @@ console.log(5)
     ```js
     let reg = new RegExp(`^(${j}${o})`)
     ```
-#### 正则api:
+### 正则api:
 - RegExp.prototype.exec(str)
     - 在一个指定字符串中执行一个搜索匹配。返回一个结果数组(匹配的第一个字符串)或 null，并改变lastIndex(再次执行exec时开始搜索的位置)
     ```js
@@ -679,11 +549,11 @@ console.log(5)
 - RegExp.prototype.flags[ES6]
     - 返回正则表达式的修饰符
 
-#### 字符串的正则方法
+### 字符串的正则方法
 5个方法：match()、replace()、search()、split()、matchAll()
-#### 规则
+### 规则
 - 默认前一次匹配的结束是下一次匹配的开始
-#### 字符类
+### 字符类
 - []中括号表示范围
   - `[a-zA-Z],[abc],[cf]at`,
   - `[0-9]`
@@ -691,6 +561,7 @@ console.log(5)
 - ()括号表示里面内容是个整体，优先顺序，|表示或者
   - `(cla|pa)ss` 表示class或者pass
 
+<<<<<<< HEAD
 #### 预定义字符类
 | 符号 | 含义                                                           |
 | :--- | :------------------------------------------------------------- |
@@ -701,8 +572,20 @@ console.log(5)
 | \S   | 非空白字符:[^\s]                                               |
 | \w   | 单词字符:[a-zA-Z_0-9]                                          |
 | \W   | 非单词字符:[^\w]                                               |
+=======
+### 预定义字符类
+|符号|含义|
+|:---|:---|
+|.|匹配除\n换行符外的任何单字符。匹配包括\n在内的所有字符，使用(.|\n)|
+|\d|数字字符:[0-9]|
+|\D|非数字字符:[^0-9]|
+|\s|空白字符（空格和换行符）:[\f\n\r\t\v]|
+|\S|非空白字符:[^\s]|
+|\w|单词字符:[a-zA-Z_0-9]|
+|\W|非单词字符:[^\w]|
+>>>>>>> d3fa55f8cadddee3a49bbdfb6f6675eabfe9d2ff
 
-#### 量词
+### 量词
 - 允许指定匹配出现的次数,以下为贪婪模式：
 | 符号   | 含义            |
 | :----- | :-------------- |
@@ -738,7 +621,7 @@ console.log(5)
 侵占模式：\w++[a-z]
 匹配0个
 ```
-#### 捕获组
+### 捕获组
 - 捕获组：使用括号作为单独的单元来对待的一种方式，可通过程序方便地拿到分组对应的匹配内容
 - 作用：
   - 方便程序获取指定组的匹配
@@ -900,7 +783,7 @@ thank you all the same
 /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([?=&\/\w \.-]*)*\/?$/
 <!-- 修改加上?=&后可匹配带参数url -->
 ```
-### 日期函数
+## 内置对象-日期函数
 
 日期函数最常用的 API 如下
 
@@ -915,9 +798,32 @@ dt.getHours()  // 小时（0 - 23）
 dt.getMinutes()  // 分钟（0 - 59）
 dt.getSeconds()  // 秒（0 - 59）
 ```
+- 获取`2017-06-10`格式的日期
+```javascript
+function formatDate(dt) {
+    if (!dt) {
+        dt = new Date()
+    }
+    var year = dt.getFullYear()
+    var month = dt.getMonth() + 1
+    var date = dt.getDate()
+    if (month < 10) {
+        // 强制类型转换
+        month = '0' + month
+    }
+    if (date < 10) {
+        // 强制类型转换
+        date = '0' + date
+    }
+    // 强制类型转换
+    return year + '-' + month + '-' + date
+}
+var dt = new Date()
+var formatDate = formatDate(dt)
+console.log(formatDate)
+```
 
-
-### 数组常用 API
+## 内置对象-数组常用 API
 
 | 功能       |                                      API |                 es6 |
 | :--------- | ---------------------------------------: | ------------------: |
@@ -934,9 +840,9 @@ dt.getSeconds()  // 秒（0 - 59）
 
 
 
-#### 数组自带方法
+### 数组自带方法
 - Array​.isArray()
-##### ES6新增
+#### ES6新增
 - Array​.from(object, mapFunction, thisValue)
   - 将非数组转为数组（`拥有 length 属性的对象（类数组对象）`和`可迭代的对象`）。
   - 第二个参数(类似map方法),用来对每个元素进行处理，将处理后的值放入返回的数组。
@@ -951,8 +857,8 @@ dt.getSeconds()  // 秒（0 - 59）
   Array(3) // [, , ,]
   Array.of(1) // [1]
   ```
-#### 实例方法
-##### ES5
+### 实例方法
+#### ES5
 :::warning 合并、切割
 - Array​.prototype​.concat(arrayX,arrayX,......,arrayX)
   - 返回被连接数组的一个副本。
@@ -1042,7 +948,7 @@ dt.getSeconds()  // 秒（0 - 59）
 - Array​.prototype​.toLocale​String()
 :::
 
-##### ES6新增
+#### ES6新增
 - Array​.prototype​.copy​Within(target, start = 0, end = this.length)
   - 在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。
   - 会修改当前数组
@@ -1130,7 +1036,7 @@ dt.getSeconds()  // 秒（0 - 59）
   // [[2], [4], [6], [8]]
   ```
 
-#### 扩展运算符（数组）[ES6]
+### 扩展运算符（数组）[ES6]
 - 三个点（...）,将一个数组转为用逗号分隔的参数序列。
 ```js
 console.log(...[1, 2, 3])
@@ -1183,9 +1089,9 @@ function push(array, ...items) {
     - Array.from：转`拥有 length 属性的对象（类数组对象）`和`可迭代的对象`为数组
     :::
 
-#### 将空位转为undefined[ES6]
+### 将空位转为undefined[ES6]
 - ES6 明确将空位转为undefined。
-### 字符串常用 API
+## 内置对象-符串常用 API
 
 | 功能       |                                  ES5 API |                                                                        ES6 API |
 | :--------- | ---------------------------------------: | -----------------------------------------------------------------------------: |
@@ -1194,7 +1100,7 @@ function push(array, ...items) {
 | 匹配       |                     match,replace,search |                                                                       matchAll |
 | 格式化     |      toLowerCase,toUpperCase,trim,repeat | String.fromCodePoint, String.raw,codePointAt,padStart,padEnd,trimStart,trimEnd |
 
-#### 查找
+### 查找
 - charAt()
 - charCodeAt()
 - indexOf()
@@ -1231,7 +1137,7 @@ s.charCodeAt(1) // 57271
 - endsWith()
     - 返回布尔值，表示参数字符串是否在原字符串的尾部。
     - 支持第二个参数，表示开始搜索的位置。
-#### 合并、切割
+### 合并、切割
 - concat()
 - slice(start,end)
   - 提取字符串的某个部分，并以新的字符串返回被提取的部分。
@@ -1241,7 +1147,7 @@ s.charCodeAt(1) // 57271
   - 把一个字符串按分隔符分割成字符串数组
   - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。如果没有找到或者省略了分隔符，则该数组包含一个由整个字符串组成的元素)
   - limit【可选】返回数组的最大长度
-#### 匹配
+### 匹配
 - str.replace(regexp|substr, newSubStr|function)
   - 替换
   - 第二个参数是字符串
@@ -1272,7 +1178,7 @@ s.charCodeAt(1) // 57271
     - 返回一个正则表达式在当前字符串的所有匹配(返回一个遍历器,用for...of循环)
     - 转数组（...运算符或Array.from方法）
 
-#### 格式化
+### 格式化
 
 - toLocaleLowerCase()
 - toLocaleUpperCase()
@@ -1329,8 +1235,8 @@ String.fromCharCode(0x20BB7)
     - trimStart()消除字符串头部的空格
     - trimEnd()消除尾部的空格。
     - 返回新字符串，不修改原始字符串。
-### 对象常用 API
-#### 属性
+## 内置对象-对象常用 API
+### 属性
 - 属性名
   - obj.xxx(xxx是变量要用[xxx])
 - 属性遍历
@@ -1348,8 +1254,8 @@ String.fromCharCode(0x20BB7)
         }
     }
     ```
-#### Object 构造函数的方法
-##### ES5
+### Object 构造函数的方法
+#### ES5
 - Object.create(proto, [propertiesObject])
   - 使用指定的原型对象和属性创建一个新对象。
 - Object.defineProperty()
@@ -1397,7 +1303,7 @@ String.fromCharCode(0x20BB7)
   }
   obj.name='小明'
   ```
-##### ES6新增
+#### ES6新增
 - Object.is(val1,val2)
   - 与严格比较运算符（===）基本一致(区别：`+0不等于-0`和`NaN等于自身`。)
   ```js
@@ -1485,7 +1391,7 @@ String.fromCharCode(0x20BB7)
     ```
 - Object.getOwnPropertySymbols(obj)
     - 返回一个数组，成员是当前对象的所有用作属性名的 Symbol 值。
-#### Object 实例的方法
+### Object 实例的方法
 - Object.prototype.hasOwnProperty()
   - 返回一个布尔值 ，表示某个对象是否含有指定的属性，而且此属性非原型链继承的。
 - Object.prototype.isPrototypeOf()
@@ -1496,7 +1402,7 @@ String.fromCharCode(0x20BB7)
   - 返回指定对象的原始值。
 
 
-### Function API
+## 内置对象-Function API
 - 实例的方法
   - Function.prototype.apply(thisArg, [argsArray])
     - 在一个对象的上下文中应用另一个对象的方法
@@ -1527,7 +1433,7 @@ console.log(min);
 
 ES6语法：
 
-#### 函数参数的默认值[ES6]
+### 函数参数的默认值[ES6]
 - 参数默认值是惰性求值的(每次都重新计算默认值表达式的值)
 ```js
 function Point(x = 0, y = 0) {
@@ -1560,7 +1466,7 @@ function m2({x, y} = { x: 0, y: 0 }) {
 - 应用
   - 可以指定某一个参数不得省略，如果省略就抛出一个错误
   - 可以将参数默认值设为undefined，表明这个参数是可以省略的。
-#### rest 参数[ES6]
+### rest 参数[ES6]
 - 形式为`...变量名`，用于获取函数的多余参数
 - arguments是类数组，rest参数是真数组
 - rest 参数之后不能再有其他参数（即只能是最后一个参数），否则会报错。
@@ -1576,10 +1482,10 @@ const sortNumbers = (...numbers) => numbers.sort();
 ```js
 (function(...a) {}).length  // 0
 ```
-#### 函数内严格模式
+### 函数内严格模式
 - 规定只要函数参数使用了默认值、解构赋值、或者扩展运算符，那么函数内部就不能显式设定为严格模式，否则会报错。
 
-#### 函数的name属性
+### 函数的name属性
 - 函数的name属性，返回该函数的函数名。（ES6才将其写入了标准）
 ```js
 function foo() {}
@@ -1594,7 +1500,7 @@ f.name // ""
 f.name // "f"
 ```
 
-#### 箭头函数
+### 箭头函数
 
 - 一个参数可以省略圆括号
 - 可以省略return和{}，如果返回的是一个对象，要用小括号包裹起来
@@ -1617,7 +1523,7 @@ f.name // "f"
     - 需要动态this的时候
     - 函数体很复杂，有许多行，或者函数内部有大量的读写操作，不单纯是为了计算值
 - 嵌套的箭头函数
-#### 尾调用优化
+### 尾调用优化
 - 指某个函数的最后一步是调用另一个函数。
 ```js
 function f(x){
@@ -1631,7 +1537,7 @@ function f(x){
     - 尾调用自身，就称为尾递归。
     - 递归非常耗费内存，很容易发生“栈溢出”错误。对于尾递归来说，由于只存在一个调用帧，所以永远不会发生“栈溢出”错误。
     - ES6规定所有实现必须部署“尾调用优化”。
-#### 函数参数的尾逗号 
+### 函数参数的尾逗号 
 -  允许函数的最后一个参数有尾逗号。
 ```js
 function clownsEverywhere(
@@ -1667,45 +1573,8 @@ if (3 in trees) {
 :::
 
 
-## 解答
 
-### 获取`2017-06-10`格式的日期
-
-```javascript
-function formatDate(dt) {
-    if (!dt) {
-        dt = new Date()
-    }
-    var year = dt.getFullYear()
-    var month = dt.getMonth() + 1
-    var date = dt.getDate()
-    if (month < 10) {
-        // 强制类型转换
-        month = '0' + month
-    }
-    if (date < 10) {
-        // 强制类型转换
-        date = '0' + date
-    }
-    // 强制类型转换
-    return year + '-' + month + '-' + date
-}
-var dt = new Date()
-var formatDate = formatDate(dt)
-console.log(formatDate)
-```
-
-### 获取随机数，要求是长度一直的字符串格式
-
-使用`Math.random()`可获取字符串，但是返回的是一个小于 1 的小数，而且小数点后面长度不同
-
-```javascript
-var random = Math.random()
-var random = random + '0000000000'  // 后面加上 10 个零
-var random = random.slice(0, 10)
-console.log(random)
-```
-
+## 面试题
 ### 写一个能遍历对象和数组的`forEach`函数
 
 遍历数组使用`forEach`，而遍历对象使用`for in`，但是在实际开发中，可以使用一个函数就遍历两者，jquery 就有这样的函数
@@ -1762,8 +1631,7 @@ function deepCopy(obj){
 };
 ```
 
-### 其他面试题
-- setTimeout设置为0有什么作用？
+### setTimeout设置为0有什么作用？
 ```js
 var fuc = [1,2,3];
 for(var i in fuc){

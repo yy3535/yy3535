@@ -1,50 +1,8 @@
-# 03-开发环境
-
-## IDE
-
-### 题目
-
-- 【面试】了解哪些IDE，日常用的最多的是哪个？
-
-### 解答
-
-IDE 即你用什么编辑器来编写代码。这块肯定不会出笔试题，面试题也就基本简单聊一聊，但是就这么简单一聊，聪明的面试官就能管中窥豹，了解到你平常到底是否经常写代码。
-
-#### 了解哪些IDE，日常用的最多的是哪个？
-
-前端最常用的 IDE 有 [webstorm](https://www.jetbrains.com/webstorm/) [sublime](https://www.sublimetext.com/) [atom](https://atom.io/) 和 [vscode](https://code.visualstudio.com/)，我们可以分别是他们的官网看一下。
-
-webstorm 是最强大的编辑器，因为它拥有各种强大的插件和功能，但是我没有用过，因为它收费。不是因为我舍不得花钱，是因为我觉得免费的 sublime 已经够我用了。因此，跟面试官聊到 webstorm 之后，没用过没事儿，一定要知道它：第一，强大；第二，收费。
-
-sublime 是我日常用的编辑器，第一它免费，第二它轻量、高效，第三它插件非常多。用 sublime 一定要安装各种插件配合使用，可以去网上搜一下“sublime”常用插件的安装以及用法，还有它的各种快捷键，并且亲自使用它。这里就不一一演示了，网上的教程也很傻瓜式。
-
-atom 是 github 出品的编辑器，跟 sublime 差不多，免费并且插件丰富，而且跟 sublime 相比风格上还有些小清新。但是我用过几次就不用了，因此它第一打开的时候会比较慢，卡一下才打开。当然总体来说也是很好用的，只是个人习惯问题。
-
-vscode 是微软出品的轻量级（相对于 visual studio 来说）编辑器，微软做 IDE 那是出了名的好，出了名的大而全，因此 vscode 也有上述 sublime 和 atom 的各种优点，但是我也是因为个人习惯问题（本人不愿意尝试没有新意的新东西），用过几次就不用了。
-
-总结一下：
-
-- 如果你要走大牛、大咖、逼格的路线，就用 webstorm
-- 如果你走普通、屌丝、低调路线，就用 sublime
-- 如果你走小清新、个性路线，就用 vscode 或者 atom
-- 如果你面试，最好有一个用的熟悉，其他都会一点
-
-最后注意：千万不要说你使用 Dreamweaver 或者 notpad++ 写前端代码，会被人鄙视的。如果你不做 .net 也不要用 Visual Studio ，不做 java 也不要用 eclipse
+# 开发环境
 
 ## Git
 
-### 题目
-
-- 【笔试】写出一些常用的 git 命令
-- 【面试】简述多人使用 git 协作开发的基本流程
-
-### 解答
-
-你此前做过的项目一定要用过 git ，而且必须是命令行，如果没用过，你自己也得恶补一下。对 git 的基本应用比较熟悉的同学，可以跳过这一节了。mac os 自带 git，windows 需要安装 git 客户端，自己去网上找。
-
-国内比较好的 git 服务商是 coding.net ，国外的是大名鼎鼎的 github 但是很容易被墙。因此建议大家注册一个 coding.net 然后创建一个项目，来练练手。
-
-#### 写出一些常用的 git 命令
+### 常用的 git 命令
 
 - git add .
 - git checkout xxx
@@ -53,102 +11,26 @@ vscode 是微软出品的轻量级（相对于 visual studio 来说）编辑器�
 - git pull origin master
 - git stash / git stash pop
 
-#### 简述多人使用 git 协作开发的基本流程
+### 多人使用 git 协作开发的基本流程
 
 - git branch
 - git checkout -b xxx / git checkout xxx
 - git merge xxx
 
-#### 关于 svn
-
-关于 svn 我的态度和针对 IE 低版本浏览器的态度一样，你要查询一下资料简单了解一下，面试的时候可能会问到，但是你只要熟悉了 git 的操作，面试官不会因为你不熟悉 sv 就难为你。但是前提是你要知道一点 svn 的基本命令，自己上网一查就行。
-
-但是 svn 和 git 的区别你得了解。svn 是每一步操作都离不开服务器，创建分支，提交代码都需要连接服务器。而 git 就不一样了，你可以在本地创建分支，提交代码，最后再一起 push 到服务器上。因此，git 拥有 svn 的所有功能，但是却比 svn 强大的多。（git 是 linux 的创始人发明的东西，因此也倍得推崇）
+### svn 和 git 的区别
+- svn 是每一步操作都离不开服务器，创建分支，提交代码都需要连接服务器。
+- git 可以在本地创建分支，提交代码，最后再一起 push 到服务器上。
+- git 拥有 svn 的所有功能，但是却比 svn 强大的多。
 
 ## 模块化
 
 这一小节就不出题目了，因为它本身就是一个题目，范围也比较单一，就是模块化。
 
 ### 为何需要模块化
+- 全局变量污染
+- 引用多个模块后必须分清模块的依赖关系
 
-#### 原始情况
-
-规模较大的前端项目，不可能使用一个 JS 文件就能写完，不同的功能需要封装到不同的 JS 文件中，这样便于开发也便于维护。
-
-项目的基础库`util.js`
-
-```js
-function getFormatDate(date, type) {
-    // type === 1 返回 2017-06-15
-    // type === 2 返回 2017年6月15日 格式
-    // ……
-}
-```
-
-项目有好多个业务，不同业务需要的日期格式不一样，因此每个业务有一个基础库`a-util.js`
-
-```js
-function aGetFormatDate(date) {
-    return getFormatDate(date, 2) // 要求返回 2017年6月15日 格式
-}
-```
-
-具体落实这个业务的功能层面，就需要使用业务的基础库，定义`a.js`
-
-```js
-var dt = new Date()
-console.log(aGetFormatDate(dt))
-```
-
-这样，我们再使用`a.js`的时候，就需要去这样引用
-
-```html
-<script src="util.js"></script>
-<script src="a-util.js"></script>
-<script src="a.js"></script>
-```
-
-这样使用会有两个问题：
-
-- 这些代码中的函数必须是全局变量，才能暴露给使用方，但是全局变量会造成很严重的污染，很容易覆盖别人的或者被别人覆盖
-- `a.js`知道要引用`a-util.js`，但是他知道还需要依赖于`util.js`吗？如果不知道，就漏掉，就会报错
-
-#### 使用模块化之后
-
-模块化之后，我们的代码大体上要这么写（只是代码描述，并不一定真的这么写）
-
-util.js
-
-```js
-export {
-    getFormatDate: function (date, type) {
-        // type === 1 返回 2017-06-15
-        // type === 2 返回 2017年6月15日 格式
-    }
-}
-```
-
-a-util.js
-
-```js
-var getFormatDate = require('util.js')
-export {
-    aGetFormatDate: function (date) {
-        return getFormatDate(date, 2) // 要求返回 2017年6月15日 格式
-    }
-}
-```
-
-a.js
-
-```js
-var aGetFormatDate = require('a-util.js')
-var dt = new Date()
-console.log(aGetFormatDate(dt))
-```
-
-这样，我们在使用时
-
+### 使用模块化之后
 - 直接`<script src="a.js"></script>`，其他的根据依赖关系自动引用
 - 那两个函数，没必要做成全局变量，不会带来污染和覆盖
 

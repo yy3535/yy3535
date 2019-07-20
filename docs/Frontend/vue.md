@@ -537,7 +537,7 @@ destroyed(){
 :::
 
 ### 组件注册
-- 全局注册（Vue.component(...)）和局部注册
+#### 全局注册（Vue.component(...)）和局部注册
   - 全局注册，注册之后可以用在任何新创建的 Vue 根实例 (new Vue) 的模板中。
   - 局部注册,父组件内部注册
   ```js
@@ -550,8 +550,53 @@ destroyed(){
     // ...
   }
   ```
-- 组件名
+#### 组件名
   - 遵循 W3C 规范中的自定义组件名 (字母全小写且必须包含一个连字符)。避免和当前以及未来的 HTML 元素相冲突。
+#### 基础组件的自动化全局注册
+如果使用了 webpack (或在内部使用了 webpack 的 Vue CLI 3+)，就可以使用 require.context 只全局注册这些非常通用的基础组件。
+这里有一份可以让你在应用入口文件 (比如 src/main.js) 中全局导入基础组件的示例代码：
+```js
+import Vue from 'vue'
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
+
+const requireComponent = require.context(
+  // 其组件目录的相对路径
+  './components',
+  // 是否查询其子目录
+  false,
+  // 匹配基础组件文件名的正则表达式
+  /Base[A-Z]\w+\.(vue|js)$/
+)
+
+requireComponent.keys().forEach(fileName => {
+  // 获取组件配置
+  const componentConfig = requireComponent(fileName)
+
+  // 获取组件的 PascalCase 命名
+  const componentName = upperFirst(
+    camelCase(
+      // 获取和目录深度无关的文件名
+      fileName
+        .split('/')
+        .pop()
+        .replace(/\.\w+$/, '')
+    )
+  )
+
+  // 全局注册组件
+  Vue.component(
+    componentName,
+    // 如果这个组件选项是通过 `export default` 导出的，
+    // 那么就会优先使用 `.default`，
+    // 否则回退到使用模块的根。
+    componentConfig.default || componentConfig
+  )
+})
+```
+:::warning 注意
+全局注册的行为必须在根 Vue 实例 (通过 new Vue) 创建之前发生。
+:::
 :::tip 使用.vue文件开发两种方法
 - 安装vue-cli脚手架
 npm install @vue/cli -g
@@ -604,47 +649,147 @@ Vue.component('blog-post', {
   v-bind:post="post"
 ></blog-post>
 ```
-- 命名在 HTML 中是 kebab-case 的,在 js 中是 camelCase 的
-- v-bind=对象，传入对象的所有属性
-- this.$attrs 所有属性
-```html
-<!-- 简单传值 -->
-<blog-post msg-title="hello!"></blog-post>
-<!-- 传入数组 -->
-<blog-post
-  v-for="item in arr"
-  v-bind:key="item.id"
-  v-bind:title="item.title"
-></blog-post>
-<script>
-  new Vue({
-    el:'app',
-    componets:{
-      'MyButton':{
-        //禁用特性(没有使用的属性 保留在this.$attrs中，不会显示在dom结构上了)
-        inheritAttrs: false,
-        props:{
-          msgTitle:{
-            //类型(String/Number/Boolean/Array/Object/Function/Promise)
-            type:String,
-            //默认值
-            default:'点我啊',
-            //验证
-            validator(value){
-              return value>3
-            }
-          },
-          arr:{
-            type:Array,
-            //属性校验中，如果是数组/对象，需要将默认值返回
-            default:()=>([1,2])//箭头函数后面是括号表示[1,2]是个返回值
-          }
-        },
-      }
-  }
-  })
-</script>
+
+#### Prop的大小写
+- HTML中的特性名不区分大小写，所以使用短横线命名
+
+#### Prop类型
+- 字符串数组形式
+```js
+props: ['title', 'likes', 'isPublished', 'commentIds', 'author']
 ```
+
+- 对象形式(prop名称:prop类型)
+```js
+props: {
+  title: String,
+  likes: Number,
+  isPublished: Boolean,
+  commentIds: Array,
+  author: Object,
+  callback: Function,
+  contactsPromise: Promise // or any other constructor
+}
+```
+#### 传递静态或动态Prop
+- 传递数字、布尔值、数组、对象
+  - 即便值是静态的，我们仍然需要 `v-bind` 来告诉 Vue，这是一个 JavaScript 表达式而不是一个字符串。
+  ```html
+  <!-- 这是一个 JavaScript 表达式而不是一个字符串。-->
+  <blog-post v-bind:likes="42"></blog-post>
+
+  <!-- 用一个变量进行动态赋值。-->
+  <blog-post v-bind:likes="post.likes"></blog-post>
+  ```
+
+- 传入一个对象的所有属性
+  - 将一个对象的所有属性都作为 prop 传入，可以使用不带参数的 v-bind (取代 v-bind:prop-name)
+  ```js
+  post: {
+    id: 1,
+    title: 'My Journey with Vue'
+  }
+  ```
+  ```html
+  <blog-post v-bind="post"></blog-post>
+  <!-- 等价于： -->
+  <blog-post
+    v-bind:id="post.id"
+    v-bind:title="post.title"
+  ></blog-post>
+  ```
+
+#### 单向数据流
+- 子组件内部不应该改变 prop
+  - 所有的 prop 都使得其父子 prop 之间形成了一个单向下行绑定：父级 prop 的更新会向下流动到子组件中
+  - 注意：在子组件中改变对象或数组的prop本身将会影响到父组件的状态。
+
+
+#### Prop 验证
+- 当 prop 验证失败的时候，(开发环境构建版本的) Vue 将会产生一个控制台的警告。
+- prop 会在一个组件实例创建之前进行验证，所以实例的属性 (如 data、computed 等) 在 default 或 validator 函数中是不可用的。
+```js
+Vue.component('my-component', {
+  props: {
+    // 基础的类型检查 (`null` 和 `undefined` 会通过任何类型验证)
+    propA: Number,
+    // 多个可能的类型
+    propB: [String, Number],
+    // 必填的字符串
+    propC: {
+      type: String,
+      required: true
+    },
+    // 带有默认值的数字
+    propD: {
+      type: Number,
+      default: 100
+    },
+    // 带有默认值的对象
+    propE: {
+      type: Object,
+      // 对象或数组默认值必须从一个工厂函数获取
+      default: function () {
+        return { message: 'hello' }
+      }
+    },
+    // 自定义验证函数
+    propF: {
+      validator: function (value) {
+        // 这个值必须匹配下列字符串中的一个
+        return ['success', 'warning', 'danger'].indexOf(value) !== -1
+      }
+    }
+  }
+})
+```
+- 类型检查
+  - type可以是下列原生构造函数中的一个
+    - String
+    - Number
+    - Boolean
+    - Array
+    - Object
+    - Date
+    - Function
+    - Symbol  
+  - 也可以是自定义的构造函数
+#### 非 Prop 的特性
+- 组件可以接受任意的特性，而这些特性会被自动添加到这个组件的根元素上。
+- 非 prop 特性是指传向一个组件，但是该组件并没有相应 prop 定义的特性。
+
+- 替换/合并已有的特性
+  - 对于绝大多数特性来说，从外部提供给组件的值会替换掉组件内部设置好的值。
+  - 如果传入 type="text" 就会替换掉 type="date" 并把它破坏
+  - class 和 style 特性，两边的值会被合并起来
+
+- 禁用特性继承
+  - 如果不希望组件的根元素继承特性，可以在组件的选项中设置 `inheritAttrs: false`。
+    - inheritAttrs: false 选项不会影响 style 和 class 的绑定。
+    ```js
+    Vue.component('my-component', {
+      inheritAttrs: false,
+      // ...
+    })
+    ```
+  - 实例的 $attrs包含了传递给一个组件的特性名和特性值,可以手动决定这些特性会被赋予哪个元素
+    ```js
+    Vue.component('base-input', {
+      inheritAttrs: false,
+      props: ['label', 'value'],
+      template: `
+        <label>
+          {{ label }}
+          <input
+            v-bind="$attrs"
+            v-bind:value="value"
+            v-on:input="$emit('input', $event.target.value)"
+          >
+        </label>
+      `
+    })
+    ```
+
 
 ### 单个根元素
 - 每个组件必须只有一个根元素
@@ -655,7 +800,7 @@ Vue.component('blog-post', {
   <div v-html="content"></div>
 </div>
 ```
-### 子组件事件监听
+### 自定义事件
 - 父组件在模板中控制字号，并通过`v-on:事件命`绑定事件，`$event`是接受的参数
 ```html
 <div id="blog-posts-events-demo">
@@ -709,9 +854,11 @@ Vue.component('blog-post', {
   `
 })
 ```
+#### 事件名
+  - 需要完全匹配，不存在任何自动化的大小写转换
+  - 推荐始终使用 kebab-case 的事件名
 
-
-### 在组件上使用 v-model
+#### 在组件上使用 v-model
 
 为了让它正常工作，这个组件内的 <input> 必须：
 
@@ -731,9 +878,49 @@ Vue.component('custom-input', {
 ```html
 <custom-input v-model="searchText"></custom-input>
 ```
+像单选框、复选框等类型的输入控件可能会将 value 特性用于不同的目的。`model` 选项可以用来避免这样的冲突
+```js
+Vue.component('base-checkbox', {
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
+  props: {
+    checked: Boolean
+  },
+  template: `
+    <input
+      type="checkbox"
+      v-bind:checked="checked"
+      v-on:change="$emit('change', $event.target.checked)"
+    >
+  `
+})
+```
+```html
+<base-checkbox v-model="lovingVue"></base-checkbox>
+```
+
+#### 将原生事件绑定到组件
+- 使用 v-on 的 .native 修饰符,在一个组件的根元素上直接监听一个原生事件
+```html
+<base-input v-on:focus.native="onFocus"></base-input>
+```
+
+- 如果根元素上没有这个原生事件，父级的 .native 监听器将静默失败。
+- 提供了一个 `$listeners` 属性，它是一个对象，里面包含了作用在这个组件上的所有监听器。
+- `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。
+
+#### .sync 修饰符
+
+
 
 ### 通过插槽分发内容
+#### 插槽内容
+- 当组件渲染的时候，<slot></slot> 将会被替换为slot位置上的内容。
+- 插槽内可以包含任何模板代码，包括 HTML，甚至其它的组件
 ```html
+<!-- 如果 <alert-box> 没有包含一个 <slot> 元素，则该组件起始标签和结束标签之间的任何内容都会被抛弃。 -->
 <alert-box>
   Something bad happened.
 </alert-box>
@@ -748,6 +935,88 @@ Vue.component('alert-box', {
   `
 })
 ```
+
+#### 编译作用域
+- 父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的。（插槽里只能用到父级里的实例属性，不能访问子组件里的属性）
+
+#### 后备内容
+- 设置默认显示内容，如果不提供任何插槽内容，即显示这个。如果提供，会覆盖掉。
+```html
+<button type="submit">
+  <slot>Submit</slot>
+</button>
+```
+
+#### 具名插槽
+- 多个插槽情况需要使用。
+- `name`属性
+  - 命名插槽，默认不带name时，name为'default'
+  ```html
+  <div class="container">
+    <header>
+      <slot name="header"></slot>
+    </header>
+    <main>
+      <slot></slot>
+    </main>
+    <footer>
+      <slot name="footer"></slot>
+    </footer>
+  </div>
+  ```
+- 使用`v-slot:插槽名`命令指定内容对应的插槽名称
+  - v-slot 只能添加在一个 <template> 上
+  ```html
+  <base-layout>
+    <!-- <template> 元素中的所有内容都将会被传入相应的插槽 -->
+    <template v-slot:header>
+      <h1>Here might be a page title</h1>
+    </template>
+    <!-- 任何没有被包裹在带有 v-slot 的 <template> 中的内容都会被视为默认插槽的内容。 -->
+    <p>A paragraph for the main content.</p>
+    <p>And another one.</p>
+    <!-- 等同于 -->
+    <template v-slot:default>
+      <p>A paragraph for the main content.</p>
+      <p>And another one.</p>
+    </template>
+    <template v-slot:footer>
+      <p>Here's some contact info</p>
+    </template>
+  </base-layout>
+  ```
+
+#### 作用域插槽
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### 动态组件
 - `<component>`元素加上`is`特性来实现
@@ -776,6 +1045,8 @@ currentTabComponent 可以包括
   - 字符串 (例如：template: '...')
   - 单文件组件 (.vue)
   - <script type="text/x-template">
+
+
 
 
 ### 子组件触发父级的方法

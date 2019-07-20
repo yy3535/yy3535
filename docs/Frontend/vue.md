@@ -536,9 +536,22 @@ destroyed(){
 - data 选项必须是一个函数（以此保证每个实例可以维护一份被返回对象的独立的拷贝）
 :::
 
-### 注册
-- 全局注册（Vue.component(...)）和局部注册（父组件内部注册）
+### 组件注册
+- 全局注册（Vue.component(...)）和局部注册
+  - 全局注册，注册之后可以用在任何新创建的 Vue 根实例 (new Vue) 的模板中。
+  - 局部注册,父组件内部注册
+  ```js
+  import ComponentA from './ComponentA.vue'
 
+  export default {
+    components: {
+      ComponentA
+    },
+    // ...
+  }
+  ```
+- 组件名
+  - 遵循 W3C 规范中的自定义组件名 (字母全小写且必须包含一个连字符)。避免和当前以及未来的 HTML 元素相冲突。
 :::tip 使用.vue文件开发两种方法
 - 安装vue-cli脚手架
 npm install @vue/cli -g
@@ -550,7 +563,47 @@ vue serve App.vue
 ```
 :::
 
-### props(属性父传子)
+### 通过 Prop 向子组件传递数据
+- 可以在组件上注册的一些自定义特性。当一个值传递给一个 prop 特性的时候，它就变成了那个组件实例的一个属性。
+```js
+// prop可以任意数量，任意值
+Vue.component('blog-post', {
+  props: ['title'],
+  template: '<h3>{{ title }}</h3>'
+})
+// 对象
+Vue.component('blog-post', {
+  props: ['post'],
+  template: `
+    <div class="blog-post">
+      <h3>{{ post.title }}</h3>
+      <div v-html="post.content"></div>
+    </div>
+  `
+})
+```
+```html
+<!-- prop被注册后，数据可以作为自定义特性传递过来 -->
+<blog-post title="My journey with Vue"></blog-post>
+<blog-post title="Blogging with Vue"></blog-post>
+<blog-post title="Why Vue is so fun"></blog-post>
+```
+```html
+<!-- 动态传递特性 -->
+<blog-post
+  v-for="post in posts"
+  v-bind:key="post.id"
+  v-bind:title="post.title"
+></blog-post>
+```
+```html
+<!-- 动态传递对象（无论何时为 post 对象添加一个新的属性，它都会自动地在 <blog-post> 内可用。） -->
+<blog-post
+  v-for="post in posts"
+  v-bind:key="post.id"
+  v-bind:post="post"
+></blog-post>
+```
 - 命名在 HTML 中是 kebab-case 的,在 js 中是 camelCase 的
 - v-bind=对象，传入对象的所有属性
 - this.$attrs 所有属性
@@ -592,6 +645,138 @@ vue serve App.vue
   })
 </script>
 ```
+
+### 单个根元素
+- 每个组件必须只有一个根元素
+```html
+<!-- 将模板的内容包裹在一个父元素内 -->
+<div class="blog-post">
+  <h3>{{ title }}</h3>
+  <div v-html="content"></div>
+</div>
+```
+### 子组件事件监听
+- 父组件在模板中控制字号，并通过`v-on:事件命`绑定事件，`$event`是接受的参数
+```html
+<div id="blog-posts-events-demo">
+  <div :style="{ fontSize: postFontSize + 'em' }">
+    <blog-post
+      v-for="post in posts"
+      v-bind:key="post.id"
+      v-bind:post="post"
+      <!-- 绑定事件 -->
+      v-on:enlarge-text="postFontSize += 0.1"
+      <!-- 接受参数 -->
+      v-on:enlarge-text="postFontSize += $event"
+      <!-- 事件函数是方法 -->
+      v-on:enlarge-text="onEnlargeText"
+    ></blog-post>
+  </div>
+</div>
+<script>
+  new Vue({
+    el: '#blog-posts-events-demo',
+    data: {
+      posts: [/* ... */],
+      postFontSize: 1
+    },
+    methods: {
+      // 作为第一个参数传入
+      onEnlargeText: function (enlargeAmount) {
+        this.postFontSize += enlargeAmount
+      }
+    }
+  })
+</script>
+```
+- 组件中添加按钮，通过`v-on:行为="$emit(事件名，参数)"`触发事件，可传一个参数
+```js
+Vue.component('blog-post', {
+  props: ['post'],
+  template: `
+    <div class="blog-post">
+      <h3>{{ post.title }}</h3>
+      // 绑定事件
+      <button v-on:click="$emit('enlarge-text')">
+        Enlarge text
+      </button>
+      // 传参
+      <button v-on:click="$emit('enlarge-text',0.1)">
+        Enlarge text
+      </button>
+      <div v-html="post.content"></div>
+    </div>
+  `
+})
+```
+
+
+### 在组件上使用 v-model
+
+为了让它正常工作，这个组件内的 <input> 必须：
+
+- 将其 value 特性绑定到一个名叫 value 的 prop 上
+- 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
+```js
+Vue.component('custom-input', {
+  props: ['value'],
+  template: `
+    <input
+      v-bind:value="value"
+      v-on:input="$emit('input', $event.target.value)"
+    >
+  `
+})
+```
+```html
+<custom-input v-model="searchText"></custom-input>
+```
+
+### 通过插槽分发内容
+```html
+<alert-box>
+  Something bad happened.
+</alert-box>
+```
+```js
+Vue.component('alert-box', {
+  template: `
+    <div class="demo-alert-box">
+      <strong>Error!</strong>
+      <slot></slot>
+    </div>
+  `
+})
+```
+
+### 动态组件
+- `<component>`元素加上`is`特性来实现
+```html
+<!-- 组件会在 `currentTabComponent` 改变时改变 -->
+<component v-bind:is="currentTabComponent"></component>
+```
+currentTabComponent 可以包括
+- 已注册组件的名字，或
+- 一个组件的选项对象
+
+### 解析DOM模板注意事项
+- 有些 HTML 元素，诸如 <ul>、<ol>、<table> 和 <select>，对于哪些元素可以出现在其内部是有严格限制的。而有些元素，诸如 <li>、<tr> 和 <option>，只能出现在其它某些特定的元素内部。
+- 使用`is`特性
+```html
+<!-- 这个自定义组件 <blog-post-row> 会被作为无效的内容提升到外部，并导致最终渲染结果出错。 -->
+<table>
+  <blog-post-row></blog-post-row>
+</table>
+<!-- 使用is特性 -->
+<table>
+  <tr is="blog-post-row"></tr>
+</table>
+```
+- 从以下来源使用模板的话，这条限制是不存在的：
+  - 字符串 (例如：template: '...')
+  - 单文件组件 (.vue)
+  - <script type="text/x-template">
+
 
 ### 子组件触发父级的方法
 - this.$attrs 获取当前组件所有的属性

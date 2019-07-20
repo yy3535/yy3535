@@ -90,6 +90,7 @@ https://huruqing.gitee.io/demos/source/reset.css
     - A：Alpha透明度//0~1
 - RGBA:该透明度不会被继承，区别于opacity
 - #
+
 ### 文本阴影:
 - text-shadow
   - none | shadow [ , shadow ]* 
@@ -161,7 +162,6 @@ background:bg-color bg-image position/bg-size bg-repeat bg-origin bg-clip bg-att
 宽度和高度重新渲染页面.
 
 ## CSS布局
-
 
 ### table布局（简单）
 ### 技巧性布局（难）

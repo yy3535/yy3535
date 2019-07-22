@@ -964,8 +964,8 @@ Vue.component('alert-box', {
     </footer>
   </div>
   ```
-- 使用`v-slot:插槽名`命令指定内容对应的插槽名称
-  - v-slot 只能添加在一个 <template> 上
+- 使用`v-slot:插槽名`命令指定内容对应的插槽名称，可简写为`#`
+  - v-slot 只能添加在一个 `<template>` 上
   ```html
   <base-layout>
     <!-- <template> 元素中的所有内容都将会被传入相应的插槽 -->
@@ -987,34 +987,28 @@ Vue.component('alert-box', {
   ```
 
 #### 作用域插槽
-- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- 让父级插槽内容能够访问子组件中才有的数据
+- 将子组件的数据`v-bind`绑到插槽上去即可
+```html
+<span>
+  <slot v-bind:user="user">
+    {{ user.lastName }}
+  </slot>
+</span>
+```
+```html
+<current-user>
+  {{ user.firstName }}
+</current-user>
+```
+- 可以使用`v-slot`定义名字
+```html
+<current-user>
+  <template v-slot:default="slotProps">
+    {{ slotProps.user.firstName }}
+  </template>
+</current-user>
+```
 
 
 
@@ -2623,3 +2617,6 @@ npm install better-scroll@next -S # install 2.x，with full-featured plugin.
 - 二维码生成
 
 ### 每个页面都想引用一个自己写的插件怎么引入，main里面不行
+
+
+### vue-loader高版本需要webpack配置plugin

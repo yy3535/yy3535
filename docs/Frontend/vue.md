@@ -2564,8 +2564,7 @@ Vue.http.interceptors.push((request, next) => {
 - 自动在wrapper中的第一个节点即content上处理滚动，忽略其他元素
 #### 安装
 ```js
-npm install better-scroll -S # install 1.x
-npm install better-scroll@next -S # install 2.x，with full-featured plugin.
+npm install @better-scroll/core@next --save
 ```
 #### 使用
 - 基础滚动

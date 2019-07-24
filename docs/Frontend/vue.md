@@ -550,6 +550,9 @@ destroyed(){
     // ...
   }
   ```
+  :::warning 公共组件header footer之类
+  写在根组件App里即可在整个App组件里共享
+  :::
 #### 组件名
   - 遵循 W3C 规范中的自定义组件名 (字母全小写且必须包含一个连字符)。避免和当前以及未来的 HTML 元素相冲突。
 #### 基础组件的自动化全局注册
@@ -2614,6 +2617,19 @@ npm install @better-scroll/core@next --save
     :::
 ### vue-qr
 - 二维码生成
+
+### vue-lazyload
+- 懒加载
+
+### lodash
+- npm i lodash
+- 处理数组，字符串，对象等的工具库
+- upperFirst 格式化变量名
+- camelCase 格式化变量名
+```js
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
+```
 
 ### 每个页面都想引用一个自己写的插件怎么引入，main里面不行
 

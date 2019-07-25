@@ -65,56 +65,7 @@ onresize|	窗口或框架被重新调整大小。	|
 onscroll|	当文档被滚动时发生的事件。	|
 onunload|	用户退出页面。| 
 
-## BOM操作
-- BOM（浏览器对象模型）
-  - navigator
-  - screen
-  - location
-  - history
-
-```javascript
-// navigator
-var ua = navigator.userAgent
-var isChrome = ua.indexOf('Chrome')
-console.log(isChrome)
-
-// screen
-console.log(screen.width)
-console.log(screen.height)
-
-// location
-console.log(location.href)
-console.log(location.protocol) // 'http:' 'https:'
-console.log(location.pathname) // '/learn/199'
-console.log(location.search)
-console.log(location.hash)
-
-// history
-history.back()
-history.forward()
-```
-
-### 如何检测浏览器的类型
-
-```javascript
-var ua = navigator.userAgent
-var isChrome = ua.indexOf('Chrome')
-console.log(isChrome)
-```
-
-### 拆解url的各部分
-
-```javascript
-console.log(location.href)
-console.log(location.protocol) // 'http:' 'https:'
-console.log(location.pathname) // '/learn/199'
-console.log(location.search)
-console.log(location.hash)
-```
-
-## 事件
-
-### 事件绑定
+#### 事件绑定
 ```javascript
 var btn = document.getElementById('btn1')
 btn.addEventListener('click', function (event) {
@@ -122,7 +73,7 @@ btn.addEventListener('click', function (event) {
 })
 ```
 
-#### 通用的事件绑定函数
+- 通用的事件绑定函数
 ```js
 function bindEvent(elem, type, fn) {
     elem.addEventListener(type, fn)
@@ -134,7 +85,7 @@ bindEvent(a, 'click', function(e) {
 })
 ```
 - IE 低版本是使用`attachEvent`来绑定事件的。
-### 事件冒泡
+#### 事件冒泡
 ```html
 <body>
     <div id="div1">
@@ -166,7 +117,7 @@ bindEvent(body, 'click', function (e) {
 
 如果我们在`p1` `div1` `body`中都绑定了事件，它是会根据 DOM 的结构，来冒泡从下到上挨个执行的。但是我们使用`e.stopPropatation()`就可以阻止冒泡。
 
-### 事件代理
+#### 事件代理
 - 使用
   - e.target// 目标DOM节点
   - e.target.nodeName=='A'// 目标DOM节点的节点名称(筛选a标签)
@@ -225,6 +176,54 @@ bindEvent(div1, 'click', function (e) {
     console.log(a.innerHTML)
 })
 ```
+## BOM操作
+- BOM（浏览器对象模型）
+  - navigator
+  - screen
+  - location
+  - history
+
+```javascript
+// navigator
+var ua = navigator.userAgent
+var isChrome = ua.indexOf('Chrome')
+console.log(isChrome)
+
+// screen
+console.log(screen.width)
+console.log(screen.height)
+
+// location
+console.log(location.href)
+console.log(location.protocol) // 'http:' 'https:'
+console.log(location.pathname) // '/learn/199'
+console.log(location.search)
+console.log(location.hash)
+
+// history
+history.back()
+history.forward()
+```
+
+### 如何检测浏览器的类型
+
+```javascript
+var ua = navigator.userAgent
+var isChrome = ua.indexOf('Chrome')
+console.log(isChrome)
+```
+
+### 拆解url的各部分
+
+```javascript
+console.log(location.href)
+console.log(location.protocol) // 'http:' 'https:'
+console.log(location.pathname) // '/learn/199'
+console.log(location.search)
+console.log(location.hash)
+```
+
+
 
 
 ## 解答

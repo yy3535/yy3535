@@ -39,3 +39,6 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     C:\Users\DELL\AppData\Roaming\npm-cache_logs\2019-04-03T06_40_57_606Z-debug.log
 ```
   - 解决：npm install webpack-dev-server@2.9.7 --save-dev
+
+## 文件写入，保存
+- 如果在命令行下使用vim，先按下ESC退出编辑模式，然后输入：wq 保存并退出或者q退出或者q!强制退出，从而回到命令行界面。

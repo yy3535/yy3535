@@ -16,7 +16,64 @@
     - `==`会先试图类型转换，然后再比较，`===`不会类型转换
     - 必须用`===`。
     - 唯一用`==`的地方：obj.a === null || obj.a === undefined ，简写形式obj.a == null
+### 显示类型转换
+- Number函数
+  - **数值**：转换后还是原来的值
+  - **字符串**：如果可以被解析为数值，则转换为相应的数值，否则得到NaN.空字符串转为0
+  - **布尔值**：true转成1，false转成0
+  - **undefined**：转成NaN
+  - **null**：转成0
+  - **对象**：先调用自身的valueOf，不行再调用自身的toString，再不行就报错
+    - Object的valueOf返回对象本身，toString返回"[object Object]"的字符串
+    - Array的valueOf返回对象本身，toString返回调用join(',')所返回的字符串。
+    - Function的valueOf返回对象本身，toString返回函数中包含的代码转为字符串的值。
+- Number等同于一元正号(+)
+```js
+> +{} //相当于 Number({})
+NaN
+```
+- String函数
+  - **数值**：转为相应的字符串
+  - **字符串**：转换后还是原来的值
+  - **布尔值**：true转成'true'，false转成'false'
+  - **undefined**：转成'undefined'
+  - **null**：转成'null'
+  - **对象**：先调用自身的toString，不行再调用自身的valueOf，再不行就报错
+- Boolean函数
+  - undefined/null/-0/+0/NaN/''(空字符串)==>false
+  - 其他一律为true
 
+
+
+### 隐式类型转换
+  - 四则运算
+    - **+**：只要其中一个是String类型，表达式的值转为String。若无字符串，表达式便转为Number类型
+    - **其余**：只要其中一个是Number类型，表达式的值便转为Number。
+    - **非法字符**：对于非法字符的情况通常会返回NaN
+```js
+'1' * 'a'     // => NaN
+```
+  - 判断语句
+    - 转换规则同Boolean的构造函数。
+  - Native调用
+    - 比如console.log、alert调用自动转为字符串类型
+#### 常见题目
+```js
+[]+[]
+// ""
+[]+{}
+// [object Object]
+{}+[]
+// [object Object]
+// 所有浏览器都认为{}是区块语句，计算+[]，得出0
+{}+{}
+// [object Object][object Object]
+// 谷歌浏览器是正常结果，火狐会把第一个{}当做区块语句，计算+{}，得出NaN
+true+true
+// 2
+1+{a:1}
+// 1[object Object]
+```
 ### 二进制和八进制表示法[ES6]
 - 用前缀0b（或0B）和0o（或0O）表示。
   ```js

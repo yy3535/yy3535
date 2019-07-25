@@ -2182,6 +2182,7 @@ yarn add vuex
 //index.js
 import Vue from 'vue';
 import vuex from 'vuex'
+import { mapState, mapMutations, mapActions } from "vuex";
 
 import actions from './actions';
 import mutations from './mutations';
@@ -2189,8 +2190,13 @@ import state from './state';
 import getters from './getters'
 
 import user from './mudules/user'
-
+// Vuex 通过 store 选项，提供了一种机制将状态从根组件“注入”到每一个子组件中（调用 Vue.use(Vuex)）
 Vue.use(vuex);
+// 注册到所有的vue实例中
+Vue.prototype.$axios = axios;
+Vue.prototype.$mapState = mapState;
+Vue.prototype.$mapMutations = mapMutations;
+Vue.prototype.$mapActions = mapActions;
 export default new vuex.Store({
     //子模块
     modules:{
@@ -2635,3 +2641,9 @@ import camelCase from 'lodash/camelCase'
 
 
 ### vue-loader高版本需要webpack配置plugin
+
+
+## 过渡&动画
+
+## 可复用性&组合
+ 

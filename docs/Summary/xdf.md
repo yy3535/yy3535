@@ -10,6 +10,10 @@
 :::warning 负责内容
 - 登录功能，用cookie和sessionStorage优化，刷新vuex数据消失功能优化
 :::
+
+- 常用的包统一一处import问题需要解决
+
+
 ### 学生信息管理系统
 - （http://stsuzhou.xdf.cn/Login/IndexAdmin）（用户名：admin 密码：0000）
 :::warning 负责内容

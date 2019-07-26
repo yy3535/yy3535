@@ -351,20 +351,20 @@ Content-Length: 122
 
 ## 原型链
 ### 创建对象有几种方法
-    ```js
-    // 第一种(字面量)
-    var obj1={name:'obj1'}// Object {name:'obj1'}
-    var obj2=new Object({name:'obj2'})// Object {name:'obj2'}
-    
-    // 第二种(构造函数)
-    var M=function(){this.name='obj3'}
-    var obj3=new M()// M {name:'obj3'}
+```js
+// 第一种(字面量)
+var obj1={name:'obj1'}// Object {name:'obj1'}
+var obj2=new Object({name:'obj2'})// Object {name:'obj2'}
 
-    // 第三种(Object.create)
-    var P={name:'obj4'}
-    var obj4=Object.create(P)// Object {}，看不到属性，但是存在。因为它本身是空对象，但是它的原型指向P这个对象。
+// 第二种(构造函数)
+var M=function(){this.name='obj3'}
+var obj3=new M()// M {name:'obj3'}
 
-    ```
+// 第三种(Object.create)
+var P={name:'obj4'}
+var obj4=Object.create(P)// Object {}，看不到属性，但是存在。因为它本身是空对象，但是它的原型指向P这个对象。
+
+```
 ### 原型、构造函数、实例、原型链
 ![prototype](../Frontend/img/prototype.png)
 ### instanceof的原理
@@ -478,9 +478,9 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
     - DOM无法获得
     - AJAX请求不能发送
 ### 前后端如何通信
-    - Ajax(同源限制)
-    - WebSocket(没有同源限制)
-    - CORS(支持跨域通信也支持同源通信，一种新的通信，浏览器如果发现是跨域请求，会自动在请求头中加一个origin)
+- Ajax(同源限制)
+- WebSocket(没有同源限制)
+- CORS(支持跨域通信也支持同源通信，一种新的通信，浏览器如果发现是跨域请求，会自动在请求头中加一个origin)
 
 ### 如何创建Ajax
 考察点：
@@ -783,8 +783,8 @@ for(var i=0;i<4;i++){
         - 异步加载的区别
             - defer是在HTML解析完之后才会执行，如果是多个，按照加载的顺序依次执行
             - async是在HTML解析完之后才会执行，如果是多个，执行顺序和加载顺序无关
+
     - 利用浏览器缓存[最重要的一步，重点内容]-->缓存的分类-->缓存的原理
-        - 
         - 缓存的分类
             - 强缓存(问都不问，发现有缓存直接用)。http服务器返回的头上带有如下一个或者两个（两个都下发了，相对时间优先）：
                 - **Expires** Expires:Thu,21 Jan 2017 23:39:02 GMT（服务器的绝对时间）
@@ -808,23 +808,23 @@ for(var i=0;i<4;i++){
 ## 错误监控
 
 ### 前端错误的分类
-    - 即时运行错误：代码错误
-    - 资源加载错误
+- 即时运行错误：代码错误
+- 资源加载错误
 
 
 ### 每种错误的捕获方式
-    - 即时运行错误的捕获方式
-        - try...catch
-        - window.onerror
-    - 资源加载错误
-        - object.onerror
-        - performance.getEntries()// 可以获取所有已加载的资源减去页面上所有的img，即可得到未加载的资源
-        - Error事件捕获
-```html
-<img onerror="">
-<script onerror=""/>
-```
-> 注意：window.onerror只能捕获即时运行错误，不能捕获资源加载错误。因为onerror事件不冒泡。
+- 即时运行错误的捕获方式
+    - try...catch
+    - window.onerror
+- 资源加载错误
+    - object.onerror
+    - performance.getEntries()// 可以获取所有已加载的资源减去页面上所有的img，即可得到未加载的资源
+    - Error事件捕获
+    ```html
+    <img onerror="">
+    <script onerror=""/>
+    ```
+- 注意：window.onerror只能捕获即时运行错误，不能捕获资源加载错误。因为onerror事件不冒泡。
 
 ```html
 <script>
@@ -1257,10 +1257,7 @@ class Vue{
 </html>
 ```
 
-![九宫格](img/九宫格.jpg)
-<!-- - <img :src="$withBase('/img/算法.png')" > -->
-<!-- <img :src="$withBase('/foo.png')" alt="foo"> -->
-<img :src="$withBase('/img/九宫格.jpg')" >
+![九宫格](./img/scratchableLatex.jpg)
 
 
 ### “一道函数考察基本功”
@@ -1291,6 +1288,11 @@ new new Foo().getName();// 3(先带参new和.=>new function(){console.log(3)})
     - 变量提升
 
 ### 阿里笔试题
+
+使用面对对象的方式维护一个列表，每个列表有一个删除按钮，点击删除按钮移除当前行。
+
+![列表](./img/list-delete.png)
+
 ```html
 <!DOCTYPE html>
 <html lang="en">

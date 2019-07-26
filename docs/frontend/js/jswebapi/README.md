@@ -3,14 +3,7 @@
 
 ## DOM操作
 
-### 本质
-- HTML 是一个有既定标签标准的 XML 格式，标签的名字、层级关系和属性，都被标准化（
-- XML——>一棵树(基本的数据结构)——>HTML
-    - 浏览器把 html 转变成 DOM，html 是一棵树，DOM 也是一棵树。
-    - DOM 就是 JS 能识别的 html 结构，一个普通的 JS 对象或者数组。
-
-### 节点操作
-- DOM 节点就是一个 JS 对象
+### DOM节点
 - nodeType 区分过滤text标签，=1是p，=3是text
 - nodeName=#text是text，=p是p
 - 包括
@@ -51,6 +44,72 @@ div1.removeChild(child[0])
 ```
 
 ### DOM事件
+- DOM事件(DOM标准)的级别
+    |级别|格式|
+    |:---|:---|
+    |DOM0|element.onclick=function(){}|
+    |DOM2 |element.addEventListener('click',function(){},false)(DOM1标准设立的时候没有事件相关的东西，所以直接是2)(默认false,冒泡阶段触发，true,捕获阶段触发。)|
+    |DOM3 |element.addEventListener('keyup',function(){},false)(事件类型较DOM2增加了很多)|
+- DOM事件模型
+    - 冒泡(从下往上)
+    - 捕获(从上往下)
+- DOM事件流
+    - 比如点击了左键，左键是怎么传到页面上，就叫事件流
+    - 一个事件流分三个阶段：捕获阶段->目标阶段->冒泡阶段。事件通过捕获到达目标阶段，再从目标阶段冒泡上传到window对象
+- 具体流程
+    - 事件捕获：window->document->html->body->...->目标元素
+    - 冒泡流程：目标元素->...->boyd->html->document->window
+      - 如何拿html对象：document.documentElement
+      - 如何拿body：document.body
+- Event对象的常见应用
+    - 事件类型
+        - CAPTURING-PHASE  当前事件阶段为捕获阶段
+        - AT-TARGET   当前事件是目标阶段,在评估目标事件
+        - BUBBLING-PHASE   当前的事件为冒泡阶段
+    - 目标
+        - 【重要】target 当前目标元素,事件委托中指子元素
+        - 【重要】currentTarget 当前绑定的元素，事件委托中指父级元素
+
+    - 事件行为
+        - 【重要】preventDefault() 阻止默认行为(比如阻止链接默认跳转行为)
+        - 【重要】stopPropagation() 阻止冒泡
+        - 【重要】stopImmediatePropagation() 优先级(绑定了ab两个事件，a事件中写了此函数，那么b就不会执行)
+
+    - 键盘事件
+        - altKey    
+          - 返回当事件被触发时，"ALT" 是否被按下。
+        - ctrlKey	
+          - 返回当事件被触发时，"CTRL" 键是否被按下。
+        - shiftKey	
+          - 返回当事件被触发时，"SHIFT" 键是否被按下。
+        - charCode  
+          - 返回onkeypress事件触发键值的字母代码。
+        - key	    
+          - 在按下按键时返回按键的标识符。
+        - button	
+          - 返回当事件被触发时，哪个鼠标按钮被点击。
+        - keyCode	
+          - 返回onkeypress事件触发的键的值的字符代码，或者 onkeydown 或 onkeyup 事件的键的代码。
+    - 鼠标位置
+        - clientX	返回当事件被触发时，鼠标指针的水平坐标。
+        - clientY	返回当事件被触发时，鼠标指针的垂直坐标。
+        - screenX	返回当某个事件被触发时，鼠标指针的水平坐标。
+        - screenY	返回当某个事件被触发时，鼠标指针的垂直坐标。
+    
+- 【重要】自定义事件
+  - Event
+    ```js
+    // 声明自定义事件
+    var eve=new Event('custome');
+    ev.addEventListener('custome',function(){
+        console.log('custome');
+    })
+    // 触发自定义事件
+    ev.dispatchEvent(eve);
+    ```
+  - CustomEvent
+    - 多一个obj的参数，`new CustomEvent('custome',object)`
+
 
 |属性|	描述	|
 | :------| ------: | :------: |
@@ -249,11 +308,6 @@ function bindEvent(elem, type, selector, fn) {
     })
 }
 ```
-
-### 描述DOM事件冒泡流程
-
-- DOM树形结构
-- 事件会顺着触发元素网上冒泡
 
 ### 对于一个无限下拉加载图片的页面，如何给每个图片绑定事件
 

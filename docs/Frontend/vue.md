@@ -2646,4 +2646,27 @@ import camelCase from 'lodash/camelCase'
 ## 过渡&动画
 
 ## 可复用性&组合
- 
+- dialog.js
+```js
+import { Toast } from "we-vue";
+
+export default function(Vue, option) {
+    Vue.prototype.showError = function (errorMsg) {
+        Toast.text({
+            duration: 1000,
+            message: errorMsg
+        });
+    },
+    Vue.prototype.showSuccess = function (message) {
+        Toast.success({
+            duration: 1000,
+            message: message
+        })
+    }
+}
+```
+```js
+// main.js
+import dialog from '../src/common/dialog'
+Vue.use(dialog)
+```

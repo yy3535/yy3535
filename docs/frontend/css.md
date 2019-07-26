@@ -67,10 +67,10 @@
 ### 盒模型
 - margin,padding,border,content
 #### 标准模型/IE模型
-|盒子模型|宽度|
-|:----|:----|
-|标准模型|宽度是content|
-|IE模型|宽度是content,padding,border|
+| 盒子模型 | 宽度                         |
+| :------- | :--------------------------- |
+| 标准模型 | 宽度是content                |
+| IE模型   | 宽度是content,padding,border |
 - box-sizing:content-box(默认)/border-box;
 :::warning 获取盒模型宽度/高度
 - dom.style.width/height(只能取行内样式，不能取内联样式和外联样式)
@@ -134,6 +134,28 @@
 ```md
 <!-- 下载地址 -->
 https://huruqing.gitee.io/demos/source/reset.css
+```
+
+#### 公共样式
+```css
+/* 公共样式 */
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
 ```
 
 ### 属性
@@ -207,10 +229,10 @@ source:图像路径url
 - outset:扩张,设置后图像在原本基础上向外延展设定值后再显示,不允许负值(少用)
 - repeat:平铺,默认stretch 拉伸;repeat 平铺但不缩放;round 平铺且自适应缩放大小;space 平铺且自适应缩放间距
 #### 渐变:
-- 线性渐变linear-gradient:( [point || angle,]? stop, stop [, stop]* )
-- 径向渐变radial-gradient:([ [ shape || size ] [ at position ]? , | at position, ]?color-stop[ , color-stop ]+)
-注意:渐变色不是单一颜色,不能使用backgroud-color 设置,只能使用background 设置
-间隔分明实现,red 0%,red 33.3%,green 33.3%,green 66.6%,blue 66.6%,blue 100%
+- 线性渐变linear-gradient( [point || angle,]? stop, stop [, stop]* )
+- 径向渐变radial-gradient([ [ shape || size ] [ at position ]? , | at position, ]?color-stop[ , color-stop ]+)
+- 注意:渐变色不是单一颜色,不能使用backgroud-color 设置,只能使用background 设置
+- 间隔分明实现,red 0%,red 33.3%,green 33.3%,green 66.6%,blue 66.6%,blue 100%
 - [面试]径向渐变中的size:渐变终止的地方(要能看到明显的起点终点来判定是哪种,默认最远角)
 - closest-side:最近边、farthest-side:最远边、closest-corner:最近角、farthest-corner:最远角
 #### 背景:
@@ -255,6 +277,22 @@ background:bg-color bg-image position/bg-size bg-repeat bg-origin bg-clip bg-att
 ### 布局
 
 #### table布局
+-  table间隙
+   -  cellpadding="0" cellspacing="0"
+```css
+.degree-table {
+  color: #606266;
+}
+.degree-table td {
+  border: 1px solid #ebeef5;
+  border-right: 0px;
+  font-size: 12px;
+  padding: 6px 10px;
+}
+tr td:last-child {
+  border: 1px solid #ebeef5;
+}
+```
 #### float浮动+margin
 - float原本是做图文混排的
 - float对自身的影响：
@@ -284,7 +322,38 @@ background:bg-color bg-image position/bg-size bg-repeat bg-origin bg-clip bg-att
 - float三栏布局
 
 #### inline-block布局
-
+- 有间隙
+  - 办法一：解决元素之间的空白符
+  - 方法二：为父元素中设置font-size: 0，在子元素上重置正确的font-size
+  - 方法三：为inline-block元素添加样式float:left
+  - 方法四：设置子元素margin值为负数
+  - 方法五：最优解在这，设置父元素，display:table和word-spacing
+```html
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="{CHARSET}">
+		<title></title>
+		<style type="text/css">
+			body{
+				margin: 0;
+				padding: 0;
+			}
+			.item{
+				display: inline-block;
+				width:50%;
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="item">left</div>
+			<div class="item">right</div>
+		</div>
+	</body>
+</html>
+```
 #### flex布局
 - 容器显示flex
     - display:flex

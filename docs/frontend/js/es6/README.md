@@ -2075,6 +2075,7 @@ const myModual = require(path);
   - 动态的模块路径
 
 ## Module的加载实现
+修改测试
 ### 浏览器加载
 - 传统方法
   - `<script>`标签打开`defer`或`async`属性，脚本就会异步加载。(渲染引擎遇到这一行命令，就会开始下载外部脚本，但不会等它下载和执行，而是直接执行后面的命令。)
@@ -2164,30 +2165,31 @@ const myModual = require(path);
 - ES6 module transpiler
 - SystemJS
 
-### 编程风格
-#### 块级作用域
+## 编程风格
+
+### 块级作用域
 - let取代var
 - 在let和const之间，建议优先使用const，尤其是在全局环境，不应该设置变量，只应设置常量。
 - 所有的函数都应该设置为常量。
-#### 字符串
+### 字符串
 - 静态字符串一律使用单引号或反引号，不使用双引号。
 - 动态字符串使用反引号。
-#### 解构赋值
+### 解构赋值
 - 使用数组成员对变量赋值时，优先使用解构赋值。
 - 函数的参数如果是对象的成员，优先使用解构赋值。
 - 如果函数返回多个值，优先使用对象的解构赋值，而不是数组的解构赋值。这样便于以后添加返回值，以及更改返回值的顺序。
 
-#### 对象
+### 对象
 - 单行定义的对象，最后一个成员不以逗号结尾。多行定义的对象，最后一个成员以逗号结尾。
 - 对象尽量静态化，一旦定义，就不得随意添加新的属性。如果添加属性不可避免，要使用Object.assign方法。
 - 如果对象的属性名是动态的，可以在创造对象的时候，使用属性表达式定义。
 - 对象的属性和方法，尽量采用简洁表达法
 
-#### 数组
+### 数组
 - 使用扩展运算符（...）拷贝数组。
 - 使用 Array.from 方法，将类似数组的对象转为数组。
 
-#### 函数
+### 函数
 - 立即执行函数可以写成箭头函数的形式。
 - 那些使用匿名函数当作参数的场合，尽量用箭头函数代替。因为这样更简洁，而且绑定了 this。
 - 箭头函数取代Function.prototype.bind，不应再用 self/_this/that 绑定 this。
@@ -2196,13 +2198,13 @@ const myModual = require(path);
 - 不要在函数体内使用 arguments 变量，使用 rest 运算符（...）代替。
 - 使用默认值语法设置函数参数的默认值。
 
-#### Map结构
+### Map结构
 - 区分 Object 和 Map，只有模拟现实世界的实体对象时，才使用 Object。如果只是需要key: value的数据结构，使用 Map 结构。因为 Map 有内建的遍历机制。
 
-#### Class
+### Class
 - 用 Class，取代需要 prototype 的操作
 - 使用extends实现继承
-#### 模块
+### 模块
 - Module 语法是 JavaScript 模块的标准写法，使用import取代require。
 - 使用export取代module.exports。
 - export default与普通的export不要同时使用。
@@ -2211,7 +2213,7 @@ const myModual = require(path);
 - 如果模块默认输出一个对象，对象名的首字母应该大写。
 
 
-#### ESLint 的使用
+### ESLint 的使用
 - 安装
 ```js
 $ npm i -g eslint
@@ -2229,15 +2231,38 @@ $ npm i -g eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react
 ```
 - 即可使用以上规则检查文件
 
-### 异步遍历器
 
-### ArrayBuffer
+## 异步遍历器
+
+## ArrayBuffer
 - 是 JavaScript 操作二进制数据的一个接口。
 
-### 最新提案
+## 最新提案
 
-### 修饰器
+## 修饰器
 - Decorator 提案经过了大幅修改，目前还没有定案
+```js
+@testable
+class MyTestableClass {
+  // ...
+}
+function testable(target) {
+  target.isTestable = true;
+}
+MyTestableClass.isTestable // true
+```
+- @符号表示是装饰器
+- 可以修饰类，类中的属性和方法
+```js
+function sweetCoffee(coffee){
+  coffee();
+  console.log('加糖')
+}
+function coffee(){
+  console.log('一杯苦coffee')
+}
+sweetCoffee(coffee)
+```
 ```js
 @testable
 class MyTestableClass {
@@ -2253,8 +2278,7 @@ MyTestableClass.isTestable // true
 
 
 
-
-### es5中的类
+## es5中的类
 ```js
 function Animal(type){
   this.type=type;
@@ -2299,50 +2323,6 @@ let Animal=function (){
 }()
 Animal()
 //...没看懂==！
-```
-
-## 装饰器
-- @符号表示是装饰器
-- 可以修饰类，类中的属性和方法
-```js
-function sweetCoffee(coffee){
-  coffee();
-  console.log('加糖')
-}
-function coffee(){
-  console.log('一杯苦coffee')
-}
-sweetCoffee(coffee)
-```
-```js
-@testable
-class MyTestableClass {
-  // ...
-}
-function testable(target) {
-  target.isTestable = true;
-}
-MyTestableClass.isTestable // true
-```
-
-
-## 其他语法
-- Object.is(value1, value2);
-  - 参数
-    - value1，第一个需要比较的值。
-    - value2，第二个需要比较的值。
-  - 返回值
-    - 表示两个参数是否相同的`布尔值` 。
-- 是不是非数
-  - window.isNaN()
-    - 先把参数转化为数字类型,再判断是不是 NaN
-    - 只要不是数字都满足
-  - Number.isNaN()
-    - 先判断参数是不是数字类型,不是就返回 false, 是数字类型再进入判断是不是 NaN.
-    - 只有数字中的NaN满足
-```js
-window.isNaN('abc');// true
-Number.isNaN('abc');// false
 ```
 
 ## 第三方模块

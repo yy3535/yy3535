@@ -1367,6 +1367,23 @@ String.fromCharCode(0x20BB7)
   Object.is(+0, -0) // false
   Object.is(NaN, NaN) // true
   ```
+    - 参数
+        - value1，第一个需要比较的值。
+        - value2，第二个需要比较的值。
+    - 返回值
+        - 表示两个参数是否相同的`布尔值` 。
+        - 是不是非数
+    - window.isNaN()
+        - 先把参数转化为数字类型,再判断是不是 NaN
+        - 只要不是数字都满足
+    - Number.isNaN()
+        - 先判断参数是不是数字类型,不是就返回 false, 是数字类型再进入判断是不是 NaN.
+        - 只有数字中的NaN满足
+    ```js
+    window.isNaN('abc');// true
+    Number.isNaN('abc');// false
+    ```
+
 - Object.assign(target, ...sources)
   - 合并对象
   - 只拷贝源对象的自身属性（不拷贝继承属性），也不拷贝不可枚举的属性（enumerable: false）。

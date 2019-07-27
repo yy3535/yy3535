@@ -263,15 +263,30 @@ true+true
 <!-- 请求行 -->
 POST /search HTTP/1.1  
 <!-- 请求头 -->
-Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-excel, application/vnd.ms-powerpoint, 
-application/msword, application/x-silverlight, application/x-shockwave-flash, */*  
-Referer: <a href="http://www.google.cn/">http://www.google.cn/</a>  
+Accept: 指定客户端能够接受哪些内容类型（接受的数据格式）
+
+Accept-Charset:浏览器可以接受的字符编码集
+
+Authorization:HTTP授权的授权证书
+
+Content-Type:请求的与实体对应的MIME信息（发送的数据格式）
+    - application/x-www-form-urlencoded:请求默认方式，数据是简单、平面的key-value键值对(key-value格式)
+    - application/json：数据是复杂的嵌套关系，有多层数据(json格式即可发送成功)
+    - multipart/form-data:既可以发送文本数据也支持二进制数据上传（以上两种发送效率低时使用）
+
+Referer: 先前网页的地址，当前请求网页紧随其后，即来路
+
 Accept-Language: zh-cn  
+
 Accept-Encoding: gzip, deflate  
-User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; TheWorld)  
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; TheWorld) 
+
 Host: <a href="http://www.google.cn">www.google.cn</a>  
+
 Connection: Keep-Alive  
+
 Cookie: PREF=ID=80a06da87be9ae3c:U=f7167333e2c3b714:NW=1:TM=1261551909:LM=1261551917:S=ybYcq2wpfefs4V9g; 
+
 NID=31=ojj8d-IygaEtSxLgaJmqSjVhCspkviJrB6omjamNrSm8lZhKy_yMfO2M4QMRKcH1g0iQv9u-2hfBW7bUFwVh7pGaRUb0RnHcJU37y-
 FxlRugatx63JLv7CWMD6UB_O_r  
 

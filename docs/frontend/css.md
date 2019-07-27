@@ -779,6 +779,7 @@ tr td:last-child {
 - vertical-align:middle
 ### less
 - xxx.less
+- yarn add less less-loader
 
 - 定义变量
 ```

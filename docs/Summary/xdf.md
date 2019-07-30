@@ -4,6 +4,9 @@
 ## 系统
 ### 优能一对一系统
 - (http://ynsuzhou.xdf.cn/)（admin/1234,023950/123456,zhongxiaoou@xdf.cn/123456）
+- 本地服务器(admin/1234,023950/123456)
+- 需改问题
+  
 ### 优能一对一系统手机端
 - (http://suzhou.xdf.cn/zhuanti/iphoneOne2One2019)（admin/1234,023950/123456,zhongxiaoou@xdf.cn/123456）
 - 10.124.14.193:1853
@@ -12,7 +15,7 @@
 :::
 
 - 常用的包统一一处import问题需要解决
-
+- 富文本内容不能直接v-html显示出来，安全问题。`<img src="x" onerror="alert()"/>`
 
 ### 学生信息管理系统
 - （http://stsuzhou.xdf.cn/Login/IndexAdmin）（用户名：admin 密码：0000）

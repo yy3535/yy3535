@@ -551,7 +551,7 @@ destroyed(){
   }
   ```
   :::warning 公共组件header footer之类
-  写在根组件App里即可在整个App组件里共享
+  写在根组件App里即可在整个App组件里共享(如何共享？？路由里的使用不了)
   :::
 #### 组件名
   - 遵循 W3C 规范中的自定义组件名 (字母全小写且必须包含一个连字符)。避免和当前以及未来的 HTML 元素相冲突。
@@ -2636,6 +2636,8 @@ npm install @better-scroll/core@next --save
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 ```
+### DOMPurify
+- xss防御库
 
 ### 每个页面都想引用一个自己写的插件怎么引入，main里面不行
 

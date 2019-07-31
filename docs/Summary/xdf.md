@@ -5,7 +5,7 @@
 ### 优能一对一系统
 - (http://ynsuzhou.xdf.cn/)（admin/1234,023950/123456,zhongxiaoou@xdf.cn/123456）
 - 本地服务器(admin/1234,023950/123456)
-- 需改问题
+- XSS攻击防御库：DOMPurify
   
 ### 优能一对一系统手机端
 - (http://suzhou.xdf.cn/zhuanti/iphoneOne2One2019)（admin/1234,023950/123456,zhongxiaoou@xdf.cn/123456）

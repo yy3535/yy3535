@@ -192,6 +192,7 @@ p.name='hello';
    - 取值时放对象，加空格即可 {{ {name:1} }}
 
 ## 指令
+14个
 ### v-once,v-html
 #### v-once 
 只渲染一次，数据变化了也不更新视图
@@ -317,18 +318,50 @@ methods:{
   1. 需要传参就加括号写参数，无参数则不加括号
   2. 默认有e事件参数，有传参时，保留$event参数作为事件参数
 
-#### 修饰符(可以连续修饰)
+#### 事件修饰符(可以连续修饰)
+- .stop 阻止冒泡
+- .prevent 取消默认事件
+- .capture 使用事件捕获模式
+- .self 只针对元素自身
+- .once 事件只会触发一次
+- .passive 滚动事件的默认行为 (即滚动行为) 立即触发
+```html
+<!-- 阻止单击事件继续传播 -->
+<a v-on:click.stop="doThis"></a>
 
-@keyup.按键名称/按键unicode码//只有按了该按键才响应
+<!-- 提交事件不再重载页面 -->
+<form v-on:submit.prevent="onSubmit"></form>
 
-常用：.ctrl .esc .enter
+<!-- 修饰符可以串联 -->
+<a v-on:click.stop.prevent="doThat"></a>
+
+<!-- 只有修饰符 -->
+<form v-on:submit.prevent></form>
+
+<!-- 添加事件监听器时使用事件捕获模式 -->
+<!-- 即元素自身触发的事件先在此处理，然后才交由内部元素进行处理 -->
+<div v-on:click.capture="doThis">...</div>
+
+<!-- 只当在 event.target 是当前元素自身时触发处理函数 -->
+<!-- 即事件不是从内部元素触发的 -->
+<div v-on:click.self="doThat">...</div>
+
+<!-- 滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
+<!-- 而不会等待 `onScroll` 完成  -->
+<!-- 这其中包含 `event.preventDefault()` 的情况 -->
+<div v-on:scroll.passive="onScroll">...</div>
+```
+#### 按键修饰符
+- @keyup.按键名称/按键unicode码//只有按了该按键才响应
+
+- 常用：.ctrl .esc .enter
 
 ```html
 <input type="text" @keyup.enter="fn">
 <input type="text" @keyup.esc="fn">
 ```
-vue配置一个键盘code别名,需要按fn+f1
 
+- 全局自定义按键修饰符别名：
 ```js
 Vue.config.keyCodes={
   'f1':112
@@ -384,7 +417,7 @@ methods:{
   }
 },
 watch:{//相当于vm.$watch('firstname',()=>{})
-  //普通写法，需要mount来执行
+  //普通写法，需要mount来执行（立即执行）
   firstName(newValue){
     this.getFullName();
   },
@@ -393,8 +426,10 @@ watch:{//相当于vm.$watch('firstname',()=>{})
     handler(newValue){
       this.getFullName();
     },
-    //立即执行
-    immediate:true
+    // 立即执行
+    immediate:true,
+    // 深度(对象中的任何一个属性发送变化，都会执行，默认只监控一层)
+    deep:true
   }
   lastName(){
     this.getFullName();
@@ -442,7 +477,7 @@ data:{
   a:1
 },
 beforeCreate(){
-  console.log(this)//undefined
+  console.log(this)//初始化自己的生命周期，事件方法 $on $emit
   console.log(this.$data)//undefined
 }
 
@@ -451,20 +486,24 @@ beforeCreate(){
 可以获取数据和调用方法
 ```js
 created(){
-  console.log(this)//存在
+  console.log(this.$el)//无法获取真实dom元素
   console.log(this.$data)//{a:1}
 }
 ```
 
 ### beforeMount
 渲染前，第一次调用渲染函数执行，可以拿到data,method等
-
+如果有template会把它渲染成render函数
 
 ### mounted（重要）
 渲染后，可获取真实dom，一般ajax请求放在这儿。
 ```js
 mounted(){
-  console.log(this.$el.innerHTML);
+  // ajax请求到数据后使用nextTick,等待数据更新后再打印
+  this.$nextTick(()=>{
+    // 数据更新后再打印dom内容
+    console.log(this.$el.innerHTML);
+  })
 }
 ```
 
@@ -767,7 +806,7 @@ Vue.component('my-component', {
   - class 和 style 特性，两边的值会被合并起来
 
 - 禁用特性继承
-  - 如果不希望组件的根元素继承特性，可以在组件的选项中设置 `inheritAttrs: false`。
+  - 如果不希望组件的根元素继承特性(不在DOM上显示)，可以在组件的选项中设置 `inheritAttrs: false`。
     - inheritAttrs: false 选项不会影响 style 和 class 的绑定。
     ```js
     Vue.component('my-component', {
@@ -775,7 +814,7 @@ Vue.component('my-component', {
       // ...
     })
     ```
-  - 实例的 $attrs包含了传递给一个组件的特性名和特性值,可以手动决定这些特性会被赋予哪个元素
+  - 实例的 $attrs包含了传递给一个组件的特性名和特性值,可以手动决定这些特性会被赋予哪个元素(用掉的会从$attrs里去掉)
     ```js
     Vue.component('base-input', {
       inheritAttrs: false,
@@ -1514,6 +1553,7 @@ export default {
 
 </style>
 ```
+
 
 ## vue-cli 3.0
 
@@ -2646,6 +2686,350 @@ import camelCase from 'lodash/camelCase'
 
 
 ## 过渡&动画
+- 常见触发动画的操作 v-if v-show v-for 路由切换
+  - css添加动画 animation transition（库：Animate.css）
+  - js添加动画 自带的钩子（库：velocity）
+- 动画分为单个动画和多个动画
+### 进入/离开和列表过渡
+#### 单元素/组件过渡
+`transition`,给条件渲染 (使用 v-if)、条件展示 (使用 v-show)、动态组件、组件根节点添加进入/离开过渡
+```html
+<div id="demo">
+  <button v-on:click="show = !show">
+    Toggle
+  </button>
+  <transition name="fade">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
+<script>
+  new Vue({
+    el: '#demo',
+    data: {
+      show: true
+    }
+  })
+</script>
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+</style>
+```
+
+- 过渡的类名
+  - v-enter 过渡的开始状态
+  - v-enter-active 过渡生效时的状态
+  - v-enter-to 进入过渡的结束状态
+  - v-leave
+  - v-leave-active
+  - v-leave-to
+  :::tip
+  v为默认前缀，可用name属性指定
+  :::
+
+
+- 自定义过渡的类名
+  - enter-class
+  - enter-active-class
+  - enter-to-class (2.1.8+)
+  - leave-class
+  - leave-active-class
+  - leave-to-class (2.1.8+)
+
+- 过渡的持续时间
+```html
+<transition :duration="1000">...</transition>
+<transition :duration="{ enter: 500, leave: 800 }">...</transition>
+```
+
+- JavaScript 钩子
+```html
+<transition
+  v-on:before-enter="beforeEnter"
+  v-on:enter="enter"
+  v-on:after-enter="afterEnter"
+  v-on:enter-cancelled="enterCancelled"
+
+  v-on:before-leave="beforeLeave"
+  v-on:leave="leave"
+  v-on:after-leave="afterLeave"
+  v-on:leave-cancelled="leaveCancelled"
+>
+  <!-- ... -->
+</transition>
+```
+```js
+// ...
+methods: {
+  // --------
+  // 进入中
+  // --------
+
+  beforeEnter: function (el) {
+    // ...
+  },
+  // 当与 CSS 结合使用时
+  // 回调函数 done 是可选的
+  enter: function (el, done) {
+    // ...
+    done()
+  },
+  afterEnter: function (el) {
+    // ...
+  },
+  enterCancelled: function (el) {
+    // ...
+  },
+
+  // --------
+  // 离开时
+  // --------
+
+  beforeLeave: function (el) {
+    // ...
+  },
+  // 当与 CSS 结合使用时
+  // 回调函数 done 是可选的
+  leave: function (el, done) {
+    // ...
+    done()
+  },
+  afterLeave: function (el) {
+    // ...
+  },
+  // leaveCancelled 只用于 v-show 中
+  leaveCancelled: function (el) {
+    // ...
+  }
+}
+```
+
+#### 初始渲染的过渡
+- `appear` 特性还是 `v-on:appear` 钩子
+```html
+<transition
+  appear
+  appear-class="custom-appear-class"
+  appear-to-class="custom-appear-to-class" (2.1.8+)
+  appear-active-class="custom-appear-active-class"
+>
+  <!-- ... -->
+</transition>
+<transition
+  appear
+  v-on:before-appear="customBeforeAppearHook"
+  v-on:appear="customAppearHook"
+  v-on:after-appear="customAfterAppearHook"
+  v-on:appear-cancelled="customAppearCancelledHook"
+>
+  <!-- ... -->
+</transition>
+```
+
+#### 多个元素的过渡
+```html
+<transition>
+  <table v-if="items.length > 0">
+    <!-- ... -->
+  </table>
+  <p v-else>Sorry, no items found.</p>
+</transition>
+```
+```html
+<transition>
+  <button v-if="isEditing" key="save">
+    Save
+  </button>
+  <button v-else key="edit">
+    Edit
+  </button>
+</transition>
+```
+```html
+<transition>
+  <button v-bind:key="isEditing">
+    {{ isEditing ? 'Save' : 'Edit' }}
+  </button>
+</transition>
+```
+```html
+<transition>
+  <button v-bind:key="docState">
+    {{ buttonMessage }}
+  </button>
+</transition>
+```
+```js
+// ...
+computed: {
+  buttonMessage: function () {
+    switch (this.docState) {
+      case 'saved': return 'Edit'
+      case 'edited': return 'Save'
+      case 'editing': return 'Cancel'
+    }
+  }
+}
+```
+- 过渡模式
+  - in-out：新元素先进行过渡，完成之后当前元素过渡离开。
+
+  - out-in：当前元素先进行过渡，完成之后新元素过渡进入。
+#### 多个组件的过渡
+- 使用动态组件即可
+```html
+<transition name="component-fade" mode="out-in">
+  <component v-bind:is="view"></component>
+</transition>
+```
+```js
+new Vue({
+  el: '#transition-components-demo',
+  data: {
+    view: 'v-a'
+  },
+  components: {
+    'v-a': {
+      template: '<div>Component A</div>'
+    },
+    'v-b': {
+      template: '<div>Component B</div>'
+    }
+  }
+})
+```
+```css
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+}
+```
+
+
+#### 列表过渡
+- 概念
+  - 同时渲染整个列表（比如使用v-for）,使用`<transition-group>`
+  - 会以一个真实的元素呈现，默认span，可以通过tag修改
+  - CSS 过渡的类将会应用在内部的元素中，而不是这个组/容器本身。
+- 列表的进入/离开过渡
+```html
+<div id="list-demo" class="demo">
+  <button v-on:click="add">Add</button>
+  <button v-on:click="remove">Remove</button>
+  <transition-group name="list" tag="p">
+    <span v-for="item in items" v-bind:key="item" class="list-item">
+      {{ item }}
+    </span>
+  </transition-group>
+</div>
+```
+```js
+new Vue({
+  el: '#list-demo',
+  data: {
+    items: [1,2,3,4,5,6,7,8,9],
+    nextNum: 10
+  },
+  methods: {
+    randomIndex: function () {
+      return Math.floor(Math.random() * this.items.length)
+    },
+    add: function () {
+      this.items.splice(this.randomIndex(), 0, this.nextNum++)
+    },
+    remove: function () {
+      this.items.splice(this.randomIndex(), 1)
+    },
+  }
+})
+```
+```css
+/* 当添加和移除元素的时候，周围的元素会瞬间移动到他们的新布局的位置，而不是平滑的过渡 */
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to
+/* .list-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+```
+
+- 列表的排序过渡
+  - move实现平滑过渡
+  ```html
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+
+  <div id="flip-list-demo" class="demo">
+    <button v-on:click="shuffle">Shuffle</button>
+    <transition-group name="flip-list" tag="ul">
+      <li v-for="item in items" v-bind:key="item">
+        {{ item }}
+      </li>
+    </transition-group>
+  </div>
+  ```
+  ```js
+  new Vue({
+    el: '#flip-list-demo',
+    data: {
+      items: [1,2,3,4,5,6,7,8,9]
+    },
+    methods: {
+      shuffle: function () {
+        this.items = _.shuffle(this.items)
+      }
+    }
+  })
+  ```
+  ```css
+  .flip-list-move {
+    transition: transform 1s;
+  }
+  ```
+- 列表的交错过渡
+  - 通过 data 属性与 JavaScript 通信 ，实现列表的交错过渡
+
+
+#### 可复用的过渡
+- 将 `<transition>` 或者 `<transition-group>` 作为根组件，然后将任何子组件放置在其中
+```js
+Vue.component('my-special-transition', {
+  functional: true,
+  render: function (createElement, context) {
+    var data = {
+      props: {
+        name: 'very-special-transition',
+        mode: 'out-in'
+      },
+      on: {
+        beforeEnter: function (el) {
+          // ...
+        },
+        afterEnter: function (el) {
+          // ...
+        }
+      }
+    }
+    return createElement('transition', data, context.children)
+  }
+})
+```
+#### 动态过渡
+
+### 状态过渡
+数字和运算、颜色的显示、SVG 节点的位置、元素的大小和其他的属性
 
 ## 可复用性&组合
 - dialog.js
@@ -2671,4 +3055,295 @@ export default function(Vue, option) {
 // main.js
 import dialog from '../src/common/dialog'
 Vue.use(dialog)
+```
+
+### 混入
+混入对象的选项将被“混合”进入该组件本身的选项。
+```js
+var mixin = {
+  created: function () {
+    console.log('混入对象的钩子被调用')
+  }
+}
+
+new Vue({
+  mixins: [mixin],
+  created: function () {
+    console.log('组件钩子被调用')
+  }
+})
+
+// => "混入对象的钩子被调用"
+// => "组件钩子被调用"
+```
+- 选项合并
+   - 当组件和混入对象含有同名选项时，这些选项将以恰当的方式进行“合并”。
+   - 混入对象的钩子将在组件自身钩子之前调用。
+   - Vue.extend() 也使用同样的策略进行合并。
+- 全局混入
+```js
+// 为自定义的选项 'myOption' 注入一个处理器。
+Vue.mixin({
+  created: function () {
+    var myOption = this.$options.myOption
+    if (myOption) {
+      console.log(myOption)
+    }
+  }
+})
+
+new Vue({
+  myOption: 'hello!'
+})
+// => "hello!"
+```
+- 自定义选项合并策略
+### 渲染函数 & JSX
+- 使用render函数来创建DOM
+- vue实例中，如果有了template，就放弃el，使用template
+```js
+Vue.component('anchored-heading', {
+  render: function (createElement) {
+    return createElement(
+      'h' + this.level,   // 标签名称
+      this.$slots.default // 子节点数组
+    )
+  },
+  props: {
+    level: {
+      type: Number,
+      required: true
+    }
+  }
+})
+```
+- 节点、树以及虚拟 DOM
+  - 虚拟DOM
+    - Vue 通过建立一个虚拟 DOM 来追踪自己要如何改变真实 DOM
+    ```JS
+    <!-- `createElement`返回`createNodeDescription` -->
+    return createElement('h1', this.blogTitle)
+    ```
+- createElement 参数
+  
+  ```javascript
+  // @returns {VNode}
+  createElement(
+    // {String | Object | Function}
+    // 一个 HTML 标签名、组件选项对象，或者
+    // resolve 了上述任何一种的一个 async 函数。必填项。
+    'div',
+
+    // {Object}
+    // 一个与模板中属性对应的数据对象。可选。
+    {
+      // (详情见下一节)
+    },
+
+    // {String | Array}
+    // 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，
+    // 也可以使用字符串来生成“文本虚拟节点”。可选。
+    [
+      '先写一些文字',
+      createElement('h1', '一则头条'),
+      createElement(MyComponent, {
+        props: {
+          someProp: 'foobar'
+        }
+      })
+    ]
+  )
+  ```
+  ```js
+  {
+    // 与 `v-bind:class` 的 API 相同，
+    // 接受一个字符串、对象或字符串和对象组成的数组
+    'class': {
+      foo: true,
+      bar: false
+    },
+    // 与 `v-bind:style` 的 API 相同，
+    // 接受一个字符串、对象，或对象组成的数组
+    style: {
+      color: 'red',
+      fontSize: '14px'
+    },
+    // 普通的 HTML 特性
+    attrs: {
+      id: 'foo'
+    },
+    // 组件 prop
+    props: {
+      myProp: 'bar'
+    },
+    // DOM 属性
+    domProps: {
+      innerHTML: 'baz'
+    },
+    // 事件监听器在 `on` 属性内，
+    // 但不再支持如 `v-on:keyup.enter` 这样的修饰器。
+    // 需要在处理函数中手动检查 keyCode。
+    on: {
+      click: this.clickHandler
+    },
+    // 仅用于组件，用于监听原生事件，而不是组件内部使用
+    // `vm.$emit` 触发的事件。
+    nativeOn: {
+      click: this.nativeClickHandler
+    },
+    // 自定义指令。注意，你无法对 `binding` 中的 `oldValue`
+    // 赋值，因为 Vue 已经自动为你进行了同步。
+    directives: [
+      {
+        name: 'my-custom-directive',
+        value: '2',
+        expression: '1 + 1',
+        arg: 'foo',
+        modifiers: {
+          bar: true
+        }
+      }
+    ],
+    // 作用域插槽的格式为
+    // { name: props => VNode | Array<VNode> }
+    scopedSlots: {
+      default: props => createElement('span', props.text)
+    },
+    // 如果组件是其它组件的子组件，需为插槽指定名称
+    slot: 'name-of-slot',
+    // 其它特殊顶层属性
+    key: 'myKey',
+    ref: 'myRef',
+    // 如果你在渲染函数中给多个元素都应用了相同的 ref 名，
+    // 那么 `$refs.myRef` 会变成一个数组。
+    refInFor: true
+  }
+  ```
+- 使用 JavaScript 代替模板功能
+  - v-if 和 v-for
+  - v-model需自己实现
+  - 事件 & 按键修饰符
+    - 使用前缀的
+  
+    | 修饰符                             | 前缀 |
+    | :--------------------------------- | :--- |
+    | `.passive`                         | `&`  |
+    | `.capture`                         | `!`  |
+    | `.once`                            | `~`  |
+    | `.capture.once` 或 `.once.capture` | `~!` |
+    ```js
+    on: {
+      '!click': this.doThisInCapturingMode,
+      '~keyup': this.doThisOnce,
+      '~!mouseover': this.doThisOnceInCapturingMode
+    }
+    ```
+    - 直接使用事件方法的
+
+
+    | 修饰符                                      | 处理函数中的等价操作                                                                                            |
+    | :------------------------------------------ | :-------------------------------------------------------------------------------------------------------------- |
+    | `.stop`                                     | `event.stopPropagation()`                                                                                       |
+    | `.prevent`                                  | `event.preventDefault()`                                                                                        |
+    | `.self`                                     | `if (event.target !== event.currentTarget) return`                                                              |
+    | 按键： `.enter`, `.13`                      | `if (event.keyCode !== 13) return` (对于别的按键修饰符来说，可将 `13` 改为[另一个按键码](http://keycode.info/)) |
+    | 修饰键： `.ctrl`, `.alt`, `.shift`, `.meta` | `if (!event.ctrlKey) return` (将 `ctrlKey` 分别修改为 `altKey`、`shiftKey` 或者 `metaKey`)                      |
+  - 插槽
+    - this.$slots 访问静态插槽的内容
+    -  this.$scopedSlots 访问作用域插槽
+    -  scopedSlots 字段向子组件中传递作用域插槽
+- JSX
+Vue 的 Babel 插件可实现支持JSX语法写render函数
+```js
+import AnchoredHeading from './AnchoredHeading.vue'
+
+new Vue({
+  el: '#demo',
+  render: function (h) {
+    return (
+      <AnchoredHeading level={1}>
+        <span>Hello</span> world!
+      </AnchoredHeading>
+    )
+  }
+})
+```
+
+
+
+- 函数式组件
+```js
+Vue.component('my-component', {
+  functional: true,
+  // Props 是可选的
+  props: {
+    // ...
+  },
+  // 为了弥补缺少的实例
+  // 提供第二个参数作为上下文
+  render: function (createElement, context) {
+    // ...
+  }
+})
+```
+```html
+<template functional>
+</template>
+```
+- 模板编译
+:::tip
+- 手写组件
+  
+- vue的树组件
+- vue的日历组件
+- 表单组件
+- 扩展表格组件
+:::
+### 插件
+用来为Vue添加全局功能
+- 添加全局方法或者属性。如: vue-custom-element
+
+- 添加全局资源：指令/过滤器/过渡等。如 vue-touch
+
+- 通过全局混入来添加一些组件选项。如 vue-router
+
+- 添加 Vue 实例方法，通过把它们添加到 Vue.prototype 上实现。
+
+- 一个库，提供自己的 API，同时提供上面提到的一个或多个功能。如 vue-router
+#### 使用插件
+- 全局方法 Vue.use() 使用插件，需要在调用 new Vue() 启动应用之前完成
+- Vue.use 会自动阻止多次注册相同插件，届时即使多次调用也只会注册一次该插件
+- `awesome-vue` 集合了大量由社区贡献的插件和库。
+#### 开发插件
+- 暴露一个 install 方法。
+  - 第一个参数是 Vue 构造器
+  - 第二个参数是一个可选的选项对象
+```js
+MyPlugin.install = function (Vue, options) {
+  // 1. 添加全局方法或属性
+  Vue.myGlobalMethod = function () {
+    // 逻辑...
+  }
+
+  // 2. 添加全局资源
+  Vue.directive('my-directive', {
+    bind (el, binding, vnode, oldVnode) {
+      // 逻辑...
+    }
+    ...
+  })
+
+  // 3. 注入组件选项
+  Vue.mixin({
+    created: function () {
+      // 逻辑...
+    }
+    ...
+  })
+
+  // 4. 添加实例方法
+  Vue.prototype.$myMethod = function (methodOptions) {
+    // 逻辑...
+  }
+}
 ```

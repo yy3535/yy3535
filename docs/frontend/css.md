@@ -282,6 +282,14 @@ background: #00ff00 url('smiley.gif') no-repeat fixed center;
 background:bg-color bg-image position/bg-size bg-repeat bg-origin bg-clip bg-attachment initial|inherit;
 ```
 
+### 转义字符
+| "                              | &#34;  | &quot; |
+| ------------------------------ | ------ | ------ |
+| &                              | &#38;  | &amp;  |
+| <                              | &#60;  | &lt;   |
+| >                              | &#62;  | &gt;   |
+| 不断开空格(non-breaking space) | &#160; | &nbsp; |
+
 ### 布局
 
 #### table布局

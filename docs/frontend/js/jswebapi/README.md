@@ -41,6 +41,8 @@ var child = div1.childNodes
 // 删除节点
 var child = div1.childNodes
 div1.removeChild(child[0])
+// 是否包含
+div1.contains(div2)
 ```
 
 ### DOM事件

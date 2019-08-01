@@ -203,6 +203,14 @@ https://huruqing.gitee.io/demos/source/reset.css
 - RGBA:rgba(234,234,123,0.2),该透明度不会被继承，区别于opacity
 - `#333333`
 
+#### 属性
+- user-select：控制着用户能否选中文本
+    - user-select: none;
+    - user-select: auto;
+    - user-select: text;
+    - user-select: contain;
+    - user-select: all;
+
 #### 文本阴影:
 - text-shadow
   - none | shadow [ , shadow ]* 
@@ -357,6 +365,7 @@ tr td:last-child {
 #### flex布局
 - 容器显示flex
     - display:flex
+    - display:inline-flex：将对象作为内联块级弹性伸缩盒显示
 ```css
 .box{
     display:flex

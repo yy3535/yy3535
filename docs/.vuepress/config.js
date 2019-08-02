@@ -3,7 +3,8 @@ module.exports = {
     title: 'yy3535',
     description: 'yy3535的笔记',
     head: [
-        ['link', { rel: 'icon', href: '/img/favicon.ico' }]
+        ['link', { rel: 'icon', href: '/img/favicon.ico' }],
+        ['script', { src: '/img/类图.png' }]
     ],
     themeConfig: {
         //导航栏徽标

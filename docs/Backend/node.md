@@ -120,18 +120,44 @@ console.log('haha')//
 - 使用事件驱动，非阻塞式I/O模型
 - npm包管理器，是全球最大的开源库生态系统
   - 版本：npm install  --save  esri-loader@1
+- nvm node版本管理器
+
+  ```js
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+  ```
+
+  - 使用
+
+  ```js
+  <!-- 安装某个node版本 -->
+  nvm install 6.14.4 # or 10.10.0, 8.9.1, etc
+  <!-- 列出已安装版本 -->
+  nvm ls-remote
+  <!-- 使用某个版本 -->
+  nvm use 8.9.1
+  ```
+
 ### Node缺点：
+
 - 脆，主线程挂了，就完蛋了
+
 ### 什么场合用Node框架
+
 - 不适合处理cpu密集的
   - 聊天服务器(websocket)
   - 电子商务网站(静态服务，io读取)
+
 ## Node安装
+
 - 本地：下载安装包直接安装，node -v npm -v(送包管理器)
 - 版本切换：mac nvm工具 win下 nvm-win
+
 ## Node基础
+
 ### 一些概念
+
 - 在浏览器中默认`this`指代`window`，在浏览器中`window`是代理了`global`属性，而文件中运行这个`this`不是`global`
+
 ```js
 //node.js
 console.log(this);
@@ -142,8 +168,8 @@ console.log(global)
 //   global:[Circular],
 //   //进程
 //   process:
-//   	process {
-      
+//   	process { 
+
 //     },
 //   //操作文件，需要二进制类型，就是Buffer,可以和字符串进行转换
 //   Buffer:
@@ -155,7 +181,9 @@ console.log(global)
 //把对象展示成详细的
 console.dir(Object.keys(global))
 ```
+
 - REPL read evaluate print loop 循环求值打印
+
 ```js
 //进入node环境
 node
@@ -179,16 +207,12 @@ process.stdin.on('data',function(data){
   console.log(data.toString())//0 表示标准输入
 })
 ```
+
 - process
-
   - process.pid//进程id
-
   - process.exit()//手动退出应用
-
   - process.cwd()//current working directory 当前工作目录
-
   - process.chdir('6.node')//改变当前工作目录
-
   - process.nextTick(()=>{//是node中唯一一个微任务
   ​	console.log('nextTick');
   })
@@ -206,10 +230,14 @@ process.stdin.on('data',function(data){
   },{});
   console.log(args.p)
   ```
+
 ### node事件环
+
 - node中有如下六个队列，依次执行。
 - 每次都把队列清空后，或者达到执行的最大限制切换到下一个队列中会再执行微任务
+
 ![node事件环](/img/node事件环.png)
+
 ```js
 // 面试题
 let fs=require('fs');
@@ -223,6 +251,7 @@ fs.readFile('note.md','utf-8',function(){
   })
 })
 ```
+
 ## Node Module
 ### 模块化作用
 - 解决协同开发问题，避免全局变量，防止重名。

@@ -58,7 +58,7 @@ module.exports = {
                     ]
                 },
                 {
-                    title: '前端跳槽面试必备技巧',
+                    title: '前端知识点大纲',
                     collapsable: false,
                     children: [
                         "viewskills",
@@ -129,12 +129,13 @@ module.exports = {
                 title: '关于',
                 collapsable: false,
             }],
-            '/Summary/': [{
+            '/summary/': [{
                 title: '总结',
                 collapsable: false,
                 children: [
                     "summary",
-                    "xdf"
+                    "xdf",
+                    "aboutme"
                 ]
             }],
         }

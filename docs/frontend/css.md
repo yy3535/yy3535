@@ -26,7 +26,8 @@
     <meta charset="utf-8">
     ```
 - viewport
-    - width/height：和：控制 viewport 的大小，可以指定的一个值，如 600，或者特殊的值，如 device-width 为设备的宽度/高度（单位为缩放为 100% 时的 CSS 的像素）。
+    - width/height：viewport 的大小
+        - 320(会按设备宽度等比放大或缩小)、`device-width`(为设备的宽度/高度)等。
     - initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。(1.0)
     - maximum-scale：允许用户缩放到的最大比例。(1.0)
     - minimum-scale：允许用户缩放到的最小比例。(1.0)
@@ -125,6 +126,8 @@
     </section>
     ```
     - demo2:父元素设置BFC可以清除浮动(计算BFC高度时，浮动元素也会参与计算)
+        - overflow:hidden(auto)
+        - ::after{clear:both}
 - 负边距，会重叠。(margin为负)
 ### reset.css
 ```html
@@ -290,7 +293,7 @@ background:bg-color bg-image position/bg-size bg-repeat bg-origin bg-clip bg-att
 | >                              | &#62;  | &gt;   |
 | 不断开空格(non-breaking space) | &#160; | &nbsp; |
 
-### 布局
+### CSS布局
 
 #### table布局
 -  table间隙
@@ -692,98 +695,107 @@ tr td:last-child {
 
 
 
-#### 响应式布局(适配移动端页面)
-- viewport标签
-- 隐藏、折行
-- rem
-    - 将压缩原生js放到head标签中
-    ```html
-    <script>!function(e){function t(a){if(i[a])return i[a].exports;var n=i[a]={exports:{},id:a,loaded:!1};return e[a].call(n.exports,n,n.exports,t),n.loaded=!0,n.exports}var i={};return t.m=e,t.c=i,t.p="",t(0)}([function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var i=window;t["default"]=i.flex=function(normal,e,t){var a=e||100,n=t||1,r=i.document,o=navigator.userAgent,d=o.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i),l=o.match(/U3\/((\d+|\.){5,})/i),c=l&&parseInt(l[1].split(".").join(""),10)>=80,p=navigator.appVersion.match(/(iphone|ipad|ipod)/gi),s=i.devicePixelRatio||1;p||d&&d[1]>534||c||(s=1);var u=normal?1:1/s,m=r.querySelector('meta[name="viewport"]');m||(m=r.createElement("meta"),m.setAttribute("name","viewport"),r.head.appendChild(m)),m.setAttribute("content","width=device-width,user-scalable=no,initial-scale="+u+",maximum-scale="+u+",minimum-scale="+u),r.documentElement.style.fontSize=normal?"50px": a/2*s*n+"px"},e.exports=t["default"]}]);  flex(false,100, 1);</script>
-    ```
-    - 此方案仅适用于移动端web
-    - rem适合写固定尺寸(间距之类)。其余的根据需要换成flex或者百分比。
-    - 一般来讲，使用了这个方案是没必要用媒体查询了
-    - 不要手动设置viewport，该方案自动帮你设置
-    - 源码
-    ```js
-    'use strict';
+#### 响应式设计和布局
+- 不同设备上正常使用（主要处理屏幕大小问题）
+- 主要方法：
+    - 隐藏（一些东西移动端不显示）
+    - 折行（移动端折行）
+    - 自适应空间（设计时多留自适应空间）
+        - viewport
+        - rem
+            - 通过html字体大小(默认16px)来确定元素大小的办法，使用rem尺寸单位
+            - 根据不同尺寸的屏幕设置不同的html字体大小
+            - rem有小数的地方会不太精准，精确度要求高的地方不要用rem进行布局
+            :::warning rem实现代码
+            - 将压缩原生js放到head标签中
+            ```html
+            <script>!function(e){function t(a){if(i[a])return i[a].exports;var n=i[a]={exports:{},id:a,loaded:!1};return e[a].call(n.exports,n,n.exports,t),n.loaded=!0,n.exports}var i={};return t.m=e,t.c=i,t.p="",t(0)}([function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var i=window;t["default"]=i.flex=function(normal,e,t){var a=e||100,n=t||1,r=i.document,o=navigator.userAgent,d=o.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i),l=o.match(/U3\/((\d+|\.){5,})/i),c=l&&parseInt(l[1].split(".").join(""),10)>=80,p=navigator.appVersion.match(/(iphone|ipad|ipod)/gi),s=i.devicePixelRatio||1;p||d&&d[1]>534||c||(s=1);var u=normal?1:1/s,m=r.querySelector('meta[name="viewport"]');m||(m=r.createElement("meta"),m.setAttribute("name","viewport"),r.head.appendChild(m)),m.setAttribute("content","width=device-width,user-scalable=no,initial-scale="+u+",maximum-scale="+u+",minimum-scale="+u),r.documentElement.style.fontSize=normal?"50px": a/2*s*n+"px"},e.exports=t["default"]}]);  flex(false,100, 1);</script>
+            ```
+            - 此方案仅适用于移动端web
+            - rem适合写固定尺寸(间距之类)。其余的根据需要换成flex或者百分比。
+            - 一般来讲，使用了这个方案是没必要用媒体查询了
+            - 不要手动设置viewport，该方案自动帮你设置
+            - 源码
+            ```js
+            'use strict';
 
-    /**
-    * @param {Boolean} [normal = false] - 默认开启页面压缩以使页面高清;  
-    * @param {Number} [baseFontSize = 100] - 基础fontSize, 默认100px;
-    * @param {Number} [fontscale = 1] - 有的业务希望能放大一定比例的字体;
-    */
-    const win = window;
-    export default win.flex = (normal, baseFontSize, fontscale) => {
-    const _baseFontSize = baseFontSize || 100;
-    const _fontscale = fontscale || 1;
+            /**
+            * @param {Boolean} [normal = false] - 默认开启页面压缩以使页面高清;  
+            * @param {Number} [baseFontSize = 100] - 基础fontSize, 默认100px;
+            * @param {Number} [fontscale = 1] - 有的业务希望能放大一定比例的字体;
+            */
+            const win = window;
+            export default win.flex = (normal, baseFontSize, fontscale) => {
+            const _baseFontSize = baseFontSize || 100;
+            const _fontscale = fontscale || 1;
 
-    const doc = win.document;
-    const ua = navigator.userAgent;
-    const matches = ua.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i);
-    const UCversion = ua.match(/U3\/((\d+|\.){5,})/i);
-    const isUCHd = UCversion && parseInt(UCversion[1].split('.').join(''), 10) >= 80;
-    const isIos = navigator.appVersion.match(/(iphone|ipad|ipod)/gi);
-    let dpr = win.devicePixelRatio || 1;
-    if (!isIos && !(matches && matches[1] > 534) && !isUCHd) {
-        // 如果非iOS, 非Android4.3以上, 非UC内核, 就不执行高清, dpr设为1;
-        dpr = 1;
-    }
-    const scale = normal ? 1 : 1 / dpr;
+            const doc = win.document;
+            const ua = navigator.userAgent;
+            const matches = ua.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i);
+            const UCversion = ua.match(/U3\/((\d+|\.){5,})/i);
+            const isUCHd = UCversion && parseInt(UCversion[1].split('.').join(''), 10) >= 80;
+            const isIos = navigator.appVersion.match(/(iphone|ipad|ipod)/gi);
+            let dpr = win.devicePixelRatio || 1;
+            if (!isIos && !(matches && matches[1] > 534) && !isUCHd) {
+                // 如果非iOS, 非Android4.3以上, 非UC内核, 就不执行高清, dpr设为1;
+                dpr = 1;
+            }
+            const scale = normal ? 1 : 1 / dpr;
 
-    let metaEl = doc.querySelector('meta[name="viewport"]');
-    if (!metaEl) {
-        metaEl = doc.createElement('meta');
-        metaEl.setAttribute('name', 'viewport');
-        doc.head.appendChild(metaEl);
-    }
-    metaEl.setAttribute('content', `width=device-width,user-scalable=no,initial-scale=${scale},maximum-scale=${scale},minimum-scale=${scale}`);
-    doc.documentElement.style.fontSize = normal ? '50px' : `${_baseFontSize / 2 * dpr * _fontscale}px`;
-    };
+            let metaEl = doc.querySelector('meta[name="viewport"]');
+            if (!metaEl) {
+                metaEl = doc.createElement('meta');
+                metaEl.setAttribute('name', 'viewport');
+                doc.head.appendChild(metaEl);
+            }
+            metaEl.setAttribute('content', `width=device-width,user-scalable=no,initial-scale=${scale},maximum-scale=${scale},minimum-scale=${scale}`);
+            doc.documentElement.style.fontSize = normal ? '50px' : `${_baseFontSize / 2 * dpr * _fontscale}px`;
+            };
 
-    //http://www.jianshu.com/p/b00cd3506782
+            //http://www.jianshu.com/p/b00cd3506782
 
-    //640px以内進行一個自適應
-    ```
-- 媒体查询
-  - @media screen [not|only]? and (media feature) { CSS-Code; }
-    - media feature :max(min)-height (width),为了实现向上兼容,常用min-width,从小写到大
-    ```css
-    .container{padding:0 15px; margin:0 auto;}
-    .container:before{
-        content: '';
-        display: table;/*防止第一个子元素margin-top越界*/
-        }
-    .container:after{
-        content:"";
-        display:table;/*防止最后個子元素margin-bottom越界*/
-        clear:both;/*清楚子元素浮动的影响*/
-    }
-    /*超大PC屏幕下的专用样式*/
-    @media screen and (min-width:1200px) {
-        .container{ width:1170px;}
-        .my-img{width:25%}
-    }
-    /*中等PC屏幕下的专用样式*/
-    @media screen and (min-width:992px) and (max-width: 1199px) {
-        .container{width:970px;}
-        .my-img{width:25%}
-    }
-    /*PAD屏幕下的专用样式*/
-    @media screen and (min-width: 768px) and (max-width:991px ){
-        .container{width:750px;}
-        .my-img{width:50%}
-    }
-    /*PHONE屏幕下的专用样式*/
-    @media screen and (min-width:767px) {
-        .container{ width:100%;}
-        .my-img{  width:100%;}
-    }
-    ```
-  - 媒体查询调用不同css 文件
-  ```html
-  <link rel="stylesheet" media=" screen and|not|only (media feature)" href="mystylesheet.css">
-  ```
+            //640px以内進行一個自適應
+            ```
+            :::
+        - 媒体查询
+            - @media screen [not|only]? and (media feature) { CSS-Code; }
+                - media feature :max(min)-height (width),为了实现向上兼容,常用min-width,从小写到大
+                ```css
+                .container{padding:0 15px; margin:0 auto;}
+                .container:before{
+                    content: '';
+                    display: table;/*防止第一个子元素margin-top越界*/
+                    }
+                .container:after{
+                    content:"";
+                    display:table;/*防止最后個子元素margin-bottom越界*/
+                    clear:both;/*清楚子元素浮动的影响*/
+                }
+                /*超大PC屏幕下的专用样式*/
+                @media screen and (min-width:1200px) {
+                    .container{ width:1170px;}
+                    .my-img{width:25%}
+                }
+                /*中等PC屏幕下的专用样式*/
+                @media screen and (min-width:992px) and (max-width: 1199px) {
+                    .container{width:970px;}
+                    .my-img{width:25%}
+                }
+                /*PAD屏幕下的专用样式*/
+                @media screen and (min-width: 768px) and (max-width:991px ){
+                    .container{width:750px;}
+                    .my-img{width:50%}
+                }
+                /*PHONE屏幕下的专用样式*/
+                @media screen and (min-width:767px) {
+                    .container{ width:100%;}
+                    .my-img{  width:100%;}
+                }
+                ```
+            - 媒体查询调用不同css 文件
+            ```html
+            <link rel="stylesheet" media=" screen and|not|only (media feature)" href="mystylesheet.css">
+            ```
 
 
 
@@ -811,4 +823,281 @@ tr td:last-child {
 }
 ```
 
+### CSS预处理器
+- 通过工具编译成CSS
+- less/Sass/Scss
+- 优点
+    - 嵌套 反映层级和约束
+    - 变量和计算 减少重复代码
+    - Extend（把选择器提取出来，公共的样式写到一起）和Mixin代码片段（直接把代码复制过来，更复杂的情况，比如带条件的）
+    - 循环（复杂有规律的样式）
+    - import CSS文件模块化（容易维护，最终编译成一个文件，不影响性能）
+- 作用
+    - 帮助更好地组织css代码
+    - 提高代码复用率
+    - 提升可维护性
+#### less
+- node写的
+```css
+/* 1.less */
+/* 变量 */
+@fontSize:12px;
+@bgColor:red;
+
+/* 一段样式复用:使用时加括号才能编译出来 */
+    .block(@fontSize){
+        font-size:@fontSize;
+        border:1px solid #ccc;
+        border-radius:4px;
+    }
+
+body{
+    padding:0;
+    margin:0;
+}
+.wrapper{
+    /* 颜色函数 */
+    background:lighten(@bgColor,40%);
+    /* 嵌套 */
+    .nav{
+        /* 一段样式复用 */
+        .block(@fontSize);
+    }
+    .content{
+        /* 表达式 */
+        font-size:@fontSize+2px;
+        /* 一段样式复用 */
+        .block(@fontSize+2px);
+        /* &代表没有空格 */
+        &:hover{
+            background:red;
+        }
+    }
+    
+}
+```
+
+- extend
+```css
+/* 编译前 */
+.wrapper{
+    .nav:extend(.block){
+        color:#333;
+    }
+    .content{
+        &:extend(.block);
+        &:hover{
+            background:red;
+        }
+    }
+}
+```
+```css
+/* 编译后 */
+.wrapper .content {
+    font-size:12px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+.wrapper {
+    background:#ffcccc;
+}
+.wrapper .nav {
+    color:#333;
+}
+.wrapper .content:hover{
+    background:red;
+}
+```
+- loop 循环
+```css
+/* 循环 */
+.gen-col(@n) when (@n>0){
+    /* 用递归实现 */
+    .gen-col(@n-1);
+    .col-@{n}{
+        width:1000px/12*@n;
+    }
+}
+.gen-col(12)
+```
+```css
+/* 编译后 */
+.col-1{
+    width:83.3333333px;
+}
+.col-2{
+    width:166.6666667px;
+}
+.col-3{
+    width:250px;
+}
+.col-4{
+    width:333.33333333px;
+}
+.col-5{
+    width:416.66666667px;
+}
+...
+.col-12{
+    width:
+}
+```
+
+- import 
+```css
+@import "logo";
+@import "header";
+@import "footer";
+```
+#### sass
+- Ruby写的
+- 后缀scss
+- 嵌套和less一样
+- 变量使用`$`,其他和less一样
+- mixin，使用`$`,强制要求样式前面必须加`@mixin `，调用时前面加`@include `，其他一样
+- extend，使用`@extend`
+```css
+/* 编译前 */
+.wrapper{
+    .nav{
+        :extend(.block);
+        color:#333;
+    }
+    .content{
+        @extend .block;
+        &:hover{
+            background:red;
+        }
+    }
+}
+```
+- loop
+```css
+/* 递归实现 */
+@mixin gen-col($n){
+    @if $n>0{
+        @include gen-col($n-1);
+        .col-#{$n}{
+            width:1000px/12*$n;
+        }
+    }
+}
+@include gen-col(12);
+
+/* sass支持for循环 */
+@for $i from 1 through 12 {
+    .col-#{$i}{
+        width:1000px/12*$i;
+    }
+}
+```
+
+- import  和less一样
+
+#### CSS预处理框架
+- SASS-Compass
+- Less-Lesshat/EST
+- 提供现成的mixin，类似JS类库，封装常用功能
+
+
+- EST例子
+```css
+/* est是按需调用的，所以all是可以的 */
+@impport "est/all";
+
+@support-ie-version:7;
+@use-autoprefixer:false;
+
+.global-reset();
+
+.box{
+    .inline-block();
+    .opacity(60);
+    height:100px;
+    background:geen;
+    margin:10px;
+}
+.left{
+    float:left;
+    .clearfix();
+}
+.row{
+    .make-row();
+    .col{
+        .make-column(1/4);
+        background:red;
+        height:100px;
+    }
+}
+.my-triangle{
+    width:50px;
+    height:50px;
+}
+.my-triangle::after{
+    content:' ';
+    .triangle(top left,10px,red,side);
+}
+```
+
+
+### CSS工程化
+- PostCSS
+    - css解析功能
+    - 还有两百多个插件
+- 功能
+    - import模块合并
+    - autoprefixier自动加前缀
+    - cssnano压缩代码
+    - cssnext使用CSS新特性
+    - precss变量、mixin、循环等
+
+```css
+/* cssnext把新的css语法编译一下 */
+:root{
+    --mainColor:red;
+    --danger-theme:{
+        color:white;
+        background-color:red;
+    };
+}
+a{
+    color:var(--mainColor);
+}
+.danger{
+    @apply --danger-theme;
+}
+```
+```css
+/* precss */
+$blue:#056ef0;
+$column:200px;
+
+.menu{
+    width:calc(4*$column);
+}
+
+.menu_link{
+    background:$blue;
+    width:$column;
+}
+
+.notice--clear{
+    @if 3<5{
+        background:green;
+    }
+    @else{
+        background:blue;
+    }
+}
+
+@for $i from 1 to 3 {
+    .b-$i { width:$(i)px; }
+}
+```
+
+### Vue中的Css
+- vue中的使用
+    - module/scoped
+    - 编译成随机字符串/加上自定义属性
 

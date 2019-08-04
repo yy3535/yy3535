@@ -1,6 +1,5 @@
 <template>
 <div>
-flat-scroll
 </div>
 
 </template>

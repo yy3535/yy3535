@@ -76,6 +76,15 @@
 [[toc]]
 ```
 
+13.目录结构
+```md
+root
+├─── public.js
+│   ├── common.js
+	├── layout.js
+└─── util.js
+```
+
 ## 预览和编辑器
 
 `typora`

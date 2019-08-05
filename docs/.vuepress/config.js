@@ -75,7 +75,8 @@ module.exports = {
                     collapsable: false,
                     children: [
                         "vuepress",
-                        "markdown"
+                        "markdown",
+                        "github.io"
                     ]
                 },
                 {

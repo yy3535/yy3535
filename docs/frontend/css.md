@@ -35,6 +35,12 @@
     ```html
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
     ```
+    - viewport分哪几类？
+        - layout-viewport（页面窗口）
+        - visual-viewport（手机屏幕能看到的页面窗口的大小区域）
+        - ideal-viewport（手机屏幕大小区域）
+    - width=device-width的工作原理是什么?
+        - 让layout-viewport等于ideal-viewport
 #### base
 - url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 `<a>`、`<img>`、`<link>`、`<form>` 标签中的 URL)
 ```html
@@ -339,7 +345,10 @@ tr td:last-child {
 </style>
 ```
 - float三栏布局
-
+#### 绝对定位和相对定位
+- relative和static有什么区别
+    - relative是对static定位的相对偏移，如果top,left都设0，那就基本相同，否则就在static基础上进行相对偏移
+- absoluete是相对于最近的一个absolute或者relative元素
 #### inline-block布局
 - 有间隙
   - 办法一：解决元素之间的空白符
@@ -705,6 +714,7 @@ tr td:last-child {
         - rem
             - 通过html字体大小(默认16px)来确定元素大小的办法，使用rem尺寸单位
             - 根据不同尺寸的屏幕设置不同的html字体大小
+            - em相对于父级元素，rem相对于html标签
             - rem有小数的地方会不太精准，精确度要求高的地方不要用rem进行布局
             :::warning rem实现代码
             - 将压缩原生js放到head标签中
@@ -950,7 +960,7 @@ body{
 @import "header";
 @import "footer";
 ```
-#### sass
+#### sass（http://sass.bootcss.com/）
 - Ruby写的
 - 后缀scss
 - 嵌套和less一样

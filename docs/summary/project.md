@@ -36,6 +36,8 @@
 2. CSS模块化设计
 #### 自适应方案设计
 
+
+
 #### 代码维护及复用性设计的思考
 - 需求变更
 - 产品迭代
@@ -49,3 +51,94 @@
 
 ### 发布上线
 
+
+## 项目设计与原理分析
+
+### CSS模块化设计
+
+1. 设计原则
+- 可复用能继承要完整
+- 周期性迭代
+
+2. 设计方法
+- 先整体后部分再颗粒化
+    - 布局-页面（大的页面）-功能（基础组件）-业务
+- 先抽象再具体
+    - 京东金融可以把所有块作为面板抽象出来
+    - 抽象成列表（横向/纵向）
+
+3. 具体方案
+![css模块化](./img/css-modules.jpg)
+- reset.scss 重置默认样式
+- layout.scss 布局样式
+- element.scss 列表，按钮等功能性的东西
+
+```css
+/* layout.css */
+/* 使用utf-8编码 */
+@charset “UTF-8"
+
+@mixin flex($direction:column,$inline:block){
+    display: if($inline==block,flex,inline-flex);
+    flex-direction:$direction;
+    flex-wrap:wrap;
+}
+```
+
+```css
+/* element.scss */
+@import "./layout.scss"
+
+@mixin btn($size:14px,$color:#fff,$bgcolor:#F04752,$padding:5px,$radius:5px){
+    padding:$padding;
+    background-color:$bgcolor;
+    border-radius:$radius;
+    border:1px solid $bgcolor;
+    font-size:#size;
+    color:$color;
+    text-align:center;
+    line-height:1;
+    display:inline-block;
+}
+
+@mixin list($direction:column){
+    @include flex($direction);
+}
+
+@mixin panel($bgcolor:#fff,$padding:0,$margin:20px 0,$height:112px,$txtPadding:0 32px,$color:#333,$fontSize:32px){
+    background:$bgcolor;
+    padding:$padding;
+    margin:$margin;
+    >h4{
+        height:$height;
+        line-height:$height;
+        padding:$txtPadding;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        overflow:hidden;
+        text-align:center;
+        color:$color;
+        font-size:$fontSize;
+    }
+}
+
+```
+
+### JS组件设计
+1. 设计原则
+- 高内聚低耦合
+    - 功能组件直接不要互相依赖
+- 周期性迭代
+2. 设计方法
+- 先整体后部分再颗粒化
+- 尽可能地抽象（让任何东西都可以用的地步）
+
+### JS自适应
+- 移动端自适应，一份代码跑遍各个设备
+1. 基本概念（https://github.com/jawil/blog/issues/21）
+    - CSS像素(px)，设备像素(也叫物理像素，设备上的一个像素)，逻辑像素(px)，设备像素比（逻辑像素和设备像素的比值，比如苹果是2）
+    - viewport
+    - rem
+2. 工作原理
+    - 利用viewport和设备像素比调整基准像素
+    - 利用px2rem自动转换css单位

@@ -127,7 +127,7 @@
 ### JS组件设计
 1. 设计原则
 - 高内聚低耦合
-    - 功能组件直接不要互相依赖
+    - 功能组件直接不要互相依赖(最高效复用)
 - 周期性迭代
 2. 设计方法
 - 先整体后部分再颗粒化
@@ -140,5 +140,26 @@
     - viewport
     - rem
 2. 工作原理
-    - 利用viewport和设备像素比调整基准像素
+    - 利用viewport和设备像素比调整基准像素（html的fontsize通过js动态地按物理像素/css像素的比值进行调整）
     - 利用px2rem自动转换css单位
+
+### SPA设计
+1. 设计意义
+   - 前后端分离(前后端代码不耦合)
+   - 减轻服务器压力（当一个应用操作比较复杂，有十几个页面的时候，每个用户操作几个页面只需要请求一次）
+   - 增强用户体验（不存在多次下载页面的时间，只有接口的时间）
+   - Prerender预渲染优化SEO(单页面对搜索引擎不友好，使用预渲染优化)![预渲染](codingfishman.github.io/2016/05/06/prerender预渲染优化SEO/)
+2. 工作原理
+   - History API(更加优雅，但对浏览器有要求)
+    ![historyapi](./img/historyapi.jpg)
+    - window.history.pushState()注册路由
+    - 
+   - Hash（不优雅，但兼容性最好）
+     - 使用location.hash修改路由
+     - 目标页面监听hashchange事件
+    ![hash](./img/hash.jpg)
+    
+3. 面试
+   - spa做了哪些事情？
+   - 它是怎么做到的？
+

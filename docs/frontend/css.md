@@ -57,6 +57,13 @@
 - button[type]
 - select>option[value]
 - label[for]
+- word-break:
+```css
+word-break: normal 
+word-break: break-all 
+word-break: keep-all
+word-break: break-word; /* non-standard */ ****
+```
 ### HTML5新增
 - 表单
     - 日期、时间、搜索

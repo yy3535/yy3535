@@ -92,3 +92,15 @@ git reset --hard 98abc5a
 
 ## npm install 出现 ChromeDriver installation failed Error with http(s) request: Error: read ETIMEDOUT
 - 执行 npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
+
+
+## git下载缓慢解决办法
+- 更改hosts文件
+1. 查询网站的IP地址，进入![dns](http://tool.chinaz.com/dns)，输入 `github.com`，选择一个TTL值较小的IP地址，比如，我们选择图中美国的192.30.253.113；
+
+2. 打开电脑的 `C:\Windows\System32\drivers\etc` 目录，找到hosts文件:这里有两个hosts文件，用记事本打开上面的那个进行编辑。在文件末追加 192.30.253.113 github.com，并采用相同的方式追加并采用相同的方式追加151.101.109.194  github.global.ssl.fastly.Net  注意：前面没有“#”号！
+
+3. 刷新DNS缓存，在Windows命令行中输入：`ipconfig /flushdns`
+
+
+4. 再重新输入`git clone https://github.com/opencv/opencv_contrib/`,可以看到下载速度得到明显提升,相应的文件也很快下载完毕。

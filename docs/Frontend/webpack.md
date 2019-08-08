@@ -466,7 +466,6 @@ module:{
 - webpack配置externals
 - 直接在index.html用script标签引用jquery
 
-## 
 
 ### 启动开发服务
 ```cmd

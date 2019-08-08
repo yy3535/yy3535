@@ -3014,7 +3014,8 @@ actions:{
 }
 ```
 
-
+## 动态引入图片
+- 将图片作为模块加载进去，比如`images:[{src:require(‘./1.png')},{src:require(‘./2.png')}]`这样webpack就能将其解析。
 ## 报错
 - No ESLint configuration found
 npm install eslint --save-dev

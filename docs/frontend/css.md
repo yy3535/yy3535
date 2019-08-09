@@ -57,7 +57,7 @@
 - button[type]
 - select>option[value]
 - label[for]
-- word-break:
+- word-break/word-spacing/word-wrap/letter-spacing
 ```css
 word-break: normal 
 word-break: break-all 

@@ -975,6 +975,7 @@ Vue.component('base-checkbox', {
 - `v-on="$listeners"` 将所有的事件监听器指向这个组件的某个特定的子元素。
 
 #### .sync 修饰符
+同步
 
 ### 组件间通信
 - 子组件触发父级的方法
@@ -3136,4 +3137,6 @@ import camelCase from 'lodash/camelCase'
 
 ### vue-loader高版本需要webpack配置plugin
 
-
+### elementui
+- 组件样式覆盖
+  - 需要全局覆盖，模块化的css覆盖不了

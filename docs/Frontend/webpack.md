@@ -1,5 +1,5 @@
 # webpack
-
+![webpack](https://www.webpackjs.com/guides/production/)
 ## 功能:模块打包机
 - 代码转换：TypeScript 编译成 JavaScript、SCSS 编译成 CSS 等。
 - 文件优化：压缩 JavaScript、CSS、HTML 代码，压缩合并图片等。
@@ -40,7 +40,7 @@ let path=require('path');
 // 引入插件
 let HtmlWebpackPlugin=require('html-webpack-plugin');
 let MiniCssExtractPlugin=require('mini-css-extract-plugin');
-let UgligyJsPlugin=require('uglifyjs-webpack-plugin');
+let UglifyJsPlugin=require('uglifyjs-webpack-plugin');
 let OptimizeCssAssetsPlugin=require('optimize-css-assets-webpack-plugin');
 let CleanWebpackPlugin=require('clean-webpack-plugin');
 let webpack=require('webpack');
@@ -50,10 +50,13 @@ module.exports={
     // 生产模式的压缩配置
     optimization:{
         minimizer:[
-            new UgligyJsPlugin({
+            // js的压缩
+            new UglifyJsPlugin({
                 cache:true,
                 // 并行
                 parallel:true,
+                // 生产环境下调试
+                sourceMap: true,
             }),
             new OptimizeCssAssetsPlugin({})
         ]
@@ -87,7 +90,7 @@ module.exports={
         path:path.resolve(__dirname,'dist'),
         filename:'bundle.js',
         // 可生成多个入口名字的文件
-        filename:'[name].js',
+        filename:'[name].min.js',
         // 静态文件带8位哈希值，避免缓存
         filename:'[name].[hash:8].js',
         // 打包时在所有文件地址前加域名
@@ -95,13 +98,13 @@ module.exports={
     },
     // 开发服务的配置
     devServer:{
-        // 打包内容目录
+        // 静态文件放置目录,放在其中的隐藏目录中，一般看不到
         contentBase:'./dist',
         // 端口号
         port:3000,
         // 进度条
         progress:true,
-        // 压缩文件
+        // 服务开启gzip压缩
         compress:'true',
         // dev-server开启之前
         before(app){
@@ -196,7 +199,25 @@ module.exports={
         // 避免安装个包后也打包
         ignored:/node_modules/,
     }
-
+    module:{
+        loaders:[{
+            test:/\.html$/,
+            loader:'html-loader'
+        },{
+            test:/\.vue$/,
+            loader:'vue-loader',
+            options:{
+                loaders:{
+                    // 从右往左处理
+                    css:'vue-style-loader!css-loader!px2rem-loader?remUnit=75$remPrecision=8',
+                    scss:'vue-style-loader!css-loader!px2rem-loader?remUnit=75$remPrecision=8!sass-loader'
+                }
+            }
+        },{
+            test:/\.scss$/,
+            loader:'style-loader!css-loader!sass-loader'
+        }]
+    },
     // 加载器
     modules:{
         // 哪些不进行模块解析（比如自己写的js,用的很少）
@@ -330,6 +351,23 @@ import 'babel-polyfill';
 
 str.includes('o');// es7
 ```
+
+### eslint
+- 配置文件(优先级由高到低)
+    - eslintrc.js
+    - eslintrc.yaml
+    - eslintrc.yml
+    - eslintrc.json
+    - eslintrc
+    - package.json
+- 可复制并安装vue官方的eslint-plugin-vue做好的配置，注意安装的版本要和同事一致
+```js
+// package.json
+"eslintConfig":{
+
+}
+```
+
 
 ```js
 // .eslintrc.json
@@ -506,7 +544,40 @@ xhr.send();
 ```
 
 ### 生产环境和开发环境区分
-- 
+```js
+// webpack.config.js
+module.exports=env=>{
+    if(!env){
+        env={}
+    }
+    let plugins=[
+        xxx,
+        xxx
+    ]
+    if(env.production){
+        plugins.push(
+            new webpack.DefinePlugin({
+                'process.env':{
+                    NODE_ENV:"production"
+                }
+            }),
+            new ExtractTextPlugin("style.css")
+        )
+    }
+}
+
+```
+```js
+// package.json
+"scripts":{
+    // 启动服务并自动打开页面
+    "start":"webpack-dev-server --open",
+    // 打包并设置env.production参数
+    "build":"webpack --env.production"
+}
+```
+
+
 ```js
 // index.js
 let url='';
@@ -561,6 +632,11 @@ module.exports=merge(base,{
 ```
 ```js
 npm run build -- --config webpack.prod.js
+```
+
+### px2rem-loader 移动端rem解决方案
+```js
+npm install px2rem-loader
 ```
 
 ## 打包优化

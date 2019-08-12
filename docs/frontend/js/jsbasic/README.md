@@ -946,7 +946,7 @@ console.log(formatDate)
 :::
 :::warning 添加
 - Array​.prototype​.unshift()
-- Array​.prototype​.push()
+- Array​.prototype​.push(newelement1,newelement2,....,newelementX)
 :::
 :::warning 删除
 - Array​.prototype​.shift()

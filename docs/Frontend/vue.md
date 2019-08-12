@@ -3117,6 +3117,9 @@ npm install @better-scroll/core@next --save
 ### vue-qr
 - 二维码生成
 
+### vue-awesome-swiper
+轮播
+
 ### vue-lazyload
 - 懒加载
 
@@ -3137,6 +3140,16 @@ import camelCase from 'lodash/camelCase'
 
 ### vue-loader高版本需要webpack配置plugin
 
-### elementui
+### 全局插件样式覆盖
 - 组件样式覆盖
-  - 需要全局覆盖，模块化的css覆盖不了
+  - 添加去掉了模块化的style标签，模块化的css覆盖不了
+```html
+<style lang="scss">
+  .product-slider{
+    .swiper-container{
+      box-sizing:border-box;
+      padding:0 24px;
+    }
+  }
+</style>
+```

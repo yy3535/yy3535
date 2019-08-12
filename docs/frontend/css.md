@@ -57,13 +57,46 @@
 - button[type]
 - select>option[value]
 - label[for]
-- word-break/word-spacing/word-wrap/letter-spacing
+- word-break normal|break-all|keep-all|break-word; 
+- word-spacing  
+- word-wrap
+- letter-spacing 中文间距
+- white-space nowrap 文字不换行
+- text-overflow elipsis 超出后变...
+- overflow: hidden
+
+- 实现不换行超出...的语句
 ```css
-word-break: normal 
-word-break: break-all 
-word-break: keep-all
-word-break: break-word; /* non-standard */ ****
+h4{
+    white-space:nowrap;
+    text-overflow:eslipsis;
+    overflow: hidden;
+}
 ```
+```css
+/* 四宫格中间有分界线情况实现，利用伪元素做竖线，利用外部容器的底边框，再设relative，向上偏移一个格子的距离，即可居中 */
+.item{
+    position:relative;
+    width:50%;
+    &:after{
+        content:" ";
+        width:1px;
+        height:136px;
+        display:block;
+        position:absolute;
+        top:5%;
+        right:0;
+        margin-top:-68px;
+        border-right:1px solid #eee;
+    }
+    &:nth-child(2n){
+        display:none;
+    }
+}
+
+```
+- list用ulli或者dldddt(可以用作标题内容分辨)
+
 ### HTML5新增
 - 表单
     - 日期、时间、搜索
@@ -737,10 +770,12 @@ tr td:last-child {
     - 自适应空间（设计时多留自适应空间）
         - viewport
         - rem
+            - hotcss
             - 通过html字体大小(默认16px)来确定元素大小的办法，使用rem尺寸单位
             - 根据不同尺寸的屏幕设置不同的html字体大小
             - em相对于父级元素，rem相对于html标签
             - rem有小数的地方会不太精准，精确度要求高的地方不要用rem进行布局
+
             :::warning rem实现代码
             - 将压缩原生js放到head标签中
             ```html
@@ -1136,3 +1171,4 @@ $column:200px;
     - module/scoped
     - 编译成随机字符串/加上自定义属性
 
+### sketch自动生成渐变色，做设计稿

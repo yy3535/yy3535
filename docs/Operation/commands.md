@@ -1,7 +1,27 @@
 # commands
+## 目录
+```js
+mkdir xxx xxx xxx
+mkdir -p xxx/xxx xxx/xxx
+cd xxx
+ls xxx
+```
+
+## 新建文件
+```js
+touch xxx/xxx xxx
+```
+
+## 用某个软件打开某个目录
+```js
+// 打开当前的app目录
+open -a atom app/
+// 打开当前目录
+open -a atom .
+```
 
 ## 清空命令行记录
-```
+```js
 clear
 ```
 

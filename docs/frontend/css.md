@@ -62,7 +62,7 @@
 - word-wrap
 - letter-spacing 中文间距
 - white-space nowrap 文字不换行
-- text-overflow elipsis 超出后变...
+- text-overflow: ellipsis; 超出后变...
 - overflow: hidden
 
 - 实现不换行超出...的语句
@@ -73,6 +73,8 @@ h4{
     overflow: hidden;
 }
 ```
+- text-align:justify;文本两端对齐
+
 ```css
 /* 四宫格中间有分界线情况实现，利用伪元素做竖线，利用外部容器的底边框，再设relative，向上偏移一个格子的距离，即可居中 */
 .item{
@@ -268,26 +270,15 @@ https://huruqing.gitee.io/demos/source/reset.css
 box-sizing:content-box(标准模式盒模型) | border-box(怪异模式盒模型)
 #### 盒子阴影:
 ```css
-/* x偏移量 | y偏移量 | 阴影颜色 */
-box-shadow: 60px -16px teal;
-
-/* x偏移量 | y偏移量 | 阴影模糊半径 | 阴影颜色 */
-box-shadow: 10px 5px 5px black;
-
-/* x偏移量 | y偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 */
-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-
-/* 插页(阴影向内) | x偏移量 | y偏移量 | 阴影颜色 */
-box-shadow: inset 5em 1em gold;
-
-/* 任意数量的阴影，以逗号分隔 */
-box-shadow: 3px 3px red, -1em 0 0.4em olive;
-
-/* 全局关键字 */
-box-shadow: inherit;
-box-shadow: initial;
-box-shadow: unset;
+box-shadow: h-shadow v-shadow blur spread color inset;
 ```
+| *h-shadow* | 必需。水平阴影的位置。允许负值。         |
+| ---------- | ---------------------------------------- |
+| *v-shadow* | 必需。垂直阴影的位置。允许负值。         |
+| *blur*     | 可选。模糊距离。                         |
+| *spread*   | 可选。阴影的尺寸。                       |
+| *color*    | 可选。阴影的颜色。请参阅 CSS 颜色值。    |
+| inset      | 可选。将外部阴影 (outset) 改为内部阴影。 |
 #### 边框圆角:
 border-radius:[ length | percentage ]{1,4} [ / [ length | percentage ]{1,4} ]?
 按上左(top-left)、上右(top-right)、下右(bottom-right)、下左(bottom-left)的顺序作用于四个角
@@ -386,6 +377,7 @@ tr td:last-child {
     - 让盒子负责自己的布局
     - overflow:hidden(auto)
     - ::after(clear:both)
+- 右边的元素浮动到右边需要把它放在最左边才行
 - 两栏布局
 ```html
 <div class="container">
@@ -498,6 +490,8 @@ tr td:last-child {
 
     - align-self
         - 某项目的对齐方式：auto | flex-start | flex-end | center | baseline | stretch;
+- 最后一行左对齐
+  - 加上最多列数的空div，设置宽度为项目宽，高度为0，即可
 
 #### grid（网格）布局
 - 容器显示grid

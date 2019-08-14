@@ -2384,3 +2384,20 @@ moment.locale('zh-cn');
 console.log(moment().fromNow());
 moment(str).format('YYYY-MM-DD HH:mm:ss');// 获取'YYYY-MM-DD HH:mm:ss'格式的时间
 ```
+
+## Promise
+### 高阶函数
+### aop Aspect Oriented Programming
+### lodash after函数
+### 发布订阅
+### 观察者模式
+### promise应用
+### 手写promise a+ 规范
+  - p.catch
+  - p.finally
+  - Promise.resolve,Promise.reject
+  - Promise.deferred
+  - Promise.all,Promise.race
+### generator
+### async+await
+### 最终案例

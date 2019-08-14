@@ -1166,3 +1166,32 @@ $column:200px;
     - 编译成随机字符串/加上自定义属性
 
 ### sketch自动生成渐变色，做设计稿
+
+
+### html的footer置于页面最底部的方法
+```html
+<!-- 父层 -->     
+<div id="wapper">     
+    <!-- 主要内容 -->     
+    <div id="main-content">     
+    </div>     
+    <!-- 页脚 -->     
+    <div id="footer">     
+    </div>     
+</div>   
+```
+```css
+#wapper{     
+    position: relative;   /*重要！保证footer是相对于wapper位置绝对*/     
+    height: auto;          /* 保证页面能撑开浏览器高度时显示正常*/     
+    min-height: 100%  /* IE6不支持，IE6要单独配置*/     
+}     
+#footer{     
+   position: absolute;  bottombottom: 0; /* 关键 */     
+   left:0; /* IE下一定要记得 */     
+   height: 60px;         /* footer的高度一定要是固定值*/     
+}     
+#main-content{     
+   padding-bottom: 60px; /*重要！给footer预留的空间*/     
+}     
+```

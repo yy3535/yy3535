@@ -2387,7 +2387,29 @@ moment(str).format('YYYY-MM-DD HH:mm:ss');// 获取'YYYY-MM-DD HH:mm:ss'格式�
 
 ## Promise
 ### 高阶函数
-### aop Aspect Oriented Programming
+- 定义
+  - 函数的参数或者返回值是一个函数
+
+### aop Aspect Oriented Programming 面向切片编程 装饰器@
+- 就是高阶函数
+
+```js
+Function.prototype.before=function(fn){
+  let that=this;
+  return function(){
+    fn();
+    that();
+  }
+}
+fn.before(function(){
+  console.log('old~~~')
+})
+let newFn=fn.before(function(){
+  console.log('new~~~')
+})
+```
+
+
 ### lodash after函数
 ### 发布订阅
 ### 观察者模式
@@ -2398,6 +2420,6 @@ moment(str).format('YYYY-MM-DD HH:mm:ss');// 获取'YYYY-MM-DD HH:mm:ss'格式�
   - Promise.resolve,Promise.reject
   - Promise.deferred
   - Promise.all,Promise.race
-### generator
+### generator + co
 ### async+await
 ### 最终案例

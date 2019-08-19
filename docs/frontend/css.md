@@ -99,6 +99,12 @@ h4{
 ```
 - list用ulli或者dldddt(可以用作标题内容分辨)
 
+- line-height
+- normal	默认。设置合理的行间距。
+- number	设置数字，此数字会与当前的字体尺寸相乘来设置行间距。
+- length	设置固定的行间距。
+- %	基于当前字体尺寸的百分比行间距。
+- inherit	规定应该从父元素继承 line-height 属性的值。
 ### HTML5新增
 - 表单
     - 日期、时间、搜索
@@ -1022,6 +1028,12 @@ body{
 - mixin，使用`$`,强制要求样式前面必须加`@mixin `，调用时前面加`@include `，其他一样
 - extend，使用`@extend`
 ```css
+@import "../../assets/css/element.scss";
+.content {
+    @include content;
+}
+```
+```css
 /* 编译前 */
 .wrapper{
     .nav{
@@ -1194,4 +1206,7 @@ $column:200px;
 #main-content{     
    padding-bottom: 60px; /*重要！给footer预留的空间*/     
 }     
+```
+```css
+width: calc(100% - 0.7rem * 2);
 ```

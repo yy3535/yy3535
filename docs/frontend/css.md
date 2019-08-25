@@ -2,68 +2,6 @@
 [[toc]]
 ## HTML
 
-### HTML常见元素
-|标签|
-|:---:|
-|meta|
-|title|
-|style|
-|link|
-|script|
-|base|
-|div/section/article/aside/header/footer|
-|p|
-|span/em/strong|
-|table/thead/tbody/tr/td|
-|ul/ol/li/dt/dd|
-|a|
-|form/input/select/textarea/button|
- 
-### head里的标签
-#### meta
-- chartset
-    ```html
-    <meta charset="utf-8">
-    ```
-- viewport
-    - width/height：viewport 的大小
-        - 320(会按设备宽度等比放大或缩小)、`device-width`(为设备的宽度/高度)等。
-    - initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。(1.0)
-    - maximum-scale：允许用户缩放到的最大比例。(1.0)
-    - minimum-scale：允许用户缩放到的最小比例。(1.0)
-    - user-scalable：用户是否可以手动缩放(no)
-    ```html
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    ```
-    - viewport分哪几类？
-        - layout-viewport（页面窗口）
-        - visual-viewport（手机屏幕能看到的页面窗口的大小区域）
-        - ideal-viewport（手机屏幕大小区域）
-    - width=device-width的工作原理是什么?
-        - 让layout-viewport等于ideal-viewport
-#### base
-- url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 `<a>`、`<img>`、`<link>`、`<form>` 标签中的 URL)
-```html
-<base href="http://www.baidu.com" target="_blank">
-```
-
-
-### 元素的属性
-- a[href,target]
-- img[src,alt]//路径，无图像时替代文本,width和height只能用百分比和px单位
-- table td[colspan,rowspan]
-- form[target,method,enctype]//在何处打开url,发送http的方法，发送表单数据前编码
-- input[type,value]
-- button[type]
-- select>option[value]
-- label[for]
-- word-break normal|break-all|keep-all|break-word; 
-- word-spacing  
-- word-wrap
-- letter-spacing 中文间距
-- white-space nowrap 文字不换行
-- text-overflow: ellipsis; 超出后变...
-- overflow: hidden
 
 - 实现不换行超出...的语句
 ```css
@@ -99,14 +37,7 @@ h4{
 ```
 - list用ulli或者dldddt(可以用作标题内容分辨)
 
-### HTML5新增
-- 表单
-    - 日期、时间、搜索
-    - 表单验证
-    - placeholder、自动聚焦
-- header/footer/section/article/nav/aside
-- em/strong
-- i 斜体/做icon图标
+
 
 ### 语义化标签
 - 多个同样的东西可以用ul li标签，看上去更清楚
@@ -870,6 +801,71 @@ tr td:last-child {
 #### 垂直居中
 - margin-top设为父级减子级的50%
 - vertical-align:middle
+
+#### 水平垂直居中
+```css
+.box {
+    width: 100px;
+    height: 100px;
+    background: red;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+}
+```
+
+```css
+.box {
+    left: 50%;
+    top: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+}
+```
+
+```css
+.box{
+    display:table;
+    verticle-align:middle;
+    text-align:center;
+}
+.boxb{
+    display:table-cell;
+    
+}
+```
+
+```css
+.box{
+    display:flex
+    margin:auto;
+    /* justify-content:center;
+    align-items:center; */
+}
+.
+```
+```css
+.box{
+    display:grid;
+    grid-template-rows:auto;
+    grid-template-columns:auto;
+}
+```
+### 占满屏
+```css
+.box {
+    background: red;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+```
+
 ### less
 - xxx.less
 - yarn add less less-loader
@@ -1195,3 +1191,267 @@ $column:200px;
    padding-bottom: 60px; /*重要！给footer预留的空间*/     
 }     
 ```
+
+
+
+
+## HTML基础
+### HTML常见元素和理解
+### HTML常见元素
+|标签|
+|:---:|
+|meta|
+|title|
+|style|
+|link|
+|script|
+|base|
+
+|标签|
+|:---:|
+|div/section/article/aside/header/footer|
+|p|
+|span/em/strong|
+|table/thead/tbody/tr/td|
+|ul/ol/li/dl/dt/dd|
+|a|
+|form/input/select/textarea/button|
+
+#### meta
+- `<meta charset="utf-8">`
+- `<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui">`
+    - width/height：viewport 的大小
+        - 320(会按设备宽度等比放大或缩小)、`device-width`(为设备的宽度/高度)等。
+    - initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。(1.0)
+    - maximum-scale：允许用户缩放到的最大比例。(1.0)
+    - minimum-scale：允许用户缩放到的最小比例。(1.0)
+    - user-scalable：用户是否可以手动缩放(no)
+    - viewport分哪几类？
+        - layout-viewport（页面窗口）
+        - visual-viewport（手机屏幕能看到的页面窗口的大小区域）
+        - ideal-viewport（手机屏幕大小区域）
+    - width=device-width的工作原理是什么?
+        - 让layout-viewport等于ideal-viewport
+#### `<base href="http://www.baidu.com" target="_blank">``
+- url默认设置(相对路径设置为该路径，a标签等设置为打开新的页面)(包括 `<a>`、`<img>`、`<link>`、`<form>` 标签中的 URL)
+
+
+#### HTML重要属性
+- a[href,target]
+- img[src,alt]
+    - 路径
+    - 无图像时替代文本
+    - width和height只能用百分比和px单位
+- table td[colspan,rowspan]
+- form[target,method,enctype]
+    - 表单提交到哪里
+    - 发送http的方法
+    - 发送表单数据前编码（主要为post提供，1.url-encode方式把文本提交，2.form-data方式，把数据编码后提交，上传文件只能用rom-data方式）
+    - 为什么ajax提交也需要form
+        - 可借助submit,reset
+        - 批量获取表单，比如jquery的serialize
+        - 框架中验证功能需要结合form
+        - 有form时浏览器的密码管理工具会记住用户名密码
+- input[type,value,name]
+    - button
+    - radio,name
+    - submit/reset,出现在form中
+    - 
+- button[type]
+    - button
+    - submit/reset,出现在form中
+- select>option[value]
+- label[for]
+    - for指向input的id，进行关联
+
+#### 如何理解HTML
+- HTML文档
+- 描述文档的结构
+- 有区块和大纲
+- 工具：![工具](https://h5o.github.io/)
+- 语义化的重要性：方便各种爬虫，蜘蛛工具读取
+### HTML版本
+- HTML4/4.01(SGML)
+    - SGML是XML得超级版本
+    - 浏览器容错比较多，因为有些语法不规范
+- XHTML(XML)
+    - 要求比较严格(所有的属性必须有值等)
+- HTML5
+![html版本](./img/HTML_version.png)
+#### HTML5新增
+- 表单
+    - 日期、时间、搜索
+    - 表单验证
+    - placeholder、自动聚焦
+- header/footer/section/article/nav/aside(前面四个进入大纲)
+- em/strong（强调）
+- i 斜体/做icon图标
+### HTML元素分类
+- 按默认样式分类
+    - 块级(block)
+    - 行内/内联(inline)
+    - inline-block(对外inline对内block)
+        - select
+        - input
+- 按内容分类
+![w3c](https://html.spec.whatwg.org/multipage/)
+### HTML元素嵌套关系
+- 块级元素可以包含行内元素
+- 块级元素不一定能包含块级元素，比如`p`不能包含`div`
+- 行内元素一般不能包含块级元素，但`a`可能可以包含块级元素（规则是看到a直接跳过不检查，transparent，能不能包含取决于a外层的元素能否包含div）
+
+### HTML元素默认样式和定制化
+- 使用reset.css，margin,padding去掉
+- 使用*重置margin:0;padding:0,但是可能会带来选择器性能问题
+- Normalize.css，另一种选择，保留一些元素的属性，保持统一
+
+### HTML面试真题
+- doctype的意义是什么
+    - 让浏览器以标准模式渲染
+    - 让浏览器知道元素的合法性
+- HTML XHTML HTML5的关系
+    - HTML属于SGML
+    - XHTML属于XML，是HTML进行XML严格化的结果
+    - HTML5不属于SGML或XML，比XHTML宽松
+- em和i有什么区别
+    - em是语义化标签，表强调
+    - i是纯样式，只是斜体，没有语义
+- 哪些元素可以自闭合
+    - 表单元素 input
+    - 图片 img
+    - br hr
+    - meta link
+- HTML和DOM的关系
+    - HTML是死的字符串
+    - DOM是由HTML解析而来的活的对象
+- property和attribute的区别
+    - attribute是死的
+    - property是活的
+- from的作用
+    - 直接提交表单
+    - 使用submit/reset按钮
+    - 便于浏览器保存表单
+    - 第三方库可以整体提取值
+    - 第三方库可以进行表单验证
+## CSS基础
+- Cascading Style Sheet(层叠样式表)
+### 基本规则
+```css
+选择器{
+    属性:值;
+    属性:值
+}
+```
+### 选择器
+- 用于匹配HTML元素
+#### 分类
+- id选择器
+- 类选择器
+- 标签选择器
+- 属性选择器
+    - E[attr]
+    - E[attr=val]
+    - E[attr*=val]
+    - E[attr^=val]
+    - E[attr$=val]
+- 伪类选择器(状态)
+    - E:only-of-type
+    - E:only-child
+    - E:first-child
+    - E:last-child
+    - E:nth-child(n)
+    - E:nth-last-child(n)
+    - E:nth-of-type(n)
+    - E:nth-last-of-type(n)
+        - {n 范围[0,+∞),即所有子元素,0 和负数在伪类选择器中获取不到;-n+5 表示[1,5]}
+    - E:empty
+    - E:target
+    - E:enabled
+    - E:disabled
+        - 控制表单控件的禁用状态
+    - E:checked
+        - 单选框或复选框被选中
+- 伪元素选择器（元素）
+    - E::befor
+    - E::after
+    - E::first-letter
+    - E::first-line
+    - E::selection
+        - c3 引入
+- 组合选择器[type=checkbox]+label{}
+- 否定选择器:not(.link){}
+- 通用选择器*
+#### 权重
+- ID选择器 #id{} +100
+- 类 属性 伪类 +10
+- 元素 伪元素 +1
+- 其它选择器 +0
+- 但是不进位，十个类选择器权重不会等于id选择器
+- !important优先级最高
+- 内联的样式优先级最高
+- 相同权重 后写的生效
+#### 解析和性能（浏览器的解析方式是从右往左找的，这样性能比较高，速度比较快）
+### 非布局样式
+- 字体
+    - 字体族（不加引号，指定一种字体族，会从字体族中随便选择一种字体来显示）
+        - serif(衬线字体) sans-serif(非衬线字体) monospace(等宽字体) cursive(手写体) fantasy(花体)
+    - 多字体fallback(没有黑体就用下一个，再没有就同一个字体族找一个)
+    ```css
+    .chinese{
+        <!-- mac上用PingFang，window上有微软雅黑 -->
+        font-family:"PingFang SC","Microfoft Yahei",monospace;
+    }
+    ```
+    - 网络字体，自定义字体
+    - iconfont
+    ```css
+    <!-- 定义字体 -->
+    @font-face{
+        font-family:"IF";
+        <!-- 地址是远程服务器一定要有cois的头 -->
+        src:url("./IndieFlower.ttf");
+    }
+    .custom-font{
+        <!-- 使用字体 -->
+        font-family:IF;
+    }
+    ```
+- 行高
+    - 顶线，底线，基线。会按基线对齐，行高是按行高最高的元素的高度来算
+    - 背景区域是由字体大小决定的
+    - line-height如果比字体高度高，就会平均分布在字体上下两边，垂直居中
+    - verticle-align，不设按基线对齐，top按顶线对齐，bottom按底线对齐，middle按居中对齐
+- 背景
+- 边框
+- 滚动
+- 文本折行
+- 装饰性属性
+- hack和案例
+- 面试题
+## CSS布局实战
+:::其它
+- word-break normal|break-all|keep-all|break-word; 
+- word-spacing  
+- word-wrap
+- letter-spacing 中文间距
+- white-space nowrap 文字不换行
+- text-overflow: ellipsis; 超出后变...
+- overflow: hidden
+:::
+### 布局属性和组合解析
+### 常见布局方案介绍
+### 三栏布局案例
+### 国内大站方案拆解
+
+## 动画和效果专题讲解
+### 多背景多投影特效
+### 3D特效编写实践
+### 过渡动画和关键帧动画实践
+### 动画细节和原理的深入解析
+
+## 框架集成和CSS工程化
+### 预处理器作用和原理
+### Less/Sass代码实践
+### Bootstrap原理和用法
+### CSS工程化实践方式
+### JS框架中的CSS集成实践

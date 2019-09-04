@@ -314,6 +314,7 @@ Content-Length: 122
 ＜/body＞
 ＜/html＞
 ```
+--------------------- 书签
 - HTTP方法
   - GET(获取资源)
   - POST(传输资源)
@@ -872,8 +873,11 @@ for(var i=0;i<4;i++){
 - 谈谈你对MVVM的认识？
     - 先聊MVC,再聊MVVM的定义,
 - 双向绑定是什么原理，可以写出来吗？
+    ![双向绑定原理](./img/bidirectional-databindings.jpg)
     - 数据到页面的更新-->Object.defineProperty的更新回调（以前需要使用模板引擎）
-
+    - 数据劫持
+        - 以前`let a={name:1}`
+        - 现在`Object.defineProperty('a','name',{set(),get()})`,赋值时更新回调
 - 【重要】：
 1. object.defineProperty的用法要熟记于心
 2. object.defineProperty与reflect.defineProperty的区别

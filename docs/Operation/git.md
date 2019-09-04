@@ -76,6 +76,10 @@ git reflog
 git reset --hard 98abc5a
 ```
 
+## 下载某个版本
+git log 查看版本号
+git checkout b74be8e78ff*****0a15d04967（版本号）
+
 ## git提交时出现non-fast-forward冲突
 - 原因
   - git仓库已有部分代码，不允许直接代码覆盖

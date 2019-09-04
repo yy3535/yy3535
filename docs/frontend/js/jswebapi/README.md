@@ -2,14 +2,216 @@
 [[toc]]
 
 ## DOM操作
+- DOM操作出来nodeList是类数组
+### Node
+- 节点属性
+    - nodeName
+    - nodeType(括号中为Node常量)
+        - 1（Node.Element_Node）
+        - 3（Node.Text_Node）
+        - 8（Node.COMMENT_NODE）
+        - 9（Node.Document_Node）
+        - 11（Node.DocumentFragment_Node）
+        ```js
+        document.nodeType === Node.DOCUMENT_NODE; // true
+        ```
+    - nodeValue
+    - textContent
+        - document:null
+        - comment/text node:text inside the node(即nodeValue)
+        - 其它:每个child node的textContent连接。
+- 节点关系
+    - childNodes
+    - parentNode
+    - firstChild
+    - lastChild
+    - hasChildNodes
+- 方法
+    - appendChild
+    - removeChild
+    - insertBefore
+    - replaceChild
+    - cloneNode
 
+### Document
+- 继承自Node和EventTarget
+
+- DOM 树
+    - DOM 树包含了像 `<body>` 、`<table>` 这样的元素，以及大量其他元素。
+- Properties
+    - Document.body
+    - Document.doctype
+    - Document.documentElement
+        - 返回当前文档的直接子节点，一般是`<html>`元素
+    - Document.documentURI
+        - 返回当前温度的路径
+    - Document.forms
+        - 返回一个包含当前温度中所有表单元素`<form>`的列表
+    - Document.head
+        - 返回当前文档的`<head>`元素
+
+    - Document.cookie
+        - 返回一个使用分号分隔的cookie列表，或者设置（写入）一个cookie
+    - Document.domain
+        - 获取或设置当前文档的域名
+    - Document.location
+        - 返回当前文档的URI
+    - Document.readyState
+        - 返回当前文档的加载状态
+    - Document.referrer
+        - 返回来源页面的URI
+    - Document.title
+        - 获取和设置当前文档的标题
+    - Document.URL
+        - 以字符串形式返回文档的地址栏链接
+    
+- Methods
+    - Document.createElement()
+    - Document.getElementsByClassName()
+    - Document.getElementsByTagName()
+    - document.getElementById()
+    - document.querySelector()
+    - document.querySelectorsAll()
+    - 
+
+- Events
+    - scroll
+    - visibilitychange
+    - wheel
+    - Animation events
+        - animationend
+    - Clipboard events
+        - copy
+        - cut
+        - paste
+    - Drag & drop events
+        - drag
+        - dragend
+        - dragenter
+        - dragexit
+        - dragleave
+        - dragover
+        - dragstart
+        - drop
+    - Fullscreen events
+        - fullscreenchange
+        - fullscreenerror
+    - Keyboard events
+        - keydown
+        - keypress
+        - keyup
+    - Load & unload events
+        - DOMContentLoaded
+        - readystatechange
+    - Pointer events
+    - Selection events
+        - selectionchange
+        - selectstart
+    - Touch events
+        - touchcancel
+        - touchend
+        - touchmove
+        - touchstart
+    - Transition events
+        - transitioncancel
+        - transitioned
+        - transitionrun
+        - transitionstart
+### Element
+- 继承自Node和EventTarget
+    - nodeType:1
+    - nodeName:标签名
+    - nodeValue:null
+    - parentNode:可能是Document或Element
+- Properties
+    - tagName:同nodeName
+    - id
+    - name
+    - className
+    - attributes
+    - children
+    - classList
+
+    - firstElementChild
+    - innerHTML
+    - lastElementChild
+
+    - clientHeight
+    - clientLeft
+    - clientTop
+    - clientWidth
+    - scrollHeight
+    - scrollLeft
+    - scrollTop
+    - scrollWidth
+    
+- Methods
+    - append()
+    - getAttribute()
+    - getElementsByClassName()
+    - getElementsByTagName()
+    - querySelector()
+    - querySelectorAll()
+    - scroll()
+    - scrollTo()
+    - setAttribute()
+- Events
+    - blur
+    - click
+    - dbclick
+    - focus
+    - focusin
+    - focusout
+    - keydown
+    - mousedown
+    - mouseenter
+    - mousemove
+    - mouseout
+    - mouseover
+    - mouseup
+    - paste
+    - copy
+    - select
+    - touchstart
+    - touchcancel
+
+### EventTarget
+- Element,Document,Window以及XMLHttpRequest,AudioNode,AudioContext等继承了EventTarget
+- Event也可以通过onevent的properties和attributes来设置
+- Constructor
+    - EventTarget()
+        - 创建一个EventTarget实例
+- Methods
+    - EventTarget.addEventListener()
+    - EventTarget.removeEventListener()
+    - EventTarget.dispatchEvent()
+### Text
+- nodeType:3
+- nodeName:"#text"
+- nodeValue:节点所包含的文本
+- parentNode:一个Element
+- 不支持（没有）子节点
+- Properties
+    - data
+        - 节点所包含的文本
+    - length
+- Methods
+    - appendData(text)
+        - 将text添加到节点末尾
+    - deleteData(offset,count)
+        - 从offset指定的位置开始删除count个字符
+    - insertData(offset,text)
+        - 在offset指定的位置插入text
+    - replaceData(offset,count,text)
+        - 用text替换从offset指定的位置开始到offset+count为止处的文本
+    - splitText(offset)
+        - 从offset指定的位置将当前文本节点分成两个文本节点
+    - substringData(offset,count)
+        - 提取从offset指定的位置开始到offset+count为止处的字符串
 ### DOM节点
-- nodeType 区分过滤text标签，=1是p，=3是text
-- nodeName=#text是text，=p是p
-- 包括
-    - 获取节点，以及获取节点的 Attribute 和 property 
-    - 获取父节点 获取子节点
-    - 新增节点，删除节点
+- 获取节点，以及获取节点的 Attribute 和 property 
+- 获取父节点 获取子节点
+- 新增节点，删除节点
 ```js
  // 获取DOM节点
 var div1 = document.getElementById('div1')
@@ -17,14 +219,12 @@ var div1 = document.getElementById('div1')
 var divList = document.getElementsByTagName('div')
 var containerList = document.getElementsByClassName('.container')
 var pList = document.querySelectorAll('p')
-// 获取property和修改property(改变 JS 对象)
-console.log(p.style.width) 
-console.log(p.className) 
-console.log(p.nodeName)
-console.log(p.nodeType)
-p.style.width = '100px'  
-p.className = 'p1'
-// 获取设置属性(Attibute 是改变 html 的属性)
+// property(改变 JS 对象)
+p.style.width
+p.className
+p.nodeName
+p.nodeType
+// Attibute (改变 html 的属性)
 p.getAttribute('style')
 p.setAttribute('style', 'font-size:30px;')
 // 创建节点
@@ -44,6 +244,12 @@ div1.removeChild(child[0])
 // 是否包含
 div1.contains(div2)
 ```
+### Element
+#### 方法
+- element.matches(selectorString)
+    - 返回true/false
+    - 参数为css选择器字符串
+
 
 ### DOM事件
 - DOM事件(DOM标准)的级别
@@ -63,6 +269,7 @@ div1.contains(div2)
     - 冒泡流程：目标元素->...->boyd->html->document->window
       - 如何拿html对象：document.documentElement
       - 如何拿body：document.body
+
 - Event对象的常见应用
     - 事件类型
         - CAPTURING-PHASE  当前事件阶段为捕获阶段
@@ -371,6 +578,7 @@ xhr.send(null)
 #### JSONP（利用script标签的跨域特性实现）
 - 从服务端`http://www.abc.com/?callback=callbackName`下载一段callback函数执行代码，数据作为函数的参数。
 - 页面中定义一个`window.callbackName=function(data){}`，函数执行后即可进入callback函数获取到data。
+- 只能是get请求，后端需要返回固定格式
 ```html
 <script>
 // 定义window.callbackName函数
@@ -420,8 +628,11 @@ var Socket = new WebSocket(url, [protocol] );
 |Socket.onmessage|	客户端接收服务端数据时触发|
 |Socket.onerror|	通信发生错误时触发|
 |Socket.onclose|	连接关闭时触发|
-|WebSocket 方法|
+
+WebSocket 方法
+
 |方法|	描述|
+|:-----:|:----:|
 |Socket.send()|	使用连接发送数据|
 |Socket.close()|	关闭连接|
 
@@ -501,6 +712,7 @@ if(window.WebSocket){
   // 获取cookie
   let cookieUser=cookie.getCookie('user')&&JSON.parse(cookie.getCookie('user'));
   ```
+
 ### locationStorage、sessionStorage[ES6]
 - 存储在sessionStorage或localStorage中的数据特定于该页面的协议
 - localStorage

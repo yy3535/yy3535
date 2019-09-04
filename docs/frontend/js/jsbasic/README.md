@@ -113,7 +113,8 @@ true+true
 
 - Math.random()
   - 常用于清除浏览器缓存，频繁访问一个链接，就在链接后加一个random()
-
+- Math.pow(x,y)	
+  - 返回 x 的 y 次幂。
 以下ES6新增：
 
 - Math.trunc() 
@@ -759,7 +760,6 @@ industr(?:y|ies)
 - 例：提取字符串da12bka3434bdca4343bdca234bm中包含在字符a和b之间的数字，但是这个a之前的字符不能是c，b后面的字符必须是d才能提取。
     - 答：通过添加分组拿到分组内容 [^c]a(\d+)bd，通过零宽度断言，去掉前后分组，拿到剩下中间的一个分组 (?<=[^c]a)\d+(?=bd)
 
--------------------------------------------书签
 
 #### 模式修政符
 - 可组合搭配使用
@@ -967,10 +967,169 @@ console.log(formatDate)
      ```
 - Array​.prototype​.for​Each(function (item, index) {})
   - 遍历数组的所有元素
-- Array​.prototype​.reduce(function(total,currentValue,index,arr){},initialValue)
+- Array​.prototype​.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
+  - 对数组中的每个元素执行一个由您提供的reducer函数(升序执行)，将其结果汇总为单个返回值。
   - 第一个函数返回总值和每一项的计算，对数组进行计算后得到结果
     ```js
-    Array.reduce()
+    // 数组里所有值得和
+    var sum = [0, 1, 2, 3].reduce(function (accumulator, currentValue) {
+        return accumulator + currentValue;
+    }, 0);
+    // 和为 6
+    var total = [ 0, 1, 2, 3 ].reduce(
+        ( acc, cur ) => acc + cur,
+        0
+    );
+    ```
+    ```js
+    // 累加对象数组里的值
+    var initialValue = 0;
+    var sum = [{x: 1}, {x:2}, {x:3}].reduce(
+        (accumulator, currentValue) => accumulator + currentValue.x
+        ,initialValue
+    );
+
+    console.log(sum) // logs 6
+    ```
+    ```js
+    // 将二维数组转化为一维
+    var flattened = [[0, 1], [2, 3], [4, 5]].reduce(
+        ( acc, cur ) => acc.concat(cur),
+        []
+    );
+    ```
+    ```js
+    // 计算数组中每个元素出现的次数
+    var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+
+    var countedNames = names.reduce(function (allNames, name) { 
+    if (name in allNames) {
+        allNames[name]++;
+    }
+    else {
+        allNames[name] = 1;
+    }
+    return allNames;
+    }, {});
+    // countedNames is:
+    // { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
+    ```
+    ```js
+    // 按属性对object分类
+    var people = [
+        { name: 'Alice', age: 21 },
+        { name: 'Max', age: 20 },
+        { name: 'Jane', age: 20 }
+    ];
+
+    function groupBy(objectArray, property) {
+    return objectArray.reduce(function (acc, obj) {
+        var key = obj[property];
+        if (!acc[key]) {
+        acc[key] = [];
+        }
+        acc[key].push(obj);
+        return acc;
+    }, {});
+    }
+
+    var groupedPeople = groupBy(people, 'age');
+    // groupedPeople is:
+    // { 
+    //   20: [
+    //     { name: 'Max', age: 20 }, 
+    //     { name: 'Jane', age: 20 }
+    //   ], 
+    //   21: [{ name: 'Alice', age: 21 }] 
+    // }
+    ```
+    ```js
+    // 使用扩展运算符和initialValue绑定包含在对象数组中的数组
+
+    // friends - 对象数组
+    // where object field "books" - list of favorite books 
+    var friends = [{
+    name: 'Anna',
+    books: ['Bible', 'Harry Potter'],
+    age: 21
+    }, {
+    name: 'Bob',
+    books: ['War and peace', 'Romeo and Juliet'],
+    age: 26
+    }, {
+    name: 'Alice',
+    books: ['The Lord of the Rings', 'The Shining'],
+    age: 18
+    }];
+
+    // allbooks - list which will contain all friends' books +  
+    // additional list contained in initialValue
+    var allbooks = friends.reduce(function(prev, curr) {
+    return [...prev, ...curr.books];
+    }, ['Alphabet']);
+
+    // allbooks = [
+    //   'Alphabet', 'Bible', 'Harry Potter', 'War and peace', 
+    //   'Romeo and Juliet', 'The Lord of the Rings',
+    //   'The Shining'
+    // ]
+    ```
+    ```js
+    // 数组去重
+    let arr = [1,2,1,2,3,5,4,5,3,4,4,4,4];
+    let result = arr.sort().reduce((init, current) => {
+        if(init.length === 0 || init[init.length-1] !== current) {
+            init.push(current);
+        }
+        return init;
+    }, []);
+    console.log(result); //[1,2,3,4,5]
+    ```
+    ```js
+    // 按顺序运行Promise
+    /**
+     * Runs promises from array of functions that can return promises
+    * in chained manner
+    *
+    * @param {array} arr - promise arr
+    * @return {Object} promise object
+    */
+    function runPromiseInSequence(arr, input) {
+    return arr.reduce(
+        (promiseChain, currentFunction) => promiseChain.then(currentFunction),
+        Promise.resolve(input)
+    );
+    }
+
+    // promise function 1
+    function p1(a) {
+    return new Promise((resolve, reject) => {
+        resolve(a * 5);
+    });
+    }
+
+    // promise function 2
+    function p2(a) {
+    return new Promise((resolve, reject) => {
+        resolve(a * 2);
+    });
+    }
+
+    // function 3  - will be wrapped in a resolved promise by .then()
+    function f3(a) {
+    return a * 3;
+    }
+
+    // promise function 4
+    function p4(a) {
+    return new Promise((resolve, reject) => {
+        resolve(a * 4);
+    });
+    }
+
+    const promiseArr = [p1, p2, f3, p4];
+    runPromiseInSequence(promiseArr, 10)
+    .then(console.log);   // 1200
     ```
 - Array​.prototype​.reduce​Right()
 :::
@@ -1218,6 +1377,7 @@ s.charCodeAt(1) // 57271
   - 第二个参数是字符串
   - 第二个参数是函数
   ```js
+  let re = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u;
   '2015-01-02'.replace(re, (
         matched, // 整个匹配结果 2015-01-02
         capture1, // 第一个组匹配 2015
@@ -1597,7 +1757,7 @@ f.name // "f"
     [1,2,3].map(x => x * x);
     ```
 - 注意点
-  - 函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。 在箭头函数中，this指向是固定的
+  - 函数体内的this对象，就是函数定义生效时所在的对象，例如new一个实例的时候。而不是使用时所在的对象。 在箭头函数中，this指向是固定的
   - 不可以当作构造函数(就是不可以使用new命令)
   - 没有arguments,可以用 rest 参数代替。
 - 不适用的场合

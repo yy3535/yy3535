@@ -244,6 +244,8 @@ export default (arr)=>{
       return gcd(b,a%b)
     }
   }
+//   卡牌排序，排序的目的就是为了让相同的牌排在一起方便我们分组
+  let str=arr.sort().join('')
   // 分组(单张或者多张)
   let group=str.match(/(\d)\1+|\d/g)
   while(group.length>1){
@@ -290,40 +292,24 @@ n 是非负整数，且不会超过输入数组的大小。
 [0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1]
 ```
 - 问题：
-  - 边界问题
+  - 边界问题（前后加个0可解决）
   - 条件010
   [0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1]
 +1 | |
+
 ```js
-for(let i=0,len=arr.length-1;i<len;i++){
-  if(arr[i]===0){
-    if(i===0&&arr[1]===0){
-      max++
-      i+=1
-    }else if(arr[i-1]===0&&arr[i+1]===0){
-      max++
-      i+=1
+export default (flowerbed,n)=>{
+  let max = 0;
+    flowerbed.push(0);
+    flowerbed.unshift(0);
+    let len=flowerbed.length;
+    for (let i = 1; i < len; i++) {
+        if (flowerbed[i-1] === 0 && flowerbed[i] === 0 && flowerbed[i+1] === 0) {
+            flowerbed[i] = 1;
+            max++;
+        }
     }
-  }
-}
-```
-```js
-export default (arr,n)=>{
-  // 计数器
-  let max=0
-  for(let i=0,len=arr.length-1;i<len;i++){
-    if(arr[i]===0){
-      if(i===0&&arr[1]===0){
-        max++
-        i++
-      }else if(arr[i-1]===0&&arr[i+1]===0){
-        max++
-        i++
-      }
-    }
-  }
-  return max >= n
-}
+    return max >= n
 ```
 - 总结
   - 学会问题抽象
@@ -364,21 +350,27 @@ export default (arr,n)=>{
 ```js
 export default (n)=>{
   // 递归函数，用来算输入为n的格雷编码序列
-  let make=(n)=>{
-    if(n===1){
-      return ['0','1']
-    }else{
-      let prev=make(n-1)
-      let result=[]
-      let max=Math.pow(2,n)-1
-      for(let i=0,len=rev.length;i<len;i++){
-        result[i]=`0${prev[i]}`
-        result[max-i]=`1${prev[i]}`
+  let gray = function(n){
+    if( n === 1){
+      return ['0','1'];
+    } else {
+      let prev = gray(n-1);
+      let res = [];
+      let max = Math.pow(2,n)-1;
+      for(let i =0;i<prev.length;i++){
+        res[i] = `0${prev[i]}`;
+        res[max - i] = `1${prev[i]}`;
       }
-      return result
+      return res;
     }
   }
-  return make(n)
+  if(n === 0){
+    return [0]
+  }
+  var res = gray(n);
+  return res.map(item => {
+    return parseInt(item,2)
+  })
 }
 ```
 - 发现规律，动态输入

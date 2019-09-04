@@ -19,6 +19,12 @@
 - 常用的包统一一处import问题需要解决
 - 富文本内容不能直接v-html显示出来，安全问题。`<img src="x" onerror="alert()"/>`
 
+- 新功能上线时间要调好，方便上线后出现问题人在，能及时解决
+- 新功能做好后所有有关联的部分要联测一下，测试数据库测完再测一遍正式数据库。
+
+### 资产管理系统
+- http://swsuzhou.xdf.cn/login/adminindex（admin/0000）
+
 ### 学生信息管理系统
 - （http://stsuzhou.xdf.cn/Login/IndexAdmin）（用户名：admin 密码：0000）
 :::warning 负责内容

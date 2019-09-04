@@ -176,6 +176,8 @@ https://huruqing.gitee.io/demos/source/reset.css
   - E::first-line
   - E::selection
     - c3 引入
+- 用户双击不选中文字
+    - user-select:none;
 #### 颜色
 - Hsla(200,50%,100%,0.7)
     - H: Hue(色调)//0(或360)表示红色，120表示绿色，240表示蓝色
@@ -225,13 +227,7 @@ source:图像路径url
 - border-width 部分不显示
 - outset:扩张,设置后图像在原本基础上向外延展设定值后再显示,不允许负值(少用)
 - repeat:平铺,默认stretch 拉伸;repeat 平铺但不缩放;round 平铺且自适应缩放大小;space 平铺且自适应缩放间距
-#### 渐变:
-- 线性渐变linear-gradient( [point || angle,]? stop, stop [, stop]* )
-- 径向渐变radial-gradient([ [ shape || size ] [ at position ]? , | at position, ]?color-stop[ , color-stop ]+)
-- 注意:渐变色不是单一颜色,不能使用backgroud-color 设置,只能使用background 设置
-- 间隔分明实现,red 0%,red 33.3%,green 33.3%,green 66.6%,blue 66.6%,blue 100%
-- [面试]径向渐变中的size:渐变终止的地方(要能看到明显的起点终点来判定是哪种,默认最远角)
-- closest-side:最近边、farthest-side:最远边、closest-corner:最近角、farthest-corner:最远角
+
 #### 背景:
 - background-size:auto/number/percentage/cover/contain
 - cover 自动等比缩放,直到某方向完全显示;contain 自动等比缩放,直到图片完全显示
@@ -700,7 +696,7 @@ tr td:last-child {
             - 根据不同尺寸的屏幕设置不同的html字体大小
             - em相对于父级元素，rem相对于html标签
             - rem有小数的地方会不太精准，精确度要求高的地方不要用rem进行布局
-
+            - px2rem
             :::warning rem实现代码
             - 将压缩原生js放到head标签中
             ```html
@@ -1381,6 +1377,10 @@ $column:200px;
 - 组合选择器[type=checkbox]+label{}
 - 否定选择器:not(.link){}
 - 通用选择器*
+:::tip
+- 伪类和伪元素的区别
+    - 伪类表状态，伪元素是真的有元素，前者是单冒号，后者是双冒号
+:::
 #### 权重
 - ID选择器 #id{} +100
 - 类 属性 伪类 +10
@@ -1403,6 +1403,9 @@ $column:200px;
     }
     ```
     - 网络字体，自定义字体
+        - 使用场景
+            - 宣传/品牌/banner等固定图标
+            - 字体图标
     - iconfont
     ```css
     <!-- 定义字体 -->
@@ -1421,14 +1424,42 @@ $column:200px;
     - 背景区域是由字体大小决定的
     - line-height如果比字体高度高，就会平均分布在字体上下两边，垂直居中
     - verticle-align，不设按基线对齐，top按顶线对齐，bottom按底线对齐，middle按居中对齐
+    :::tip
+    - 图片和文字同一行,去除这个缝隙
+        - verticle-align:bottom
+        - display:block
+    :::
 - 背景
+    - 背景颜色
+        - 单词
+        - #ff0000 #f00 (rgb，不够直观)
+        - rgb(0,0,0)
+        - hsl(0,100%,50%); (色相0-360，饱和度0%-100%，亮度0%-100%，对人更友好)
+    - 渐变色背景
+        - 线性渐变linear-gradient( [point || angle,]? stop, stop [, stop]* )
+        - 径向渐变radial-gradient([ [ shape || size ] [ at position ]? , | at position, ]?color-stop[ , color-stop ]+)
+    - 多背景叠加
+        - 可利用渐变色实现网格图案
+    - 背景图片和属性（雪碧图）
+        - background:url(./test.png);
+        - 移动端三倍屏（1px显示为3px），做一个三倍尺寸的图，然后background-size除以三。
+    - base64和性能优化(图片本身的体积会变成原来的3/4，减少了http的连接数，增大了解码的开销。一般用在小的图片上，写的时候写图片，构建时打包成base64)
+    - 多分辨率适配
 - 边框
+    - 线型（solid dashed） 大小 颜色
+    - 边框背景图(border-image:round:按整数个去重复图案)
+    - 边框衔接（三角形）
+
 - 滚动
+    - overflow:visible(内容撑出去)/hidden/scroll/auto
 - 文本折行
-- 装饰性属性
-- hack和案例
-- 面试题
-## CSS布局实战
+    - overflow-wrap(以前是word-wrap) 通用换行控制,是否保留单词
+        - break-word
+        - break-all
+        - keep-all
+    - word-break 针对多字节文字，中文句子也是一个单词
+    - white-space 空白处是否断行
+        - no-wrap
 :::其它
 - word-break normal|break-all|keep-all|break-word; 
 - word-spacing  
@@ -1438,16 +1469,273 @@ $column:200px;
 - text-overflow: ellipsis; 超出后变...
 - overflow: hidden
 :::
+- 装饰性属性
+    - (粗体)font-weight:600/normal(400)/bold(700)/lighter(取决于父级)/bolder(取决于父级)/100(只能是100-900,9个值)
+    - (斜体)font-style:itatic
+    - (下划线)text-decoration:none
+    - (指针)cursor:pointer
+- hack和案例
+    - 在特定浏览器上的写法，做兼容性
+    - 缺点：难理解 难维护 易失效
+    - 替代方案:特性检测，针对性加class
+    ```html
+    <!-- 美化checkbox,把原来的按钮去掉 -->
+    <style>
+        .checkbox input {
+            display: none;
+        }
+        
+        .checkbox input:checked+label {
+            background-image: url(./checkbox2.png);
+        }
+        
+        .checkbox input+label {
+            background: url(./checkbox1.png) left center no-repeat;
+            background-size: 20px 20px;
+            padding-left: 20px;
+            user-select: none;
+        }
+        
+        .checkbox input+label:hover {
+            cursor: default;
+        }
+    </style>
+    <div class="checkbox">
+        <input type="checkbox" id="handsome"/>
+        <label for="handsome">我很帅</label>
+    </div>
+    ```
+    ```html
+    <!-- css radio checked实现选项卡 -->
+    <!-- css checkbox checked实现一个文件树 -->
+    ```
+    - 如何美化checkbox
+        - label[for]和id
+        - 隐藏原生input
+        - :checked + label
+- 面试题
+## CSS布局实战
+
 ### 布局属性和组合解析
 ### 常见布局方案介绍
 ### 三栏布局案例
 ### 国内大站方案拆解
 
-## 动画和效果专题讲解
-### 多背景多投影特效
-### 3D特效编写实践
-### 过渡动画和关键帧动画实践
-### 动画细节和原理的深入解析
+## CSS效果
+### box-shadow
+- box-shadow:12px 12px 0px 18px rgba(0,0,0,.4) inset;
+- box-shadow:阴影种类(inset内阴影 默认外阴影) x方向偏移 y方向偏移 模糊区域 扩展大小 阴影颜色 
+- 技巧
+    - 可以利用阴影复制一个元素出来
+    - 给多个阴影
+    ```html
+    <style>
+        box-shadow:200px 200px 0 5px green,
+                    230px 200px 0 5px green,
+                    215px 215px 0 -3px red;
+    </style>
+    <div class="container">
+    </div>
+    ```
+    - 一个元素画哆啦A梦（一个元素画什么什么系列都是用阴影）
+        - 因为都是圆，所以通过一个鼻子投影就行了。
+- 作用
+    - 营造层次感立体感
+    - 充当没有宽度的边框
+    - 特殊效果
+### text-shadow
+- text-shadow:-1px -1px 0 #aaa;
+- text-shadow:x方向偏移 y方向偏移 模糊区域 阴影颜色
+- 作用
+    - 立体感
+    - 印刷品质感
+### border-radius
+- border-radius:50%;
+- border-radius:上 右 下 左;
+- border-top-left-radius:100px 50px;(左上角的 水平方向 垂直方向)
+- border-top-right-radius:0;
+- border-radius:10px 10px 10px 10px / 20px 20px 20px 20px (水平方向/垂直方向，形成一个椭圆)
+- 圆角矩形
+- 圆形
+- 半圆/扇形
+- 一些奇怪的角角
+    - width:0;height:0;border:10px solid green; border-radius 30px/40px;
+### background
+- 纹理，图案
+- 渐变
+- 雪碧图动画
+- 背景尺寸适应
+    - background-position
+    - background-size:100px/50%/cover/contain;
+    - background-repeat
+### clip-path
+- clip-path:inset(100px 50px);(矩形)
+- clip-path:circle(50px at 100px 100px)（圆形）
+- clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);(多边形)
+- clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%，10% 10%);(多边形)
+- 作用
+    - 对容器进行裁剪
+    - 常见几何图形
+    - 自定义路径
+- 和border-radius区别：
+    - 容器占位是不变的
+    - 方便做容器内的动画
+    ```css
+    .container{
+        width:400px;
+        height:300px;
+        background:url(./panda.jpg);
+        background-size:cover;
+        padding:10px;
+        clip-path:circle(50px at 100px 100px);
+        transition:clip-path .4s;
+    }
+    .container:hover{
+        clip-path:circle(80px at 100px 100px)
+    }
+    ```
+- 可以和svg搭配使用
+### 3D-transform
+- transform:
+    - translate(位移)(10px)
+    - scale(缩放)(2)
+    - skew(斜切)(10px)
+    - rotate(旋转)(25deg)
+- 变换的顺序不可以随意改
+- 应用
+    - 3D卡片，3D相册
+```html
+<!-- 立方体 -->
+<style>
+    .container {
+            margin:50px;
+            padding: 10px;
+            border: 1px solid red;
+            width: 200px;
+            height: 200px;
+            position: relative;
+            /* 眼睛到物体的距离 */
+            perspective: 500px;
+        }
+        
+        #cube {
+            width: 200px;
+            height: 200px;
+            transform-style: preserve-3d;
+            transform: translateZ(-100px);
+            transition: transform 1s;
+        }
+        
+        #cube div {
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            line-height: 200px;
+            font-size: 50px;
+            text-align: center;
+        }
+        
+        #cube:hover {
+            transform: translateZ(-100px) rotateX(90deg) rotateY(90deg);
+        }
+        
+        .front {
+            transform: translateZ(100px);
+            background: rgba(255, 0, 0, .3);
+        }
+        
+        .back {
+            transform: translateZ(-100px) rotateY(180deg);
+            background: rgba(0, 255, 0, .3);
+        }
+        
+        .left {
+            transform: translateX(-100px) rotateY(-90deg);
+            background: rgba(0, 0, 255, .3);
+        }
+        
+        .right {
+            transform: translateX(100px) rotateY(90deg);
+            background: rgba(255, 255, 0, .3);
+        }
+        
+        .top {
+            transform: translateY(-100px) rotateX(-90deg);
+            background: rgba(255, 0, 255, .3);
+        }
+        
+        .bottom {
+            transform: translateY(100px) rotateX(90deg);
+            background: rgba(0, 255, 255, .3);
+        }
+</style>
+<body>
+    <div class="container">
+        <div id="cube">
+            <div class="front">1</div>
+            <div class="back">2</div>
+            <div class="left">3</div>
+            <div class="right">4</div>
+            <div class="top">5</div>
+            <div class="bottom">6</div>
+        </div>
+    </div>
+</body>
+```
+### 面试题
+- 如何用一个div画xxx
+    - box-shadow无限投影
+    - :::before
+    - :::after
+- 如何产生不占空间的边框
+    - box-shadow
+    - outline
+- 如何实现圆形元素
+    - border-radius:50%
+- 如何实现iOS图标的圆角（不是标准的圆角）
+    - 把图标的图片用矢量设计软件导成svg，然后用clip-path:(svg)去裁剪
+- 如何实现半圆、扇形等图形
+    - border-radius组合
+    - 有无边框
+    - 边框粗细
+    - 圆角半径
+- 如何平移/放大一个元素
+    - transform:translateX(100px)
+    - transform:scale(2)
+- 如何实现3D效果
+    1. perspective:500px;（设置物体至眼睛的距离）
+    2. transform-style:preserve-3d;(不设置这个，z轴的设置就没有效果)
+    3. transform:translate rotate ...（做各种变换）
+## CSS动画
+- 动画的原理
+    - 视觉暂留作用
+    - 画面逐渐变化
+- 动画的作用
+    - 愉悦感
+    - 引起注意
+    - 反馈
+    - 掩饰
+- 动画类型
+    - transition补间动画
+    - keyframe关键帧动画
+    - 逐帧动画
+### transition补间动画(CSS帮你自动算其中的动画)
+- 位置-平移
+    left/right/margin/transform
+- 方位-旋转(transform)
+- 大小-缩放(transform)
+- 透明度(opacity)
+- 其它-线性变换(transform)
+```html
+<style>
+    .container{
+        width:
+    }
+</style>
+```
+### 
+
+###
 
 ## 框架集成和CSS工程化
 ### 预处理器作用和原理

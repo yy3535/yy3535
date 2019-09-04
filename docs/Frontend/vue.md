@@ -394,6 +394,7 @@ style
 ```
 
 ## computed
+
 - methods getFullName()放取值表达式中会造成性能问题，每次其他数据更新都会重新执行这个方法
 - computed也是通过Object.defineProperty来实现的，只有依赖的数据更新时才会执行（有缓存）
 ```js
@@ -599,7 +600,7 @@ destroyed(){
   - 从以下来源使用模板的话，这条限制是不存在的：
     - 字符串 (例如：template: '...')
     - 单文件组件 (.vue)
-    - <script type="text/x-template">
+    - `<script type="text/x-template">`
 
 
 
@@ -923,7 +924,7 @@ Vue.component('blog-post', {
 
 #### 在组件上使用 v-model
 
-为了让它正常工作，这个组件内的 <input> 必须：
+为了让它正常工作，这个组件内的 `<input>` 必须：
 
 - 将其 value 特性绑定到一个名叫 value 的 prop 上
 - 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
@@ -2854,7 +2855,9 @@ export default {
 }
 </script>
 ```
-
+### vuex刷新失效
+- 再获取
+- 使用vuex中间件把数据存在本地
 
 ## vue源码
 
@@ -2937,10 +2940,161 @@ axios.interceptors.response.use(function (response) {
 
 
 ## jwt 实现 权限 vuex+jwt 鉴权
+```js
+yarn add body-parser jsonwebtoken
+```
+- jwt(jsonwebtoken)
+  - 通过token得方式鉴定用户是否登录
+```js
+// router.js
+{
+  path:'/',
+  name:'home',
+  component:Home
+},{
+  path:'/login',
+  name:'login',
+  component:()=>import('./views/Login.vue')
+},{
+  path:'/profile',
+  name:'profile',
+  component:()=>import('./views/Profile.vue'),
+  meta:{
+    needLogin:true
+  }
+},
+```
+```js
+// App.vue
+<div id="app">
+  <Spin fix v-if="$store.state.isShowLoading">
+    加载中...
+  </Spin>
+  <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/login">Login</router-link> |
+      <router-link to="/profile">Profile</router-link>
+      <router-view></router-view>
+  </div>
+</div>
+```
+```js
+// Login.vue
+<template>
+  <div class="login">
+    <Input type="text" placeholder="请输入用户名" style="width:300px"/>
+    <Button type="primary">登录</Button>
+  </div>
+</template>
+```
+```js
+// Home.vue
+<template>
+  <div class="home">
+    当前登录用户名{{$store.username}}
+  </div>
+</template>
+<script>
+import {getUser} from '../api/user.js'
+export default {
+  name:'home',
+  components:{
 
+  },
+  async mounted(){
+    let res=await getUser();
+    console.log(res)
+  }
+}
+</script>
+```
+```js
+// server.js
+let express=require('express');
+let app=express();
+let bodyParser=require('body-parser');
+let jwt=require('jsonwebtoken');
+
+// 跨域请求头设置
+app.use((req,res,next)=>{
+  res.header("Access-Control-Allow-Origin","http://localhost:8080);
+  res.header("Access-Control-Allow-Methods","GET,HEAD,OPTIONS,POST,PUS");
+  res.header("Access-Control-Allow-Headers","Origin,X-Requested-With,Content-Type,Accept,Authorization");
+
+  if(req.method.toLowerCase()==='options'){
+    return res.end();
+  }
+
+  next();
+})
+
+// 中间件
+app.use(bodyParser.json());
+let secret='zfjg'
+// cookie token（json web token json数据格式的密钥） 验证用户
+app.post('/login',(req,res)=>{
+  let {username}=req.body;
+  if(username==='admin'){
+    res.json({
+      code:0,
+      username:'admin',
+      token:jwt.sign(
+        // 数据
+        {username:'admin'},
+        // 密钥
+        secret,
+        {
+        // 过期时间20s
+        expiresIn:20
+      })
+    })
+  }else{
+    res.json({
+      code:1,
+      data:'用户名不存在'
+    })
+  }
+})
+
+app.get('/validate',(req,res)=>{
+  let token=req.header.authorization;
+  jwt.verify(token,secret,(err,decode)=>{
+    // cookie和session因为是存储在服务器中，所以重启服务器后就无法识别
+    // 而token不会有这种问题
+    if(err){
+      return res.json({
+        code:1,
+        data:'token失效了'
+      })
+    }else{
+      // 淘宝登陆后30分钟不操作后自动退出
+      res.json({
+        username:decode.username,
+        code:0,
+        // 需要把token的时效延长
+        token:jwt.sign(
+          // 数据
+          {username:'admin'},
+          // 密钥
+          secret,
+          {
+          // 过期时间20s
+          expiresIn:20
+        })
+      })
+    }
+  })
+})
+
+app.listen(3000)
+```
 ```js
 // ajaxRequest.js
 import axios from 'axios';
+import store from '../store';
+import {getLocal} from './local';
+// 当第一次请求 显示loading 剩下的时候就不调用了
+// 当都请求完毕后 隐藏loading
 class AjaxRequest{
   constructor(){
     this.baseURL=process.env.NODE_ENV=='production'?'/':'http://localhost:3000';
@@ -2954,6 +3108,7 @@ class AjaxRequest{
     return {...options,baseURL:this.baseURL,timeout:this.timeout}
   }
   setInterceptor(instance,url){
+    // 响应拦截
     // 如果上一个promise返回了一个常量，会作为下一个promise的输入
     instance.interceptors.response.use((res)=>{
       // 每次请求成功后，都删除队列里的路径
@@ -2965,10 +3120,10 @@ class AjaxRequest{
       // 更改返回的数据结构
       return res.data
     })
-    
+    // 请求拦截
     instance.interceptors.request.use((config)=>{
-      // 更改请求头
-      config.headers.Authorization='xxx';
+      // 更改请求头（token:请求头里加一个属性比如Authorization值为‘xxx’）
+      config.headers.Authorization=getLocal('token');
       if(Object.keys(this.queue).length===0){
         // loading控制
         store.commit('showLoading');
@@ -2979,28 +3134,83 @@ class AjaxRequest{
   }
   request(options){
     let instance=axios.create();
+    // 设置拦截器
     this.setInterceptor(instance,options.url);
     let config=this.merge(options);
     return instance(config);
   }
 }
 export default new AjaxRequest
+```
 
-// api/user.js
+```js
+// api/user.js(专门写api的)
 import axios from '../libs/ajaxRequest';
 // 放置接口
 export const getUser=()=>{
-  axios.request({
+  return axios.request({
     url:'/user',
     method:'get'
   })
 }
 
+export const login=(username)=>{
+  return axios.request({
+    method:'post',
+    url:'/login',
+    data:{
+      username
+    }
+  })
+}
+
+export const validate=()=>{
+  return axios.request({
+    method:'get',
+    url:'/validate'
+  })
+}
+```
+```js
+// login.vue
+<template>
+  <div class="login">
+    <Input type="text" v-model="username" placeholder="请输入用户名">
+    
+    <Button type="primary" v-on:click="login()">登录</Button>
+  </div>
+</template>
+<script>
+import {mapActions} from 'vuex'
+export default {
+  data(){
+    return {
+      username:''
+    }
+  },
+  methods:{
+    ...mapActions(['toLogin']),
+    login(){
+      this['toLogin'](this.username).then(data=>{
+        this.$router.push('/');
+      },err=>{
+        this.$Message.error(err);
+      });
+    }
+  }
+}
+getUser().then(data=>{
+
+})
+</script>
 ```
 ```js
 // store.js
+import {login,validate} from './api/user';
+import {setLocal} from './libs/local';
 state:{
-  isShowLoading:false
+  isShowLoading:false,
+  username:''
 },
 mutations:{
   showLoading(state){
@@ -3008,13 +3218,75 @@ mutations:{
   },
   hideLoading(state){
     state.isShowLoading=false;
+  },
+  setUser(state,username){
+    state.username=username;
   }
 },
+// 存放着接口调用
 actions:{
+  async toLogin({commit},username){
+    let res=await login(username);
+    if(res.code===0){
+      commit('setUser',res.username);
+      // 将token保存到客户端上 每次请求时带上token,服务端校验token，如果token不正确或过期，未登录
+      setLocal('token',res.token);
+    }else{
+      return Promise.reject(res.data);
+    }
+  },
+  async validate({commit}){
+    let res=await validate();
+    if(res.code===0){
+      commit('setUser',res.username);
+      setLocal('token',res.token);
+    }
+    // 返回用户是否失效
+    return res.code===0
+  }
+}
 
+```
+```js
+// src/libs/local.js
+export const setLocal=(key,value)=>{
+  if(typeof value =='object'){
+    value=JSON.stringify(value);
+  }
+  localStorage.setItem(key,value);
+}
+
+export const getLocal=(key)=>{
+  return localStorage.getItem(key);
 }
 ```
-
+```js
+// main.js
+let whiteList=['/xxx']
+router.beforeEach(async (to,from,next)=>{
+  if(whiteList.includes(to.path)){
+    next()
+  }
+  let isLogin=await store.dispatch('validate');
+  let needLogin=to.matched.some(match=>match.meta.needLogin);
+  if(needLogin){
+    if(isLogin){
+      next()
+    }else{
+      next('/login')
+    }
+  }else{
+    if(isLogin&&to.name==='login'){
+      next('/')
+    }else{
+      next();
+    }
+  }
+})
+```
+- 为了更安全 可以服务端设置cookie的方式 并且 仅读，跨域的话cookie就会屏蔽掉
+- jwt是把用户的信息存到客户端 每次客户端带token校验一下是否登陆过
+- session和cookie是存到服务端。假如一个服务器起了多个进程，每个端口都登录了同一个用户，这样就会重复，所以一般存到数据库中。token不会有这个问题。更好的做集群，分布式。
 ## 动态引入图片
 - 将图片作为模块加载进去，比如`images:[{src:require(‘./1.png')},{src:require(‘./2.png')}]`这样webpack就能将其解析。
 ## 报错

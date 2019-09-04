@@ -61,3 +61,6 @@ babeljs.io中try it out
 - 复制图层：选中某个图层，直接拖到新建文件中，然后图像-裁切，去掉多余边框，保存即可
 
 ## stackoverflow.com查找出错，能解决百分之90问题
+
+## vue vscode snippets
+- 快速生成vue片段

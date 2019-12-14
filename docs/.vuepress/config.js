@@ -11,7 +11,7 @@ module.exports = {
         logo: '/img/logo.jpg',
         editLinkText: "编辑此页",
         lastUpdated: "上次更新",
-        sidebarDepth: 1,
+        sidebarDepth: 2,
         nav: [
             { text: '前端', link: '/Frontend/' },
             { text: '后端', link: '/Backend/' },
@@ -23,10 +23,17 @@ module.exports = {
         ],
         sidebar: {
             '/Frontend/': [{
+                    title: 'html/css',
+                    collapsable: false,
+                    children: [
+                        'css',
+                    ]
+                }, {
                     title: 'js',
                     collapsable: false,
                     children: [
                         '/Frontend/js/jsbasic/',
+                        '/Frontend/js/jssenior/',
                         '/Frontend/js/jsbasic/zepto',
                         '/Frontend/js/jsbasic/shenrubibao',
                         '/Frontend/js/jswebapi/',
@@ -37,17 +44,17 @@ module.exports = {
                     ]
                 },
                 {
-                    title: 'css',
-                    collapsable: false,
-                    children: [
-                        'css',
-                    ]
-                },
-                {
                     title: 'vue',
                     collapsable: false,
                     children: [
                         "vue",
+                    ]
+                },
+                {
+                    title: 'react',
+                    collapsable: false,
+                    children: [
+                        "react",
                     ]
                 },
                 {
@@ -58,17 +65,17 @@ module.exports = {
                     ]
                 },
                 {
-                    title: '前端知识点大纲',
-                    collapsable: false,
-                    children: [
-                        "viewskills",
-                    ]
-                },
-                {
                     title: 'JS数据结构与算法',
                     collapsable: false,
                     children: [
                         "algorithm",
+                    ]
+                },
+                {
+                    title: '前端知识点大纲',
+                    collapsable: false,
+                    children: [
+                        "viewskills",
                     ]
                 },
                 {
@@ -94,13 +101,13 @@ module.exports = {
                         "other",
                     ]
                 },
-                {
-                    title: '错误',
-                    collapsable: false,
-                    children: [
-                        "error",
-                    ]
-                },
+                // {
+                //     title: '错误',
+                //     collapsable: false,
+                //     children: [
+                //         "error",
+                //     ]
+                // },
                 // '/Frontend/',
                 // {
                 //   title: 'jswebapi',
@@ -123,12 +130,9 @@ module.exports = {
                 collapsable: false,
                 children: [
                     "git",
-                    "commands"
+                    "commands",
+                    "tools"
                 ]
-            }],
-            '/about/': [{
-                title: '关于',
-                collapsable: false,
             }],
             '/summary/': [{
                 title: '总结',

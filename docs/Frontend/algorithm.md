@@ -1,4 +1,6 @@
-# 前端算法
+# 【9. 前端算法】
+
+[[toc]]
 
 - leetcode刷题
 
@@ -16,7 +18,7 @@
 - 检验代码是否正常 `npm test`
 
 ## 基础算法-字符串
-### 反转字符串中的单词 III
+### ① 反转字符串中的单词 III
 给定一个字符串，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序。
 
 示例 1:
@@ -59,7 +61,7 @@ var reverseWords = function(s) {
     }).join(' ')
 };
 ```
-### 计数二进制子串
+### ② 计数二进制子串
 ```js
 给定一个字符串 s，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。
 
@@ -130,7 +132,10 @@ countBinarySubstrings('00101')
     - RegExp
 
 ## 基础算法-数组
-### 公式运算（电话号码的组合）
+
+<mark-question></mark-question>
+
+### ③ 公式运算（电话号码的组合）
 
 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。
 
@@ -186,7 +191,9 @@ export default (str) => {
 }
 ```
 
-### 归类运算（卡牌分组）
+<mark-question></mark-question>
+
+### ④ 归类运算（卡牌分组）
 ```js
 给定一副牌，每张牌上都写着一个整数。
 
@@ -233,6 +240,9 @@ export default (str) => {
     - 答案都是排序的，所以需要先排序
     - 相同数字过多需要拆分，是最大公约数即可
 ![最大公约数](./img/divisor.jpg)
+
+<absolute-box>最大公约数：gcd(a,b) = gcd(b,a mod b)</absolute-box>
+
 ```js
 // 
 export default (arr)=>{
@@ -262,8 +272,78 @@ export default (arr)=>{
   return group.length?group[0].length>1:false
 }
 ```
+```js
+var hasGroupsSizeX = function(deck) {
+        const map = {}
+  let minLen = Number.MAX_SAFE_INTEGER
+  let result
 
-### 筛选运算（种花问题）
+  // 卡牌按值分组
+  deck.forEach(item => {
+    if(!map[item]) {
+      map[item] = []
+    }
+    map[item].push(item)
+  })
+  
+  // 获取数量最少的卡牌数量
+  Object.keys(map).forEach(item => {
+    if(map[item].length < minLen) {
+      minLen = map[item].length
+    }
+  })
+
+  if(minLen === 1) {
+    return false
+  }
+
+  // 从每组2张开始查看能否分组，能分组则返回true 
+  for(let i = 2; i <= minLen; i++) {
+    result = true
+    Object.keys(map).forEach(item => {
+      if(map[item].length % i !== 0) {
+        result = false
+      }
+    })
+    if(result) {
+      return result
+    }
+  }
+  
+  return result;
+};
+```
+
+```js
+var hasGroupsSizeX = function (deck) {
+    // 统计数字个数
+    const numMap = {}
+    for (let i = 0; i < deck.length; i++) {
+        if (!numMap[deck[i]]) {
+            numMap[deck[i]] = 1
+        } else {
+            numMap[deck[i]]++
+        }
+    }
+    const valuesArr = Object.values(numMap).sort((a, b) => a > b ? 1 : -1)
+    // console.log('valuesArr', valuesArr)
+    // 也就是说最大公约数得大于 1
+    return !valuesArr.find(value => gcd(value, valuesArr[0]) === 1 || value < 2)
+
+};
+
+// 欧里几德算法，辗转相除法。
+function gcd(a, b) {
+    if (b == 0) {
+        return a;
+    }
+    var r = parseInt(a % b);
+    return gcd(b, r);
+}
+```
+
+### ⑤ 筛选运算（种花问题）
+<absolute-box>注意max加1时要记得那块地变成1</absolute-box>
 ```js
 假设你有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花卉不能种植在相邻的地块上，它们会争夺水源，两者都会死去。
 
@@ -284,6 +364,7 @@ export default (arr)=>{
 n 是非负整数，且不会超过输入数组的大小。
 ```
 - 技巧：把输入边长
+
 ```js
 // 场景一
 [0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1]
@@ -303,19 +384,21 @@ export default (flowerbed,n)=>{
     flowerbed.push(0);
     flowerbed.unshift(0);
     let len=flowerbed.length;
-    for (let i = 1; i < len; i++) {
+    for (let i = 1; i < len-1; i++) {
         if (flowerbed[i-1] === 0 && flowerbed[i] === 0 && flowerbed[i+1] === 0) {
             flowerbed[i] = 1;
             max++;
         }
     }
     return max >= n
+}
 ```
 - 总结
   - 学会问题抽象
   - 学会数学建模思想
   - 学会动态输入（多找输入，而不是通过该代码）
-### 二进制运算（格雷编码）
+### ⑥ 二进制运算（格雷编码）
+<absolute-box>1. parseInt(num,2)转换二进制为十进制<br/>2. 注意两个连续的数值仅有一个位数的差异</absolute-box>
 ```js
 格雷编码是一个二进制数字系统，在该系统中，两个连续的数值仅有一个位数的差异。
 
@@ -373,10 +456,32 @@ export default (n)=>{
   })
 }
 ```
+```js
+let grayCode = function(n){
+    let arr=[];
+      while(n--){
+          let temp=[];
+          if(arr.length===0){
+              arr=[0,1];
+              continue;
+          }
+          
+          
+          for(let i=0;i<arr.length;i++){
+              for(let j=0;j<2;j++){
+                  let num=parseInt(`${arr[i]}${j}`,2);
+                  temp.push(num);
+              }
+          }
+          arr=temp;
+      }
+    return arr;
+}
+```
 - 发现规律，动态输入
 
 ## 正则表达式
-### 重复的子字符串
+### ⑦ 重复的子字符串
 ```js
 给定一个非空的字符串，判断它是否可以由它的一个子串重复多次构成。给定的字符串只含有小写英文字母，并且长度不超过10000。
 
@@ -409,8 +514,8 @@ export default (str)=>{
 }
 ```
 
-
-### 正则表达式匹配
+<mark-question></mark-question>
+### ⑧正则表达式匹配
 ```js
 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
 
@@ -472,12 +577,12 @@ export default (s,p)=>{
         if(s.length>0&&(p[0]===s[0]||p[0]==='.')){
             match=true
         }
-        // p有模式的
+        // p有模式的，字符后面有*
         if(p.length>1&&p[1]==='*'){
             // 第一种情况：s*匹配0个字符
             // 第二种情况：s*匹配1个字符，递归下去，用来表示s*匹配多个s
             return isMatch(s,p.slice(2))||(match && isMatch(s.slice(1),p))
-        }else{
+        }else{// 字符后面没有*
             return match && isMatch(s.slice(1),p.slice(1))
         }
     }
@@ -491,7 +596,7 @@ export default (s,p)=>{
     - 运行的次数(常数：O(1)，线性关系O(n),倍数关系：O(n*2))
 - 空间复杂度
     - 占用的内存(常数：o1,线性关系O(n),倍数关系O(n*2))
-### 冒泡排序（先把最大值冒出来，再把倒数第二大的冒出来，以此类推
+### ⑨ 冒泡排序（先把最大值冒出来，再把倒数第二大的冒出来，以此类推
 ）
 - 比较相邻的元素。如果第一个比第二个大，就交换他们两个。
 - 对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
@@ -513,11 +618,14 @@ function bubbleSort(arr) {
     return arr;
 }
 ```
-### 选择排序（选中最小的值，和第一个交换，再选中第二小的值，和第二个交换，以此类推）
+<mark-question></mark-question>
+### ⑩ 选择排序（选中最小的值，和第一个交换，再选中第二小的值，和第二个交换，以此类推）
     - 首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。
     - 再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
     - 重复第二步，直到所有元素均排序完毕。
-    - <img :src="$withBase('/img/selectionSort.gif')">
+
+<img :src="$withBase('/img/selectionSort.gif')">
+
 ```js
 function selectionSort(arr) {
     var len = arr.length;
@@ -536,7 +644,8 @@ function selectionSort(arr) {
     return arr;
 }
 ```
-### 922.按奇偶排序
+<mark-question></mark-question>
+### ⑪ 922.按奇偶排序
 ```js
 给定一个非负整数数组 A， A 中一半整数是奇数，一半整数是偶数。
 
@@ -584,7 +693,9 @@ export default (arr)=>{
 sort(compareFunction)
 - 如果没有指明 compareFunction ，那么元素会按照转换为的字符串的诸个字符的Unicode位点进行排序。例如 "Banana" 会被排列到 "cherry" 之前。当数字按由小到大排序时，9 出现在 80 之前，但因为（没有指明 compareFunction），比较的数字会先被转换为字符串，所以在Unicode顺序上 "80" 要比 "9" 要靠前。
 - 指定了compareFunction，a-b从小到大，b-a从大到小
-### 数组中的第K个最大元素
+
+<mark-question></mark-question>
+### ⑫ 数组中的第K个最大元素
 ```js
 在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
 
@@ -609,7 +720,7 @@ export default (arr)=>{
 // 更高性能的办法
 export default (arr)=>{
     let len=arr.length
-    for(let i=len,;i<len-k;i--){
+    for(let i=len;i<len-k;i--){
         for(let j=0;j<i;j++){
             temp=arr[j]
             if(temp>arr[j+1]){
@@ -621,11 +732,33 @@ export default (arr)=>{
     return arr[len-(k-1)]
 }
 ```
+```js
+var findKthLargest = function(arr, k) {
+    let len=arr.length;
+    if(len===1){
+        return arr[0];
+    }
+    for(let i=0;i<len-1;i++){
+        for(let j=0;j<len-1-i;j++){
+            if(arr[j]>arr[j+1]){
+                let temp=arr[j];
+                arr[j]=arr[j+1];
+                arr[j+1]=temp;
+            }
+        }
+        if(i===k-1){
+            return arr[len-k];
+        }
+    }
+    return arr[0]
+};
+```
 - 一定要吃透基本排序法
 
 
-
-### 最大间距
+<mark-question></mark-question>
+<absolute-box>注意后面的第一个和第二个的间距没有遍历到，需要单独判断</absolute-box>
+### ⑬ 最大间距
 ```js
 给定一个无序的数组，找出数组在排序之后，相邻元素之间最大的差值。
 
@@ -647,32 +780,55 @@ export default (arr)=>{
 请尝试在线性时间复杂度和空间复杂度的条件下解决此问题。
 ```
 ```js
-export default (arr)=>{
+var maximumGap = function(arr) {
     if(arr.length<2) return 0
-    let len=arr.length-1
-    let max=0;
-    for(let i=len;i>=0;i--){
-        for(let j=0;j<i;j++){
-            let temp=arr[j]
+    let temp,max=0,space;
+    for(let i=0;i<arr.length-1;i++){
+        for(let j=0;j<arr.length-1-i;j++){
             if(arr[j]>arr[j+1]){
-                arr[j]=arr[j+1]
-                arr[j+1]=temp
+                temp=arr[j];
+                arr[j]=arr[j+1];
+                arr[j+1]=temp;
             }
-            if(i<len){
-                let space=arr[j+1]-arr[j]
-                if(space>max){
-                    max=space
-                }
+        }
+        if(i>0){
+            space=arr[arr.length-i]-arr[arr.length-i-1];
+            max=max>space?max:space;
+        }
+    }
+    return Math.max(max, arr[1] - arr[0])
+};
+```
+```js
+export default (arr)=>{
+    if (arr.length < 2) {
+      return 0
+    }
+    let max = 0
+    let len = arr.length - 1
+    let space
+    for (let i = len, tmp; i > 0; i--) {
+        for (let j = 0; j < i; j++) {
+            tmp = arr[j]
+            if (tmp > arr[j + 1]) {
+                arr[j] = arr[j + 1]
+                arr[j + 1] = tmp
+            }
+        }
+        if (i < len) {
+            space = arr[i + 1] - arr[i]
+            if (space > max) {
+                max = space
             }
         }
     }
-    return max
+    return Math.max(max, arr[1] - arr[0])
 }
 ```
 
-
-
-### 缺失的第一个正数
+<mark-question></mark-question>
+<absolute-box>注意过滤掉负整数，注意边界情况</absolute-box>
+### ⑭ 缺失的第一个正数
 ```js
 给定一个未排序的整数数组，找出其中`没有出现的``最小的``正整数`。
 
@@ -692,6 +848,8 @@ export default (arr)=>{
 
 你的算法的时间复杂度应为O(n)，并且只能使用常数级别的空间。
 ```
+
+- 第一个是1,返回1。第一个不是1，遍历数组，如果两个数值差值大于一，返回第一个数值+1。
 
 ```js
 export default (arr)=>{
@@ -749,7 +907,8 @@ export default (arr)=>{
 }
 ```
 ## 基础算法之递归类
-### 复原IP地址
+<mark-question></mark-question>
+### ⑮ 复原IP地址
 ```js
 给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
 
@@ -759,6 +918,7 @@ export default (arr)=>{
 输出: ["255.255.11.135", "255.255.111.35"]
 ```
 - IP由4部分构成，每部分范围0~255（递归）
+- 所有情况都列出来(每个子字符串都可以是一位数到三位数)，然后按条件筛选
 ```js
 export default (str)=>{
     // 保存所有符合条件的ip
@@ -781,11 +941,14 @@ export default (str)=>{
 }
 
 ```
-- 递归的本质
+- 递归的本质（就是一个while循环，但可以有多个条件或地方调用）
   - 每一个处理过程是相同的
   - 输入输出是相同的
   - 处理次数未知
-### 与所有单词相关联的字符串
+
+
+<mark-question></mark-question>
+### ⑯ 与所有单词相关联的字符串
 ```js
 给定一个字符串 s 和一些长度相同的单词 words。找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置。
 
@@ -807,6 +970,7 @@ export default (str)=>{
   words = ["word","good","best","word"]
 输出：[]
 ```
+- 递归循环来计算出所有的words组合，然后匹配字符串即可。
 ```js
 export default (str,words)=>{
     // 保存结果
@@ -837,7 +1001,7 @@ export default (str,words)=>{
 ## 数据结构之栈
 - 栈的概念
   - 线性表，运算受限（仅允许一端的插入和删除）
-### 棒球比赛
+### ⑰ 棒球比赛
 ```js
 你现在是棒球比赛记录员。
 给定一个字符串列表，每个字符串可以是以下四种类型之一：
@@ -911,7 +1075,8 @@ export default (arr)=>{
 }
 ```
 
-### 最大矩形
+<mark-question></mark-question>
+### ⑱ 85.最大矩形
 ```js
 给定一个仅包含 0 和 1 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
 
@@ -928,80 +1093,175 @@ export default (arr)=>{
 ```
 ![最大矩形](./img/biggestRectangle.png)
 ```js
-export default (arr)=>{
-    let result=[]
-    let reg=/1{2,}/g
-    // 把二维数组重新表达，把相邻的1提取处理（起始点+截止点）
-    arr=arr.map(item=>{
-        let str=item.join('')
-        let r=reg.exec(str)
-        let rs=[]
-        while(r){
-            rs.push([r.index,r.index+r[0].length-1])
-            r=reg.exec(str)
-        }
-        return rs
-    })
-    // 通过递归计算相邻的矩阵
-    let maxRect=(arr,result,n=1)=>{
-        // 弹出第一行
-        let top=arr.pop()
-        // 弹出第二行
-        let next=arr.pop()
-        // 记录第一行的每一个起始点和截止点
-        let tt
-        // 记录第二行的每一个起始点和截止点
-        let nn
-        // 记录交叉的起始索引
-        let start
-        // 记录交叉的截止索引
-        let end
-        n++
-        for(let i=0,il=top.length;i<il;i++){
-            tt=tip[i]
-            for(let j=0,jl=next.length;i<jl;j++){
-                nn=next[j]
-                width=Math.min(tt[1],nn[1])-Math.max(tt[0],nn[0])
-                if(width>maxWidth){
-                    maxWidth=width
-                    start=Math.max(tt[0],nn[0])
-                    end=Math.min(tt[1],nn[1])
-                }
-            }
-        }
-        // 如果没有找到交叉点
-        if(start===undefined||end===undefined){
-            if(n<3){
-                return false
-            }else{
-                width=top[0][1]-top[0][0]+1
-                if(width>1){
-                    result.push((n-1)*width)
-                }
-            }
-        }else{
-            arr.push([start,end])
-            maxRect(arr,result,n++)
-        }
+export default (arr) => {
+  let result = []
+  let reg = /1{2,}/g
+  // 把二位数组重新表达，把相邻的1提取出来（起始点+截止点）
+  arr = arr.map(item => {
+    let str = item.join('')
+    let r = reg.exec(str)
+    let rs = []
+    while (r) {
+      rs.push([r.index, r.index + r[0].length - 1])
+      r = reg.exec(str)
     }
-    while(arr.length>1){
-        maxRect([].concat(arr),result)
-        arr.pop()
-    }
-    // 取最大值
-    let max=0
-    let item=result.pop()
-    while(item){
-        if(item>max){
-            max=item
+    return rs
+  })
+  // 通过递归计算相邻的矩阵
+  let maxRect = (arr, result, n = 1) => {
+    // 弹出第一行
+    let top = arr.pop()
+    // 弹出第二行
+    let next = arr.pop()
+    // 记录第一行的每一个起始点和截止点
+    let tt
+    // 记录第二行的每一个起始点和截止点
+    let nn
+    // 记录交叉的起始索引
+    let start
+    // 记录交叉的截止索引
+    let end
+    let width = 1
+    let maxWidth = 1
+    n++
+    for (let i = 0, il = top.length; i < il; i++) {
+      tt = top[i]
+      for (let j = 0, jl = next.length; j < jl; j++) {
+        nn = next[j]
+        width = Math.min(tt[1], nn[1]) - Math.max(tt[0], nn[0])
+        // 修改避免相邻两个数的差值为1（实际宽度为2）没有为start,end赋值导致的bug,应该加上=
+        if (width >= maxWidth) {
+          maxWidth = width
+          start = Math.max(tt[0], nn[0])
+          end = Math.min(tt[1], nn[1])
         }
-        item=result.pop()
+      }
     }
-    return 0
+    // 如果没有找到交叉点
+    if (start === undefined || end === undefined) {
+      if (n < 3) {
+        return false
+      } else {
+        width = top[0][1] - top[0][0] + 1
+        if (width > 1) {
+          result.push((n - 1) * width)
+        }
+      }
+    } else {
+      // 找到交叉点继续下一行
+      if (arr.length > 0) {
+        arr.push([
+          [start, end]
+        ])
+        maxRect(arr, result, n++)
+      } else {
+        // 从某一行一直计算到最后一行，这个时候start和end一直有值，所以不会进入到if层，这个时候n就是累计的行数（高），end-start+1就是宽
+        result.push(n * (end - start + 1))
+      }
+    }
+  }
+  while (arr.length > 1) {
+    maxRect([].concat(arr), result)
+    arr.pop()
+  }
+  // 取最大值
+  let max = 0
+  let item = result.pop()
+  while (item) {
+    if (item > max) {
+      max = item
+    }
+    item = result.pop()
+  }
+  return max > 0 ? max : -1
 }
 ```
 
-
+```js
+export default (arr) => {
+  let result = []
+  let reg = /1{2,}/g
+  // 把二位数组重新表达，把相邻的1提取出来（起始点+截止点）
+  arr = arr.map(item => {
+    let str = item.join('')
+    let r = reg.exec(str)
+    let rs = []
+    while (r) {
+      rs.push([r.index, r.index + r[0].length - 1])
+      r = reg.exec(str)
+    }
+    return rs
+  })
+  // [ [], [ [ 2, 4 ] ], [ [ 0, 4 ] ], [] ]
+  // 通过递归计算相邻的矩阵
+  let maxRect = (arr, result, n = 1) => {
+    // 弹出第一行
+    let top = arr.pop()
+    // 弹出第二行
+    let next = arr.pop()
+    // 记录第一行的每一个起始点和截止点
+    let tt
+    // 记录第二行的每一个起始点和截止点
+    let nn
+    // 记录交叉的起始索引
+    let start
+    // 记录交叉的截止索引
+    let end
+    let width = 1
+    let maxWidth = 1
+    n++
+    for (let i = 0, il = top.length; i < il; i++) {
+      tt = top[i]
+      for (let j = 0, jl = next.length; j < jl; j++) {
+        nn = next[j]
+        width = Math.min(tt[1], nn[1]) - Math.max(tt[0], nn[0])
+        // 修改避免相邻两个数的差值为1（实际宽度为2）没有为start,end赋值导致的bug,应该加上=
+        if (width >= maxWidth) {
+          maxWidth = width
+          start = Math.max(tt[0], nn[0])
+          end = Math.min(tt[1], nn[1])
+        }
+      }
+    }
+    // 如果没有找到交叉点
+    if (start === undefined || end === undefined) {
+      if (n < 3) {
+        return false
+      } else {
+        width = top[0][1] - top[0][0] + 1
+        if (width > 1) {
+          result.push((n - 1) * width)
+        }
+      }
+    } else {
+      // 找到交叉点继续下一行
+      if (arr.length > 0) {
+        arr.push([
+          [start, end]
+        ])
+        maxRect(arr, result, n++)
+      } else {
+        // 从某一行一直计算到最后一行，这个时候start和end一直有值，所以不会进入到if层，这个时候n就是累计的行数（高），end-start+1就是宽
+        result.push(n * (end - start + 1))
+      }
+    }
+  }
+  while (arr.length > 1) {
+    maxRect([].concat(arr), result)
+    arr.pop()
+  }
+  // 取最大值
+  let max = 0
+  let item = result.pop()
+  while (item) {
+    if (item > max) {
+      max = item
+    }
+    item = result.pop()
+  }
+  return max > 0 ? max : -1
+}
+```
 
 
 
@@ -1011,7 +1271,7 @@ export default (arr)=>{
 ## 数据结构之队列
 - 特殊的线性表，只允许在表的前端删除，表的后端插入（先进先出）
 
-### 设计循环队列
+### ⑲ 设计循环队列
 ```js
 设计你的循环队列实现。 循环队列是一种线性数据结构，其操作表现基于 FIFO（先进先出）原则并且队尾被连接在队首之后以形成一个循环。它也被称为“环形缓冲器”。
 
@@ -1055,6 +1315,9 @@ circularQueue.Rear();  // 返回 4
 操作数将在 1 至 1000 的范围内；
 请不要使用内置的队列库。
 ```
+
+![队列1](./img/queue1.png)
+<absolute-box>注意添加数据时队尾指针要求余this.max，获取队尾数据时要队尾指针减一，并且如果指针减一小于0，即为数组最后一位</absolute-box>
 ```js
 export default class MyCircularQueue {
     constructor (k) {
@@ -1098,7 +1361,50 @@ export default class MyCircularQueue {
     }
 }
 ```
-### 任务调度器
+
+```js
+class MycircularQueue{
+    constructor(len){
+        this.list=new Array(len);
+        this.front=0;
+        this.rear=0;
+        this.max=len;
+    }
+    Front(){
+        return this.list.length?this.list(this.front):-1;
+    }
+    Rear(){
+        let rear=this.rear-1;
+        return this.list[rear<0?this.max-1:rear]
+    }
+    enQueue(value){
+        if(this.isFull()){
+            return false;
+        }else{
+            this.list[this.rear]=value;
+            this.rear=(this.rear+1)%this.max;
+            return true;
+        }
+    }
+    deQueue(){
+        if(this.list.length>0){
+            this.list[this.front]="";
+            this.front++;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    isEmpty(){
+        return this.front===this.rear&&!this.list[this.front]
+    }
+    isFull(){
+        return this.front===this.rear&&this.list[this.front]
+    }
+}
+```
+<mark-question></mark-question>
+### ⑳ 任务调度器
 ```js
 给定一个用字符数组表示的 CPU 需要执行的任务列表。其中包含使用大写的 A - Z 字母表示的26 种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1 个单位时间内执行完。CPU 在任何一个单位时间内都可以执行一个任务，或者在待命状态。
 
@@ -1116,10 +1422,16 @@ export default class MyCircularQueue {
 任务的总个数为 [1, 10000]。
 n 的取值范围为 [0, 100]。
 ```
+
+!['队列2'](./img/queue2.png)
+
+- 任务多的优先执行即可
+
 ```js
 export default (tasks, n) => {
     let q = ''
     let Q = {}
+    // 每种任务的数量
     tasks.forEach(item => {
         if (Q[item]) {
             Q[item]++
@@ -1172,10 +1484,12 @@ export default (tasks, n) => {
     - 如何检测链表是否是闭环的
 - 概念
   - 链表由一系列结点（元素）组成，结点可以在运行时动态生成。每个结点包括两个部分：`存储数据元素的数据域`和`存储下一个结点地址的指针域`。
+  - 链表只暴露一个头指针，后面的元素必须通过头指针不断的next，才能拿到
 - js中没有链表结构
   - 数组可以充当队列，可以充当堆栈，但是不能充当链表
-![排序](./img/quicksortOfLinkedLists.png)
-### 排序链表
+
+<mark-cross></mark-cross>
+### ㉑ 排序链表
 ```js
 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
 
@@ -1188,9 +1502,15 @@ export default (tasks, n) => {
 输入: -1->5->3->4->0
 输出: -1->0->3->4->5
 ```
-```js
+- 什么是快速排序？
+    - 选择一个基准值，小于的放它左边，大于的放它右边，然后左边右边再选一个基准值，以此类推。
+
+![快速排序](./img/quicksort.png)
+
 ![链表的快速排序](./img/quick-sort.png)
-```
+
+- 定义两个指针，q指针遍历所有链表节点，如果q指针指向的元素小于基准元素，就和p指针的后一个元素进行交换，同时p后移一位。最后让基准元素和小于它的后一个元素进行交换
+
 ```js
 // 声明链表的节点
 
@@ -1266,7 +1586,48 @@ while(next){
 }
 console.log(res)// [1,2,3,4,6,7,9,10,12]
 ```
-### 环形链表
+
+```js
+const merge = (l, r) => {
+    let result = new ListNode('sb');
+    let current = result;
+
+    while(l && r) {
+        if(l.val < r.val) {
+            current.next = l;
+            l = l.next;
+            current = current.next;
+        } else {
+            current.next = r;
+            r = r.next;
+            current = current.next;
+        }
+    }
+
+    current.next = l || r;
+    return result.next;
+}
+
+// 归并排序
+var sortList = function(head) {
+    if(head === null || head.next === null) return head;
+    let fast = head;
+    let slow = head;
+
+    while(fast.next && fast.next.next) {
+        fast = fast.next.next;
+        slow = slow.next;
+    }
+
+    const mid = slow.next;
+    slow.next = null;
+
+    return merge(sortList(head), sortList(mid));
+};
+```
+
+<mark-cross></mark-cross>
+### ㉒ 环形链表
 ```js
 给定一个链表，判断链表中是否有环。
 
@@ -1352,7 +1713,7 @@ console.log(isCircle(head))// true
 - 二维矩阵
 
 
-### 螺旋矩阵
+### ㉓ 螺旋矩阵
 ```js
 给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
 
@@ -1378,26 +1739,40 @@ console.log(isCircle(head))// true
 - 拆解成一步一步的，而且要拆成每一步是相同的
   - 第一圈是第一行全部，第二行到倒数第二行是第一个和最后一个，最后一行全部，接着里面的作为一个新的矩阵，继续重复这个步骤。
 ```js
+
+[
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9,10,11,12],
+  [5, 6, 7, 8],
+  [9,10,11,12]
+]
+
 export default (arr) => {
     // 处理每一圈的数据遍历过程
     let map = (arr, r = []) => {
         for (let i = 0, len = arr.length; i < len; i++) {
+            // 第一行
             if (i === 0) {
                 r = r.concat(arr[i])
-            } else if (i === len - 1) {
+            } else if (i === len - 1) {// 最后一行
                 r = r.concat(arr[len - 1].reverse())
-            } else {
+            } else {// 其它行最后一个
                 r.push(arr[i].pop())
             }
         }
+        // 去掉第一行
         arr.shift()
+        // 去掉最后一行
         arr.pop()
+        // 去掉剩余行的第一个，并放入结果数组
         for (let i = arr.length - 1; i >= 0; i--) {
             r.push(arr[i].shift())
         }
+        // 还有其它行没处理
         if (arr.length) {
             return map(arr, r)
-        } else {
+        } else {// 否则直接返回结果数组r
             return r
         }
     }
@@ -1406,8 +1781,8 @@ export default (arr) => {
 ```
 
 
-
-### 旋转图像
+<mark-question></mark-question>
+### ㉔ 旋转图像
 ```js
 给定一个 n × n 的二维矩阵表示一个图像。
 
@@ -1453,6 +1828,12 @@ export default (arr) => {
 - 找到456这个轴，交换后再以753为轴，交换后即可
 ![旋转图像](./img/rotateImage.png)
 ```js
+function rotateImg(arr){
+
+}
+```
+
+```js
 export default (arr) => {
     // 获取n的维度
     let vecor = arr.length
@@ -1476,8 +1857,8 @@ export default (arr) => {
 }
 ```
 
-
-## 数据结构之二叉树
+<mark-cross></mark-cross>
+## ㉕ 数据结构之二叉树
 - 特性
   - 一个节点只有两个子节点，左节点和右节点
 ![二叉树](./img/binaryTree.png)
@@ -1530,7 +1911,8 @@ export {
     Node
 }
 ```
-### 对称二叉树
+<mark-cross></mark-cross>
+### ㉖ 对称二叉树
 ```js
 给定一个二叉树，检查它是否是镜像对称的。
 
@@ -1618,7 +2000,8 @@ export {
 let root =new Tree([1,2,2,3,4,4,3])
 console.log(Tree.isSymmetry(root))
 ```
-### 验证二叉搜索树
+<mark-cross></mark-cross>
+### ㉗ 验证二叉搜索树
 ```js
 给定一个二叉树，判断其是否是一个有效的二叉搜索树。
 
@@ -1697,31 +2080,37 @@ export {
 ```
 - 二叉搜索树对于排序有很大参考。
     - 做好了排序后，插入和删除非常好操作。
-## 数据结构之堆
+<mark-cross></mark-cross>
+## ㉘ 数据结构之堆
 - 概念
     - 必须是完全二叉树(n-1层必须是满二叉树)
-    - 任一结点的值是其子树所有结点的最大值或最小值
-    - 堆不是堆栈，堆类似二叉树(有一定特征的二叉树)
+    - 任一结点的值是其子树所有结点的最大值（最大堆）或最小值（最小堆）
+
+![堆](./img/heap.jpg)
+
 - 作用
     - 利用堆做排序和查找
 - 堆排序
-    - 父节点i
-    - 子节点(左)2*i+1
-    - 子节点(右)2*i+2
-![堆](./img/heap.jpg)
-![堆排序](./img/heapsort.jpg)
+    - 完全二叉树节点之间的关系
+        - 如果父节点是i，子节点(左)2*i+1，子节点(右)2*i+2
+
+    ![完全二叉树节点关系](./img/heapsort.jpg)
+
+    - 普通的完全二叉树构建最大堆
+        - 找到最后一个父节点，验证父节点是不是子树中的最大值，再依次往前判断每个子树，不是的交换成最大值。如果交换后对某个子树进行了破坏，那需要再次验证这个子树。找到第一个顶点的最大值后。移出最大值，把右下角的值放到最大值位置上，继续构建最大堆，找出第二大的值。以此类推。直到只剩一个值。
+![构建最大堆](./img/toMaxDui.png)
 ```js
 class Heap {
     constructor(data) {
         this.data = data
     }
     sort() {
-            let iArr = thhis.data
+            let iArr = this.data
             let n = iArr.lenth
             if (n <= 1) {
                 return iArr
             } else {
-                for (let i = Math.florr(n / 2); i >= 0; i--) {
+                for (let i = Math.floor(n / 2); i >= 0; i--) {
                     Heap.maxHeapify(iArr, i, n)
                 }
                 for (let j = 0; j < n; j++) {
@@ -1762,7 +2151,9 @@ class Heap {
 }
 export default Heap
 ```
-### 根据字符出现频率排序
+
+<mark-cross></mark-cross>
+### ㉙ 根据字符出现频率排序
 - 用堆排序做这题时间复杂度和空间复杂度是最低的
 ```js
 给定一个字符串，请将字符串里的字符按照出现的频率降序排列。
@@ -1814,7 +2205,7 @@ class Heap {
             }
         })
         this.map = map
-        this.data = Arr.from(map.values())
+        this.data = Array.from(map.values())
     }
     sort() {
         let iArr = this.data
@@ -1879,7 +2270,8 @@ class Heap {
 export default Heap
 ```
 
-### 超级丑数
+<mark-cross></mark-cross>
+### ㉚ 超级丑数
 ```js
 编写一段程序来查找第 n 个超级丑数。
 
@@ -1923,7 +2315,7 @@ class Heap {
         if (n <= 1) {
             return iArr
         } else {
-            for (let i = Math.florr(n / 2); i >= 0; i--) {
+            for (let i = Math.floor(n / 2); i >= 0; i--) {
                 Heap.maxHeapify(iArr, i, n)
             }
             return iArr
@@ -2024,7 +2416,7 @@ class Ugly {
 export default Ugly
 ```
 
-## 进阶算法（思想）
+##  进阶算法（思想）
 - 贪心算法思想
 - 动态规划思想
 
@@ -2033,7 +2425,8 @@ export default Ugly
     - 通过每一步的最优解来达到整体最优解。但不一定是问题的最优解。
     - 选择的贪心策略必须具备无后效性（某个状态以前的过程不会影响以后的状态，只与当前状态有关）
 - 当一个问题特别抽象，特别复杂的时候，又找不到规律，不知道怎么办，可以考虑贪心算法，通过不断优化策略，靠近最优解。
-### 买卖股票的最佳时机
+<mark-question></mark-question>
+### ㉛ 买卖股票的最佳时机
 ```js
 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
 
@@ -2084,9 +2477,10 @@ export default (prices) => {
     return count
 }
 ```
+- 每天和前一天比较，高了就加上差价，低了就重新选择低点。
 
-
-### 柠檬水找零
+<mark-question></mark-question>
+### ㉜ 柠檬水找零
 ```js
 在柠檬水摊上，每一杯柠檬水的售价为 5 美元。
 
@@ -2146,8 +2540,9 @@ export default (arr) => {
             hand.push(money)
         } else {
             // 手里的零钱降序排列
+            hand.sort((a,b)=>b-a)
             // 需要的找零
-            let change = mone - 5
+            let change = money - 5
             for (let i = 0, len = hand.length; i < len; i++) {
                 if (hand[i] <= change) {
                     change -= hand[i]
@@ -2184,15 +2579,17 @@ export default (arr) => {
 - 用途
     - 不同路径
     - 最短路径
-### 不同路径II
+### ㉝ 不同路径II
+```js
 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
 
 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
 
 现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+```
 
 ![机器人路径](./img/robot_maze.png)
-
+```js
 网格中的障碍物和空位置分别用 1 和 0 来表示。
 
 说明：m 和 n 的值均不超过 100。
@@ -2211,42 +2608,70 @@ export default (arr) => {
 从左上角到右下角一共有 2 条不同的路径：
 1. 向右 -> 向右 -> 向下 -> 向下
 2. 向下 -> 向下 -> 向右 -> 向右
-
+```
 - 思路
 ![机器人路径](./img/robot-path.png)
-- 最后一步有几种情况？
+- 最后一步有几种情况？最后一步之前的路径等同于如上两个图形。
 - 状态转移方程如上
 - 最有子结构在方程中
 - 边界三种情况：四个方块，一行，一列
 ```js
+// leetcode提交超出时间限制！
 export default (arr, m, n) => {
     // 最优子结构
     let dp = (m, n) => {
-        // 边界1:m=2,n=2
-        if (m === 2 && n === 2) {
-            return (arr[1][1] === 1 || arr[1][0] + arr[0][1] === 2) ? 0 : (arr[1][0] === 1 || arr[0][1] === 1) ? 1 : 2
-        } else if (m < 2 || n < 2) {
-            if (m < 2) {
-                // 单行有1就返回0
-                return arr[m - 1].includes(1) ? 0 : 1
-            } else {
-                // 单列中有1就返回0
-                for (let i = 0; i < m; i++) {
-                    if (arr[i][0] === 1) {
-                        return 0
-                    }
-                }
-                return 1
-            }
-        } else {
-            return dp(m - 1, n) + dp(m, n - 1)
-        }
+        let dp = (m, n) => {
+    // 检查起始或者目标元素是不是1（被占用了），如果起始或者最后那个格就是1，说明怎么都怎么不到那，直接返回0
+    if (arr[m - 1][n - 1] === 1 || arr[0][0] === 1) {
+      return 0
     }
-    return dp(m, n)
+    if (m === 2 && n === 2) {
+      return (arr[1][1] === 1 || arr[1][0] + arr[0][1] === 2) ? 0 : (arr[1][0] === 1 || arr[0][1] === 1) ? 1 : 2
+    } else if (m < 2 || n < 2) {
+      if (m < 2) {
+        return arr[m - 1].includes(1) ? 0 : 1
+      } else {
+        for (let i = 0; i < m; i++) {
+          if (arr[i][0] === 1) {
+            return 0
+          }
+        }
+        return 1
+      }
+    } else {
+      return dp(m - 1, n) + dp(m, n - 1)
+    }
+  }
+  return dp(m, n)
 }
 ```
+- 遍历所有的位置，如果遇到障碍物，位置值改为0，如果是起点，位置值改为1，如果是起点的两边，值等于它的前一个值。如果都不是，那等于它的左格子值加上格子值。最后右下角的格子值即为路径条数。
+```js
+// leetcode成功通过
+var uniquePathsWithObstacles = function(obstacleGrid) {
+    for(let i = 0; i<obstacleGrid.length;i++){
+        for(let j = 0 ; j<obstacleGrid[i].length;j++){
+            if(obstacleGrid[i][j] == 1){
+                obstacleGrid[i][j] = 0;
+                continue;
+            }
+            if(i==0&&j==0){
+                obstacleGrid[i][j] = 1;
+                continue;
+            }
+            if(i==0 || j==0){
+                obstacleGrid[i][j] = i==0?obstacleGrid[i][j-1]:obstacleGrid[i-1][j];
+                continue;
+            }
+            obstacleGrid[i][j] = obstacleGrid[i-1][j]+obstacleGrid[i][j-1];
+        }
+    }
+    return obstacleGrid[obstacleGrid.length-1][obstacleGrid[0].length-1];
+};
+```
 
-### K站中转内最便宜的航班
+### ㉞ K站中转内最便宜的航班
+```js
 有 n 个城市通过 m 个航班连接。每个航班都从城市 u 开始，以价格 w 抵达 v。
 
 现在给定所有的城市和航班，以及出发城市 src 和目的地 dst，你的任务是找到从 src 到 dst 最多经过 k 站中转的最便宜的价格。 如果没有这样的路线，则输出 -1。
@@ -2258,8 +2683,9 @@ src = 0, dst = 2, k = 1
 输出: 200
 解释: 
 城市航班图如下
+```
 ![最有路径1](./img/optimal-path1.png)
-
+```js
 从城市 0 到城市 2 在 1 站中转以内的最便宜价格是 200，如图中红色所示。
 示例 2:
 输入: 
@@ -2268,8 +2694,9 @@ src = 0, dst = 2, k = 0
 输出: 500
 解释: 
 城市航班图如下
+```
 ![最有路径2](./img/optimal-path2.png)
-
+```js
 从城市 0 到城市 2 在 0 站中转以内的最便宜价格是 500，如图中蓝色所示。
 提示：
 
@@ -2279,35 +2706,739 @@ n 范围是 [1, 100]，城市标签从 0 到 n - 1.
 每个航班的价格范围是 [1, 10000].
 k 范围是 [0, n - 1].
 航班没有重复，且不存在环路
-
+```
 
 ![最优路径3](./img/optimal-path3.png)
 ```js
-// k是中转次数
-export default (src, dst, k) => {
-    // 对n个城市m个航班做飞行说明
-    let fights = [
-        [0, 1, 100],
-        [1, 2, 100],
-        [0, 2, 500]
-    ]
-    let cheap = (src, dst, k) => {
-        // 找到dst的前一站
-        let prev = fights.filter(item => item[1] === dst)
-        let min = Math.min.apply(null, prev.map(item => {
-            // 从dst往前找，找到了起始城市
-            if (item[0] === src && k > -1) {
-                return item[2]
-            } else if (k === 0 && item[0] !== src) {
-                return Number.MAX_SAFE_INTEGER
-            } else {
-                return item[2] + cheap(src, item[0], k - 1)
-            }
-        }))
-        return min
-    }
-    return cheap(src, dst, k) || -1
+// leetcode中运行超出时间限制！
+export default (fights, src, dst, k) => {
+  // 将fights作为参数和LeetCode一致
+  let cheap = (fights, src, dst, k) => {
+    let prev = fights.filter(item => item[1] === dst)
+    let min = Math.min.apply(null, prev.map(item => {
+      if (item[0] === src && k > -1) {
+        return item[2]
+      } else if (k === 0 && item[0] !== src) {
+        return Number.MAX_SAFE_INTEGER
+      } else {
+        return item[2] + cheap(fights, src, item[0], k - 1)
+      }
+    }))
+    return min
+  }
+  // 增加返回值是不是Number.MAX_SAFE_INTEGER，如果是返回-1
+  let min = cheap(fights, src, dst, k)
+  return min >= Number.MAX_SAFE_INTEGER ? -1 : min
 }
 ```
 
+
+## 【面试题】
+
+<mark-question></mark-question>
+### 【1】821. 字符的最短距离
+```js
+给定一个字符串 S 和一个字符 C。返回一个代表字符串 S 中每个字符到字符串 S 中的字符 C 的最短距离的数组。
+
+示例 1:
+
+输入: S = "loveleetcode", C = 'e'
+输出: [3, 2, 1, 0, 1, 0, 0, 1, 2, 2, 1, 0]
+说明:
+
+字符串 S 的长度范围为 [1, 10000]。
+C 是一个单字符，且保证是字符串 S 里的字符。
+S 和 C 中的所有字母均为小写字母。
+```
+- 先求出左边的C到每个字符的最近距离，再求出右边的C到每个字符的最近距离，然后左右中取最小值即可，双指针
+```js
+var shortestToChar = function(S, C) {
+    let len=S.length;
+    let left=[];let right=[];
+    left[0]=S[0]===C?0:10000;
+    for(var i=1;i<len;i++){
+        left[i]=S[i]===C?0:left[i-1]+1;
+    }
+    right[len-1]=S[len-1]===C?0:10000;
+    for(var i=len-2;i>=0;i--){
+        right[i]=S[i]===C?0:right[i+1]+1;
+    }
+    for(var i=0;i<len;i++){
+        left[i]=Math.min(left[i],right[i])
+    }
+    return left;
+};
+```
+
+<mark-question></mark-question>
+### 【2】 845. 数组中的最长山脉
+```js
+我们把数组 A 中符合下列属性的任意连续子数组 B 称为 “山脉”：
+
+B.length >= 3
+存在 0 < i < B.length - 1 使得 B[0] < B[1] < ... B[i-1] < B[i] > B[i+1] > ... > B[B.length - 1]
+（注意：B 可以是 A 的任意子数组，包括整个数组 A。）
+
+给出一个整数数组 A，返回最长 “山脉” 的长度。
+
+如果不含有 “山脉” 则返回 0。
+
+ 
+
+示例 1：
+
+输入：[2,1,4,7,3,2,5]
+输出：5
+解释：最长的 “山脉” 是 [1,4,7,3,2]，长度为 5。
+示例 2：
+
+输入：[2,2,2]
+输出：0
+解释：不含 “山脉”。
+ 
+
+提示：
+
+0 <= A.length <= 10000
+0 <= A[i] <= 10000
+```
+- 三个指针
+```js
+// 没看懂
+var longestMountain = function(A) {
+    let m=A.length;
+    if(m<3) return 0;
+    let ptrL=0;
+    // 保存最高点
+    let ptrM=0;
+    let ptrR=0;
+    let result=0;
+    while(ptrR<m){
+        // 递增最高点
+        while(ptrM<m-1&&A[ptrM+1]>A[ptrM]) ptrM++;
+        ptrR=ptrM;
+        // 递减最低点
+        while (ptrR < m - 1 && A[ptrR + 1] < A[ptrR])
+				ptrR++;
+            // 有递增，并且有递减，并且
+			if (ptrL != ptrM && ptrR != ptrM && result < ptrR - ptrL + 1)
+				result = ptrR - ptrL + 1;
+            // 数字相等，跳过这个数字
+            if(ptrL == ptrR)
+                ptrL = ptrM = ++ptrR;
+            // 到最低点之前都不符合，跳过
+            else
+                ptrL = ptrM = ptrR;
+    }
+    return result;
+};
+```
+- temp是临时的山脉，res是目前为止的最大山脉。
+```js
+var s=[2,1,4,7,3,1,4,7,3,2,5]
+var longestMountain = function(A) {
+    let res=0,temp=1;
+    let isDown=false;
+    for (let i = 1; i < A.length; i++) {
+        if (A[i] > A[i - 1]) {
+            if (isDown) {
+                res = res > temp ? res : temp;
+                temp = 1;
+                isDown = false;
+            }
+            temp++;
+        } else if (A[i] == A[i - 1]) {
+            if (isDown) {
+                res = res > temp ? res : temp;
+                isDown = false;
+            }
+            temp = 1;
+        } else {
+            if (isDown) {
+                temp++;
+            } else if (temp != 1) {
+                isDown = true;
+                temp++;
+            }
+        }
+    }
+    if (isDown) {
+        res = res > temp ? res : temp;
+    }
+    return res;
+};
+```
+
+<mark-question></mark-question>
+### 【3】741. 摘樱桃
+```js
+一个N x N的网格(grid) 代表了一块樱桃地，每个格子由以下三种数字的一种来表示：
+
+0 表示这个格子是空的，所以你可以穿过它。
+1 表示这个格子里装着一个樱桃，你可以摘到樱桃然后穿过它。
+-1 表示这个格子里有荆棘，挡着你的路。
+你的任务是在遵守下列规则的情况下，尽可能的摘到最多樱桃：
+
+从位置 (0, 0) 出发，最后到达 (N-1, N-1) ，只能向下或向右走，并且只能穿越有效的格子（即只可以穿过值为0或者1的格子）；
+当到达 (N-1, N-1) 后，你要继续走，直到返回到 (0, 0) ，只能向上或向左走，并且只能穿越有效的格子；
+当你经过一个格子且这个格子包含一个樱桃时，你将摘到樱桃并且这个格子会变成空的（值变为0）；
+如果在 (0, 0) 和 (N-1, N-1) 之间不存在一条可经过的路径，则没有任何一个樱桃能被摘到。
+示例 1:
+
+输入: grid =
+[[0, 1, -1],
+ [1, 0, -1],
+ [1, 1,  1]]
+输出: 5
+解释： 
+玩家从（0,0）点出发，经过了向下走，向下走，向右走，向右走，到达了点(2, 2)。
+在这趟单程中，总共摘到了4颗樱桃，矩阵变成了[[0,1,-1],[0,0,-1],[0,0,0]]。
+接着，这名玩家向左走，向上走，向上走，向左走，返回了起始点，又摘到了1颗樱桃。
+在旅程中，总共摘到了5颗樱桃，这是可以摘到的最大值了。
+说明:
+
+grid 是一个 N * N 的二维数组，N的取值范围是1 <= N <= 50。
+每一个 grid[i][j] 都是集合 {-1, 0, 1}其中的一个数。
+可以保证起点 grid[0][0] 和终点 grid[N-1][N-1] 的值都不会是 -1。
+```
+
+```js
+function cherryPickup(grid){
+        let N = grid.length  // 转化为2人同时从(0,0)走到(N-1,N-1)的最大收益
+        let S = (N-1) * pow(2,1)  // 最大步数，即（N-1)*2步走到目的地
+        let dp = new Map([[0,0,0],grid[0][0]])// dp[s,i,j]走了s步且位于两人分别位于i,j两行的最大收益，在下面的循环里仅当(s,i,j)状态可达时才存入哈希
+        let moves = [[0, 0], [1, 0], [0, 1], [1, 1]]  // i,j要考虑的上一时刻到现在可能的变化量
+        for (let s=1; s<=S+1;i++){
+            for(let y1=1;y1<=Math.min(s+1,N);y1++){
+                let x1 = s-y1
+                if (x1 >= N || grid[y1][x1] == -1)  // 该状态不可达
+                    continue
+                for(let y2=1;y2<=Math.min(s+1,N);y2++){// 仅考虑y1<=y2，因为(s,y1,y2)与(s,y2,y1)等价
+                    x2 = s-y2
+                    if (x2 >= N || grid[y2][x2] == -1) // 该状态不可达
+                        continue
+                    _max = -1  // -1占位后面判断可达
+                    for(let [dy1,dy2] in moves){
+                        let [_y1, _y2] = [y1-dy1, y2-dy2]  // 其可能来自的状态
+                        if (_y1 > _y2)
+                            continue
+                        _max = max(_max, dp.get((s-1, _y1, _y2), -1))
+                    
+                    }
+                        
+                    if (_max != -1)  // 仍为-1则说明没有前置状态可以到达当前状态
+                        dp[s, y1, y2] = _max + grid[y1][x1] + grid[y2][x2] if y1 != y2 else _max + grid[y1][x1]  // y1=y2时则只能有一个人获得樱桃
+        } 
+            }
+                }
+                
+            
+        return dp.get((S, N-1, N-1), 0)  // 若该状态不可达，返回0
+ }
+```
+<mark-question></mark-question>
+### 【4】[1,{a:13},3,{b:12},12] 统计所有数字之和
+```js
+let sum=arr.reduce((acc,cur)=>{
+    if(typeof cur==='object'){
+        for(key in objs){
+            if(obj.hasOwnProperty(key)){
+                acc+=cur[key]
+            }
+        }
+    }else{
+        acc+=cur
+    }
+    return acc;
+})
+```
+### 【5】获取一个对象的所有key
+```js
+Object.keys(obj)
+
+let keys=[];
+for(key in obj){
+    keys.push(key);
+}
+```
+
+### 【6】[{a:34},{a:12},{a:43}]数组排序
+```js
+arr.sort((a,b)=>{
+    return a.a-b.a;
+})
+```
+
+### 【7】找出一个长字符串中连续重复次数最多的字符，如：在"nddemdereeeffetcssssfggddregg"中's'重复出现次数(4)次最多，因此's'为连续重复出现最长的字符。
+```js
+function maxTime(str) {
+    let reg = /(\w)\1+/;
+    let max = 0;
+    let maxChar = '';
+    while (str) {
+        let result = reg.exec(str);
+        if (result) {
+            if (result.length > max) {
+                max = result.length;
+                maxChar = result[1];
+            }
+            str = str.slice(result.index + result.length);
+        } else {
+            break;
+        }
+    }
+    return maxChar;
+}
+```
+```js
+function maxTime(str){
+    str.match(/(\w)\1+/g).sort((a,b)=>b.length-a.length)[0][0];
+}
+```
+<mark-question></mark-question>
+### 【8】现在一个json，在某一维度中可能会出现'score'键，请用任意语言写一个check方法判断该json是否满足要求。要求如下：
+```js
+a. 任意一个键为score的值预期是一个整型数字且大于60，则检查通过
+b. 若不存在键为score的值，则检查通过
+json参考样例：
+{
+    "name":"BeJson",
+    "url":"http://www.bejson.com",
+    "score":59,
+    "address":{
+        "score":20,
+        "city":"江苏苏州",
+        "country":"中国"
+    },
+    "links":[{
+        "score":60,
+        "url":"http://www.google.com"
+    }]
+}
+```
+```js
+function hasScore(json) {
+    let exist = false;
+    let over = false;
+
+    function checkScoreChild(obj) {
+        if (obj instanceof Object) {
+            for (key in obj) {
+                checkScoreChild(obj[key]);
+                if (key === 'score') {
+                    exist = true;
+                    console.log(obj['score']);
+                    if (typeof obj['score'] === 'number' && obj['score'] > 60) {
+                        over = true;
+                    }
+                }
+            }
+        } else if (obj instanceof Array) {
+            obj.forEach(item => {
+                checkScoreChild(item);
+            })
+        }
+
+    }
+    checkScoreChild(JSON.parse(json))
+    return over || !exist;
+}
+```
+
+### 【9】实现一个promise,实现promise.all，实现promise.race
+
+```js
+let Promise=require(./promise)
+let p=new Promise(function(resolve,reject){
+    reject('情人节到了');
+    resolve('情人到了');
+    throw new Error('错误');
+})
+// 链式调用
+p.then((value)=>{
+    console.log('success',value);
+    return value;
+},(reason)=>{
+    console.log('error',reason);
+}).then((value)=>{
+
+})
+
+// 值的穿透 
+p.then().then().then((data)=>{
+    console.log(data);
+})
+p.then().then(1,data=>{
+    console.log(data);
+})
+```
+
+```js
+function Promise(executor){
+    // 在promise内部定义一个状态 当前promise的状态
+    let self=this;
+    self.value=undefined;
+    self.reason=undefined;
+    self.onResolvedCallbacks=[];
+    self.onRejectedCallbacks=[];
+    self.status='pending';// 默认promise的状态是pending
+    function resolve(value){
+        if(value instanceof Promise){// resolve的结果是一个promise，会让这个promise执行，将执行后的结果传递给resolve或者reject
+            return value.then(resolve,reject)
+        }
+        if(self.status==='pending'){
+            self.value=value;
+            self.status='resolved';// 成功状态
+            // 发布
+            self.onResolvedCallbacks.forEach(fn=>{
+                fn();
+            })
+        }
+    }
+    function reject(reason){
+        if(self.status==='pending'){
+            self.reason=reason;
+            self.status='rejected';// 失败状态
+            self.onRejectedCallbacks.forEach(fn=>{
+                fn();
+            })
+        }
+    }
+    try{
+        executor(resolve,reject);
+    }catch(e){
+        reject(e);// 说明失败了
+    }
+    
+}
+
+function resolvePromise(promise2,x,resolve,reject){
+    // 判断x是不是promise
+    // 如果自己等待着自己完成 那么当前就应该走向失败，防止自己等待自己
+    if(promise2===x){
+        return reject(new TypeError('循环引用了'))
+    }
+    let called; // 表示当前有没有被调用过（规范要求如果resolve和reject都被调用了或者被调用多次，只有第一次有效）
+    // 按规范来判断
+    if((x!==null&&typeof x==='object')|| typeof x==='function'){
+        // 很有可能是一个promise
+        try{
+            let then=x.then;// then属性具有getter 此时获取时会发生异常
+            if(typeof then==='function'){// 默认是promise
+                then.call(x,(y)=>{
+                    // y有可能是一个promise。一直解析 直到结果是一个常量为止
+                    if(called) return;// 给别人的promise增加的逻辑
+                    called=true;
+                    resolvePromise(promise2,y,resolve,reject)
+                    // resolve(y);// 成功拿到成功的结果，让promise2变成成功状态
+                },(r)=>{
+                    if(called) return;
+                    called=true;
+                    reject(r);
+                }); // 保证this指向这个promise
+            }else{// 当前这个then是一个普通对象
+                resolve(x); // {a:1}
+            }
+        }catch(e){
+            if(called) return;
+            called=true;
+            reject(e);
+        }
+    }else{
+        resolve(x);// 普通值 直接成功即可
+    }
+}
+Promise.prototype.then=function(onFulfilled,onRejected){
+    // 值得穿透：给一个默认的返回参数或者抛出错误的函数
+    onFulfilled=typeof onFulfilled==='function'?onFulfilled:value=>value;
+    onRejected=typeof onRejected==='function'?onRejected:err=>{throw err};
+    let self=this;
+    // 调用then后需要再次 返回一个新的promise
+    // 需要拿到当前then方法成功或失败执行后的结果
+    // 判断then函数的执行结果和promise2的关系
+    let promise2 = new Promise(function(resolve,reject){
+        if(self.status==='resolved'){// 这里要使用promise2，需要添加异步保证可以获取到promise2
+            setTimeout(()=>{
+                try{
+                    let x = onFulfilled(self.value);
+                    resolve(x);
+                    resolvePromise(promise2,x,resolve,reject);
+                }catch(e){
+                    reject(e);// 如果执行函数时抛出失败，那么会走向下一个then的失败状态
+                }
+            },0)
+        }
+        if(self.status==='rejected'){
+            setTimeout(()=>{
+                try{
+                    let x = onRejected(self.reason);
+                    resolvePromise(promise2,x,resolve,reject);
+                }catch(e){
+                    reject(e);
+                }
+            },0)
+        }
+        if(self.status==='pending'){
+            // 订阅
+            self.onResolvedCallbacks.push(function(){
+                setTimeout(()=>{
+                    try{
+                        let x = onFulfilled(self.value);
+                        resolvePromise(promise2,x,resolve,reject);
+                    }catch(e){
+                        reject(e);
+                    }
+                },0)
+            });
+            self.onRejectedCallbacks.push(function(){
+                setTimeout(()=>{
+                    try{
+                        let x = onRejected(self.reason);
+                        resolvePromise(promise2,x,resolve,reject);
+                    }catch(e){
+                        reject(e);
+                    }
+                },0)
+            });
+        }
+    })
+    return promise2;
+    
+}
+// 不属于规范内的。就是返回了个then
+Promise.prototype.catch=function(errCallback){
+    return this.then(null,errCallback)
+}
+
+Promise.resolve=function(value){
+    return new Promise((resolve,reject)=>{
+        resolve(value);
+    })
+}
+
+Promise.reject=function(value){
+    return new Promise((resolve,reject)=>{
+        reject(value)
+    })
+}
+
+// promise.finally实现原理是什么 try{}catch{}finally{} 无论如何都会执行 也是返回的then
+Promise.prototype.finally=function(callback){
+    return this.then((data)=>{
+        // 如果callback是一个函数返回promise 就等待这个promise执行完毕
+        // 如果finally里返回一个promise，要等这个promise状态改变，再继续执行下面代码.使用resolve即可
+        return Promise.resolve(callback()).then(()=>data);
+        // callback();
+        // return data;
+    },(err)=>{
+        // 一定要用resolve，不能用reject，因为resolve有等待的效果
+        return Promise.resolve(callback()).then(()=>{throw err});
+        // callback();
+        // throw err;
+    })
+}
+```
+- 链式调用
+    - 回调地狱
+    ```js
+    function readFile(url){
+        return new Promise((resolve,reject)=>{
+            fs.readFile(url,'utf8',function(err,data){
+                if(err) reject(err);
+                resolved(data);
+            })
+        })
+    }
+    readFile('./name.txt').then((data)=>{
+        readFile(data).then(data=>{
+            console.log(data);
+        })
+    },(err)=>{
+        console.log(err);
+    })
+    ```
+    - 特点
+        1. 如果一个then方法 返回一个普通值 这个值会传递给下一次then中作为成功的结果
+        2. 如果报错，传递给下一个失败
+        3. 如果返回的是promise,promise成功结果传给下一个成功，promise失败传给下一个失败
+        4. 捕获错误机制：默认会找最近的then的失败
+        5. jquery的链式调用，返回this可以实现。promise.then的链式调用，返回一个新的promise可以实现（因为then后状态已经变为pending，不可以再变成其他。所以要有个新的promise，新的状态）
+        ```js
+        readFile('./name.txt').then((data)=>{
+            // return 100;
+            return new Promise((resolve,reject)=>{
+                setTimeout(function(){
+                    resolve('哈哈');
+                },1000)
+            })
+        }).then(data=>{
+            console.log(data);
+        },function(err){
+            console.log(err);
+        }).catch(err=>{
+            console.log('catch',err);
+        })
+
+        
+        ```
+
+### 【10】实现一个promise延迟对象 defer
+- 延迟对象 Q库 减少套用
+```js
+let fs=require('fs');
+let Promise=require('./promise');
+function read(url){
+    let defer=Promise.defer();
+    fs.readFile(url,'utf8',(err,data)=>{
+        if(err) reject(err)
+        defer.resolve(data);
+    })
+    return defer.promise;
+}
+read('./name.txt').then(data=>{
+    console.log(data);
+})
+```
+```js
+// promise.js
+Promise.defer=function(){
+    let dfd={};
+    dfd.promise=new Promise((resolve,reject)=>{
+        dfd.resolve=resolve;
+        dfd.reject=reject;
+    })
+    return dfd;
+}
+```
+
+- 安装这个库可校验自己写的是否符合promise a+规范
+```js
+npm install -g promises-aplus-test
+promises-aplus-tests promise.js
+```
+
+### 【11】如何终止promise链？
+- 返回一个等待的promise
+```js
+let promise=new Promise((resolve,reject)=>{
+    resolve();
+})
+promise.then(function(){
+    // 走到这希望后面的then不再执行了
+    console.log(1)
+    // 返回一个空的promise，既不成功也不失败
+    return new Promise(()=>{})
+
+}).then(function(){
+    console.log(2)
+})
+
+```
+
+### 【12】Promise.all
+```js
+let fs=require('fs').promises;//新版本10版本新增的
+Promise.all([fs.readFile('./name.txt','utf8'),fs.readFile('./age.txt','utf8'),1,2]).then(data=>{
+    console.log(data);
+})
+```
+- 多个异步并发，使用计数器
+```js
+function isPromise(value){
+    if(typeof value==='function' || (typeof value==='object' && value !==null)){
+        if(typeof value.then==='function'){
+            return true;
+        }
+    }
+    return false;
+}
+Promise.all=function(values){
+    return new Promise((resolve,reject)=>{
+        let arr=[];
+        let i=0;
+        let processData=(key,value)=>{
+            arr[key]=value;// after函数
+            if(++i===value.length){
+                resolve(arr);
+            }
+        }
+        for(let i=0;i<values.length;i++){
+            let current=values[i];
+            if(isPromise(current)){
+                current.then(y=>{
+                    processData(i,y);
+                },reject)
+            }else{
+                processData(i,current);
+            }
+        }
+    })
+}
+```
+
+### 【13】Promise.race
+
+```js
+Promise.race([fs.readFile('./name.txt','utf8'),fs.readFile('./age.txt','utf8'),1,2]).then(data=>{
+    console.log(data);
+})
+```
+
+```js
+Promise.race=function(values){
+    return new Promise((resolve,reject)=>{
+        for(let i=0;i<values.length;i++){
+            let current=values[i];
+            if(isPromise(current)){
+                current.then(resolve,reject);
+            }else{
+                resolve(current);
+            }
+        }
+    })
+}
+```
+
+### 【14】如何终止一个promise(中断promise) promise超时
+```js
+let p=new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+        resolve(123);
+    },3000)
+})
+
+setTimeout(()=>{
+    // 让这个promise 变成失败态
+},2000)
+
+p.then(data=>{
+    console.log(data);
+}).catch(err=>{
+    console.log(err);
+})
+```
+```js
+// 解决：
+function wrap(promise){
+    let abort;
+    let newPromise=new Promise((resolve,reject)=>{
+        abort=reject;
+    });
+    let p=Promise.race([newPromise,promise]);
+    p.abort=abort;
+    return p;
+}
+let p1=wrap(p);
+
+setTimeout(()=>{
+    // 让这个promise 变成失败态
+    p1.abort();
+},2000)
+
+p1.then(data=>{
+    console.log(data);
+}).catch(err=>{
+    console.log(err);
+})
+```
 

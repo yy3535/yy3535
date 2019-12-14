@@ -1,20 +1,15 @@
 <template>
-    <div id="aboutMe">
-        <header>
-            about-me
-        </header>
-        <main>
-            
-        </main>
-    </div>
+  <div>
+
+  </div>
 </template>
+
 <script>
-export default {
+  export default {
     
-}
+  }
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 
 </style>
-
-

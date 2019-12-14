@@ -1,4 +1,4 @@
-# 前端知识点大纲
+# 【10. 总结】
 
 ## 职位描述(JD)
 不同的JD需要匹配不同的技能。写出不同的简历。通过JD着重去准备某部分东西
@@ -334,6 +334,7 @@ Content-Length: 122
   - 【记】GET参数通过URL传递，POST放在Request body中（了解）
 - HTTP状态码
   - 记忆
+    
     - 1xx：指示信息-表示请求已接受，继续处理
     - 2xx：成功-表示请求已被成功接收
     - 3xx：重定向-要完成请求必须进行更进一步的操作
@@ -490,9 +491,11 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 ## 通信
 ### 什么是同源策略及限制
 - 同源策略限制从一个源加载的文档或脚本如何与来自另一个源的资源进行交互。这是一个用于隔离潜在恶意文件的关键的安全机制。
-    - Cooie、LocalStorage和IndexDB无法读取
-    - DOM无法获得
-    - AJAX请求不能发送
+    - Cookie、session、LocalStorage和IndexDB无法读取（防止伪造请求）
+    - DOM元素无法获得，（iframe如果能获得就可以直接获取你的密码）
+    - AJAX请求（只要知道链接都可以拿数据）
+
+
 ### 前后端如何通信
 - Ajax(同源限制)
 - WebSocket(没有同源限制)
@@ -505,92 +508,156 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 - 事件的触发条件
 - 事件的触发顺序
 
-###【重要,手写】跨域通信的几种方式(其它的方式不常用或者成本太高)
-- JSONP（利用script标签的异步加载来实现的）
-```js
-util.jsonp=function(url,onsuccess,onerror,charset){
-    var callbackName=util.getName('tt_player');
-    window[callbackName]=function(){
-        if(onsuccess && util.isFunction(onsuccess)){
-            onsuccess(arguments[0]);
-        }
-    };
-    var script=util.createScript(url+'&callback='+callbackName,charset);
-    script.onload=script.onreadystatechange=function(){
-        if(!script.readyState||/loaded|complete/.test(script.readyState)){
-            script.onload=script.onreadystatechange=null;
-            // 移除该script的DOM对象
-            if(script.parentNode){
-                script.parentNode.removeChild(script);
+
+
+
+### 【重要,手写】跨域通信的几种方式
+
+<mark-check></mark-check>
+
+- jsonp
+    - 优点：容易
+    - 缺点：
+        - 只能发送get请求（引用别人的东西，不支持post put delete）
+        - 不安全 xss攻击（别人的脚本里有一些攻击代码，现在很多网站为了安全已经不用了）
+    ```js
+    // 引用别人的包
+    jsonp({
+        url:'https://sp0.baidu.com/5a1Fazu8AA54nxGkO9wtaNf6hhy/su',
+        params:{wd:'b'},
+        cb:'show'
+    }).then(data=>{
+        console.log(data);
+    })
+    ```
+    ```js
+    // 自己写一个jsonp包
+    function jsonp({url,params,cb}){
+        return new Promise((resolve,reject)=>{
+            window[cb]=function(data){
+                resolve(data);
+                document.body.removeChild(script);
             }
-            // 删除函数或变量
-            window[callbackName]=null;
-        }
+            parms={...params,cb};
+            let arrs=[];
+            for(let key in params){
+                arrs.push(`${key}=${params[key]}`)
+            }
+            let script=document.createElement('script');
+            script.src=`${url}?${arrs.join('&')}`;
+            document.body.appendChild(script);
+        })
     }
-    script.onerror=function(){
-        if(onerror&&util.isFunction(onerror)){
-            onerror();
+    ```
+    ```js
+    // jsonp的后端部分
+    let express=require('express');
+    let app=express();
+
+    app.get('/say',function(req,res){
+        let {wd,cb}=req.query;
+        res.end(`${cb}('我不爱你')`)
+    })
+    app.listen(3000)
+    ```
+    ```js
+    util.jsonp=function(url,onsuccess,onerror,charset){
+        var callbackName=util.getName('tt_player');
+        window[callbackName]=function(){
+            if(onsuccess && util.isFunction(onsuccess)){
+                onsuccess(arguments[0]);
+            }
+        };
+        var script=util.createScript(url+'&callback='+callbackName,charset);
+        script.onload=script.onreadystatechange=function(){
+            if(!script.readyState||/loaded|complete/.test(script.readyState)){
+                script.onload=script.onreadystatechange=null;
+                // 移除该script的DOM对象
+                if(script.parentNode){
+                    script.parentNode.removeChild(script);
+                }
+                // 删除函数或变量
+                window[callbackName]=null;
+            }
         }
+        script.onerror=function(){
+            if(onerror&&util.isFunction(onerror)){
+                onerror();
+            }
+        }
+        document.getElementsByTagName('head')[0].appendChild(script);
     }
-    document.getElementsByTagName('head')[0].appendChild(script);
-}
 
-```
-- Hash(用在iframe跨域页面通信)
-    - hash#后改变页面是不刷新的，search改变是会刷新页面的
-```js
-//当前页面A 通过iframe或frame嵌入了跨域的页面B。利用hashA向B通信。
-// 在A中的伪代码如下：
-var B=document.getElementsByTagName('iframe')
-B.src=B.src+'#'+'data';
-// 在B中的伪代码如下：
-window.onhashchange=function(){
-    var data=window.location.hash;
-}
+    ```
 
-```
-- postMessage(跨域页面通信)
-    - H5中增加了这个作为跨域通信的方式
-```js
-// 窗口A(http:A.com)向跨域的窗口B(http://B.com)发送信息
-Bwindow.postMessage('data','http://B.com');
-// 窗口B中监听
-window.addEventListener('message',function(event){
-    console.log(event.origin);// http://A.com
-    console.log(event.source);// Awindow
-    console.log(event.data);// data
-})
-```
-- WebSocket
-    - 不受同源策略限制
-```js
-var ws=new WebSocket('wss://echo.websocket.org');
-ws.onopen=function(evt){
-    console.log('Connection open ...')
-    ws.send('Hello WebSocket!');
-}
-ws.onmessage=function(evt){
-    console.log('Received Message:'+evt.data)
-    ws.close();
-}
-ws.onclose=function(evt){
-    console.log('Connection closed.');
-}
-```
-- CORS(ajax的一个变种)
+- cors(ajax的一个变种)
+    - 服务端直接提供
+    - 现在最常用，安全性高
     - 新出的通信方式，支持跨域通信的ajax(在ajax跨域头上加上这个，浏览器就会放行)
     - 【参考资料】(http://www.ruanyifeng.com/blog/2016/04/cors.html)
-```js
-// url (必须), options(可选),设置了cors配置即可使用cors，否则是普通ajax请求
-fetch('/some/url',{
-    method:'get',
-}).then(function(res){
 
-}).catch(function(err){
-    // 出错了；等价于then的第二个参数，但这一更好用更直观
-})
-```
+    ```js
 
+    ```
+
+
+    ```js
+    // url (必须), options(可选),设置了cors配置即可使用cors，否则是普通ajax请求
+    fetch('/some/url',{
+        method:'get',
+    }).then(function(res){
+
+    }).catch(function(err){
+        // 出错了；等价于then的第二个参数，但这一更好用更直观
+    })
+    ```
+
+- postMessage(跨域页面通信)
+    - H5中增加了这个作为跨域通信的方式
+
+    ```js
+    // 窗口A(http:A.com)向跨域的窗口B(http://B.com)发送信息
+    Bwindow.postMessage('data','http://B.com');
+    // 窗口B中监听
+    window.addEventListener('message',function(event){
+        console.log(event.origin);// http://A.com
+        console.log(event.source);// Awindow
+        console.log(event.data);// data
+    })
+    ```
+- document.domain(子域和父域关系)
+- window.name
+- location.hash(用在iframe跨域页面通信)
+    - hash#后改变页面是不刷新的，search改变是会刷新页面的
+
+    ```js
+    //当前页面A 通过iframe或frame嵌入了跨域的页面B。利用hashA向B通信。
+    // 在A中的伪代码如下：
+    var B=document.getElementsByTagName('iframe')
+    B.src=B.src+'#'+'data';
+    // 在B中的伪代码如下：
+    window.onhashchange=function(){
+        var data=window.location.hash;
+    }
+    ```
+- http-proxy
+- nginx
+- websocket
+    - 不受同源策略限制
+    ```js
+    var ws=new WebSocket('wss://echo.websocket.org');
+    ws.onopen=function(evt){
+        console.log('Connection open ...')
+        ws.send('Hello WebSocket!');
+    }
+    ws.onmessage=function(evt){
+        console.log('Received Message:'+evt.data)
+        ws.close();
+    }
+    ws.onclose=function(evt){
+        console.log('Connection closed.');
+    }
+    ```
 
 
 ## 安全
@@ -602,8 +669,10 @@ fetch('/some/url',{
 
 <img :src="$withBase('/img/算法.png')" >
 
+<mark-box>
+
 - 排序【重要】
-    - 冒泡排序
+    - 快速排序
         - 先从数列中取出一个数作为“基准”。
         - 分区过程：将比这个“基准”大的数全放到“基准”的右边，小于或等于“基准”的数全放到“基准”的左边。
         - 再对左右区间重复第二步，直到各区间只有一个数。
@@ -702,6 +771,7 @@ function bubbleSort(arr) {
 }
 ```
 
+</mark-box>
 - 堆栈【重要】、队列【重要】、链表(难度较大，来不及就不准备)
     - https://juejin.im/entry/58759e79128fe1006b48cdfd
 
@@ -1418,32 +1488,41 @@ new new Foo().getName();// 3(先带参new和.=>new function(){console.log(3)})
 - 渲染机制
 - 递归（常用技能）
 
-### flat函数设计（一道‘js算法’提升软实力）
-请写出下面
+### flat函数设计
+一道‘js算法’提升软实力
 ```js
-var arr=['a',['b','c'],2,['d','e','f'],'g',3,4];//a,b,c,2,d,e,f,g,3,4
+输入：['a',['b','c'],2,['d','e','f'],'g',3,4]
+输出：a,b,c,2,d,e,f,g,3,4
 ```
 ```js
-// 利用递归
-function arrConvert3(arr){
-    let newArr=[];
-    let each=function(oldarr){
-        oldarr.forEach((item,index)=>{
+// 方法一：递归
+function flat(array){
+    let result=[];
+    let each=function(arr){
+        arr.forEach((item,index)=>{
             if(item instanceof Array){
                 each(item);
             }else{
-                newArr.push(item)
+                result.push(item)
             }
         })
     }
-    each(arr)
-    return newArr;
+    each(array)
+    return result.join(',');
 }
-// 利用类型转换
-function flat(arr){
+// 方法二：toString(隐式类型转换)
+Array.prototype.toString=function(){
+    return this.join(',')
+}
+var flat=function(arr){
+    let toString=Array.prototype.toString;
+    Array.prototype.toString=function(){
+        return this.join(',');
+    }
+    Array.prototype.toString=toString;
     return arr+'';
 }
-// valueOf类型转换
+// 方法三：valueOf(隐式类型转换)
 Array.prototype.valueOf=function (){
     return this.join(',');
 }
@@ -1451,7 +1530,33 @@ var flat=function (arr){
     return arr+'';
 }
 // 利用遍历器
-let arr=['a',['b','c'],2,[['d',['z','8','0']],'e','f'],'g',3,4];
-console.log('原来',arr)
-console.log('现在',flat(arr))
+Array.prototype[Symbol.iterator]=function(){
+    let arr=[].concat(this);
+    let getFirst=function (array){
+        let first=array.shift();
+        return first;
+    };
+    return {
+        next:function(){
+            let item=getFirst(arr);
+            if(item){
+                return {
+                    value:item,
+                    done:false
+                };
+            }else{
+                return {
+                    done:true
+                }
+            }
+        }
+    };
+}
+var flat=function (arr){
+    let r=[];
+    for(let i of arr){
+        r.push(i);
+    }
+    return r.join(',');
+}
 ```

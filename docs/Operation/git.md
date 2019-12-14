@@ -108,3 +108,6 @@ git checkout b74be8e78ff*****0a15d04967（版本号）
 
 
 4. 再重新输入`git clone https://github.com/opencv/opencv_contrib/`,可以看到下载速度得到明显提升,相应的文件也很快下载完毕。
+
+mac host
+/etc/hosts

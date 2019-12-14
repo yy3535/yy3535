@@ -1,4 +1,4 @@
-# ES6
+# 【6. ES6】
 
 [[toc]]
 
@@ -975,8 +975,9 @@ function set(target, key, value, receiver) {
 ### 概念
 - Promise 是一个对象，从它可以获取异步操作的消息。
 - 特点
-  - promise对象的异步操作的三种状态:pending（进行中）、fulfilled（已成功）和rejected（已失败）
-  - 状态改变：`从pending变为fulfilled`和`从pending变为rejected`
+  <mark-check id="promisestatus"></mark-check>
+  - promise对象的异步操作的<highlight-box>三种状态</highlight-box>:<underline-box>pending</underline-box>（进行中）、<underline-box>fulfilled</underline-box>（已成功）和<underline-box>rejected</underline-box>（已失败）
+  - <highlight-box>状态改变</highlight-box>：`从pending变为fulfilled`和`从pending变为rejected`
 
 ### 参数
 - 一个函数（函数参数resolve和reject，由js引擎提供，不用自己部署）
@@ -984,6 +985,7 @@ function set(target, key, value, receiver) {
     - 将Promise对象的状态从“未完成”变为“成功”（即从 pending 变为 resolved），在异步操作成功时调用，并将异步操作的结果，作为参数传递出去；
   - reject
     - 将Promise对象的状态从“未完成”变为“失败”（即从 pending 变为 rejected），在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。
+<mark-check id="promise"></mark-check>
 ```js
 const promise = new Promise(function(resolve, reject) {
   /* 某异步操作 */
@@ -998,42 +1000,8 @@ const promise = new Promise(function(resolve, reject) {
 
 ### 构造函数方法
 - Promise()
-
-- Promise.all([p1,p2,p3]) 
-  - 所有成员返回成功才会成功，有一个失败就失败
-  - 将多个 Promise 实例，包装成一个新的 Promise 实例
-  - 参数是具有 Iterator 接口的对象，且每个成员都是Promise实例(不是会自使用resolve转)
-  - 如果作为参数的 Promise 实例，自己定义了catch方法，那么它一旦被rejected，并不会触发Promise.all()的catch方法。
-  ```js
-  const p1 = new Promise((resolve, reject) => {
-    resolve('hello');
-  })
-  .then(result => result);
-  const p2 = new Promise((resolve, reject) => {
-    throw new Error('报错了');
-  })
-  .then(result => result);
-  Promise.all([p1, p2])
-  .then(result => console.log(result))
-  .catch(e => console.log(e));
-  // Error: 报错了
-  ```
-- Promise.race([p1,p2,p3]) 
-  - 将多个 Promise 实例，包装成一个新的 Promise 实例。
-  - 参数是具有 Iterator 接口的对象，且每个成员都是Promise实例(不是会自使用resolve转)
-  - 只要有一个参数promise状态改变，就产生结果
-```js
-const p = Promise.race([
-  fetch('/resource-that-may-take-a-while'),
-  new Promise(function (resolve, reject) {
-    setTimeout(() => reject(new Error('request timeout')), 5000)
-  })
-]);
-p
-.then(console.log)
-.catch(console.error);
-```
-- Promise.resolve()
+<mark-check id="promiseresolve"></mark-check>
+- <highlight-box>Promise.resolve()</highlight-box>
   - 将现有对象转为 状态为resolved 的Promise 对象
   - then会立即执行
   ```js
@@ -1049,7 +1017,8 @@ p
     :::warning 快速得到一个promise对象
     希望得到一个 Promise 对象，比较方便的方法就是直接调用Promise.resolve()方法。
     :::
-- Promise.reject(reason)
+  <mark-check id="promisereject"></mark-check>
+- <highlight-box>Promise.reject(reason)</highlight-box>
   - 返回一个状态为rejected的Promise 实例
   - 回调函数立即执行
   - 参数会作为reject的理由，变成后续方法的参数。
@@ -1062,9 +1031,49 @@ p.then(null, function (s) {
 });
 // 出错了
 ```
+<mark-check id="promiseall"></mark-check>
+- <highlight-box>Promise.all([p1,p2,p3]) </highlight-box>
+  - 所有成员返回成功才会成功，有一个失败就失败
+  - 将多个 Promise 实例，包装成一个新的 Promise 实例
+  - 参数是具有 Iterator 接口的对象，且每个成员都是Promise实例(不是会自使用resolve转)
+  - 如果作为参数的 Promise 实例，自己定义了catch方法，那么它一旦被rejected，并不会触发Promise.all()的catch方法。
+  ```js
+  var promise1 = Promise.resolve(3);
+  var promise2 = 42;
+  var promise3 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 100, 'foo');
+  });
+
+  Promise.all([promise1, promise2, promise3]).then(function(values) {
+    console.log(values);
+  });
+  // expected output: Array [3, 42, "foo"]
+  ```
+<mark-check id="promiserace"></mark-check>
+- <highlight-box>Promise.race([p1,p2,p3]) </highlight-box>
+  - 将多个 Promise 实例，包装成一个新的 Promise 实例。
+  - 参数是具有 Iterator 接口的对象，且每个成员都是Promise实例(不是会自使用resolve转)
+  - 只要有一个参数promise状态改变，就产生结果
+```js
+var promise1 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 500, 'one');
+});
+
+var promise2 = new Promise(function(resolve, reject) {
+    setTimeout(resolve, 100, 'two');
+});
+
+Promise.race([promise1, promise2]).then(function(value) {
+  console.log(value);
+  // Both resolve, but promise2 is faster
+});
+// expected output: "two"
+```
+
 
 ### 实例方法
-- Promise.prototype.then()
+<mark-check id="promisethen"></mark-check>
+- <highlight-box>Promise.prototype.then()</highlight-box>
   - 参数1(回调函数)：状态变为resolved时调用
   - 参数2(回调函数)：状态变为rejected时调用
   - 返回的是一个新的Promise实例（可以链式调用,第一个then方法指定的回调函数，返回的是另一个Promise对象。）
@@ -1083,9 +1092,10 @@ p.then(null, function (s) {
     err => console.log("rejected: ", err)
   );
   ```
-- Promise.prototype.catch()
+<mark-check id="promisecatch"></mark-check>
+- <highlight-box>Promise.prototype.catch()</highlight-box>
   - 指定发生错误时的回调函数
-  - .then(null, rejection)或.then(undefined, rejection)的别名
+  - <underline-box>.then(null, rejection)或.then(undefined, rejection)的别名</underline-box>
   - 建议使用catch方法，而不使用then方法的第二个参数。
   ```js
   getJSON('/posts.json').then(function(posts) {
@@ -1095,7 +1105,8 @@ p.then(null, function (s) {
     console.log('发生错误！', error);
   });
   ```
-- Promise.prototype.finally() [ES2018]
+<mark-check id="promisefinally"></mark-check>
+- <highlight-box>Promise.prototype.finally() [ES2018]</highlight-box>
   - 指定不管 Promise 对象最后状态如何，都会执行的操作。(本质上是then方法的特例)
   ```JS
   promise
@@ -1137,6 +1148,111 @@ getJSON("/posts.json").then(function(json) {
   console.error('出错了', error);
 });
 ```
+
+```js
+let ajax=function(){
+  console.log('执行3')
+  return new Promise(function(resolve,reject){
+    setTimeout(function(){
+      resolve()
+    },1000);
+  })
+};
+
+ajax()
+  .then(function(){
+    return new Promise(function(resolve,reject){
+      setTimeout(function(){
+        resolve()
+      },2000);
+    });
+  })
+  .then(function(){
+    console.log('timeout3')
+  })
+```
+
+```js
+let ajax=function(num){
+  console.log('执行4')
+  return new Promise(function(resolve,reject){
+    if(num>5){
+      resolve()
+    }else{
+      throw new Error('出错了')
+    }
+  })
+}
+ajax(6).then(function(){
+  console.log('log',6)
+}).catch(function(err){
+  console.log('catch',err)
+})
+ajax(3).then(function(){
+  console.log('log',3)
+}).catch(function(err){
+  console.log('catch',err)
+})
+```
+### Promise高级用法
+#### Promise.all 
+- 所有参数的promise状态都改变后才会执行then。
+- 每个新闻的三张图片都加载完成后再放到页面上，用户体验更好，看不到闪
+```js
+function loadImg(src){
+  return new Promise((resolve,reject)=>{
+    let img=document.createElement('img');
+    img.src=src;
+    img.onload=function(){
+      resolve(img)
+    }
+    img.onerror=function(err){
+      reject(err)
+    }
+  })
+}
+
+function showImgs(imgs){
+  imgs.forEach(function(img){
+    document.body.appendChild(img);
+  })
+}
+Promise.all([
+  loadImg('http://i4.buimg.com/567571/df1ef0720bea6832.png'),
+  loadImg('http://i4.buimg.com/567571/2b07ee25b08930ba.png'),
+  loadImg('http://i4.buimg.com/567571/5eb8190d6b2a1c9c.png'),
+]).then(showImgs);
+```
+#### Promise.race
+- 多个实例中有一个状态改变就会执行then，其它的都不会响应了。
+- 有三张图片放在不同的位置，需要加载这个图片，但不知道三张哪个返回比较快，加载一个就可以。
+```js
+function loadImg(src){
+  return new Promise((resolve,reject)=>{
+    let img=document.createElement('img');
+    img.src=src;
+    img.onload=function(){
+      resolve(img)
+    }
+    img.onerror=function(err){
+      reject(err)
+    }
+  })
+}
+
+function showImgs(img){
+    document.body.appendChild(img);
+}
+Promise.race([
+  loadImg('http://i4.buimg.com/567571/df1ef0720bea6832.png'),
+  loadImg('http://i4.buimg.com/567571/2b07ee25b08930ba.png'),
+  loadImg('http://i4.buimg.com/567571/5eb8190d6b2a1c9c.png'),
+]).then(showImgs);
+```
+
+### promise a+ 规范
+- [promise a+ 规范](https://promisesaplus.com)
+- 所有人写的promise都要符合这个规范，方便使用 
 
 ### 应用
 - 加载图片
@@ -1204,6 +1320,7 @@ for (let item of iterable) {
   - Map(), Set(), WeakMap(), WeakSet()（比如new Map([['a',1],['b',2]])）
   - Promise.all()
   - Promise.race()
+  
 - 解构赋值
 - 扩展运算符
 - yield*

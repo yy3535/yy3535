@@ -1,8 +1,10 @@
-# JS-WEB-API
+# 【3. JS-WEB-API】
 [[toc]]
 
 ## DOM操作
 - DOM操作出来nodeList是类数组
+<mark-check id="Node"></mark-check>
+
 ### Node
 - 节点属性
     - nodeName
@@ -22,62 +24,107 @@
         - 其它:每个child node的textContent连接。
 - 节点关系
     - childNodes
+        - 返回包含指定节点的子节点的集合，该集合为即时更新的集合，NodeList,是个类数组
     - parentNode
+    - parentElement
     - firstChild
+        - 如果有一个子节点, childNode 是节点的第一个子节点的引用，否则为null。
     - lastChild
     - hasChildNodes
 - 方法
     - appendChild
+        - 将一个节点添加到指定父节点的子节点列表末尾。
     - removeChild
     - insertBefore
     - replaceChild
     - cloneNode
-
+    - contains
+        - Returns a Boolean value indicating whether a node is a descendant of a given node or not.
 ### Document
 - 继承自Node和EventTarget
 
 - DOM 树
     - DOM 树包含了像 `<body>` 、`<table>` 这样的元素，以及大量其他元素。
+<mark-check id="document"></mark-check>
+
 - Properties
-    - Document.body
-    - Document.doctype
     - Document.documentElement
         - 返回当前文档的直接子节点，一般是`<html>`元素
-    - Document.documentURI
-        - 返回当前温度的路径
-    - Document.forms
-        - 返回一个包含当前温度中所有表单元素`<form>`的列表
+    - Document.body
+        - 返回当前文档的 `<body>` 或 `<frameset>` 节点。
     - Document.head
         - 返回当前文档的`<head>`元素
+    - Document.title
+        - 获取和设置当前文档的标题
+    - Document.forms
+        - 返回一个包含当前文档中所有表单元素`<form>`的列表
+
+    - Document.domain
+        - 获取或设置当前文档的域名
+    - Document.doctype
+    - Document.location
+        - 返回当前文档的URI
+    - Document.documentURI
+        - 返回当前文档的路径
+    - Document.referrer
+        - 返回来源页面的URI
+    - Document.URL
+        - 以字符串形式返回文档的地址栏链接
 
     - Document.cookie
         - 返回一个使用分号分隔的cookie列表，或者设置（写入）一个cookie
-    - Document.domain
-        - 获取或设置当前文档的域名
-    - Document.location
-        - 返回当前文档的URI
+        - 以字符串的方式返回所有的 cookie，类型格式： cookie1=value; cookie2=value; cookie3=value;
+        ```js
+        document.cookie="username=John Doe; expires=Thu, 18 Dec 2043 12:00:00 GMT";
+        ```
+        ```js
+        function setCookie(cname,cvalue,exdays)
+        {
+            var d = new Date();
+            d.setTime(d.getTime()+(exdays*24*60*60*1000));
+            var expires = "expires="+d.toGMTString();
+            document.cookie = cname + "=" + cvalue + "; " + expires;
+        }
+        function getCookie(cname)
+        {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) 
+            {
+                var c = ca[i].trim();
+                if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
+        function checkCookie(){
+            var user=getCookie("username");
+            if (user!=""){
+                alert("欢迎 " + user + " 再次访问");
+            }
+            else {
+                user = prompt("请输入你的名字:","");
+                if (user!="" && user!=null){
+                    setCookie("username",user,30);
+                }
+            }
+        }
+        ```
     - Document.readyState
         - 返回当前文档的加载状态
-    - Document.referrer
-        - 返回来源页面的URI
-    - Document.title
-        - 获取和设置当前文档的标题
-    - Document.URL
-        - 以字符串形式返回文档的地址栏链接
-    
 - Methods
     - Document.createElement()
     - Document.getElementsByClassName()
     - Document.getElementsByTagName()
     - document.getElementById()
     - document.querySelector()
-    - document.querySelectorsAll()
-    - 
+    - document.querySelectorAll()
+    - Document.createDocumentFragment()
+        - 创建一个 new document fragment.
 
 - Events
-    - scroll
+    - <highlight-box>scroll</highlight-box>
     - visibilitychange
-    - wheel
+    - <highlight-box>wheel</highlight-box>
     - Animation events
         - animationend
     - Clipboard events
@@ -97,12 +144,12 @@
         - fullscreenchange
         - fullscreenerror
     - Keyboard events
-        - keydown
-        - keypress
-        - keyup
+        - <highlight-box>keydown</highlight-box>
+        - <highlight-box>keypress</highlight-box>
+        - <highlight-box>keyup</highlight-box>
     - Load & unload events
-        - DOMContentLoaded
-        - readystatechange
+        - <highlight-box>DOMContentLoaded</highlight-box>
+        - <highlight-box>readystatechange</highlight-box>
     - Pointer events
     - Selection events
         - selectionchange
@@ -118,6 +165,9 @@
         - transitionrun
         - transitionstart
 ### Element
+
+<mark-check id="element"></mark-check>
+
 - 继承自Node和EventTarget
     - nodeType:1
     - nodeName:标签名
@@ -128,52 +178,80 @@
     - id
     - name
     - className
-    - attributes
-    - children
     - classList
-
-    - firstElementChild
+    - attributes
+        - 返回该元素所有属性节点的一个实时集合。该集合是一个 NamedNodeMap 对象，不是一个数组，所以它没有 数组 的方法。attributes 是字符串形式的名/值对，每一对名/值对对应一个属性节点。(类数组，有length属性)。每个属性有name和value
+    - value
+        - 值
     - innerHTML
+    - innerText
+
+    - children
+        - 返回 一个Node的子elements ，是一个动态更新的 HTMLCollection。
+    - firstElementChild
     - lastElementChild
 
-    - clientHeight
-    - clientLeft
-    - clientTop
     - clientWidth
-    - scrollHeight
-    - scrollLeft
-    - scrollTop
-    - scrollWidth
+    - clientHeight
+    - clientTop
+    - clientLeft
     
+    - scrollWidth
+    - scrollHeight
+    - scrollTop
+        ![scrollTop](../../img/scrollTop.png)
+    - scrollLeft
+        ![scrollHeight](../../img/scrollHeight.png)
 - Methods
-    - append()
-    - getAttribute()
     - getElementsByClassName()
     - getElementsByTagName()
     - querySelector()
     - querySelectorAll()
+    - append()
+    - getAttribute()
+    - setAttribute()
+    - hasAttribute()
+    - hasAttributes()
     - scroll()
     - scrollTo()
-    - setAttribute()
+    - scrollBy()
+    - matches(selectorString)
+        - 返回true/false,元素是否符合选择器
+        - 参数为css选择器字符串
+    
 - Events
-    - blur
     - click
     - dbclick
+    - contextmenu
+    - mousedown
+    - mouseup
+    - mouseenter
+    - mouseleave
+    - mouseout
+    - mousemove
+    - mouseover
+
     - focus
     - focusin
     - focusout
+    - blur
+
+    - keyup
     - keydown
-    - mousedown
-    - mouseenter
-    - mousemove
-    - mouseout
-    - mouseover
-    - mouseup
-    - paste
-    - copy
+    - keypress
+
     - select
+    - copy
+    - paste
+    - fullscreenchange
+    - fullscreenerror
     - touchstart
     - touchcancel
+#### HTMLElement
+- Properties
+    - style
+        - 通过单独的样式属性（如elt.style.color = '...'）比用elt.style.cssText = '...' 或者 elt.setAttribute('style', '...')形式更加简便
+#### SVGElement
 
 ### EventTarget
 - Element,Document,Window以及XMLHttpRequest,AudioNode,AudioContext等继承了EventTarget
@@ -181,12 +259,15 @@
 - Constructor
     - EventTarget()
         - 创建一个EventTarget实例
+<mark-check id="eventtarge"></mark-check>
 - Methods
     - EventTarget.addEventListener()
     - EventTarget.removeEventListener()
     - EventTarget.dispatchEvent()
+
 ### Text
-- nodeType:3
+<mark-check id="text"></mark-check>
+- <highlight-box>nodeType:3</highlight-box>
 - nodeName:"#text"
 - nodeValue:节点所包含的文本
 - parentNode:一个Element
@@ -208,55 +289,26 @@
         - 从offset指定的位置将当前文本节点分成两个文本节点
     - substringData(offset,count)
         - 提取从offset指定的位置开始到offset+count为止处的字符串
-### DOM节点
-- 获取节点，以及获取节点的 Attribute 和 property 
-- 获取父节点 获取子节点
-- 新增节点，删除节点
-```js
- // 获取DOM节点
-var div1 = document.getElementById('div1')
- // 获取DOM节点的集合
-var divList = document.getElementsByTagName('div')
-var containerList = document.getElementsByClassName('.container')
-var pList = document.querySelectorAll('p')
-// property(改变 JS 对象)
-p.style.width
-p.className
-p.nodeName
-p.nodeType
-// Attibute (改变 html 的属性)
-p.getAttribute('style')
-p.setAttribute('style', 'font-size:30px;')
-// 创建节点
-var p1 = document.createElement('p')
-p1.innerHTML = 'this is p1'
-// 添加新节点
-div1.appendChild(p1) 
-// 移动已有节点
-div1.appendChild(p2)
-// 获取父节点
-var parent = div1.parentElement
-// 获取子节点
-var child = div1.childNodes
-// 删除节点
-var child = div1.childNodes
-div1.removeChild(child[0])
-// 是否包含
-div1.contains(div2)
-```
-### Element
-#### 方法
-- element.matches(selectorString)
-    - 返回true/false
-    - 参数为css选择器字符串
 
+### DocumentFragment
+<mark-check id="DocumentFragment"></mark-check>
+
+- <highlight-box>nodeType值为11</highlight-box>
+- nodeName值为"#document-fragment"
+- nodeValue值为null
+- parentNode值为null
+- 子节点可以是Element,Text等
+
+- 文档片段接口，表示一个没有父级文件的最小文档对象。
+- 被作为一个轻量版的 Document 使用，用于存储已排好版的或尚未打理好格式的XML片段。
+- 最大的区别是因为 DocumentFragment 不是真实DOM树的一部分，它的变化不会触发 DOM 树的（重新渲染) ，且不会导致性能等问题。
 
 ### DOM事件
 - DOM事件(DOM标准)的级别
     |级别|格式|
     |:---|:---|
     |DOM0|element.onclick=function(){}|
-    |DOM2 |element.addEventListener('click',function(){},false)(DOM1标准设立的时候没有事件相关的东西，所以直接是2)(默认false,冒泡阶段触发，true,捕获阶段触发。)|
+    |DOM2 |element.addEventListener('click',function(){},false)(DOM1标准设立的时候没有事件相关的东西，所以直接是2)(<highlight-box>默认false,冒泡阶段触发，true,捕获阶段触发。</highlight-box>)|
     |DOM3 |element.addEventListener('keyup',function(){},false)(事件类型较DOM2增加了很多)|
 - DOM事件模型
     - 冒泡(从下往上)
@@ -264,27 +316,22 @@ div1.contains(div2)
 - DOM事件流
     - 比如点击了左键，左键是怎么传到页面上，就叫事件流
     - 一个事件流分三个阶段：捕获阶段->目标阶段->冒泡阶段。事件通过捕获到达目标阶段，再从目标阶段冒泡上传到window对象
-- 具体流程
+<mark-check id="shijian"></mark-check>
+- 事件绑定具体流程
     - 事件捕获：window->document->html->body->...->目标元素
     - 冒泡流程：目标元素->...->boyd->html->document->window
-      - 如何拿html对象：document.documentElement
-      - 如何拿body：document.body
 
-- Event对象的常见应用
+- Event对象
     - 事件类型
         - CAPTURING-PHASE  当前事件阶段为捕获阶段
         - AT-TARGET   当前事件是目标阶段,在评估目标事件
         - BUBBLING-PHASE   当前的事件为冒泡阶段
-    - 目标
-        - 【重要】target 当前目标元素,事件委托中指子元素
-        - 【重要】currentTarget 当前绑定的元素，事件委托中指父级元素
+    <mark-check id="eventduixiang"></mark-check>
+    - Event属性
+        - <highlight-box>target</highlight-box> 当前目标元素,事件委托中指子元素
+        - <highlight-box>currentTarget</highlight-box> 当前绑定的元素，事件委托中指父级元素
 
-    - 事件行为
-        - 【重要】preventDefault() 阻止默认行为(比如阻止链接默认跳转行为)
-        - 【重要】stopPropagation() 阻止冒泡
-        - 【重要】stopImmediatePropagation() 优先级(绑定了ab两个事件，a事件中写了此函数，那么b就不会执行)
-
-    - 键盘事件
+    - <highlight-box>Event键盘属性</highlight-box>
         - altKey    
           - 返回当事件被触发时，"ALT" 是否被按下。
         - ctrlKey	
@@ -299,60 +346,50 @@ div1.contains(div2)
           - 返回当事件被触发时，哪个鼠标按钮被点击。
         - keyCode	
           - 返回onkeypress事件触发的键的值的字符代码，或者 onkeydown 或 onkeyup 事件的键的代码。
-    - 鼠标位置
+    - <highlight-box>Event鼠标位置属性</highlight-box>
         - clientX	返回当事件被触发时，鼠标指针的水平坐标。
         - clientY	返回当事件被触发时，鼠标指针的垂直坐标。
         - screenX	返回当某个事件被触发时，鼠标指针的水平坐标。
         - screenY	返回当某个事件被触发时，鼠标指针的垂直坐标。
+
+    - <highlight-box>Event方法</highlight-box>
+        - preventDefault() 阻止默认行为(比如阻止链接默认跳转行为)
+        - stopPropagation() 阻止捕获和冒泡阶段中当前事件的进一步传播。
+        - stopImmediatePropagation() 优先级(绑定了ab两个事件，a事件中写了此函数，那么b就不会执行)
     
-- 【重要】自定义事件
-  - Event
+<mark-check id="zidingyievent"></mark-check>
+- <highlight-box>自定义事件</highlight-box>
     ```js
-    // 声明自定义事件
+    // 声明
     var eve=new Event('custome');
-    ev.addEventListener('custome',function(){
-        console.log('custome');
-    })
-    // 触发自定义事件
+    ev.addEventListener('custome',function(){})
+    // 触发
     ev.dispatchEvent(eve);
     ```
-  - CustomEvent
-    - 多一个obj的参数，`new CustomEvent('custome',object)`
 
+<mark-check id="windowduixiang"></mark-check>
+- <highlight-box>window对象事件</highlight-box>
 
 |属性|	描述	|
 | :------| ------: | :------: |
-onabort|图像的加载被中断。|
-onbeforeunload|	该事件在即将离开页面（刷新或关闭）时触发|
-onerror	|在加载文档或图像时发生错误。|
-onhashchange|	该事件在当前 URL 的锚部分发生修改时触发。	 |
 onload	|一张页面或一幅图像完成加载。	|
+onbeforeunload|	该事件在即将离开页面（刷新或关闭）时触发|
+onunload|	用户退出页面。| 
 onpageshow|	该事件在用户访问页面时触发	|
 onpagehide|	该事件在用户离开当前网页跳转到另外一个页面时触发	|
+onerror	|在加载文档或图像时发生错误。|
+onabort|图像的加载被中断。|
+onhashchange|	该事件在当前 URL 的锚部分发生修改时触发。	 |
 onresize|	窗口或框架被重新调整大小。	|
 onscroll|	当文档被滚动时发生的事件。	|
-onunload|	用户退出页面。| 
 
-#### 事件绑定
-```javascript
-var btn = document.getElementById('btn1')
-btn.addEventListener('click', function (event) {
-    console.log('clicked')
-})
-```
-
-- 通用的事件绑定函数
-```js
-function bindEvent(elem, type, fn) {
-    elem.addEventListener(type, fn)
-}
-var a = document.getElementById('link1')
-bindEvent(a, 'click', function(e) {
-    e.preventDefault() // 阻止默认行为
-    alert('clicked')
-})
-```
-- IE 低版本是使用`attachEvent`来绑定事件的。
+- window对象方法
+    - setTimeout
+    ```js
+    var timeoutID = scope.setTimeout(function[, delay, param1, param2, ...]);// param1, ..., paramN 附加参数，一旦定时器到期，它们会作为参数传递给function 
+    var timeoutID = scope.setTimeout(function[, delay]); 
+    var timeoutID = scope.setTimeout(code[, delay]);
+    ```
 #### 事件冒泡
 ```html
 <body>
@@ -368,14 +405,11 @@ bindEvent(a, 'click', function(e) {
     </div>
 </body>
 ```
-
-对于以上 html 代码结构，点击`p1`时候进入激活状态，点击其他任何`p`都取消激活状态，如何实现？
-
 ```javascript
 var p1 = document.getElementById('p1')
 var body = document.body
 bindEvent(p1, 'click', function (e) {
-    e.stopPropatation() // 注释掉这一行，来体会事件冒泡
+    e.stopPropagation() // 注释掉这一行，来体会事件冒泡
     alert('激活')
 })
 bindEvent(body, 'click', function (e) {
@@ -383,18 +417,15 @@ bindEvent(body, 'click', function (e) {
 })
 ```
 
-如果我们在`p1` `div1` `body`中都绑定了事件，它是会根据 DOM 的结构，来冒泡从下到上挨个执行的。但是我们使用`e.stopPropatation()`就可以阻止冒泡。
-
-#### 事件代理
+#### 事件委托/代理
 - 使用
-  - e.target// 目标DOM节点
-  - e.target.nodeName=='A'// 目标DOM节点的节点名称(筛选a标签)
-  - e.target.className// 目标DOM节点的类名
-  - e.target.innerHTML// 目标DOM节点的内容
-  - e.target.innerText// 目标DOM节点的内容
-- 代理的优点
-  - 使代码简洁
-  - 减少浏览器的内存占用
+  - e.target // 目标DOM节点
+<mark-check id="shijiandaili"></mark-check>
+- <highlight-box>代理的优点</highlight-box>
+  - 利用事件冒泡的机制，只需要绑定一个父元素的事件，就可以监听所有子元素的事件并绑定。
+  - 解决了动态添加的元素绑定事件的问题
+  - 代码简洁，减少浏览器的内存占用
+<mark-check id="shijiandailidemo"></mark-check>
 ```html
 <!-- 例 -->
 <div id="div1">
@@ -444,34 +475,51 @@ bindEvent(div1, 'click', function (e) {
     console.log(a.innerHTML)
 })
 ```
+
 ## BOM操作
 - BOM（浏览器对象模型）
   - navigator
+  ```js
+    // navigator
+    var ua = navigator.userAgent
+    var isChrome = ua.indexOf('Chrome')
+    console.log(isChrome)
+  ```
   - screen
+    - screen.width
+    - screen.height
   - location
+    - href
+    - protocol
+        - 'http:' 'https:'
+    - pathname 
+        - '/learn/199'
+    - search
+    - hash
+        - onhashchange事件监听变化
   - history
-
-```javascript
-// navigator
-var ua = navigator.userAgent
-var isChrome = ua.indexOf('Chrome')
-console.log(isChrome)
-
-// screen
-console.log(screen.width)
-console.log(screen.height)
-
-// location
-console.log(location.href)
-console.log(location.protocol) // 'http:' 'https:'
-console.log(location.pathname) // '/learn/199'
-console.log(location.search)
-console.log(location.hash)
-
-// history
-history.back()
-history.forward()
-```
+    - back() // 跳到上一个路径
+    - forward()// 跳到下一个路径
+    - go(0) // 跳到某个路径（参数索引）
+    - length // 地址的数量
+    - pushState() // 放入一个新地址，并跳到新地址
+        
+        - data
+        - title
+        - url
+        ```js
+        history.pushState({name:'新路径'},'新路径','/newpath')
+        ```
+    - replaceState() // 替换当前的地址
+        ```js
+        history.replaceState({name:'新路径'},'新路径','/newpath')
+        ```
+    - state // push或者replace时传的状态
+        ```js
+        {
+            name:"新路径"
+        }
+        ```
 
 ### 如何检测浏览器的类型
 
@@ -490,9 +538,6 @@ console.log(location.pathname) // '/learn/199'
 console.log(location.search)
 console.log(location.hash)
 ```
-
-
-
 
 ## 解答
 
@@ -518,6 +563,7 @@ function bindEvent(elem, type, selector, fn) {
 }
 ```
 
+<mark-check id="view2"></mark-check>
 ### 对于一个无限下拉加载图片的页面，如何给每个图片绑定事件
 
 使用代理，优点
@@ -526,10 +572,10 @@ function bindEvent(elem, type, selector, fn) {
 - 减少浏览器的内存占用
 
 
+
 ## ajax
-
-### XMLHttpRequest
-
+<mark-check id="xmlhttprequest"></mark-check>
+### <highlight-box>XMLHttpRequest</highlight-box>
 ```javascript
 var xhr = new XMLHttpRequest()
 xhr.open("GET", "/api", false)
@@ -667,9 +713,9 @@ if(window.WebSocket){
 
 ### cookie、session
 - cookie缺点：
-  - 存储量太小，只有 4KB
-  - 所有 http 请求都带着，会影响获取资源的效率
-  - API 简单，需要封装才能用
+  ```js
+    document.cookie='a=1; b=2'
+  ```
   ```JS
   // cookie.js
     const cookie={
@@ -731,9 +777,13 @@ if(window.WebSocket){
   let sessionUser=sessionStorage.getItem('user')&&JSON.parse(sessionStorage.getItem('user'));
   ```
 #### cookie，sessionStorage 和 localStorage 的区别
-- 容量
-- 是否会携带到 ajax 中
-- API易用性
+
+- localStorage 5m 一直存 不能跨域 存储的地方是浏览器
+- sessionStorage 不关浏览器就存活
+- cookie  4k 每次请求时携带 一般做注册登录，存放不敏感信息（密码 账户不能存）不安全
+    - 不能跨域设置cookie，但可以一级域名和二级域名设置
+- session 比较安全 内容存放在服务端的(session 是基于cookie) 目前 注册登录 大致的流程 默认登录后 给你个标识 每次请求时 会自动带上cookie 可以通过session找到当前账户对应的内容
+    - 服务器内存中，重启后没了，会存放到数据库中
 
 ## jquery
 

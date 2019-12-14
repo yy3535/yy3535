@@ -1,4 +1,4 @@
-# 运行环境
+# 【5. 运行环境】
 [[toc]]
 ## HTTP协议
 
@@ -60,51 +60,68 @@ Content-Length: 122
 ＜/html＞
 ```
 - HTTP方法
-  - GET(获取资源)
-  - POST(传输资源)
-  - PUT(更新资源)
-  - DELETE(删除资源)
-  - HEAD(获得报文首部)
-- POST和GET的区别（记住三到四个）
-  - 【记】GET在浏览器回退时是无害的，而POST会再次提交请求
+  - get(获取资源)
+  - post(传输资源)
+  - put(更新资源)
+  - delete(删除资源)
+  - options(试探请求，跨域时会用到)
+  - head(获得报文首部)
+
+  - 前四个叫做resful风格
+  <mark-check id="post&get"></mark-check>
+- <highlight-box>POST和GET的区别</highlight-box>
+  - <underline-box>GET在浏览器回退时是无害的，而POST会再次提交请求</underline-box>
+  - <underline-box>GET请求会被浏览器主动缓存，而POST不可以</underline-box>
+  - <underline-box>GET请求参数会被完整保留在浏览器历史纪录里，而POST中的参数不会被保留</underline-box>
+  - <underline-box>GET请求在URL中传送的参数是有长度限制的，而POST没有限制</underline-box>
+    - 不同浏览器不一样，如果使用get请求，拼接的url不能太长，否则会被浏览器截断，http协议对长度有限制，所以太长发不出去，会截断
+  - <underline-box>对参数的数据类型，GET只接受ASCII字符，而POST没有限制</underline-box>
+  - <underline-box>GET参数通过URL传递，POST放在Request body中（了解）</underline-box>
   - GET产生的URL可以被收藏，而POST不可以(可不记)
-  - 【记】GET请求会被浏览器主动缓存，而POST不可以
   - GET请求只能进行url编码，而POST支持多种编码方式(可记可不记)
-  - 【记】GET请求参数会被完整保留在浏览器历史纪录里，而POST中的参数不会被保留
-  - 【记】GET请求在URL中传送的参数是有长度限制的，而POST没有限制
-    - 【记】不同浏览器不一样，如果使用get请求，拼接的url不能太长，否则会被浏览器截断，http协议对长度有限制，所以太长发不出去，会截断
-  - 【重要】对参数的数据类型，GET只接受ASCII字符，而POST没有限制
   - GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息(了解)
-  - 【记】GET参数通过URL传递，POST放在Request body中（了解）
 - HTTP状态码
-  - 记忆
-    - 1xx：指示信息-表示请求已接受，继续处理
-    - 2xx：成功-表示请求已被成功接收
-    - 3xx：重定向-要完成请求必须进行更进一步的操作
-    - 4xx：客户端错误-请求有语法错误或请求无法实现
-    - 5xx：服务端错误-服务器未能实现合法的请求
-  - 具体
-    - 200 OK：客户端请求成功
-    - 206 Partial Content：客户发送了一个带有Range头的GET请求，服务器完成了它(较多，audio,video标签，文件很大时会返回这个)
-    - 301 Moved Permanently：所请求的页面已经转移至新的url
-    - 302 Found：所请求的页面已经临时转移至新的url
-    - 304 Not Modified：客户端有缓冲的文档并发出了一个条件性的请求，服务器告诉客户，原来的缓冲问答那个还可以继续使用
-    - 400 Bad Request：客户端请求有语法错误，不能被服务器所理解
-    - 401 Unauthorized：请求未经授权，这个状态码必须和WWW-Authenticate报头域一起使用
-    - 403 Forbidden：对被请求页面的访问被禁止(较多，某页面的地址只能通过服务器来访问)
-    - 404 Not Found：请求资源不存在(较多，请求一个不存在的地址)
-    - 500 Internal Server Error：服务器发送不可预期的错误原来缓冲的文档还可以继续使用(一般服务端处理)
-    - 503 Server Unavailable：请求未完成，服务器临时过载或当机，一段时间后可能会恢复正常(一般服务端处理)
-- 什么是持久连接
-    - http普通模式是无连接无状态，但是可设置keep-alive模式支持持久链接，当出现对服务器的后继请求事，避免了建立或者重新建立连接。从http1.1版本开始才支持。
-- 什么是管线化
-  - 普通持久连接
-    - 请求1->响应1->请求2->响应2->请求3->响应3
-  - 管线化持久连接
-    - 【记】【原理】请求1->请求2->请求3->响应1->响应2->响应3(请求打包过去，响应打包发回来)
-    - 【记】管线化机制通过持久连接完成，http1.1才支持
-    - 【记】只有GET和HEAD请求可以管线化，而POST有所限制
-    - 【记】初次创建连接不应启动管线机制，因为对方服务器不一定支持http/1.1版本的协议
+
+  | 状态  | 含义    |      |
+  | ---- | ------------------------------ | ---- |
+  | 1XX  | Informational(信息性状态码)    |      |
+  | 2XX  | Success(成功状态码)            |      |
+  | 3XX  | Redirection(重定向)            |      |
+  | 4XX  | Client Error(客户端错误状态码) |      |
+  | 5XX  | Server Error(服务器错误状态吗) |      |
+
+  - 2XX 成功
+    - 200 OK 客户端发过来的数据被正常处理
+    - 204 Not Content 正常响应，没有实体
+    - 206 Partial Content 范围请求，返回部分数据，响应报文中由Content-Range指定实体内容(较多，audio,video标签，文件很大时会返回这个)
+    ```js
+    curl -v --header "Range:bytes=0-3" https://www.baidu.com/
+    ```
+  - 3XX 重定向
+    - 301 Moved Permanently：永久重定向(换域名)
+    - 302 Found：临时重定向，规范要求方法名不变，但是都会改变
+    - 303(See Other) 和302类似，但必须用GET方法
+    - 304 Not Modified：配合(If-Match、If-Modified-Since、If-None_Match、If-Range、If-Unmodified-Since)。客户端有缓冲的文档并发出了一个条件性的请求，服务器告诉客户，原来的缓冲文档还可以继续使用
+    - 307(Temporary Redirect) 临时重定向，不该改变请求方法
+  - 4XX 客户端错误
+    - 400 Bad Request：请求报文语法错误
+    - 401 Unauthorized：需要认证（没权限）
+    - 403 Forbidden：服务器拒绝访问对应的资源(较多，某页面的地址只能通过服务器来访问)
+    - 404 Not Found：服务器上无法找到资源
+  - 5XX 服务器端错误
+    - 500 Internal Server Error：服务器故障
+    - 503 Server Unavailable：服务器处于超负载或正在停机维护
+
+- <highlight-box>什么是持久连接</highlight-box>
+    - http普通模式是无连接无状态，但是<underline-box>可设置keep-alive模式支持持久链接</underline-box>，当出现对服务器的后继请求事，避免了建立或者重新建立连接。从http1.1版本开始才支持。
+- <highlight-box>什么是管线化</highlight-box>
+  - <underline-box>普通持久连接</underline-box>
+    - <underline-box>请求1->响应1->请求2->响应2->请求3->响应3</underline-box>
+  - <underline-box>管线化持久连接</underline-box>
+    - <underline-box>请求1->请求2->请求3->响应1->响应2->响应3(请求打包过去，响应打包发回来)</underline-box>
+    - <underline-box>管线化机制通过持久连接完成，http1.1才支持</underline-box>
+    - <underline-box>只有GET和HEAD请求可以管线化，而POST有所限制</underline-box>
+    - <underline-box>初次创建连接不应启动管线机制，因为对方服务器不一定支持http/1.1版本的协议</underline-box>
     - 管线化不会影响响应到来的顺序
     - http/1.1要求服务端支持管线化，但并不要求服务端对响应进行管线化处理，只要求对管线化的请求不失败即可
     - 因为以上服务端问题，开启管线化可能并不会大幅度提升性能，而且很多服务器和代理程序对管线化支持并不好，因此Chrome和Firefox默认并未开启管线化支持
@@ -113,6 +130,7 @@ Content-Length: 122
 
 ### 浏览器加载资源的过程
 
+<mark-check id="jiazaiziyuan"></mark-check>
 #### 加载资源的形式
 
 - 输入 url 加载 html
@@ -120,6 +138,7 @@ Content-Length: 122
 - 加载 html 中的静态资源
 - `<script src="/static/js/jquery.js"></script>`
 
+<mark-check id="url2html"></mark-check>
 #### 从输入url到得到html的过程
 
 - 浏览器根据 DNS 服务器得到域名的 IP 地址
@@ -127,6 +146,7 @@ Content-Length: 122
 - 服务器收到、处理并返回 http 请求
 - 浏览器得到返回内容
 
+<mark-check id="yemianxuanran"></mark-check>
 ### 浏览器渲染页面的过程
 
 - 根据 HTML 结构生成 DOM Tree
@@ -139,6 +159,7 @@ Content-Length: 122
 
 ### 为何要把 JS 放在 body 最后
 
+<mark-check id="onloadDomContentLoaded"></mark-check>
 ### `window.onload`和`DOMContentLoaded`区别
 
 ```js
@@ -150,26 +171,28 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 ```
 
+<mark-check id="xingnengyouhua"></mark-check>
 ## 性能优化
 - 原则
   - 多使用内存、缓存或者其他方法
   - 减少 CPU 计算、较少网络
 
-### 加载资源优化
+### <highlight-box>加载资源优化</highlight-box>
 
 - 静态资源的压缩合并（JS代码压缩合并、CSS代码压缩合并、雪碧图）
 - 静态资源缓存（资源名称加 MD5 戳）
 - 使用 CND 让资源加载更快
 - 使用 SSR 后端渲染，数据直接突出到 HTML 中
 
-### 渲染优化
+### <highlight-box>渲染优化</highlight-box>
 
 - CSS 放前面 JS 放后面
+- 尽早执行操作（`DOMContentLoaded`）
 - 懒加载（图片懒加载、下拉加载更多）
 - 减少DOM 查询，对 DOM 查询做缓存
 - 减少DOM 操作，多个操作尽量合并在一起执行（`DocumentFragment`）
 - 事件节流
-- 尽早执行操作（`DOMContentLoaded`）
+
 
 ### 详细解说
 
@@ -261,23 +284,44 @@ for(x = 0; x < 10; x++) {
 listNode.appendChild(frag);
 ```
 
-#### 事件节流
-
-例如要在文字改变时触发一个 change 事件，通过 keyup 来监听。使用节流。
-
+<mark-check id="fangdoujieliu"></mark-check>
+#### 防抖和节流
+- 要在文字改变时触发一个 change 事件，通过 keyup 来监听。
+- <highlight-box>防抖</highlight-box>
+  - <highlight-box>对于短时间内连续触发的事件（上面的滚动事件），防抖的含义就是让某个时间期限（如上面的1000毫秒）内，事件处理函数只执行一次。</highlight-box>
 ```js
 var textarea = document.getElementById('text')
 var timeoutId
 textarea.addEventListener('keyup', function () {
     if (timeoutId) {
-        clearTimeout(timeoutId)
+        clearTimeout(timeoutId)// 如果有连续动作，那取消执行。直到1s内没有第二次点击，才不会取消执行。
     }
     timeoutId = setTimeout(function () {
-        // 触发 change 事件
-    }, 100)
+        console.log('内容修改了')
+    }, 1000)
 })
 ```
 
+- <highlight-box>节流</highlight-box>
+  - <highlight-box>函数执行一次后，在某个时间段内暂时失效，过了这段时间后再重新激活（类似于技能冷却时间）。</highlight-box>
+```js
+var textarea = document.getElementById('text')
+var valid = true;// 事件功能有效
+textarea.addEventListener('keyup', function() {
+    if (!valid) {
+        return false;
+    }
+    valid = false;// 事件功能失效
+    timeoutId = setTimeout(function() {
+        console.log('内容修改了')
+        valid = true;// 事件功能有效
+    }, 1000)
+})
+```
+<mark-check id="fangdoujieliuyingyong"></mark-check>
+- 应用
+  - 搜索框input事件，例如要支持输入实时搜索可以使用节流方案（间隔一段时间就必须查询相关内容），或者实现输入间隔大于某个值（如500ms），就当做用户输入完成，然后开始搜索，具体使用哪种方案要看业务需求。
+  - 页面resize事件，常见于需要做页面适配的时候。需要根据最终呈现的页面情况进行dom渲染（这种情形一般是使用防抖，因为只需要判断最后一次的变化情况）
 #### 尽早执行操作
 
 ```js
@@ -337,22 +381,45 @@ document.addEventListener('DOMContentLoaded', function () {
       - DOS攻击：利用合理的客户端请求来占用过多的服务器资源，从而使合法用户无法得到服务器的响应
       - DDOS是在传统的DOS攻击上产生的一类攻击方式
     - ServerlimitDOS(当http header过长的时候，web server会产生一个400或者是4开头的错误，如果这些超长的数据保存在cookie中，能够让用户每次访问的时候造成http头超长，导致一些用户无法访问域名)
+  <mark-check id="xssfangyu"></mark-check>
   - 防御措施（让插入的js不可执行）
-    - 编码(转义)
-      - 对用户输入的数据进行HTML Entity编码，显示为转义字符
+    1. <highlight-box>转义</highlight-box>
+      - 对用户输入的数据进行HTML Entity转义，显示为转义字符
+      <absolute-box>两种转义字符的方式：<br/>1. 反斜杠加在特定的字符之前表示转义。<br/>2. 使用HTML Entity转义字符串</absolute-box>
 
-      |-|字符|十进制|转义字符|
-      |:---:|:---:|:---:|:---:|
+      | 转义字符 | 意义                                | ASCII码值（十进制） |
+      | -------- | ----------------------------------- | ------------------- |
+      | \a       | 响铃(BEL)                           | 007                 |
+      | \b       | 退格(BS) ，将当前位置移到前一列     | 008                 |
+      | \f       | 换页(FF)，将当前位置移到下页开头    | 012                 |
+      | \n       | 换行(LF) ，将当前位置移到下一行开头 | 010                 |
+      | \r       | 回车(CR) ，将当前位置移到本行开头   | 013                 |
+      | \t       | 水平制表(HT) （跳到下一个TAB位置）  | 009                 |
+      | \v       | 垂直制表(VT)                        | 011                 |
+      | \\       | 代表一个反斜线字符''\'              | 092                 |
+      | \'       | 代表一个单引号（撇号）字符          | 039                 |
+      | \"       | 代表一个双引号字符                  | 034                 |
+      | \?       | 代表一个问号                        | 063                 |
+      | \0       | 空字符(NUL)                         | 000                 |
+      | \ddd     | 1到3位八进制数所代表的任意字符      | 三位八进制          |
+      | \xhh     | 十六进制所代表的任意字符            | 十六进制            |
+
+      |字符|HTML实体编号|HTML实体名称|
+      |:---:|:---:|:---:|
       |     "      | \&#34;  | \&quot; |
       |     &      | \&#38;  | \&amp;  |
       |     <      | \&#60;  |  \&lt;  |
       |     >      | \&#62;  |  \&gt;  |
       | 不断开空格   | \&#160; | \&nbsp; |
 
-    - 过滤
+    :::tip
+    转义字符串(Escape Sequence)，即字符实体(Character Entity)分成三部分:第一部分是一个&符号，英文叫ampersand;第二部分是实体(Entity)名字或者是#加上实体(Entity)编号;第三部分是一个分号。
+    :::
+    
+    2. <highlight-box>过滤</highlight-box>
       - 移除用户上传的DOM属性，如onerror等
       - 移除用户上传的Style节点、Script节点、Iframe节点等。
-    - 矫正
+    3. <highlight-box>校正</highlight-box>
       - 避免直接对HTML Entity解码
       - 使用DOM Parse转换，矫正不配对的DOM标签
 
@@ -378,10 +445,12 @@ document.addEventListener('DOMContentLoaded', function () {
           HTMLParser(he.unescape(str,{strict:true}),{
             start:function(tag,attrs,unary){
               // 开始标签
-              // 过滤危险标签
+              // 【防xss】2. 过滤危险标签
+              // style标签可控制元素是否显示
+              // iframe通常用来插入广告（是跨域的）
               if(tag=='script'||tag=='style'||tag=='link'||tag=='iframe') return;
               results+='<'+tag;
-              // 过滤掉所有属性
+              // 【防xss】3. 所有属性都不添加，即去掉了onclick onerror等等
               // for(var i=0,len=attrs.length;i<len;i++){
               //   results+=" "+attrs[i].name+'="'+attrs[i].escaped+'"';
               // }
@@ -470,7 +539,7 @@ var router = express.Router();
 
 var comments={};
 
-// 字符转义，前端或者后端做都可以
+// 【防xss】1.字符转义，前端或者后端做都可以
 function html_encode(str){
   var s='';
   if(str.length==0) return "";

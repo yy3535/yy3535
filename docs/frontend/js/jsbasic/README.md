@@ -1,12 +1,13 @@
-# JS基础
+# 【2. JS基础】
 [[toc]]
 
 ## 变量
 ### 类型
+<mark-check id="zhi"></mark-check>
 - 值类型：string,boolean,number,undefined
-
+<mark-check id="yinyong"></mark-check>
 - 引用类型：object(date,RegExp),array,function,null（引用类型可以自由设置属性，除了null）
-
+<mark-check id="typeof"></mark-check>
 - `typeof`可以区分类型有`number` `string` `boolean` `undefined`（值类型） `function` `object`（引用类型）
 
 - js内置函数（数据封装类对象）
@@ -18,38 +19,213 @@
     - 唯一用`==`的地方：obj.a === null || obj.a === undefined ，简写形式obj.a == null
 ### 显示类型转换
 - Number函数
-  - **数值**：转换后还是原来的值
-  - **字符串**：如果可以被解析为数值，则转换为相应的数值，否则得到NaN.空字符串转为0
-  - **布尔值**：true转成1，false转成0
-  - **undefined**：转成NaN
-  - **null**：转成0
-  - **对象**：先调用自身的valueOf，不行再调用自身的toString，再不行就报错
-    - Object的valueOf返回对象本身，toString返回"[object Object]"的字符串
-    - Array的valueOf返回对象本身，toString返回调用join(',')所返回的字符串。
-    - Function的valueOf返回对象本身，toString返回函数中包含的代码转为字符串的值。
+  - **字符串**：
+    - 可解析数值:相应的数值
+    - 不可解析数值:NaN
+    - 空字符串:0
+  - **布尔值**：
+    - true:1
+    - false:0
+  - **undefined**：NaN
+  - **null**：0
+  <mark-check id="zhuanhuan"></mark-check>
+  - **对象**：
+    1. 调用valueOf()
+    2. 调用toString()
+    3. 报错
+    ```js
+    let obj={
+      [Symbol.toPrimitive](){
+        return 500
+      },
+      valueOf(){
+        return {}// 是原始数据类型，就返回结果
+      },
+      toString(){
+        return 200
+      }
+    }
+    console.log(true+obj);//从上往下依次调用
+    ```
+
 - Number等同于一元正号(+)
 ```js
-> +{} //相当于 Number({})
-NaN
++{} //相当于 Number({})==>NaN
 ```
 - String函数
-  - **数值**：转为相应的字符串
-  - **字符串**：转换后还是原来的值
-  - **布尔值**：true转成'true'，false转成'false'
-  - **undefined**：转成'undefined'
-  - **null**：转成'null'
-  - **对象**：先调用自身的toString，不行再调用自身的valueOf，再不行就报错
+  - **基本类型**：转成对应的字符串
+  <mark-check id="stringzhuanhuan"></mark-check>
+  - **对象**：
+    1. 调用toString()
+    2. 调用valueOf()
+    3. 报错
 - Boolean函数
-  - undefined/null/-0/+0/NaN/''(空字符串)==>false
-  - 其他一律为true
-
-
-
+  - `undefined` `null` `0` `NaN` `空字符串`:false
+  - 其他:true
+:::tip
+  - `obj` `arr` `func` `的valueOf()`: `obj` `arr` `func`
+  - `obj.toString()`:`"[object Object]"`
+  - `arr.toString()`:`arr.join(',')`
+  - `func.toString()`:`函数中包含的代码转为字符串的值`
+:::
 ### 隐式类型转换
+
+<mark-check id="yinshizhuanhuan"></mark-check>
+
+<mark-box>
+
   - 四则运算
     - **+**：只要其中一个是String类型，表达式的值转为String。若无字符串，表达式便转为Number类型
     - **其余**：只要其中一个是Number类型，表达式的值便转为Number。
     - **非法字符**：对于非法字符的情况通常会返回NaN
+
+</mark-box>
+
+
+1. 加号操作
+- 通过加号运算符进行运算
+  - 字符串与加号运算符组成字符串连接操作
+  - 非字符串与加号运算符组成算术运算操作（需要将对应项转换成Number类型后进行操作）
+  
+```js
+console.log(1 + undefined)
+console.log(1 + null)
+console.log(1 + true)
+console.log('hello' + 123)
+```
+
+```js
+NaN
+1
+2
+'hello123'
+```
+
+2. 字符串间的比较
+- 字符串的比较是从左到右按位进行，将对应位的字符转换成ASCII码的值进行大小比较。
+```js
+console.log('a' > 'b')
+console.log('abc' > 'abe')
+console.log('10' > '2')
+console.log('hello' > 'world')
+```
+```js
+console.log('10' > '2') // false
+// 等同于
+console.log('1'.charCodeAt()) // 49
+console.log('2'.charCodeAt()) // 50
+console.log('1'.charCodeAt() > '2'.charCodeAt()) // 49 > 50 
+```
+```js
+false
+false
+false
+false
+```
+
+3. 引用类型之间的比较
+  - 调用valueOf()进行比较
+    - 返回值是基本类型
+      - 转换成number类型进行比较
+    - 返回值不是基本类型
+      - 返回值的引用地址是一致：相等
+      - 返回值的引用地址是不一致：不相等
+<absolute-box>[] == ![]//true,先布尔转换，再number转换两边都为0</absolute-box>
+```js
+console.log([] == [])
+console.log([] == ![])
+console.log({} == {})
+```
+```js
+console.log([] == ![]) // 为什么[] == ![]会为true呢？
+// 等同于
+//第一步![]转成Boolean类型
+console.log([] == !Boolean([])) // [] == false
+// 第二步转成Number类型再进行关系运算
+console.log(Number([]) == Number(false)) // 0 == 0
+```
+```js
+false
+true
+false
+```
+
+4. 逻辑非以及其关系运算
+- 在JavaScript中逻辑非会调用Boolean转换，但是在关系运算过程中会将值转换成Number类型再进行比较。
+```js
+// 布尔值判断
+console.log(!![])
+console.log(!!{})
+console.log(!!'hello')
+console.log(!!123)
+console.log(!!-123)
+console.log(!!0)
+console.log(!!'')
+console.log(!!null)
+console.log(!!undefined)
+// 关系运算
+console.log(1 == true)
+console.log(1 > null)
+console.log(1 > undefined)
+```
+```js
+// 布尔值判断
+console.log(!![]) // true
+console.log(!!{}) // true
+console.log(!!'hello') // true
+console.log(!!123) // true
+console.log(!!-123) // true
+console.log(!!0) // false
+console.log(!!'') // false
+console.log(!!null) // false
+console.log(!!undefined) // false
+// 关系运算
+console.log(1 == true) // true
+console.log(1 > null) // true
+console.log(1 > undefined) // true
+```
+5. 浮点数相加
+- 这是一个浮点数计算精度问题，在JavaScript中只有一个数字类型number，而number使用的是IEEE 754双精度浮点格式。
+```js
+console.log(0.1 + 0.2)
+
+console.log(0.1 + 0.2) // 结果是 0.30000000000000004，而不是 0.3
+```
+
+6. 特殊情况
+- 主要是考查对JavaScript中原始值的理解。
+  - null特指对象的值未设置
+  - undefined指一个原始值自动分配给刚刚声明的变量或没有实际参数的形式参数
+  - NaN是（Not a Number）的缩写，当一个值不能被Number转换时返回NaN,NaN不等于任何值
+  - 0是原始值为0的数字
+  - ''是原始值为空的字符串
+```js
+console.log(null == undefined)
+console.log(null == 0)
+console.log(null == '')
+console.log(null == NaN)
+console.log(undefined == 0)
+console.log(undefined == '')
+console.log(undefined == NaN)
+console.log(NaN == 0)
+console.log(NaN == '')
+console.log(NaN == NaN)
+console.log(0 == '')
+```
+```js
+console.log(null == undefined) // true
+console.log(null == 0) // false
+console.log(null == '') // false
+console.log(null == NaN) // false
+console.log(undefined == 0) // false
+console.log(undefined == '') // false
+console.log(undefined == NaN) // false
+console.log(NaN == 0) // false
+console.log(NaN == '') // false
+console.log(NaN == NaN) // false
+console.log(0 == '') // true
+```
+
 ```js
 '1' * 'a'     // => NaN
 ```
@@ -74,6 +250,36 @@ true+true
 1+{a:1}
 // 1[object Object]
 ```
+
+#### == 和 ===
+- ==
+  - 两边值类型相同时，等同于===；
+  - 两边类型不同的时候，先进行类型转换，再比较。 
+- ===
+  - 不做类型转换，类型不同的一定不等。
+
+::: tip ===
+- 类型不同:[不相等] 
+- 数值，
+  - 没有NaN:相等
+  - 有一个是NaN:不相等
+-  字符串，每个位置的字符都一样，那么[相等]
+-  都是true或者false:相等
+-  都是null或者undefined:相等
+-  引用类型比较，进行“指针地址”比较，(都引用同一个对象或函数:[相等])
+:::
+
+::: tip ==
+-  如果两个值类型相同，和 === 一样
+-  如果两个值类型不同，转换成number再比较
+  -  null和undefined比较相等，null和undefined和其他如空字符串，false，0比较，都不等。 
+  -  字符串和数值比较，把字符串转换成数值再进行比较。 
+  -  任一是布尔值转成0/1再比较
+  -  对象和基本类型比较，把对象转换成基础类型的值再比较。对象转换成基础类型，利用它的toString或者valueOf方法。
+:::
+
+
+
 ### 二进制和八进制表示法[ES6]
 - 用前缀0b（或0B）和0o（或0O）表示。
   ```js
@@ -144,17 +350,6 @@ true+true
     2 ** 3 ** 2
     // 512
     ```
-#### 获取随机数，要求是长度一致的字符串格式
-
-使用`Math.random()`可获取字符串，但是返回的是一个小于 1 的小数，而且小数点后面长度不同
-
-```javascript
-var random = Math.random()
-var random = random + '0000000000'  // 后面加上 10 个零
-var random = random.slice(0, 10)
-console.log(random)
-```
-
 ### 运算符
 - 优先级
     - https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
@@ -223,8 +418,15 @@ var f2 = new Foo('lisi', 22)
 
 
 ### 原型链
-- 当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的`__proto__`（即它的构造函数的`prototype`）中寻找
-- 如果在`f.__proto__`中没有找到`toString`，那么就继续去`f.__proto__.__proto__`中寻找，因为`f.__proto__`是一个普通的对象。这样一直往上找，是一个链式的结构，叫做“原型链”。直到找到最上层`Object.prototype.__proto__ === null`都没有找到，返回`undefined`。
+
+<mark-check id="prototype"></mark-check>
+
+<mark-box>
+
+- 当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的`__proto__`（即它的构造函数的`prototype`）中寻找。如果在`f.__proto__`中没有找到`toString`，那么就继续去`f.__proto__.__proto__`中寻找，因为`f.__proto__`是一个普通的对象。这样一直往上找，是一个链式的结构，叫做“原型链”。直到找到最上层`Object.prototype.__proto__ === null`都没有找到，返回`undefined`。
+
+</mark-box>
+
 - 如何判断一个这个属性是不是对象本身的属性呢
     - 使用`hasOwnProperty`，常用在遍历对象的时候
 
@@ -273,6 +475,7 @@ $div.on('click', function() {
 ```
 
 - 构造函数继承
+<mark-check id="extend"></mark-check>
 ```js
 // 第一种，借助构造函数实现继承(这种无法继承parent原型对象上的方法)
 function Parent1(){
@@ -338,6 +541,7 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 - 函数中的变量提升：变量定义，函数声明，this，arguments
     - 一个函数在执行之前，也会创建一个**函数执行上下文**环境，跟**全局上下文**差不多，不过**函数执行上线文**中会多出`this` `arguments`和函数的参数。
 ### this
+<mark-check id="this"></mark-check>
 - this指向决定于在哪里执行，和在哪里定义无关
     - 全局中this指向window
     - 构造函数中
@@ -431,6 +635,7 @@ object.getName();  //My Object
     F2(f1)//100
     ```
 - 闭包的应用
+    <mark-check id="bibao1å"></mark-check>
     - 创造作用域，避免全局污染
     ```js
     function isFirstLoad() {
@@ -451,6 +656,7 @@ object.getName();  //My Object
     firstLoad(10) // false
     firstLoad(20) // true
     ```
+    <mark-check id="10span"></mark-check>
     - 创建 10 个 a 标签，点击的时候弹出来对应的序号
     ```javascript
     // 错误的写法
@@ -482,9 +688,91 @@ object.getName();  //My Object
     ```
     - `DocumentFragment`优化
 
+- 面试题
+案例一:
+```js
+functionaa(){
+  varb=10; return functioncc(){
+    b++; 
+    alert(b); 
+  }
+} 
+aa()();
+```
+还有子函数里为什么要写 return,?这是因为要在父函数外部调用 。看下面这段代码;
+```js
+function a(){ 
+  var i=0;
+  function b(){ 
+    alert(++i);
+  }
+  return b;//返回 b函数本身内容，不能写成 return b()这样直接执行了 
+}
+var c=a(); 
+c();
+```
+
+```js
+function aa(){ 
+  var b=10;
+  return function cc(){ 
+    b++;
+    alert(b);
+  } 
+}
+var dd=aa();
+
+dd();
+```
+
+```js
+function aa(){ 
+  var b=10;
+  (function cc(){ 
+    b++;
+    alert(b);
+  })(); 
+}
+alert(aa()); //结果:11,undefined
+```
+
+```js
+window.onload=function(){ 
+  var li=document.getElementsByTagName("li"); 
+  for(var i=0;i<li.length;i++){
+    li[i].onclick=(function(n){
+      return function(){ alert(n);}
+    })(i); 
+  }
+} 
+```js
+
+```html
+<ul>
+<li>1</li> <li>2</li> <li>3</li> <li>4</li> <li>5</li>
+</ul>
+```
+像 上面那些写法都是要么在里面加上括号，直接调用，要么在父函数外面执行。而这里却没 有?
+解释:上面的内部的函数被绑定到事件上了 父函数运行，然后把里面的函数返回了，然后返回给绑定的事件上
+
+这时代码就变成这样:
+li[i].onclick=function(){ alert(n);
+}
+这是我们常用的写法，很明显，这样就运行了子函数，就会弹出结果。
+这个闭包还有第二种写法:
+```jss
+window.onload=function(){ varli=document.getElementsByTagName("li"); for(vari=0;i<li.length;i++){
+(function(n){ li[i].onclick=function(){
+alert(n); }
+})(i);
+} }
+```
+因为要用到循环里的变量，所以用一个闭包把下面的代码包起来，并传给一个形 参 n,调用时传实参 i,这个 i就是 for循环里的 i。
+
 ## 异步
 
 ### 什么是异步
+<mark-check id="yibu"></mark-check>
 异步的场景
 - 定时 `setTimeout` `setInverval`
 - 网络请求，如 `ajax` `<img>`加载（常用语打点统计）
@@ -622,12 +910,18 @@ console.log(5)
 | 符号 | 含义                                                           |
 | :--- | :------------------------------------------------------------- |
 | .    | 匹配除\n换行符外的任何单字符。匹配包括\n在内的所有字符，使用`(. | \n)` |
+| \    | 在非特殊字符之前的反斜杠表示下一个字符是特殊字符，不能按照字面理解。在特殊字符之前的反斜杠表示下一个字符不是特殊字符，应该按照字面理解。 |
 | \d   | 数字字符:[0-9]                                                 |
 | \D   | 非数字字符:[^0-9]                                              |
 | \s   | 空白字符（空格和换行符）:[\f\n\r\t\v]                          |
 | \S   | 非空白字符:[^\s]                                               |
 | \w   | 单词字符:[a-zA-Z_0-9]                                          |
 | \W   | 非单词字符:[^\w]                                               |
+| \f   | 匹配一个换页符                                                  |
+| \n   | 匹配一个换行符                                                  |
+| \r   | 匹配一个回车符                                                  |
+| \t   | 匹配一个水平制表符                                               |
+| \v   | 匹配一个垂直制表符                                               |
 
 ### 量词
 - 允许指定匹配出现的次数,以下为贪婪模式：
@@ -692,7 +986,7 @@ console.log(5)
     one  // foo
     two  // bar
     ```
-    - 利用具名组替换（使用$<组名>引用具名组。）
+    - 利用具名组替换（使用`$<组名>`引用具名组。）
       - 第二个参数是字符串
         ```js
         let re = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u;
@@ -749,6 +1043,16 @@ industr(y|ies)
 industr(?:y|ies)
 ```
 #### 零宽度断言
+- 后顾js不支持
+
+|表达式	| 含义 |
+| ------- | ---------------------------------- |
+|(?=pattern) |	正向肯定查找(前瞻),后面必须跟着什么|
+|(?!pattern) |	正向否定查找(前瞻)，后面不能跟着什么|
+|(?<=pattern)	| 反向肯定条件查找(后顾),不捕获|
+|(?<!pattern) |	反向否定条件查找（后顾）|
+
+
 | 表达式  | 含义                               | 添加时间 |
 | ------- | ---------------------------------- | -------- |
 | x(?=y)  | 先行断言，仅匹配被y跟随的x。       |          |
@@ -778,7 +1082,7 @@ industr(?:y|ies)
 #### 边界匹配器
 | 表达式 | 含义             |
 | ------ | ---------------- |
-| ^      | 行首             |
+| ^      | 行首 (中括号外面表示开头，中括号里面表示取反)            |
 | $      | 行尾             |
 | \b     | 匹配一个单词边界 |
 | \B     | 匹配非单词边界   |
@@ -828,14 +1132,24 @@ thank you all the same
 /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([?=&\/\w \.-]*)*\/?$/
 <!-- 修改加上?=&后可匹配带参数url -->
 ```
+<mark-check id="date"></mark-check>
 ## 内置对象-日期函数
-
-日期函数最常用的 API 如下
-
-```javascript
-Date.now()  // 获取当前时间毫秒数
+```js
+// 没有参数,表示实例化时刻的日期和时间
+new Date();
+// Unix时间戳,它是一个整数值，表示自1970年1月1日00:00:00 UTC（the Unix epoch）以来的毫秒数
+new Date(value);
+// 时间戳字符串,该字符串应该能被 Date.parse() 正确方法识别
+new Date(dateString);
+// 分别提供日期与时间的每一个成员,没有提供的成员将使用最小可能值（对日期为1，其他为0）。
+new Date(year, monthIndex [, day [, hours [, minutes [, seconds [, milliseconds]]]]]);
+```
+<mark-check id="date2"></mark-check>
+```js
+Date.now()  // 返回自 1970-1-1 00:00:00  UTC（世界标准时间）至今所经过的毫秒数。
 var dt = new Date()
-dt.getTime()  // 获取毫秒数
+
+dt.getTime()  // 返回从1970-1-1 00:00:00 UTC（协调世界时）到该日期经过的毫秒数，
 dt.getFullYear()  // 年
 dt.getMonth()  // 月（0 - 11）
 dt.getDate()  // 日（0 - 31）
@@ -843,23 +1157,13 @@ dt.getHours()  // 小时（0 - 23）
 dt.getMinutes()  // 分钟（0 - 59）
 dt.getSeconds()  // 秒（0 - 59）
 
-dt.setDate()
-// 根据本地时间为指定的日期对象设置月份中的第几天。
-dt.setFullYear()
-// 根据本地时间为指定日期对象设置完整年份（四位数年份是四个数字）。
-dt.setHours()
-// 根据本地时间为指定日期对象设置小时数。
-dt.setMilliseconds()
-// 根据本地时间为指定日期对象设置毫秒数。
-dt.setMinutes()
-// 根据本地时间为指定日期对象设置分钟数。
-dt.setMonth()
-// 根据本地时间为指定日期对象设置月份。
-dt.setSeconds()
-// 根据本地时间为指定日期对象设置秒数。
-dt.setTime()
-// 通过指定从 1970-1-1 00:00:00 UTC 开始经过的毫秒数来设置日期对象的时间，对于早于 1970-1-1 00:00:00 UTC的时间可使用负值。
-
+dt.setTime()// 通过指定从 1970-1-1 00:00:00 UTC 开始经过的毫秒数来设置日期对象的时间，
+dt.setFullYear()// 设置完整年份（四位数年份是四个数字）。
+dt.setMonth()// 设置月份。
+dt.setDate()// 设置月份中的第几天。
+dt.setHours()// 设置小时数。
+dt.setMinutes()// 设置分钟数。
+dt.setSeconds()// 设置秒数。
 ```
 - 获取`2017-06-10`格式的日期
 ```javascript
@@ -887,29 +1191,33 @@ console.log(formatDate)
 ```
 
 ## 内置对象-数组常用 API
-
+<mark-check id="arrayApi"></mark-check>
 | 功能       |                                      API |                 es6 |
 | :--------- | ---------------------------------------: | ------------------: |
 | 合并、切割 |                        concat,join,slice |                     |
 | 添加       |               unshift(从头),push(从末尾) |                     |
 | 删除       |                  shift(从头),pop(从末尾) |                     |
-| 删除并添加 |                                   splice |         copy​Within |
+| 删除并添加 |                                   splice |         copy​Within,fill |
 | 排序       |                             sort,reverse |                     |
 | 遍历       |                       map,forEach,reduce | entries,keys,values |
 | 筛选       |                        filter,every,some |                     |
-| 查找       |                     indexOf,last​IndexOf |     find,find​Index |
-| 转换       | toString,toLocaleString,toSource,ValueOf |                     |
+| 查找       |                     indexOf,last​IndexOf |     find,find​Index,includes |
+| 拉平       | flat,flatMap |                     |
 | 自带       |                           Array​.isArray | Array.from,Array.of |
 
 
 
+
 ### 数组自带方法
+<mark-check id="isarray"></mark-check>
 - Array​.isArray()
 #### ES6新增
+<mark-check id="from"></mark-check>
 - Array​.from(object, mapFunction, thisValue)
   - 将非数组转为数组（`拥有 length 属性的对象（类数组对象）`和`可迭代的对象`）。
   - 第二个参数(类似map方法),用来对每个元素进行处理，将处理后的值放入返回的数组。
   - 第三个参数，用来绑定map方法中用到的this。
+<mark-check id="of"></mark-check>
 - Array.of()
   - 替代Array()或new Array()
   - Array()
@@ -923,28 +1231,37 @@ console.log(formatDate)
 ### 实例方法
 #### ES5
 :::warning 合并、切割
+<mark-check id="concat"></mark-check>
 - Array​.prototype​.concat(arrayX,arrayX,......,arrayX)
   - 返回被连接数组的一个副本。
   - 不改变现有的数组
+  <mark-check id="join"></mark-check>
 - Array​.prototype​.join()
+<mark-check id="slice"></mark-check>
 - Array​.prototype​.slice(start,end)
   - 返回选定的元素。
   - 包前不包后
   - start负数指倒数开始，end不指定就是到最后
 :::
 :::warning 添加
+<mark-check id="unshift"></mark-check>
 - Array​.prototype​.unshift()
+<mark-check id="push"></mark-check>
 - Array​.prototype​.push(newelement1,newelement2,....,newelementX)
 :::
 :::warning 删除
+<mark-check id="shift"></mark-check>
 - Array​.prototype​.shift()
+<mark-check id="pop"></mark-check>
 - Array​.prototype​.pop()
 :::
 :::warning 删除并添加
+<mark-check id="splice"></mark-check>
 - Array​.prototype​.splice(index,howmany,item1,.....,itemX)
   - 返回被删除的元素的数组。
 :::
 :::warning 排序
+<mark-check id="sort"></mark-check>
 - Array​.prototype​.sort()
   - 默认从小到大arr.sort()
     ```js
@@ -955,9 +1272,13 @@ console.log(formatDate)
             // return b - a
         })
     ```
+<mark-check id="reverse"></mark-check>
 - Array​.prototype​.reverse()
 :::
 :::warning 遍历
+
+<mark-check id="map"></mark-check>
+
 - Array​.prototype​.map(function(currentValue,index,arr){},this.Value)
   - 对数组每个元素进行操作，创建一个新数组
     ```js
@@ -965,174 +1286,211 @@ console.log(formatDate)
         return '<b>' + item + '</b>'
     })
      ```
+
+<mark-check id="foreach"></mark-check>
+
 - Array​.prototype​.for​Each(function (item, index) {})
   - 遍历数组的所有元素
+
+<mark-check id="reduce"></mark-check>
+
 - Array​.prototype​.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
   - 对数组中的每个元素执行一个由您提供的reducer函数(升序执行)，将其结果汇总为单个返回值。
   - 第一个函数返回总值和每一项的计算，对数组进行计算后得到结果
-    ```js
-    // 数组里所有值得和
-    var sum = [0, 1, 2, 3].reduce(function (accumulator, currentValue) {
-        return accumulator + currentValue;
-    }, 0);
-    // 和为 6
-    var total = [ 0, 1, 2, 3 ].reduce(
-        ( acc, cur ) => acc + cur,
-        0
-    );
-    ```
-    ```js
-    // 累加对象数组里的值
-    var initialValue = 0;
-    var sum = [{x: 1}, {x:2}, {x:3}].reduce(
-        (accumulator, currentValue) => accumulator + currentValue.x
-        ,initialValue
-    );
+  - 第二个参数是第一次调用callback函数时的第一个参数的值。 如果没有提供初始值，则将使用数组中的第一个元素。 在没有初始值的空数组上调用 reduce 将报错。
 
-    console.log(sum) // logs 6
-    ```
-    ```js
-    // 将二维数组转化为一维
-    var flattened = [[0, 1], [2, 3], [4, 5]].reduce(
-        ( acc, cur ) => acc.concat(cur),
-        []
-    );
-    ```
-    ```js
-    // 计算数组中每个元素出现的次数
-    var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+<mark-check id="qiuhe"></mark-check>
 
-    var countedNames = names.reduce(function (allNames, name) { 
-    if (name in allNames) {
-        allNames[name]++;
+```js
+// 数组里所有值得和
+var sum = [0, 1, 2, 3].reduce(function (accumulator, currentValue) {
+    return accumulator + currentValue;
+}, 0);
+// 和为 6
+var total = [ 0, 1, 2, 3 ].reduce(
+    ( acc, cur ) => acc + cur,
+    0
+);
+```
+
+<mark-check id="leijia"></mark-check>
+
+```js
+// 累加对象数组里的值
+var initialValue = 0;
+var sum = [{x: 1}, {x:2}, {x:3}].reduce(
+    (accumulator, currentValue) => accumulator + currentValue.x
+    ,initialValue
+);
+console.log(sum) // logs 6
+```
+
+<mark-check id="erwei2yiwei"></mark-check>
+
+```js
+// 将二维数组转化为一维
+var flattened = [[0, 1], [2, 3], [4, 5]].reduce(
+    ( acc, cur ) => acc.concat(cur),
+    []
+);
+```
+
+<mark-check id="cishu"></mark-check>
+
+```js
+// 计算数组中每个元素出现的次数
+var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+
+var countedNames = names.reduce(function (allNames, name) { 
+if (name in allNames) {
+    allNames[name]++;
+}
+else {
+    allNames[name] = 1;
+}
+return allNames;
+}, {});
+// countedNames is:
+// { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
+```
+
+<absolute-box><strong>判断对象是否包含一个属性，两种方法：</strong><br/>1. object[key]<br/>2. key in object<br/></absolute-box>
+
+<mark-check id="fenlei"></mark-check>
+
+```js
+// 按属性对object分类
+var people = [
+    { name: 'Alice', age: 21 },
+    { name: 'Max', age: 20 },
+    { name: 'Jane', age: 20 }
+];
+
+function groupBy(objectArray, property) {
+return objectArray.reduce(function (acc, obj) {
+    var key = obj[property];
+    if (!acc[key]) {
+    acc[key] = [];
     }
-    else {
-        allNames[name] = 1;
+    acc[key].push(obj);
+    return acc;
+}, {});
+}
+
+var groupedPeople = groupBy(people, 'age');
+// groupedPeople is:
+// { 
+//   20: [
+//     { name: 'Max', age: 20 }, 
+//     { name: 'Jane', age: 20 }
+//   ], 
+//   21: [{ name: 'Alice', age: 21 }] 
+// }
+```
+
+<absolute-box>合并数组：<br/>1. [...arr1,...arr2]<br/>2. arr1.concat(arr2,arr3,...arrn);</absolute-box>
+
+<mark-check id="listofbooks"></mark-check>
+
+```js
+// 使用扩展运算符和initialValue绑定包含在对象数组中的数组
+
+// friends - 对象数组
+// where object field "books" - list of favorite books 
+var friends = [{
+name: 'Anna',
+books: ['Bible', 'Harry Potter'],
+age: 21
+}, {
+name: 'Bob',
+books: ['War and peace', 'Romeo and Juliet'],
+age: 26
+}, {
+name: 'Alice',
+books: ['The Lord of the Rings', 'The Shining'],
+age: 18
+}];
+
+// allbooks - list which will contain all friends' books +  
+// additional list contained in initialValue
+var allbooks = friends.reduce(function(prev, curr) {
+return [...prev, ...curr.books];
+}, ['Alphabet']);
+
+// allbooks = [
+//   'Alphabet', 'Bible', 'Harry Potter', 'War and peace', 
+//   'Romeo and Juliet', 'The Lord of the Rings',
+//   'The Shining'
+// ]
+```
+
+<mark-check id="checkQuchong"></mark-check>
+
+```js
+// 数组去重
+let arr = [1,2,1,2,3,5,4,5,3,4,4,4,4];
+let result = arr.sort().reduce((init, current) => {
+    if(init.length === 0 || init[init.length-1] !== current) {
+        init.push(current);
     }
-    return allNames;
-    }, {});
-    // countedNames is:
-    // { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
-    ```
-    ```js
-    // 按属性对object分类
-    var people = [
-        { name: 'Alice', age: 21 },
-        { name: 'Max', age: 20 },
-        { name: 'Jane', age: 20 }
-    ];
+    return init;
+}, []);
+console.log(result); //[1,2,3,4,5]
+```
 
-    function groupBy(objectArray, property) {
-    return objectArray.reduce(function (acc, obj) {
-        var key = obj[property];
-        if (!acc[key]) {
-        acc[key] = [];
-        }
-        acc[key].push(obj);
-        return acc;
-    }, {});
-    }
+<mark-check id="yunxingPromise"></mark-check>
 
-    var groupedPeople = groupBy(people, 'age');
-    // groupedPeople is:
-    // { 
-    //   20: [
-    //     { name: 'Max', age: 20 }, 
-    //     { name: 'Jane', age: 20 }
-    //   ], 
-    //   21: [{ name: 'Alice', age: 21 }] 
-    // }
-    ```
-    ```js
-    // 使用扩展运算符和initialValue绑定包含在对象数组中的数组
+```js
+// 按顺序运行Promise
+/**
+ * Runs promises from array of functions that can return promises
+* in chained manner
+*
+* @param {array} arr - promise arr
+* @return {Object} promise object
+*/
+function runPromiseInSequence(arr, input) {
+return arr.reduce(
+    (promiseChain, currentFunction) => promiseChain.then(currentFunction),
+    Promise.resolve(input)
+);
+}
 
-    // friends - 对象数组
-    // where object field "books" - list of favorite books 
-    var friends = [{
-    name: 'Anna',
-    books: ['Bible', 'Harry Potter'],
-    age: 21
-    }, {
-    name: 'Bob',
-    books: ['War and peace', 'Romeo and Juliet'],
-    age: 26
-    }, {
-    name: 'Alice',
-    books: ['The Lord of the Rings', 'The Shining'],
-    age: 18
-    }];
+// promise function 1
+function p1(a) {
+return new Promise((resolve, reject) => {
+    resolve(a * 5);
+});
+}
 
-    // allbooks - list which will contain all friends' books +  
-    // additional list contained in initialValue
-    var allbooks = friends.reduce(function(prev, curr) {
-    return [...prev, ...curr.books];
-    }, ['Alphabet']);
+// promise function 2
+function p2(a) {
+return new Promise((resolve, reject) => {
+    resolve(a * 2);
+});
+}
 
-    // allbooks = [
-    //   'Alphabet', 'Bible', 'Harry Potter', 'War and peace', 
-    //   'Romeo and Juliet', 'The Lord of the Rings',
-    //   'The Shining'
-    // ]
-    ```
-    ```js
-    // 数组去重
-    let arr = [1,2,1,2,3,5,4,5,3,4,4,4,4];
-    let result = arr.sort().reduce((init, current) => {
-        if(init.length === 0 || init[init.length-1] !== current) {
-            init.push(current);
-        }
-        return init;
-    }, []);
-    console.log(result); //[1,2,3,4,5]
-    ```
-    ```js
-    // 按顺序运行Promise
-    /**
-     * Runs promises from array of functions that can return promises
-    * in chained manner
-    *
-    * @param {array} arr - promise arr
-    * @return {Object} promise object
-    */
-    function runPromiseInSequence(arr, input) {
-    return arr.reduce(
-        (promiseChain, currentFunction) => promiseChain.then(currentFunction),
-        Promise.resolve(input)
-    );
-    }
+// function 3  - will be wrapped in a resolved promise by .then()
+function f3(a) {
+return a * 3;
+}
 
-    // promise function 1
-    function p1(a) {
-    return new Promise((resolve, reject) => {
-        resolve(a * 5);
-    });
-    }
+// promise function 4
+function p4(a) {
+return new Promise((resolve, reject) => {
+    resolve(a * 4);
+});
+}
 
-    // promise function 2
-    function p2(a) {
-    return new Promise((resolve, reject) => {
-        resolve(a * 2);
-    });
-    }
-
-    // function 3  - will be wrapped in a resolved promise by .then()
-    function f3(a) {
-    return a * 3;
-    }
-
-    // promise function 4
-    function p4(a) {
-    return new Promise((resolve, reject) => {
-        resolve(a * 4);
-    });
-    }
-
-    const promiseArr = [p1, p2, f3, p4];
-    runPromiseInSequence(promiseArr, 10)
-    .then(console.log);   // 1200
-    ```
+const promiseArr = [p1, p2, f3, p4];
+runPromiseInSequence(promiseArr, 10)
+.then(console.log);   // 1200
+```
 - Array​.prototype​.reduce​Right()
 :::
+
+<mark-check id="shaixuan"></mark-check>
+
 :::warning 筛选
 - Array​.prototype​.filter(function(currentValue,index,arr){},this.Value)
   - 第一个函数返回筛选条件，筛选符合条件的元素
@@ -1171,6 +1529,7 @@ console.log(formatDate)
 :::
 
 #### ES6新增
+<mark-check id="copyWithin"></mark-check>
 - Array​.prototype​.copy​Within(target, start = 0, end = this.length)
   - 在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。
   - 会修改当前数组
@@ -1178,6 +1537,7 @@ console.log(formatDate)
   [1, 2, 3, 4, 5].copyWithin(0, 3)
   // [4, 5, 3, 4, 5]
   ```
+<mark-check id="find"></mark-check>
 - Array​.prototype​.find()
   - 第一个参数是一个回调函数，所有数组成员依次执行该回调函数，
   - 找出第一个返回值为true的成员，返回该成员。没有符合条件的，返回undefined。
@@ -1187,6 +1547,7 @@ console.log(formatDate)
         return value > 9;
     }) // 10
     ```
+<mark-check id="findIndex"></mark-check>
 - Array​.prototype​.find​Index()
   - 第一个参数是一个回调函数，所有数组成员依次执行该回调函数，
   - 返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1。
@@ -1196,10 +1557,12 @@ console.log(formatDate)
         return value > 9;
         }) // 2
     ```
+<mark-check id="indexOfqubie"></mark-check>
     :::tip 和indexOf区别
         - indexOf:找不到NaN
         - find,findIndex:可以借助Object.is方法找到。
     :::
+<mark-check id="fill"></mark-check>
 - Array​.prototype​.fill(value, start, end)
   - 使用给定值，填充一个数组。
   - start：填充起始位置，可以省略。end：填充结束位置，可以省略，实际结束位置是end-1。
@@ -1207,6 +1570,7 @@ console.log(formatDate)
     let a1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     a1.fill(7) // 7,7,7,7,7,7,7,7,7,7,7
     ```
+<mark-check id="entries"></mark-check>
 - Array​.prototype​.entries()
   - 键值对遍历
   - 返回一个遍历器对象,可以用for...of循环进行遍历
@@ -1231,6 +1595,7 @@ console.log(formatDate)
     console.log(elem);
   }
   ```
+<mark-check id="includes"></mark-check>
 - Array​.prototype​.includes()
   - 返回某个数组是否包含给定的值
   - 第二个参数为负数，则表示倒数的位置
@@ -1238,6 +1603,7 @@ console.log(formatDate)
   - indexOf:-1不直观，NaN误判
   - includes：直观，NaN准确判断
   :::
+<mark-check id="flat"></mark-check>
 - Array​.prototype​.flat()
   - 返回一个新数组，将嵌套的数组“拉平”，变成一维的数组
   - 第一个参数是整数，表示想要拉平的层数，默认为1。(Infinity表示不管多少层都拉平)
@@ -1258,8 +1624,10 @@ console.log(formatDate)
   // [[2], [4], [6], [8]]
   ```
 
+
 ### 扩展运算符（数组）[ES6]
 - 三个点（...）,将一个数组转为用逗号分隔的参数序列。
+<mark-check id="..."></mark-check>
 ```js
 console.log(...[1, 2, 3])
 // 1 2 3
@@ -1272,6 +1640,10 @@ function push(array, ...items) {
 - 只有函数调用时，扩展运算符才可以放在圆括号中，否则会报错。
 - 替代函数的 apply 方法
   - 由于扩展运算符可以展开数组，所以不再需要apply方法，将数组转为函数的参数了。
+  <mark-check id="zhankai"></mark-check>
+
+    <absolute-box>利用函数apply调用时,参数是数组，调用后转为函数参数序列的特点</absolute-box>
+
     ```js
     // ES5 的写法
     Math.max.apply(null, [14, 3, 77])
@@ -1283,6 +1655,7 @@ function push(array, ...items) {
     Math.max(14, 3, 77);
     ```
 - 数组的扩展运算符应用
+    <mark-check id="fuzhishuzu"></mark-check>
   - 复制数组（浅拷贝）
     ```js
     // 写法一
@@ -1290,6 +1663,7 @@ function push(array, ...items) {
     // 写法二
     const [...a2] = a1;
     ```
+<mark-check id="hebingshuzu"></mark-check>
   - 合并数组（浅拷贝）
     ```js
     // ES5 的合并数组
@@ -1306,6 +1680,7 @@ function push(array, ...items) {
     // [ "h", "e", "l", "l", "o" ]
     ```
   - 将任意有Iterator接口的对象转为数组（如node节点集合,set map集合等）
+  <mark-check id="kuozhanhefromqubie"></mark-check>
     :::tip
     - 扩展运算符：转有`可迭代的对象`为数组
     - Array.from：转`拥有 length 属性的对象（类数组对象）`和`可迭代的对象`为数组
@@ -1313,43 +1688,20 @@ function push(array, ...items) {
 
 ### 将空位转为undefined[ES6]
 - ES6 明确将空位转为undefined。
+<mark-check id="stringapi"></mark-check>
 ## 内置对象-字符串常用 API
 
 | 功能       |                                  ES5 API |                                                                        ES6 API |
 | :--------- | ---------------------------------------: | -----------------------------------------------------------------------------: |
-| 查找       |              indexOf,lastIndexOf,charAt, |                  String.fromCodePoint,codePointAt,includes,startsWith,endsWith |
-| 合并，切割 | concat,slice[),subString[),subStr,splite |                                                                                |
+| 查找       |              indexOf,lastIndexOf,charAt, |                  includes,startsWith,endsWith |
+| 合并，切割 | concat,splite,slice[),subString[),subStr |                                                                                |
 | 匹配       |                     match,replace,search |                                                                       matchAll |
-| 格式化     |      toLowerCase,toUpperCase,trim,repeat | String.fromCodePoint, String.raw,codePointAt,padStart,padEnd,trimStart,trimEnd |
+| 格式化     |      toLowerCase,toUpperCase,trim,repeat | padStart,padEnd,trimStart,trimEnd |
 
 ### 查找
 - charAt()
-- charCodeAt()
 - indexOf()
 - lastIndexOf()
-
-- String.fromCodePoint()
-    - 可以识别大于0xFFFF的字符，弥补了String.fromCharCode()方法的不足。
-    - 多个参数，会被合并成一个字符串返回。
-    - 与codePointAt()方法相反，定义在String对象上，codePointAt方法定义在字符串的实例对象上。
-    ```js
-    String.fromCodePoint(0x20BB7)
-    // "𠮷"
-    String.fromCodePoint(0x78, 0x1f680, 0x79) === 'x\uD83D\uDE80y'
-    // true
-    ```
-- str.codePointAt()
-    - 返回一个字符的码点（能够正确处理 4 个字节储存的字符）
-     - 是测试一个字符由两个字节还是由四个字节组成的最简单方法
-```js
-var s = "𠮷";
-
-s.length // 2
-s.charAt(0) // ''
-s.charAt(1) // ''
-s.charCodeAt(0) // 55362
-s.charCodeAt(1) // 57271
-``` 
 - includes()
     - 返回布尔值，表示是否找到了参数字符串。
     - 支持第二个参数，表示开始搜索的位置。
@@ -1359,19 +1711,23 @@ s.charCodeAt(1) // 57271
 - endsWith()
     - 返回布尔值，表示参数字符串是否在原字符串的尾部。
     - 支持第二个参数，表示开始搜索的位置。
+<mark-check id="stringconcat"></mark-check>
 ### 合并、切割
 - concat()
-- slice(start,end)
-  - 提取字符串的某个部分，并以新的字符串返回被提取的部分。
-- substring(start,stop)
-  - 提取字符串中介于两个指定下标之间的字符。
-- str.substr(start[, length])
-  - 提取字符串
-- str.split([separator[, limit]])
+- split([separator[, limit]])
   - 把一个字符串按分隔符分割成字符串数组
   - separator【必需】字符串或正则表达式(如果空字符串("")被用作分隔符，则字符串会在每个字符之间分割。如果没有找到或者省略了分隔符，则该数组包含一个由整个字符串组成的元素)
   - limit【可选】返回数组的最大长度
+- slice(start,end)
+  - 提取字符串的某个部分，并以新的字符串返回被提取的部分。
+- substring(start,stop)
+  - 提取字符串中介于两个指定下标之间的字符。返回一个字符串在开始索引到结束索引之间的一个子集
+- substr(start[, length])
+  - 提取字符串
+
+
 ### 匹配
+<mark-check id="replace"></mark-check>
 - str.replace(regexp|substr, newSubStr|function)
   - 替换
   - 第二个参数是字符串
@@ -1391,38 +1747,59 @@ s.charCodeAt(1) // 57271
         return `${day}/${month}/${year}`;
     });
   ```
+  <mark-check id="search"></mark-check>
+
 - str.search(regexp)
   - 对正则表达式和指定字符串进行匹配搜索
   - 匹配成功，返回首次匹配项的索引，否则返回-1
+
+  <mark-check id="match"></mark-check>
+
 - str.match(regexp)
   - 可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
-  - 返回匹配结果的数组（数组的内容看regexp是否加了全局标志g）
+  - 如果使用g标志，则将返回与完整正则表达式匹配的所有结果，但不会返回捕获组。
+如果未使用g标志，则仅返回第一个完整匹配及其相关的捕获组（Array）。 
+```js
+var str = 'For more information, see Chapter 3.4.5.1';
+var re = /see (chapter \d+(\.\d)*)/i;
+var found = str.match(re);
 
+console.log(found);
+
+// logs [ 'see Chapter 3.4.5.1',
+//        'Chapter 3.4.5.1',
+//        '.1',
+//        index: 22,
+//        input: 'For more information, see Chapter 3.4.5.1' ]
+
+// 'see Chapter 3.4.5.1' 是整个匹配。
+// 'Chapter 3.4.5.1' 被'(chapter \d+(\.\d)*)'捕获。
+// '.1' 是被'(\.\d)'捕获的最后一个值。
+// 'index' 属性(22) 是整个匹配从零开始的索引。
+// 'input' 属性是被解析的原始字符串。
+```
+```js
+var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+var regexp = /[A-E]/gi;
+var matches_array = str.match(regexp);
+
+console.log(matches_array);
+// ['A', 'B', 'C', 'D', 'E', 'a', 'b', 'c', 'd', 'e']
+```
 - str.matchAll()
     - 如果一个正则表达式在字符串里面有多个匹配，一般使用g修饰符或y修饰符，在循环里面逐一取出。
     - 返回一个正则表达式在当前字符串的所有匹配(返回一个遍历器,用for...of循环)
     - 转数组（...运算符或Array.from方法）
 
+<mark-check id="stringFormat"></mark-check>
 ### 格式化
-
-- toLocaleLowerCase()
-- toLocaleUpperCase()
-- toLowerCase()
-- toString()
 - toUpperCase()
+- toLowerCase()
 - trim()
-- trimRight()
-- trimLeft()
-- valueOf()
-- String.fromCharCode()
-    - 从 Unicode 码点返回对应字符(不能识别码点大于0xFFFF的字符)
-```js
-String.fromCharCode(0x20BB7)
-// "ஷ"
-```
-
-- String.raw() 
-    - 返回一个斜杠都被转义（即斜杠前面再加一个斜杠）的字符串
+- trimStart(),trimEnd()
+    - trimStart()消除字符串头部的空格
+    - trimEnd()消除尾部的空格。
+    - 返回新字符串，不修改原始字符串。
 - str.repeat(count)
     - 返回一个新字符串，表示将原字符串重复n次。参数必须为正数
     ```js
@@ -1431,12 +1808,6 @@ String.fromCharCode(0x20BB7)
     "abc".repeat(1)      // "abc"
     "abc".repeat(2)      // "abcabc"
     ```
-- normalize()
-    - 将字符的不同表示方法统一为同样的形式，这称为 Unicode 正规化。
-```js
-'\u01D1'.normalize() === '\u004F\u030C'.normalize()
-// true
-```
 - str.padStart()，str.padEnd()
     - 如果某个字符串不够指定长度，会在头部或尾部补全。padStart()用于头部补全，padEnd()用于尾部补全。
     - 如果原字符串的长度，等于或大于最大长度，则字符串补全不生效，返回原字符串。
@@ -1444,26 +1815,27 @@ String.fromCharCode(0x20BB7)
     - 用途
         - 为数值补全指定位数
         - 提示字符串格式
-```js
-'x'.padStart(5, 'ab') // 'ababx'
-'x'.padStart(4, 'ab') // 'abax'
+    ```js
+    'x'.padStart(5, 'ab') // 'ababx'
+    'x'.padStart(4, 'ab') // 'abax'
 
-'x'.padEnd(5, 'ab') // 'xabab'
-'x'.padEnd(4, 'ab') // 'xaba'
-```
-```js
-// 提示字符串格式
-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
-'09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
-```
-- str.trimStart()，str.trimEnd()
-    - trimStart()消除字符串头部的空格
-    - trimEnd()消除尾部的空格。
-    - 返回新字符串，不修改原始字符串。
+    'x'.padEnd(5, 'ab') // 'xabab'
+    'x'.padEnd(4, 'ab') // 'xaba'
+    ```
+    ```js
+    // 提示字符串格式
+    12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
+    '09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
+    ```
+- toString()
+- valueOf()
+
 ## 内置对象-对象常用 API
 ### 属性
+<mark-check id="shuxingming"></mark-check>
 - 属性名
   - obj.xxx(xxx是变量要用[xxx])
+<mark-check id="shuxingbianli"></mark-check>
 - 属性遍历
   - for-in
     ```js
@@ -1479,10 +1851,15 @@ String.fromCharCode(0x20BB7)
         }
     }
     ```
+<mark-check id="objectin"></mark-check>
+- `in`运算符
+    - 如果指定的属性在指定的对象或其原型链中，则in 运算符返回true。
 ### Object 构造函数的方法
 #### ES5
+<mark-check id="create"></mark-check>
 - Object.create(proto, [propertiesObject])
   - 使用指定的原型对象和属性创建一个新对象。
+<mark-check id="defineProperty"></mark-check>
 - Object.defineProperty()
   - 在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。
     - 添加的属性不可修改
@@ -1504,6 +1881,7 @@ String.fromCharCode(0x20BB7)
           - 默认undefined
           - 一个参数：新值
   - 使用场景(`class的实现``vue的MVVM``mobx``装饰器``koa`)
+  <mark-check id="getset"></mark-check>
   ```js
   let obj={}
   let temp;
@@ -1600,6 +1978,8 @@ String.fromCharCode(0x20BB7)
   - 设置对象的原型（即内部 [[Prototype]] 属性）。
 - Object.getPrototypeOf(obj)
   - 读取一个对象的原型对象
+<mark-check id="objectkeys"></mark-check>
+
 - Object.keys(obj)
   - 返回一个包含所有给定对象自身可枚举属性名称的数组。
   - for...of循环
@@ -1796,8 +2176,8 @@ clownsEverywhere(
 - delete expression
     - 断开引用来间接
     - 所有情况都返回true，除非属性是一个自己不可配置的属性
+<mark-check id="objectdelete"></mark-check>
 ```js
-// 例：
 delete object.property 
 delete object['property']
 ```
@@ -1817,6 +2197,7 @@ if (3 in trees) {
 
 
 ## 面试题
+<mark-check id="view1"></mark-check>
 ### 写一个能遍历对象和数组的`forEach`函数
 
 遍历数组使用`forEach`，而遍历对象使用`for in`，但是在实际开发中，可以使用一个函数就遍历两者，jquery 就有这样的函数
@@ -1850,7 +2231,7 @@ forEach(obj, function (key, value) {
     console.log(key, value)
 })
 ```
-
+<mark-check id="view2"></mark-check>
 ### 实现一个深拷贝
 ```js
 function deepCopy(obj){
@@ -1872,8 +2253,10 @@ function deepCopy(obj){
     return newObj;
 };
 ```
+<mark-check id="view3"></mark-check>
 
 ### setTimeout设置为0有什么作用？
+- 设为0，实际上浏览器默认是4
 ```js
 var fuc = [1,2,3];
 for(var i in fuc){

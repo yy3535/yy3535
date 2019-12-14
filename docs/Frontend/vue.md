@@ -1,5 +1,7 @@
-# vue
+# 【7. vue】
+
 [[toc]]
+
 ## start
 
 - 渐进式
@@ -14,8 +16,8 @@ vue+components+vue-router+vuex+vue-cli
 - mvc和mvvm区别
 
   mvc单向，model-view-controller，数据变化后需要通过controller手动改变视图
-
-  mvvm双向，model-view-viewmodel，数据变化可以驱动视图，vm就是viewmodel
+  <mark-check id="mvvmdefine"></mark-check>
+  <highlight-box>mvvm双向</highlight-box>，model-view-viewmodel，数据变化可以驱动视图，vm就是viewmodel
 - 声明式和命令式
 
   reduce不知道内部如何实现，是声明式
@@ -23,7 +25,7 @@ vue+components+vue-router+vuex+vue-cli
   for循环，命令计算机帮执行，叫做命令式
 
 ### vm=new Vue({})配置
-
+<mark-check id="newvue"></mark-check>
 ```js
 let vm=new Vue({
     //范围 
@@ -42,12 +44,12 @@ el换成.$mount('#app')是一样的。
 
 
 ## observer(响应式变化)
-
+<mark-check id="zhisheweiduixiang"></mark-check>
 ### 什么样的数据会更新
 
-1. 对象需要先声明存在，才能触发数据更新。
+1. <highlight-box>对象需要先声明存在，才能触发数据更新。</highlight-box>
 
-2. 数组需要改写，改写后length变化不能监听
+2. <highlight-box>数组需要改写，改写后length变化不能监听</highlight-box>
 
    ```js
    let arr=['push','slice','shift','unshift']
@@ -60,48 +62,17 @@ el换成.$mount('#app')是一样的。
     })
     obj.age.push(5)
    ```
-
-
-3. 值设置为对象才有效，需要修改某个值，可以使用vm.$set(vm.info,'address','zf');
+3. <highlight-box>值设置为对象才有效，需要修改某个值，可以使用</highlight-box>
+```js
+  vm.$set(vm.info,'address','zf');
    
     vm.info.address='world'//无效 
     
     vm.info={address:'回龙观'}//有效，
-
-### observer原理
-
-```js
-let obj={
-    name:'jw',
-    age:{
-    	age:18
-    }
-}
-//vue数据劫持 Object.defineProperty
-function observer(obj){
-  if(typeof obj=='object'){
-    for(let key in obj){
-      defineReactive(obj,key,obj[key]);
-    }
-  }
-}
-function defineReactive(obj,key,value){
-	observer(value);//判断 value是不是对象，如果是对象，会继续监控
-  Object.defineProperty(obj,key,{
-    get(){
-      return value
-    },
-    set(val){
-      observer(val);//如果设置的值是对象 需要在进行这个对象的监控
-      console.log('数据更新了')
-      value=val;
-    }
-  })
-}
-observer(obj)
-obj.age.age='zf'
 ```
-
+<mark-check id="shuangxiangbangdingyuanli"></mark-check>
+### observer原理
+<mark-box>
 ```js
 //老的原理
 let obj={name:'zfpx',age:9};
@@ -156,31 +127,56 @@ let p=new Proxy(obj,{
 p.name='hello';
 
 ```
+</mark-box>
 
+<mark-check id="vueinstance"></mark-check>
+## vue实例
 
-## vue实例上的方法
-### vm.$el 
+### 实例属性
+- <highlight-box>vm.$data</highlight-box>
+- <highlight-box>vm.$props</highlight-box>
+- <highlight-box>vm.$el</highlight-box>
+- <highlight-box>vm.$options</highlight-box>
+- <highlight-box>vm.$parent</highlight-box>
+- <highlight-box>vm.$root</highlight-box>
+- <highlight-box>vm.$children</highlight-box>
+- <highlight-box>vm.$slots</highlight-box>
+- <highlight-box>vm.$scopedSlots</highlight-box>
+- <highlight-box>vm.$refs</highlight-box>
+- <highlight-box>vm.$isServer</highlight-box>
+- <highlight-box>vm.$attrs</highlight-box>
+- <highlight-box>vm.$listeners</highlight-box>
 
-   当前挂载的元素
-### vm.$options 
-
-   当前实例的参数
-### vm.$nextTick(()=>{...})
-
-   视图更新后再执行
-   (vue数据变化后更新视图操作是异步执行的)
-### vm.$watch('info.xxx',function(newValue,oldValue){...})
+### 实例方法
+#### 数据
+- <highlight-box>vm.$watch</highlight-box>
+  - vm.$watch('info.xxx',function(newValue,oldValue){...})
 
    数据变化后执行
    (多次更新只会触发一次)
 
-### vm.$destroy 手动销毁组件
+- vm.$set
+- vm.$delete
+#### 事件
+- <highlight-box>vm.$on</highlight-box>
+  - vm.$on('click',change) 绑定事件
+- vm.$once
+- vm.$off
+- <highlight-box>vm.$emit</highlight-box>
+#### 生命周期
+- <highlight-box>vm.$mount</highlight-box>
+- vm.$forceUpdate
+- <highlight-box>vm.$nextTick</highlight-box>
+  - vm.$nextTick(()=>{...})
+    - 视图更新后再执行
+   (vue数据变化后更新视图操作是异步执行的)
+- vm.$destroy
+   - 手动销毁组件
 
-### vm.$on('click',change) 绑定事件
-
+<mark-check id="template"></mark-check>
 ## template
 
-### 取值表达式{{}}
+### <highlight-box>取值表达式{{}}</highlight-box>
 
    作用：
    - 运算
@@ -191,26 +187,27 @@ p.name='hello';
    - 其中的this都是指代vm实例，可省略
    - 取值时放对象，加空格即可 {{ {name:1} }}
 
+<mark-check id="directive"></mark-check>
 ## 指令
-14个
-### v-once,v-html
-#### v-once 
-只渲染一次，数据变化了也不更新视图
-#### v-html 
+### <highlight-box>v-text</highlight-box>
+
+### <highlight-box>v-html </highlight-box>
 渲染成dom元素
 
 **注：**
 v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容必须为可信任
 \<img src="x" onerror="alert()" /> 图片找不到会走onerror事件，就会弹出alert框
    
-### v-if v-else
+### <highlight-box>v-show</highlight-box>
+
+### <highlight-box>v-if v-else v-else-if</highlight-box>
    - 必须是连一块的
    - 可使用template无意义标签来框起来
 
    **v-if和v-show的区别：**
    v-if控制dom有没有，v-show控制样式不显示，v-show不支持template
 
-### v-for 
+### <highlight-box>v-for</highlight-box>
 
    ```html
    <!-- 循环数组 -->
@@ -250,59 +247,7 @@ v-html使用innerHTML,所以不要将用户输入的内容展现出来，内容�
 
   3. 尽量不要用index来作为key，因为index再数据顺序变化后会消耗性能，如果有唯一标识，尽量用唯一标识
 
-
-### v-model
-#### input
-   ```html
-   <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/>
-   等价于  <!-- v-model 是 @input + :value 的一个语法糖-->
-   <input type='text' v-model="msg"/>
-   ```
-
-#### select,radio和checkbox
-```js
-//select
-data:{
-selectValue:'',
-list:['{value:'菜单1',id:1}','{value:'菜单2',id:2}','{value:'菜单3',id:3}']
-}
-<select v-model="selectValue">
-<option value="0" disabled>请选择</option>
-<option v-for="item in list" :key="item.id" :value="item.id">{{item.value}}</option>
-</select>
-//multiple，太丑一般不用
-
-//radio
-//根据v-model来分组
-data:{
-radioValue:'男'
-}
-<input type='radio' v-model="radioValue" value="男"/>
-<input type='radio' v-model="radioValue" value="女"/>
-<input type='radio' v-model="radioValue" value="其他"/>
-
-//checkbox
-//只要是多个就是数组
-data:{
-checkValue:true,
-checkValues:[]
-}
-不给value，值就是true/false，给了value，就是数组
-<!--true/false-->
-<input type='checkbox' v-model="checkValue"/>
-<!--多选-->
-<input type='checkbox' v-model="checkValues" value="游泳"/>
-<input type='checkbox' v-model="checkValues" value="健身"/>
-<input type='checkbox' v-model="checkValues" value="看书"/>
-{{checkValues}}
-```
-
-#### 修饰符（可以连续修饰）
-```html
-  <input type="text" v-model.number="val">{{typeof val}}//只能数字
-  <input type="text" v-model.trim="val">{{typeof val}}//清除空格
-```
-### v-on或@ 绑定事件
+### <highlight-box>v-on</highlight-box>或@ 绑定事件
 
 ```html
 <input type='text' @input="fn"/>
@@ -368,7 +313,7 @@ Vue.config.keyCodes={
 }
 ```
 
-### v-bind或: 绑定属性
+### <highlight-box>v-bind</highlight-box>或: 绑定属性
 
 ```html
 <input type='text' :value="msg"/>
@@ -392,6 +337,70 @@ style
 <div style='color:red' :style="{background:'blue'}">
 <div style='color:red' :style="[{background:'red',color:'blue'}]">
 ```
+
+### <highlight-box>v-model</highlight-box>
+#### input
+   ```html
+   <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/>
+   等价于  <!-- v-model 是 @input + :value 的一个语法糖-->
+   <input type='text' v-model="msg"/>
+   ```
+
+#### select,radio和checkbox
+```js
+//select
+data:{
+selectValue:'',
+list:['{value:'菜单1',id:1}','{value:'菜单2',id:2}','{value:'菜单3',id:3}']
+}
+<select v-model="selectValue">
+<option value="0" disabled>请选择</option>
+<option v-for="item in list" :key="item.id" :value="item.id">{{item.value}}</option>
+</select>
+//select属性multiple多选，太丑一般不用
+
+//radio
+//根据v-model来分组,以前根据name分组
+data:{
+radioValue:'男'
+}
+
+<input type='radio' v-model="radioValue" value="男"/>
+<input type='radio' v-model="radioValue" value="女"/>
+<input type='radio' v-model="radioValue" value="其他"/>
+
+//checkbox
+//只要是多个就是数组
+data:{
+  checkValue:true,
+  checkValues:[]
+}
+不给value，值就是true/false，给了value，就是数组
+<!--true/false-->
+<input type='checkbox' v-model="checkValue"/>
+<!--多选-->
+<input type='checkbox' v-model="checkValues" value="游泳"/>
+<input type='checkbox' v-model="checkValues" value="健身"/>
+<input type='checkbox' v-model="checkValues" value="看书"/>
+{{checkValues}}
+```
+
+#### 修饰符（可以连续修饰）
+```html
+  <input type="text" v-model.number="val">{{typeof val}}//只能数字
+  <input type="text" v-model.trim="val">{{typeof val}}//清除空格
+```
+
+### <highlight-box>v-slot</highlight-box>
+
+### v-pre</highlight-box>
+- 内容不编译
+
+### <highlight-box>v-cloak</highlight-box>
+- 这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+### <highlight-box>v-once </highlight-box>
+只渲染一次，数据变化了也不更新视图
 
 ## computed
 
@@ -437,11 +446,16 @@ watch:{//相当于vm.$watch('firstname',()=>{})
   }
 }
 ```
-> computed和method的区别？
-computed只有绑定的数据变了才会执行，method做绑定时所有数据变了都会执行
+<mark-check id="computedmethod"></mark-check>
+- <highlight-box>computed和method的区别？</highlight-box>
+  - computed只有绑定的数据变了才会执行，method做绑定时所有数据变了都会执行
+<mark-check id="computedwatch"></mark-check>
+- <highlight-box>computed和watch的区别？</highlight-box>
+  - watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
+<mark-check id="computedwatch"></mark-check>
+- <highlight-box>data和watch的区别？</highlight-box>
+  - data是数据，不可以根据变量计算，而watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
 
-> computed和watch的区别？
-- watch支持异步，可以实现一些简单的功能，一般会先考虑使用computed，不能再用watch
 
 ### computed实现双向绑定
 ```html
@@ -463,16 +477,15 @@ computed只有绑定的数据变了才会执行，method做绑定时所有数据
   }
 </script>
 ```
+<mark-check id="lifestyle"></mark-check>
 
 ## 生命周期
+![生命周期](./img/lifecycle.png)
 
-初始化自己的生命周期，并且绑定自己的事件
-- this.$data 
-vm.data
+<mark-check id="beforeCreate"></mark-check>
 
-### beforeCreate
-实例尚未创建完成
-初始化注入，和响应事件
+### <highlight-box>beforeCreate</highlight-box>
+在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。
 ```js
 data:{
   a:1
@@ -481,10 +494,11 @@ beforeCreate(){
   console.log(this)//初始化自己的生命周期，事件方法 $on $emit
   console.log(this.$data)//undefined
 }
-
 ```
-### created
-可以获取数据和调用方法
+<mark-check id="created"></mark-check>
+
+### <highlight-box>created</highlight-box>
+在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
 ```js
 created(){
   console.log(this.$el)//无法获取真实dom元素
@@ -492,12 +506,16 @@ created(){
 }
 ```
 
-### beforeMount
-渲染前，第一次调用渲染函数执行，可以拿到data,method等
-如果有template会把它渲染成render函数
+<mark-check id="beforeMount"></mark-check>
+### <highlight-box>beforeMount</highlight-box>
+在挂载开始之前被调用：相关的 render 函数首次被调用。
 
-### mounted（重要）
-渲染后，可获取真实dom，一般ajax请求放在这儿。
+<mark-check id="mounted"></mark-check>
+
+### <highlight-box>mounted</highlight-box>
+<mark-box>
+<highlight-box>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：</highlight-box>
+</mark-box>
 ```js
 mounted(){
   // ajax请求到数据后使用nextTick,等待数据更新后再打印
@@ -508,7 +526,9 @@ mounted(){
 }
 ```
 
-### beforeUpdate
+<mark-check id="beforeUpdate"></mark-check>
+
+### <highlight-box>beforeUpdate</highlight-box>
 更新前
 ```js
 beforeUpdate(){
@@ -516,7 +536,8 @@ beforeUpdate(){
 }
 ```
 
-### updated
+<mark-check id="updated"></mark-check>
+### <highlight-box>updated</highlight-box>
 一般不要操作数据，否则可能会死循环
 更新后
 ```js
@@ -525,28 +546,29 @@ updated(){
 }
 ```
 
-### beforeDestroy（重要）
-销毁前（当前实例还可以用），一般会放销毁定时器等解绑操作
+<mark-check id="beforeDestroy"></mark-check>
+### <highlight-box>beforeDestroy（重要）</highlight-box>
+实例销毁之前调用。在这一步，实例仍然完全可用。一般会放销毁定时器等解绑操作
 ```js
 beforeDestroy(){
   console.log(this.$el.innerHTML);
 }
 ```
 
-### destroyed
-销毁后（实例上的方法，监听，事件绑定都被移除）
+<mark-check id="destroyed"></mark-check>
+### <highlight-box>destroyed</highlight-box>
+Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
 ```js
 destroyed(){
   console.log(this.$el.innerHTML);
 }
 ```
-> 什么情况会走destroy?
-- 路由切换
-  一个组件切换到另一个组件，上一个组件要销毁
-  
-- vm.$destroy()
-  手动销毁
-
+<mark-check id="destoryquestion"></mark-check>
+- 什么情况会走destroy?
+  - 路由切换
+    一个组件切换到另一个组件，上一个组件要销毁
+  - vm.$destroy()
+    手动销毁
 
 ![vue生命周期](/img/lifecycle.png)
 
@@ -978,6 +1000,7 @@ Vue.component('base-checkbox', {
 #### .sync 修饰符
 同步
 
+<mark-check id="componentsmessage"></mark-check>
 ### 组件间通信
 - 子组件触发父级的方法
   - this.$attrs 获取当前组件所有的属性
@@ -1005,10 +1028,9 @@ Vue.component('base-checkbox', {
     <button v-on="$listeners"></button>
   ```
 
+<mark-box>
 
-
-
-- props emit | $attrs $listeners | $parent $children
+- <highlight-box>props emit | $attrs $listeners | $parent $children $ref | $provider $inject | eventBus vuex</highlight-box>
 1. prop和$emit
 父组件向子组件传递通过prop,子组件向父组件传递通过$emit
 2. $attrs和$listeners
@@ -1022,6 +1044,7 @@ Vue2.4开始提供$attrs和$listeners传递值
 平级组件数据传递，可使用中央事件总线方式
 7. vuex状态管理
 
+</mark-box>
 
 ### 插槽
 #### 插槽内容
@@ -1617,79 +1640,81 @@ new Vue({
 // => "hello!"
 ```
 - 自定义选项合并策略
+
+<mark-check id="directive"></mark-check>
 ### 自定义指令(directive)
-- Vue自带指令：
-`v-model`
-`v-html`
-`v-text`
-`{{}}`
-`v-cloak`
-`v-if/v-else`
-`v-show`
-`v-pre`有十几种
-- 自定义指令有全局和局部
-- 分为默认函数形式和bind,update形式
-- 指令函数中的this是window，所以不能用this
+- <highlight-box>有的情况下，你仍然需要对普通 DOM 元素进行底层操作，这时候就会用到自定义指令。</highlight-box>
+  - 指令函数中的this是window，所以不能用this
+
 ```js
-// 局部指令
+// 当页面加载时，该元素将获得焦点 (注意：autofocus 在移动版 Safari 上不工作)。注册一个自定义指令 `v-focus`
 directives: {
   focus: {
+    // 指令的定义
     inserted: function (el) {
       el.focus()
     }
   }
 }
+Vue.directive('focus', {
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el) {
+    // 聚焦元素
+    el.focus()
+  }
+})
+// 使用
+<input v-focus>
 ```
-```js
-// 1. 默认函数形式
-Vue.directive('xxx',function(el,bindings,vnode){
-      ...  
-});
-// 2. bind和update形式
-Vue.directive('xxx',function(el,bindings,vnode){
-      // 数据更新时指令生效
-      update(el,bindings,vnode){
-          ...
-      },
-      // 用户绑定时指令生效
-      bind(el,bindings,vnode){
-          Vue.nextTick(()=>{
-              //dom渲染出来后绑定事件
-              el.focus()
-          })
-      },
-      // dom渲染完成后执行，相当于bind加了nextTick
-      inserted(el){
-        el.focus()
-      },
-      // 指令所在组件的 VNode 及其子 VNode 全部更新后调用。
-      componentUpdated(){
+<mark-check id="gouzifunction"></mark-check>
+- 钩子函数(均为可选)：
 
-      },
-      // 只调用一次，指令与元素解绑时调用。
-      unbind(){
+  - <highlight-box>bind</highlight-box>：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置。
 
-      }
-});
-```
-- demo
+  - <highlight-box>inserted</highlight-box>：被绑定元素插入父节点时调用 (仅保证父节点存在，但不一定已被插入文档中)。
+
+  - <highlight-box>update</highlight-box>：所在组件的 VNode 更新时调用，但是可能发生在其子 VNode 更新之前。指令的值可能发生了改变，也可能没有。但是你可以通过比较更新前后的值来忽略不必要的模板更新 。
+
+  - <highlight-box>componentUpdated</highlight-box>：指令所在组件的 VNode 及其子 VNode 全部更新后调用。
+
+  - <highlight-box>unbind</highlight-box>：只调用一次，指令与元素解绑时调用。
+
+<mark-check id="gouzifunctionarguments"></mark-check>
+- 钩子函数参数
+  - <highlight-box>el</highlight-box>：指令所绑定的元素，可以用来直接操作 DOM 。
+  - <highlight-box>binding</highlight-box>：参数是一个对象，包含以下属性：
+      - <highlight-box>name</highlight-box>：指令名，不包括 v- 前缀。
+      - <highlight-box>rawName</highlight-box>: 指令名及参数，包括 v- 前缀和参数
+      - <highlight-box>value</highlight-box>：指令的绑定值，例如：v-my-directive="1 + 1" 中，绑定值为 2。
+      - <highlight-box>oldValue</highlight-box>：指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
+      - <highlight-box>expression</highlight-box>：字符串形式的指令表达式。例如 v-my-directive="1 + 1" 中，表达式为 "1 + 1"。
+      - <highlight-box>arg</highlight-box>：传给指令的参数，可选。例如 v-my-directive:foo 中，参数为 "foo"。
+      - <highlight-box>modifiers</highlight-box>：一个包含修饰符的对象。例如：v-my-directive.foo.bar 中，修饰符对象为 { foo: true, bar: true }。
+  - <highlight-box>vnode</highlight-box>：Vue 编译生成的虚拟节点。
+    - context:当前指令所在的组件
+  - <highlight-box>oldVnode</highlight-box>：上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
+  :::tip
+  除了 el 之外，其它参数都应该是只读的，切勿进行修改。如果需要在钩子之间共享数据，建议通过元素的 dataset 来进行。
+  :::
+
+<mark-check id="directivedemo"></mark-check>
+- demo:自定义只取长度为三的字符串的指令且双向绑定的指令
 ```html
-<!-- 自定义只取长度为三的字符串的指令且双向绑定的指令 -->
 <div id="app">
     <input type="text" v-split.3.xxx="msg">
 </div>
 <script>
     Vue.directive('split',{
-        bind(el,bindings,vnode){
+        bind(el,binding,vnode){
             let ctx=vnode.context;//当前指令所在的组件
-            let [,len]=bindings.rawName.split('.');
+            let [,len]=binding.rawName.split('.');
             el.addEventListener('input',(e)=>{
                 let val=e.target.value.slice(0,len);
-                ctx[bingdings.expression]=val;
+                ctx[binding.expression]=val;
                 el.value=val;
             })
             //赋予默认值
-            el.value=ctx[bingdings.expression].value.slice(0,3);
+            el.value=ctx[binding.expression].value.slice(0,3);
         }
     });
     let vm=new Vue({
@@ -1703,9 +1728,46 @@ Vue.directive('xxx',function(el,bindings,vnode){
 
 
 ### 渲染函数 & JSX
-- 使用render函数来创建DOM
+#### 使用render函数来创建DOM
 - vue实例中，如果有了template，就放弃el，使用template
+<mark-check id="renderdemo"></mark-check>
+- demo:写一个只能通过 level prop 动态生成标题 (heading) 的组件
 ```js
+// 之前的写法
+<script type="text/x-template" id="anchored-heading-template">
+  <h1 v-if="level === 1">
+    <slot></slot>
+  </h1>
+  <h2 v-else-if="level === 2">
+    <slot></slot>
+  </h2>
+  <h3 v-else-if="level === 3">
+    <slot></slot>
+  </h3>
+  <h4 v-else-if="level === 4">
+    <slot></slot>
+  </h4>
+  <h5 v-else-if="level === 5">
+    <slot></slot>
+  </h5>
+  <h6 v-else-if="level === 6">
+    <slot></slot>
+  </h6>
+</script>
+<script>
+  Vue.component('anchored-heading', {
+    template: '#anchored-heading-template',
+    props: {
+      level: {
+        type: Number,
+        required: true
+      }
+    }
+  })
+</script>
+```
+```js
+// jsx写法
 Vue.component('anchored-heading', {
   render: function (createElement) {
     return createElement(
@@ -1728,25 +1790,22 @@ Vue.component('anchored-heading', {
     <!-- `createElement`返回`createNodeDescription` -->
     return createElement('h1', this.blogTitle)
     ```
-- createElement 参数
-  
+<mark-check id="createElement"></mark-check>
+- <highlight-box>createElement</highlight-box>
+  - <underline-box>返回一个VNode</underline-box>
+  - 参数
+    - <underline-box>HTML标签名</underline-box>、组件选项对象，或者resolve 了上述任何一种的一个 async 函数{String | Object | Function}
+    - 一个与模板中属性对应的<underline-box>数据对象</underline-box>{Object}
+    - <underline-box>子级虚拟节点</underline-box> (VNodes){String | Array}
   ```javascript
   // @returns {VNode}
   createElement(
-    // {String | Object | Function}
-    // 一个 HTML 标签名、组件选项对象，或者
-    // resolve 了上述任何一种的一个 async 函数。必填项。
+    // 一个 HTML 标签名、组件选项对象，或者resolve 了上述任何一种的一个 async 函数。必填项。
     'div',
-
-    // {Object}
     // 一个与模板中属性对应的数据对象。可选。
     {
-      // (详情见下一节)
     },
-
-    // {String | Array}
-    // 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，
-    // 也可以使用字符串来生成“文本虚拟节点”。可选。
+    // 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，也可以使用字符串来生成“文本虚拟节点”。可选。
     [
       '先写一些文字',
       createElement('h1', '一则头条'),
@@ -1758,6 +1817,8 @@ Vue.component('anchored-heading', {
     ]
   )
   ```
+- createElement参数--数据对象
+
   ```js
   {
     // 与 `v-bind:class` 的 API 相同，
@@ -1856,8 +1917,10 @@ Vue.component('anchored-heading', {
     - this.$slots 访问静态插槽的内容
     -  this.$scopedSlots 访问作用域插槽
     -  scopedSlots 字段向子组件中传递作用域插槽
-- JSX
-Vue 的 Babel 插件可实现支持JSX语法写render函数
+
+<mark-check id="jsx"></mark-check>
+#### JSX
+使用一个 Babel 插件，用于在 Vue 中使用 JSX 语法，它可以让我们回到更接近于模板的语法上。比上面简单
 ```js
 import AnchoredHeading from './AnchoredHeading.vue'
 
@@ -1872,12 +1935,15 @@ new Vue({
   }
 })
 ```
+
 :::warning
-从 Vue 的 Babel 插件的 3.4.0 版本开始，自动注入 `const h = this.$createElement`
+将 h 作为 createElement 的别名是 Vue 生态系统中的一个通用惯例，实际上也是 JSX 所要求的。从 Vue 的 Babel 插件的 3.4.0 版本开始，自动注入 `const h = this.$createElement`，这样你就可以去掉 (h) 参数了。
 :::
 
 
-- 函数式组件
+#### 函数式组件
+- 组件是比较简单，没有管理任何状态，也没有监听任何传递给它的状态，也没有生命周期方法。实际上，它只是一个接受一些 prop 的函数。将组件标记为 functional，这意味它无状态 (没有响应式数据)，也没有实例 (没有 this 上下文)。
+- 因为函数式组件只是函数，所以渲染开销也低很多。
 ```js
 Vue.component('my-component', {
   functional: true,
@@ -1892,6 +1958,7 @@ Vue.component('my-component', {
   }
 })
 ```
+- 单文件组件的函数式组件声明
 ```html
 <template functional>
 </template>
@@ -1903,47 +1970,467 @@ Vue.component('my-component', {
 ```js
 // myTitle.js
 export default {
-  functional:true,
-  render:function(h){
-    return <div>
+  functional:true,// 有了函数属性，render函数里就有context参数
+  methods:{
+    say(){
+      alert(1)
+    }
+  }
+  render:function(h,context){
+    let t='h'+context.props.type;
 
-    </div>
+    return <t on-click={()=>context.say}>{{context.slots().default}}</t>
   }
 }
 ```
 ```html
 <!-- app.vue -->
-import myTitle from './components/myTitle.js'
+<template>
+  <div id="app">
+    <MyTitle :type="5">hello</MyTitle>
+  </div>
+</template>
+<script>
+  import myTitle from './components/myTitle.js'
+  export default {
+    mounted(){
+      console.log(this._info);
+    },
+    name:'app',
+    components:{
+      MyTitle
+    }
+  }
+</script>
 ```
-:::tip
-- 手写组件
-
-- vue的树组件
+<mark-check id="dateComponent"></mark-check>
+<mark-question></mark-question>
+<absolute-box>clickOutside指令的包含和不包含没看懂</absolute-box>
 - vue的日历组件
-  - 日历上点击时会自动让日历消失，用事件委托解决，把事件绑定在外层元素上面。
+  - 注意点
+    - 日历上点击时会自动让日历消失，用事件委托解决，把事件绑定在外层元素上面。
+  ```js
+  // App.vue
+  <template>
+    <div>
+      <!-- :value="now" @input="val=>now=val" -->
+      <DataPicker v-model="now"></DataPicker>
+    </div>
+  </template>
+
+  <script>
+  import DataPicker from './date-picker';
+    export default {
+      components:{
+        DataPicker
+      },
+      data(){
+        return {
+          now:new Date()
+        }
+      }
+    }
+  </script>
+
+  <style lang="scss" scoped>
+
+  </style>
+  ```
+  ```js
+  // date-picker.vue
+  <template>
+    <div v-click-outside>
+      <input type="text" :value="formatDate">
+      <div class="pannel" v-if="isVisible">
+        <div>
+          <span>&lt;</span>
+          <span @click="preMonth">&lt;&lt;</span>
+          <span>{{time.year}}年</span>
+          <span>{{time.month+1}}月</span>
+          <span @click="nextMonth">&gt;&gt;</span>
+          <span>&gt;</span>
+        </div>
+        <div class="pannel-content">
+          <div class="days">
+            <!-- 直接列出一个6*7一个列表  -->
+            <span v-for="j in 7" :key="`_`+j" class="cell">{{weekDays[j-1]}}</span>
+            <div v-for="i in 6" :key="i">
+              <span 
+                class="cell cell-days"
+                @click="chooseDate(visibleDays[(i-1)*7+(j-1)])"
+                :class="[
+                  {notCurrentMonth:!isCurrentMonth(visibleDays[(i-1)*7+(j-1)])},
+                  {today:isToday(visibleDays[(i-1)*7+(j-1)])},
+                  {select:isSelect(visibleDays[(i-1)*7+(j-1)])}
+                ]"
+                v-for="j in 7" 
+                :key="j"
+              >
+                {{visibleDays[(i-1)*7+(j-1)].getDate()}}
+              </span>
+            </div>
+            
+          </div>
+        </div>
+        <div class="pannel-footer">
+          今天
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+  import * as utils from './util'
+    export default {
+      directives:{
+        // 指令的声明周期
+        clickOutside:{
+          bind(el,bindings,vnode){
+            // 把事件绑定给document上 看一下点击的是否是当前这个元素内部
+            let handler=(e)=>{
+              if(el.contains(e.target)){
+                // 判断一下是否当前面板已经显示出来了
+                if(!vnode.context.isVisible){
+                  vnode.context.focus();
+                  console.log('包含');
+                }
+              }else{
+                console.log('不包含');
+                if(vnode.context.isVisible){
+                  vnode.context.blur();
+                }
+              }
+            };
+            el.handler=handler;
+            document.addEventListener('click',handler);
+          },
+          unbind(el){
+            document.removeEventListener('click',el.handler)
+          }
+        }
+      },
+      data(){
+        let {year,month}=utils.getYearMonthDay(this.value);
+        return {
+          weekDays:['日','一','二','三','四','五','六'],
+          time:{year,month},
+          isVisible:false// 面板是否课件
+        }
+      },
+      props:{
+        value:{
+          type:Date,
+          default:()=>new Date
+        }
+      },
+      computed:{
+        visibleDays(){
+          // 先获取当前是周几
+          let {year,month}=utils.getYearMonthDay(new Date(this.time.year,this.time.month,1));
+          // 先生成一个当前月份第一天
+          let currentFirstDay=utils.getDate(year,month,1)
+          // 获取当前是周几，把天数往前移动几天
+          let week=currentFirstDay.getDay();
+          let startDay=currentFirstDay-week*60*60*1000*24;
+          // 循环42天
+          let arr=[];
+          for(let i=0;i<42;i++){
+            arr.push(new Date(startDay+i*60*60*1000*24))
+          }
+          return arr;
+        },
+        formatDate(){
+          let {year,month,day}=utils.getYearMonthDay(this.value)
+          return `${year}-${month+1}-${day}`
+        }
+      },
+      methods:{
+        focus(){
+          this.isVisible=true;
+        },
+        blur(){
+          this.isVisible=false;
+        },
+        isCurrentMonth(date){
+          let {year,month}=utils.getYearMonthDay(utils.getDate(this.time.year,this.time.month));
+          let {year:y,month:m}=utils.getYearMonthDay(date);
+          return year===y&&month===m;
+        },
+        isToday(date){
+          let {year,month,day}=utils.getYearMonthDay(new Date());
+          let {year:y,month:m,day:d}=utils.getYearMonthDay(date);
+          return year===y&&month===m&&day===d;
+        },
+        chooseDate(date){
+          this.time=utils.getYearMonthDay(date);
+          this.$emit('input',date);
+          this.blur();// 关闭弹窗
+        },
+        isSelect(date){
+          // 获取当前的年月日
+          let {year,month,day}=utils.getYearMonthDay(this.value);
+          let {year:y,month:m,day:d}=utils.getYearMonthDay(date);
+          return year===y&&month===m&&day===d;
+        },
+        preMonth(){
+          let d=utils.getDate(this.time.year,this.time.month,1);
+          d.setMonth(d.getMonth()-1);
+          this.time=utils.getYearMonthDay(d);
+
+        },
+        nextMonth(){
+          let d=utils.getDate(this.time.year,this.time.month,1);
+          d.setMonth(d.getMonth()+1);
+          this.time=utils.getYearMonthDay(d);
+        }
+      }
+    }
+  </script>
+
+  <style lang="stylus" scoped>
+  .pannel
+    width 32*7px;
+    position absolute;
+    background #fff;
+    box-shadow 2px 2px 2px pink,-2px -2px 2px pink;
+    .pannel-nav
+      display flex;
+      justify-content space-around;
+      height 30px;
+      span
+        cursor pointer;
+        user-select none;
+    .pannel-content
+      .cell
+        display inline-flex;
+        justify-content center;
+        width 32px;
+        height 32px;
+        font-font-weight bold;
+      .cell-days:hover,.select
+        border 1px solid pink;
+        box-sizing border-box;
+    .pannel-footer
+      height 30px
+      text-align center
+  .notCurrentMonth
+    color gray
+  .today
+    background red;
+    color #fff;
+    border-radius 4px;
+  </style>
+  ```
+  ```js
+  // util.js
+  const getYearMonthDay = (date) => {
+      let year = date.getFullYear();
+      let month = date.getMonth();
+      let day = date.getDate();
+      return { year, month, day };
+  }
+  const getDate = (year, month, day) => {
+      return new Date(year, month, day);
+  }
+
+  export {
+      getYearMonthDay,
+      getDate
+  }
+  ```
+
+- 插件的编写
+
+```js
+// App.vue
+<template>
+  <div>
+    <button @click="showMessage">点我弹层</button>
+  </div>
+</template>
+
+<script>
+
+import Vue from 'vue';
+import Message from './Message';// 第一种方式：export 
+Vue.use(Message);// 第二种方式：export default 使用一个插件，内部需要提供一个install方法
+
+export default {
+  methods:{
+    showMessage(){
+      // 第二种方式
+      this.$message.info({
+        message:'我很帅',
+        duration:3000
+      })
+      // 第一种方式
+      // Message.info({
+      //   message:'我很帅',
+      //   duration:3000
+      // })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
+```
+```js
+// Message.vue
+<template>
+  <div class="messages" v-if="messages.length">
+    <div v-for="m in messages" :key="m.id">
+      {{m.message}}
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    data(){
+      return {
+        messages:[]
+      }
+    },
+    mounted(){
+      this.id=0;// 当前弹层的唯一标识
+    },
+    methods:{
+      add(options){
+        let id=this.id++;
+        let layer={...options,id};
+        this.messages.push(layer);// 每增加一个就向数组中存放一个
+        layer.timer=setTimeout(()=>{// 时间到了，将自己移除
+          this.remove(layer);
+        },options.duration)
+      },
+      remove(layer){
+        clearTimeout(layer.timer);
+        this.messages=this.messages.filter(message=>message.id!==layer.id)
+      }
+
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+
+</style>
+```
+```js
+// Message.js
+import Vue from 'vue';
+import MessageComponent from './Message.vue';
+// 获取当前组件的实例
+let getInstance = () => {
+    let vm = new Vue({
+        render: h => h(MessageComponent)
+    }).$mount(); // 会在内存中进行挂载
+    document.body.appendChild(vm.$el);
+
+    let component = vm.$children[0];
+    return {
+        add(options) {
+            component.add(options);
+        }
+    }
+}
+
+// 单例模式
+let instance;
+let getInst = () => {
+    instance = instance || getInstance();
+    return instance;
+}
+const Message = {
+    info(options) {
+        getInst().add(options);
+    },
+    warn() {
+
+    },
+    success() {
+
+    },
+    error() {
+
+    }
+}
+
+export {
+    Message
+}
+let _Vue;
+export default { // 写插件的原理
+    install(Vue) { // options选项代表use的第二个参数
+        console.log(Vue)
+        if (!_Vue) { // 防止用户多次use
+            _Vue = Vue;
+            let $message = {};
+            Object.keys(Message).forEach(type => {
+                $message[type] = Message[type];
+            });
+            Vue.prototype.$message = $message
+        }
+        // 在所有的组件中都增加了这个方法
+        Vue.mixin({
+            beforeCreate() {
+                // Vue遍历组件特点：从父级到子级
+                if (this.$options.info) {
+                    this._info = this.$options.info;
+                } else {
+                    this._info = this.$parent && this.$parent._info;
+                }
+            },
+        })
+    }
+}
+```
+```js
+// main.js
+import Vue from 'vue';
+import App from './App.vue';
+
+let info = { a: 1, b: 2 };
+
+export default new Vue({
+    el: "#app",
+    info,
+    render: h => h(App)
+})
+```
 - 表单组件
 - 扩展表格组件
-:::
+
+<mark-check id="plugins"></mark-check>
 ### 插件
 用来为Vue添加全局功能
-- 添加全局方法或者属性。如: vue-custom-element
+- <highlight-box>添加全局方法或者属性</highlight-box>。如: vue-custom-element
 
-- 添加全局资源：指令/过滤器/过渡等。如 vue-touch
+- <highlight-box>添加全局资源</highlight-box>：指令/过滤器/过渡等。如 vue-touch
 
-- 通过全局混入来添加一些组件选项。如 vue-router
+- 通过<highlight-box>全局混入</highlight-box>来添加一些组件选项。如 vue-router
 
-- 添加 Vue 实例方法，通过把它们添加到 Vue.prototype 上实现。
+- 添加<highlight-box> Vue 实例方法</highlight-box>，通过把它们添加到 Vue.prototype 上实现。
 
-- 一个库，提供自己的 API，同时提供上面提到的一个或多个功能。如 vue-router
+- <highlight-box>一个库，提供自己的 API，同时提供上面提到的一个或多个功能</highlight-box>。如 vue-router
+
+<mark-check id="useplugins"></mark-check>
 #### 使用插件
-- 全局方法 Vue.use() 使用插件，需要在调用 new Vue() 启动应用之前完成
+- 全局方法 <highlight-box>Vue.use() 使用插件</highlight-box>，需要在调用 new Vue() 启动应用之前完成
 - 第一个参数是有install的对象，第二个参数是options，会传入成为install第二个参数
 - Vue.use 会自动阻止多次注册相同插件，届时即使多次调用也只会注册一次该插件
 - `awesome-vue` 集合了大量由社区贡献的插件和库。
+
+<mark-check id="developplugins"></mark-check>
 #### 开发插件
-- 暴露一个 install 方法。
-  - 第一个参数是 Vue 构造器
-  - 第二个参数是一个可选的选项对象
+- <highlight-box>暴露一个 install 方法。</highlight-box>
+  - <highlight-box>第一个参数是 Vue 构造器</highlight-box>
+  - <highlight-box>第二个参数是一个可选的选项对象</highlight-box>
+<mark-question></mark-question>
+<absolute-box>防止用户多次use没看懂</absolute-box>
 ```js
 let _Vue;
 MyPlugin.install = function (Vue, options) {
@@ -1990,12 +2477,18 @@ Vue.mixin({
   }
 })
 ```
+
+<mark-check id="filter"></mark-check>
 ### 过滤器(filter)
+- `message | filterA`
+- <highlight-box>可被用于一些常见的文本格式化</highlight-box>
+- <highlight-box>可用在两个地方：双花括号插值和 v-bind 表达式</highlight-box>
 - 可用computed替代(过滤器只改变数据的展示形式 不改变原数据)
-- 分为全局和局部过滤器
 - 过滤器函数中的this是window，所以不能用this
+- 过滤器可以串联：`{{ message | filterA | filterB }}`
+<mark-check id="filterdemo"></mark-check>
+- demo:字符串前两个数字变大写
 ```html
-<!-- 字符串前两个数字变大写 -->
 <div id="app">
     {{name | capitalize(2)}}
 </div>
@@ -2011,13 +2504,16 @@ Vue.mixin({
             name:'zfjq'
         },
         // 局部过滤器
-        filter(value,len){
-            ...
+        filters: {
+          capitalize: function (value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+          }
         }
     })
 </script>
 ```
-
 
 ## vue-cli 3.0
 
@@ -2038,7 +2534,7 @@ babel,CSS
 cd vue-router-apply
 yarn serve
 
-6. 可新建vue.config.js来重置webpack配置
+6. 可新建<highlight-box>vue.config.js</highlight-box>来重置webpack配置
 //vue.config.js基于node,node不支持import语法
 
 ```js
@@ -2594,9 +3090,10 @@ new Vue({
 5. 属性变化，但没有重新加载组件(组件beforeRouteUpdate)
 6. 组件渲染完成(组件beforeRouterEnter回调)
 
+<mark-check id="vuerouterliucheng"></mark-check>
 #### 【官网】完整的导航解析流程（背）
 1. 导航被触发。
-2. 在失活的组件里调用离开守卫。
+2. 在失活的组件里调用 beforeRouterLeave 离开守卫。
 3. 调用全局的 beforeEach 守卫。
 4. 在重用的组件里调用 beforeRouteUpdate 守卫 (2.2+)。
 5. 在路由配置里调用 beforeEnter。
@@ -2660,6 +3157,8 @@ router.beforeEach((to,from,next)=>{
   - 同步情况，调用mutation改数据
   - 异步情况，派发action，调用api，再在action里调用mutation改数据。
     - 好处：调用api逻辑不分散地放在组件里，而是独立出来，方便复用。
+<mark-check id="vuex1"></mark-check>
+
 | vue组件  |       vuex        |
 | :------: | :---------------: |
 |   data   |       state       |
@@ -2772,6 +3271,7 @@ new Vue({
     action里可以多次调用接口，action里可以调用其他action
   - 使用模块最好使用辅助函数
 - 总结：
+  <mark-check id="vuex2"></mark-check>
   - 同步修改状态 commit mapMutation
   - 异步修改状态 dispatch mapAction
   - 不要赋值修改状态，严格模式下不合法
@@ -2856,10 +3356,327 @@ export default {
 </script>
 ```
 ### vuex刷新失效
+
+
+
 - 再获取
 - 使用vuex中间件把数据存在本地
+  - 最优方法-vuex安装插件vuex-persits
+  ```js
+  const persits=(store)=>{
+    store.subscribe((mutation,state)=>{
+      localStorage.setItem('vuex-state',JSON.stringify(state))
+    })
+  }
+  // localStorage.getItem('vuex-item');
+  // 替换掉store里的值
+  // store.replaceState();
+  export default new Vuex.Store({
+    plugins:[
+      persits
+    ]
+  })
+  ```
 
-## vue源码
+### vuex原理
+```js
+// vuex.js
+let Vue;
+
+class ModuleCollection {
+    constructor(options) {
+        this.register([], options); // 注册模块 将模块注册成树结构
+    }
+    register(path, rootModule) {
+        let module = { // 将模块格式化
+            _rawModule: rootModule,
+            _children: {},
+            state: rootModule.state
+        }
+        if (path.length == 0) {
+            this.root = module; // 如果是根模块，将这个模块挂在根节点上
+        } else {
+            // 递归都用reduce方法  // 通过_children属性进行查找
+            let parent = path.slice(0, -1).reduce((root, current) => {
+                return root._children[current]
+            }, this.root)
+            parent._children[path[path.length - 1]] = module
+        }
+
+        // 看当前模块是否有modules
+        if (rootModule.modules) { // 如果有modules 开始重新再次注册
+            forEach(rootModule.modules, (moduleName, module) => {
+                // [a,c]
+                this.register(path.concat(moduleName), module)
+            })
+        }
+    }
+}
+
+const forEach = (obj, cb) => {
+    Object.keys(obj).forEach(key => {
+        cb(key, obj[key]);
+    })
+}
+
+const installModule = (store, rootState, path, rootModule) => {
+
+    if (path.length > 0) {
+        let parent = path.slice(0, -1).reduce((root, current) => {
+            return root[current]
+        }, rootState)
+
+        // vue 不能再对象上增加不存在的属性 否则不会导致视图更新
+        Vue.set(parent, path[path.length - 1], rootModule.state);
+
+        // 实现了 查找挂载数据
+    }
+
+    // 以下代码都是在处理 模块中 getters actions mutation
+    let getters = rootModule._rawModule.getters;
+    if (getters) {
+        forEach(getters, (getterName, fn) => {
+            Object.defineProperty(store.getters, getterName, {
+                get() {
+                    // 让getter执行当自己的状态 传入
+                    return fn(rootModule.state); // 让对应的函数执行
+                }
+            })
+        })
+    }
+    let mutations = rootModule._rawModule.mutations;
+    if (mutations) {
+        forEach(mutations, (mutationName, fn) => {
+            let mutations = store.mutations[mutationName] || [];
+            mutations.push(payload => {
+                fn(rootModule.state, payload);
+                // 让所有的订阅依次执行
+                store._subscribes.forEach(fn => fn({ type: mutationName, payload }, rootState));
+            })
+            store.mutations[mutationName] = mutations;
+        })
+    }
+    let actions = rootModule._rawModule.actions;
+    if (actions) {
+        forEach(actions, (actionName, fn) => {
+            let actions = store.actions[actionName] || [];
+            actions.push(payload => {
+                fn.call(store, store, payload);
+            })
+            store.actions[actionName] = actions;
+        })
+    }
+    // 挂载儿子
+    forEach(rootModule._children, (moduleName, module) => {
+        installModule(store, rootState, path.concat(moduleName), module)
+    })
+
+}
+
+class Store {
+    constructor(options = {}) {
+        // 将用户的状态放到了store中
+        this.s = new Vue({ // 核心 定义了响应式变化 数据更新 更新视图
+            data() {
+                return { state: options.state }
+            }
+        });
+        // let getters = options.getters;
+        this.getters = {}
+        this.mutations = {};
+        this.actions = {};
+        this._subscribes = [];
+        this._modules = new ModuleCollection(options); // 把数据格式化成一个想要的树结构
+        installModule(this, this.state, [], this._modules.root);
+
+        options.plugins.forEach(plugin => plugin(this));
+    }
+
+    subscribe(fn) {
+        this._subscribes.push(fn)
+    }
+
+    // 提交更改 会再当前的store上找到对应的函数执行
+    commit = (mutationName, payload) => {
+        this.mutations[mutationName].forEach(fn => fn(payload))
+    }
+    dispatch = (actionName, payload) => {
+        this.actions[actionName](payload); // 源码里有一个变量 来控制是否是通过mutation来更新状态的
+    }
+    get state() { // 类的属性访问器
+        return this.s.state
+    }
+}
+
+const install = (_Vue) => {
+    Vue = _Vue; // vue的构造函数
+    // vue组件渲染的顺序
+    Vue.mixin({
+        beforeCreate() {
+            // 没有将$store放在原型上（否则所有Vue实例都有了）
+            // 需要拿到store，给每个组件都增加$store属性
+            if (this.$options && this.$options.store) {
+                //给根实例增加$store属性 
+                this.$store = this.$options.store;
+            } else {
+                // 有可能单独创建了一个实例没有父亲，那就无法获取到store属性
+                this.$store = this.$parent && this.$parent.$store;
+            }
+        },
+    })
+}
+
+export default {
+    // 给用户提供一个install方法，默认会被调用
+    install,
+    Store
+}
+```
+```js
+// store.js
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex) // 1. 使用这个插件install方法
+
+const persits = (store) => {
+    store.subscribe((mutation, state) => {
+        localStorage.setItem('vuex-state', JSON.stringify(state))
+    })
+}
+export default new Vuex.Store({ // 导出的是一个store的实例
+    plugins: [
+        persits
+    ],
+    modules: {
+        a: {
+            state: { a: 1 },
+            modules: {
+                c: {
+                    state: { c: 1 },
+                    mutations: {
+                        // this.mutations[syncAdd]=[fn,fn]
+                        syncAdd(state, payload) {
+                            console.log('add')
+                        }
+                    }
+                }
+            }
+        },
+        b: {
+            state: { b: 1 }
+        }
+    },
+    state: { // 统一的状态管理
+        age: 10
+    },
+    getters: {
+        myAge(state) {
+            return state.age + 18;
+        }
+    },
+    mutations: {
+        syncAdd(state, payload) {
+            state.age += payload;
+        },
+        syncMinus(state, payload) {
+            state.age -= payload;
+        }
+    }, // 可以更改状态
+    actions: {
+        asyncMinus({ commit }, payload) { // 异步获取完后 提交到mutation中
+            setTimeout(() => {
+                commit('syncMinus', payload);
+            }, 1000)
+        }
+    } // 异步提交更改
+})
+```
+
+```html
+<template>
+  <div id="app">
+    珠峰的年龄是{{$store.state.age}}
+    {{$store.getters.myAge}}
+    <br>
+    <button @click="add">按钮</button>
+    <button @click="asyncMinus">异步减少</button>
+    {{this.$store.getters.computedC}}
+    {{this.$store.state.a.a}}
+  </div>
+</template>
+
+<script>
+import HelloWorld from './components/HelloWorld.vue'
+
+export default {
+  mounted(){
+    console.log(this.$store._modules)
+    // root
+  },
+  methods:{
+    add(){
+      this.$store.commit('syncAdd',10);
+    },
+    asyncMinus(){
+      this.$store.dispatch('asyncMinus',5)
+    }
+  }
+}
+</script>
+
+<style>
+</style>
+```
+## SSR服务端渲染
+- vue的问题
+  - 因为首页的html只有一个id为app的div标签，所以SEO什么都搜不到
+- 预渲染
+  - 预渲染的原理
+    - 先再本地跑一个无头浏览器运行代码，（爬虫的原理），会出来dom标签，把这个dom放到真实浏览器中。
+  - vue的预渲染插件
+    - 纯静态页面可以使用这种方式。自己生成好页面传到服务器。但动态数据的话不会更新数据
+
+    ```js
+    npm install prerender-spa-plugin
+    const PrerenderSPAPlugin=require('prerender-spa-plugin')
+
+
+    // webpack配置 会默认下载一个开发版的chrome 下载速度（taobao源）
+    plugins:[
+      new PrerenderSPAPlugin({
+        // 渲染出的页面存放地址
+        staticDir:path.join(__dirname,'dist'),
+        // 需要预渲染html的页面
+        routes:['/','/about',],
+      })
+    ]
+    ```
+
+- vue SSR 服务端渲染
+  - 在服务端把vue的数据和模板直接渲染好，返回给浏览器。好处是可以拿到完整的数据。可解决vue白屏问题
+  - 优点
+    - 客户端渲染不利于SEO搜索引擎优化
+    - 服务端渲染可以被爬虫抓取到的，客户端异步渲染是很难被爬虫抓取到的
+    - SSR直接将HTML字符串传递给浏览器。大大加快了首屏加载时间
+  - 缺点
+    - SSR占用更多的CPU和内存资源
+    - 一些常用的浏览器API可能无法正常使用
+    - 在vue中只支持beforeCreate和created两个生命周期
+  - 所以会把部分请求还是浏览器请求，放在mounted里，其他放在浏览器支持的两个里
+```js
+yarn init -y
+yarn add express vue vue-server-renderer
+```
+- 安装模块
+```js
+yarn add webpack webpack-cli webpack-dev-server // webpack需要的
+@babel-loader @babel/preset-env // 处理es6语法的
+vue vue-template-compiler vue-loader // 处理编译vue的
+vue-style-loader css-loader // 处理样式
+html-webpack-plugin // 处理html
+webpack-merge // 合并webpack配置 和configureWebpack一样的功能
+```
 
 ## axios 获取数据
 ```js
@@ -2938,6 +3755,7 @@ axios.interceptors.response.use(function (response) {
 
 ```
 
+<mark-check id="jwt"></mark-check>
 
 ## jwt 实现 权限 vuex+jwt 鉴权
 ```js
@@ -2945,6 +3763,56 @@ yarn add body-parser jsonwebtoken
 ```
 - jwt(jsonwebtoken)
   - 通过token得方式鉴定用户是否登录
+<mark-check id="jwtnode"></mark-check>
+
+- node
+```js
+let jwt=require('jsonwebtoken');
+// token加密
+jwt.sign(
+  {username:'admin'},
+  secret,
+  {
+  expiresIn:20
+})
+// token验证
+jwt.verify(token,secret,(err,decode)=>{
+  if(err){
+    return res.json({
+      code:1,
+      data:'token失效了'
+    })
+  }else{
+    res.json({
+      username:decode.username,
+      code:0,
+      token:jwt.sign(
+        {username:'admin'},
+        secret,
+        {
+        expiresIn:20
+      })
+    })
+  }
+})
+```
+<mark-check id="jwtjs"></mark-check>
+
+- js
+```js
+let instance=axios.create();
+// 拦截器
+instance.interceptors.response.use((res)=>{
+  return res.data
+})
+instance.interceptors.request.use((config)=>{
+  // 添加服务端传来的token
+  config.headers.Authorization=getLocal('token');
+  return config
+})
+```
+
+- demo
 ```js
 // router.js
 {
@@ -3386,9 +4254,6 @@ npm install @better-scroll/core@next --save
     :::warning
     better-scroll是目前比较好用的开源滚动库,提供很多灵活的api供我们开发各种实用的组件,文档地址(https://ustbhuangyi.github.io/better-scroll/doc/zh-hans/#better-scroll),本次主要用到它提供的pullDownRefresh 和 pullUpLoad api 开启上拉加载和下拉刷新的功能,同时它还提供两个event用于发送请求,pullingUp会在一次上拉加载之后触发,pullingdown 会在一次下拉刷新之后触发,可以在这两个事件中请求数据.这里有一个坑就是,每次上拉或者下拉之后需要调用finishPullUp或finishPullDown来结束这些动作.另外better-scroll在ios系统上快速滚动可能会出现白屏的bug,而且当你滚动暂停的时候回出现抖动,这些可以通过修改配置项useTransition:false解决,better-scroll会开始以js帧动画来渲染滑动效果,以下是代码部分
     :::
-### vue-qr
-- 二维码生成
-
 ### vue-awesome-swiper
 轮播
 

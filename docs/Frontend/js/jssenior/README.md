@@ -46,25 +46,21 @@ fn1.apply('hello',[1,2,3,4])
 
 ## 模拟new的实现
 ```js
-function Animal(type){
-  this.type=type;// 实例上的属性
-  return {name:'jw'}
-}
-// 公共属性
-Animal.prototype.say=function(){
-  console.log('say')
+function new2(...rest){
+    let obj = {};
+    let [context,...args] = rest;
+    obj._proto_ = Object.create(context.prototype);
+    let result = context.apply(obj,args);
+    return typeof result =="object" ? result : obj
 }
 
-function mockNew(){
-  // 拿到Animal，剩余的arguments就是其它参数
-  let Constructor=[].shift.call(arguments);
-  let obj={};//返回的结果，如果用Object.create(null)，就没有原型链
-  obj.__proto__=Constructor.prototype;//原型上的方法
-  let r=Constructor.apply(obj.arguments);
-  return r instanceof Object ? r : obj;
+function d(age){
+    this.age = age;
+    return {age:this.age,name:"111"}
 }
-let animal=mockNew(Animal,'哺乳类');
-console.log(animal);//{name:'jw'}
+var c = new2(d,16);
+c 
+//{age: 16, name: "111"}
 ```
 
 ## bind的实现原理
@@ -556,7 +552,13 @@ app.use(express.static(__dirname));
 app.listen(4000);
 ```
 - document.domain 
-  - 
+  - 页面和嵌入iframe页面都设置document.domain为同一值，就可以通过iframe.contentWindow访问嵌入页面的值。
+  - 用的较多
+```
+// hosts
+127.0.0.1 a.zf1.cn
+127.0.0.1 b.zf1.cn
+```
 ```html
 <!-- a.html -->
 <body>
@@ -598,6 +600,104 @@ let app = express();
 app.use(express.static(__dirname));
 app.listen(4000);
 ```
-- http-proxy
-- nginx
 - websocket
+  - 无跨域限制
+  - WebSocket是高级api，ws node, 不兼容一些浏览器，所以一般使用socket.io这个库来保证兼容性
+```js
+// server.js
+let express = require('express');
+let app = express();
+let WebSocket = require('ws');
+let wss = new WebSocket.Server({port:3000});
+wss.on('connection',function(ws) {
+  ws.on('message', function (data) {
+    console.log(data);
+    ws.send('我不爱你')
+  });
+})
+```
+```html
+<!-- socket.html -->
+<body>
+  <script>
+    let socket = new WebSocket('ws://localhost:3000');
+    socket.onopen = function () {
+      socket.send('我爱你');
+    }
+    socket.onmessage = function (e) {
+      console.log(e.data);
+    }
+  </script>
+</body>
+```
+- http-proxy
+
+- nginx
+  - 官网下载nginx安装包，exe文件打开后即可启动服务，localhost可访问页面。文件夹中的nginx.conf文件打开后修改配置
+  - 配置修改后，exe当前目录下打开命令行。`nginx -s reload`重启服务。
+  - 配置文件直接配置跨域头即可
+```html
+<body>
+  <script>
+    let xhr = new XMLHttpRequest;
+    xhr.open('get','http://localhost/a.json',true);
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === 4){
+        if(xhr.status>=200 && xhr.status < 300 || xhr.status ===304){
+          console.log(xhr.response);
+          console.log(xhr.getResponseHeader('name'));
+        }
+      }
+    }
+    xhr.send();
+  </script>
+</body>
+```
+```js
+let express = require('express');
+let app = express();
+app.use(express.static(__dirname));
+app.listen(3000);
+```
+```js
+// nginx.conf
+location / {
+  root html;
+  index index.html index.htm;
+}
+location ~.*\.json {
+  root json;
+  // 添加跨域头
+  add_header "Access-Control-Allow-Origin" "*";
+}
+```
+## CSRF
+- 第三方网站拿不到用户cookie, 但当往3000端口提交请求时，浏览器会自动把3000端口的cookie带着去请求。表单是没有跨域问题的，3001提交到3000是可以的。
+```html
+<!-- fish.html -->
+<body>
+  <iframe src="bad.html" />
+</body>
+```
+```html
+<!-- bad.html -->
+<body>
+  <form name="myform" action="http://localhost:3000/api/transfer">
+    <input type="text" name="target" value="jw">
+    <input type="text" name="money" value="100">
+  </form>
+  <script>
+    document.myform.submit()
+  </script>
+</body>
+```
+### 预防
+1. 添加验证码
+  - 伪造的请求拿不到验证码
+  ```js
+  // express生成验证码 svg-captcha
+  let svgCaptcha=require('svg-captcha');
+  ```
+2. 判断来源
+  - 3001访问的3000 referer判断
+3. token

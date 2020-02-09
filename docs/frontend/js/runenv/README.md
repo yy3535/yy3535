@@ -285,10 +285,14 @@ listNode.appendChild(frag);
 ```
 
 <mark-check id="fangdoujieliu"></mark-check>
+
 #### 防抖和节流
+- 优化高频时间 onscroll oninput resize onkeyup keydown 降低代码执行频率
+- 用户scroll和resize行为导致页面不断地重新渲染，如果在绑定的回调函数中大量操作dom也会出现页面卡顿
 - 要在文字改变时触发一个 change 事件，通过 keyup 来监听。
 - <highlight-box>防抖</highlight-box>
-  - <highlight-box>对于短时间内连续触发的事件（上面的滚动事件），防抖的含义就是让某个时间期限（如上面的1000毫秒）内，事件处理函数只执行一次。</highlight-box>
+  - <highlight-box>对于短时间内连续触发的事件（上面的滚动事件），防抖的含义就是让某个时间期限（如上面的1000毫秒）内，事件处理函数只执行一次。只执行最后一次</highlight-box>
+  - underscore的debounce方法 松手后隔会再执行
 ```js
 var textarea = document.getElementById('text')
 var timeoutId
@@ -300,10 +304,34 @@ textarea.addEventListener('keyup', function () {
         console.log('内容修改了')
     }, 1000)
 })
+
+// debounce
+function debounce(func,wait,immediate){
+  let timeout;
+  return function(){
+    clearTimeout(timeout);
+    if(immediate){
+      let callNow=!timeout;
+      if(callNow) func.apply(this,arguments);
+    }
+    timeout=setTimeout(()=>{
+      func.apply(this,arguments);
+      timeout=null;
+    },wait);
+  }
+}
+
+function logger(){
+  console.log('logger');
+}
+// 第三个参数表示首次点击有效果，之后就没效果了
+btn.addEventListener('click',debounce(logger,1000,true))
+
 ```
 
-- <highlight-box>节流</highlight-box>
-  - <highlight-box>函数执行一次后，在某个时间段内暂时失效，过了这段时间后再重新激活（类似于技能冷却时间）。</highlight-box>
+- <highlight-box>节流(Throttle)</highlight-box>
+  - <highlight-box>保证一段时间内，核心代码只执行一次。函数执行一次后，在某个时间段内暂时失效，过了这段时间后再重新激活（类似于技能冷却时间）。</highlight-box>
+  - underscore库中的throttle方法
 ```js
 var textarea = document.getElementById('text')
 var valid = true;// 事件功能有效
@@ -317,6 +345,174 @@ textarea.addEventListener('keyup', function() {
         valid = true;// 事件功能有效
     }, 1000)
 })
+
+// 节流
+let btn=document.getElementById('btn');
+
+// 问题：最后一次不能触发，但希望最后一次可以触发
+// function throttle(func,wait){
+//   let previous=0;
+//   return function (){
+//     let now=Date.now();
+//     if(now-previous>wait){
+//       func.apply(this,arguments);
+//       previous=now;
+//     }
+//   }
+// }
+
+function throttle(func,wait,options){
+  // trailing最后一次应该触发（默认触发）
+  let args,context,previous=0,timeout;
+  let later=function(){
+    previous=options.leading===false?0:Date.now();
+    func.apply(context,args);
+    args=context=null;
+  }
+  let throttled=function (){
+    args=arguments;
+    context=this;
+    let now=Date.now();
+    if(!previous&&options.leading===false) previous=now;
+    let remaning=wait-(now-previous);
+    if(remaining<=0){
+      // 第一次
+      if(timeout){
+        clearTimeout(timeout);
+        timeout=null;
+      }
+      func.apply(context,args);
+      previous=now;
+    }else if(!timeout && options.trailing!==false){
+      timeout=setTimeout(later,remaning);
+    }
+  }
+  return throttled;
+}
+
+function logger(){
+  console.log('logger');
+}
+btn.addEventListener('click',throttle(logger,1000,{trailing:true}))
+
+
+```
+
+- loadash库中，将两个合起来成为一个
+```html
+<head>
+  <script src="./debounce.js"></script>
+  <script src="./throttle.js"></script>
+</head>
+<body>
+  <div id="btn">点击</div>
+  <script>
+    function logger(e) {
+      console.log('logger',e);
+    }
+    // 第三个参数 表示首次 先触发一下
+    btn.addEventListener('click', throttle(logger,1000,false));
+  </script>
+</body>
+```
+```js
+// debounce.js
+// 防抖 + 节流
+// debounce 就是上来后 先开一个定时 只要一直点击  到时间什么都不做 就在开一个定时器
+function debounce(func, wait, opts = {}) {
+  let maxWait;
+  if ('maxWait' in opts) {
+    maxWait = opts.maxWait;
+  }
+  let leading = true; // 第一次点击时触发
+  let trailing = true; // 最后一次也要触发
+  // loadash 定时器实现的
+  let lastCallTime; // 最后调用的时间 previous
+  let timeout;
+  let lastThis; // 返回函数的this
+  let lastArgs; // 返回函数的参数
+  // shouldInvoke 是否应该调用
+  let lastInvokeTime;
+  let shouldInvoke = function (now) {
+    let sinceLastTime = now - lastCallTime;
+    let sinceLastInvoke = now - lastInvokeTime;
+    // 第一次
+    return lastCallTime === undefined || sinceLastTime > wait || sinceLastInvoke >= maxWait;
+  }
+  // leadingEdge 是否第一次执行
+  let invokeFunc = function (time) {
+    lastInvokeTime = time; // 最终的调用函数的时间
+    func.apply(lastThis, lastArgs);
+  }
+  // startTimer就是开启了一个定时器
+  let startTimer = function (timerExpired, wait) {
+    timeout = setTimeout(timerExpired, wait);
+  }
+  let remainingWait = function (now) {
+    return wait - (now - lastCallTime);
+  }
+  let trailingEdge = function (time) {
+    timeout = undefined;
+    if (trailing) {
+      invokeFunc(time);
+    }
+  }
+  let timerExpired = function () {
+    let now = Date.now(); // 当前定时器到时间了 看看是否需要执行这个函数
+    if (shouldInvoke(now)) { // 如果需要调用
+      // 触发结束的方法
+      return trailingEdge(now);
+    }
+    startTimer(timerExpired, remainingWait(now));
+  }
+  let leadingEdge = function (time) {
+    lastInvokeTime = time;
+    if (leading) { // 需要执行就调用函数
+      invokeFunc(time)
+    }
+    startTimer(timerExpired, wait); // 开启一个定时器 看下一次定时器到了 是否需要执行func
+  }
+  let debounced = function (...args) {
+    lastThis = this;
+    lastArgs = args;
+    let now = Date.now();
+    // 判断当前的debounce时是否需要执行
+    let isInvoking = shouldInvoke(now);
+    lastCallTime = now;
+    if (isInvoking) {
+      if (timeout === undefined) {
+        leadingEdge(now);
+      }
+    }
+  }
+  return debounced;
+}
+```
+```js
+// throttle.js
+function throttle(func,wait) {
+  return debounce(func, wait,{ // maxWait最大的点击时间
+    maxWait:wait
+  });
+}
+```
+```html
+<body style="height:20000000px">
+  <script>
+    let flag = false;
+    function scroll() {
+      if(!flag){
+        flag = true
+        requestAnimationFrame(loggeer)
+      }
+    }
+    function loggeer() {
+      console.log('logger');
+      flag = false;
+    }
+    window.addEventListener('scroll',scroll)
+    </script>
+</body>
 ```
 <mark-check id="fangdoujieliuyingyong"></mark-check>
 - 应用
@@ -350,7 +546,8 @@ document.addEventListener('DOMContentLoaded', function () {
     - 与CSRF区别，不需要任何验证，通过合法方式向页面注入js，比如评论
   - 攻击类型
     - 反射型
-      - 发出请求时，XSS代码出现在URL中，作为输入提交到服务器端，服务器端解析后响应，XSS代码随响应内容一起传回浏览器，最好浏览器解析执行XSS代码。
+      - 查询的参数里有代码
+      - 查询参数用encodeURIComponent编译即可。
       ```js
       // index.js
       router.get('/', function(req, res, next) {
@@ -371,8 +568,10 @@ document.addEventListener('DOMContentLoaded', function () {
       // 篡改页面内容，最简单的广告插入
       `http://localhost:3000/?xss=<iframe src="//baidu.com/t.html"></iframe>`
       ```
+    - DOM-Based
+      - 基于后端
     - 存储型
-      - 和反射型XSS差别在于，提交的代码会存储在服务器端（数据库，内存，文件系统等），下次请求目标页面时不用再提交XSS代码
+      - 恶意脚本存储到了服务器上，所有人访问都会有问题，比反射性和DOM-Baseed范围更大
   - 攻击方式
     - 盗用cookie，获取敏感信息
     - 破坏页面结构，插入一些内容
@@ -382,7 +581,26 @@ document.addEventListener('DOMContentLoaded', function () {
       - DDOS是在传统的DOS攻击上产生的一类攻击方式
     - ServerlimitDOS(当http header过长的时候，web server会产生一个400或者是4开头的错误，如果这些超长的数据保存在cookie中，能够让用户每次访问的时候造成http头超长，导致一些用户无法访问域名)
   <mark-check id="xssfangyu"></mark-check>
-  - 防御措施（让插入的js不可执行）
+  - 防御
+    - 客户端传递给服务器时，需要先校验过滤一下
+    - 服务端再做一次过滤
+    - 直接在输出的时候过滤
+    ```js
+    function html_encode(str){
+      var s='';
+      if(str.length==0) return "";
+      s=str.replace(/&/g,"&amp;");
+      s=s.replace(/</g,"&lt;");
+      s=s.replace(/>/g,"&gt;");
+      s=s.replace(/\s/g,"&nbsp;");
+      s=s.replace(/\'/g,"&#39;");
+      s=s.replace(/\"/g,"&quot;");
+      s=s.replace(/\n/g,"<br/>");
+      console.log('s',s)
+      return s;
+    }
+    ```
+
     1. <highlight-box>转义</highlight-box>
       - 对用户输入的数据进行HTML Entity转义，显示为转义字符
       <absolute-box>两种转义字符的方式：<br/>1. 反斜杠加在特定的字符之前表示转义。<br/>2. 使用HTML Entity转义字符串</absolute-box>

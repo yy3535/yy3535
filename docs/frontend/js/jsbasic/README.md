@@ -1241,7 +1241,7 @@ console.log(formatDate)
 - Array​.prototype​.slice(start,end)
   - 返回选定的元素。
   - 包前不包后
-  - start负数指倒数开始，end不指定就是到最后
+  - start默认为0，负数指倒数开始，end默认到最后
 :::
 :::warning 添加
 <mark-check id="unshift"></mark-check>
@@ -1502,20 +1502,20 @@ runPromiseInSequence(promiseArr, 10)
     })
   ```
 - Array​.prototype​.every()
-  - 所有的数组元素，都满足一个条件
+  - 所有的数组元素，都满足一个条件，返回布尔值
     ```js
     arr.every(function (item, index) {
         if (item < 4) {
-            return ture
+            return true
         }
     })
     ```
 - Array​.prototype​.some()
-  - 只要有一个满足条件即可
+  - 只要有一个满足条件即可，返回布尔值
     ```js
     arr.some(function (item, index) {
         if (item < 2) {
-            return ture
+            return true
         }
     })
     ```

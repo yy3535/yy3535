@@ -111,3 +111,17 @@ git checkout b74be8e78ff*****0a15d04967（版本号）
 
 mac host
 /etc/hosts
+
+## git ssh配置
+1.检查是否已经有SSH Key。
+```
+$cd /.ssh
+```
+2.生成一个新的SSH。
+```
+$ ssh-keygen -t rsa -C "email@github.com" #github注册的邮箱
+```
+之后直接回车，不用填写东西。之后会让你输入密码（可以不输入密码，直接为空，这样更新代码不用每次输入 id_rsa 密码了）。然后就生成一个目录.ssh ，里面有两个文件：id_rsa , id_rsa.pub（id_rsa中保存的是私钥，id_rsa.pub中保存的是公钥）
+3.按命令行提示找到公钥地址。跳转文件夹是访达菜单中的前往-前往文件夹，显示隐藏文件夹按`shift+command+.`。文件权限右击文件-显示简介-解锁-修改为只读。将公钥复制到github上。
+4. `ssh -T git@github.com`测试，显示success则配置成功可以clone了
+5. 显示`Permission denied(publickey)`，使用`ssh -vT git@github.com`来查看错误log，注意其中的查找公钥地址。将公钥复制到它查找的地址中即可。

@@ -51,10 +51,24 @@ module.exports = {
                     ]
                 },
                 {
+                    title: 'vuesource',
+                    collapsable: false,
+                    children: [
+                        "vuesource",
+                    ]
+                },
+                {
                     title: 'react',
                     collapsable: false,
                     children: [
                         "react",
+                    ]
+                },
+                {
+                    title: 'ts',
+                    collapsable: false,
+                    children: [
+                        "typescript",
                     ]
                 },
                 {

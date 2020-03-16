@@ -597,11 +597,8 @@ export default (s,p)=>{
 - 空间复杂度
     - 占用的内存(常数：o1,线性关系O(n),倍数关系O(n*2))
 ### ⑨ 冒泡排序（先把最大值冒出来，再把倒数第二大的冒出来，以此类推
-）
-- 比较相邻的元素。如果第一个比第二个大，就交换他们两个。
-- 对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
-- 针对所有的元素重复以上的步骤，除了最后一个。
-- 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较
+
+跟后一个元素对比，如果较大，就交换，一直把最大的换到最后一个，然后重复length-1次。
 - <img :src="$withBase('/img/bubbleSort.gif')">
 ```js
 function bubbleSort(arr) {
@@ -3048,7 +3045,7 @@ function hasScore(json) {
 ### 【9】实现一个promise,实现promise.all，实现promise.race
 
 ```js
-let Promise=require(./promise)
+let Promise=require('./promise')
 let p=new Promise(function(resolve,reject){
     reject('情人节到了');
     resolve('情人到了');
@@ -3125,7 +3122,7 @@ function resolvePromise(promise2,x,resolve,reject){
         try{
             let then=x.then;// then属性具有getter 此时获取时会发生异常
             if(typeof then==='function'){// 默认是promise
-                then.call(x,(y)=>{
+                then.call(x,(y)=>{// 不再次取x.then()，防止then的get函数被意外修改，使用call调用一定不会报错
                     // y有可能是一个promise。一直解析 直到结果是一个常量为止
                     if(called) return;// 给别人的promise增加的逻辑
                     called=true;

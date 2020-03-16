@@ -66,3 +66,6 @@ npm ERR!     C:\Users\DELL\AppData\Roaming\npm-cache_logs\2019-04-03T06_40_57_60
 ## yarn
 - yarn add [package]@[version]
 - yarn remove <package...>
+
+## mac操作快捷键
+【⇧+⌘+。】 显示/隐藏隐藏的文件夹

@@ -31,11 +31,17 @@
         - 如果有一个子节点, childNode 是节点的第一个子节点的引用，否则为null。
     - lastChild
     - hasChildNodes
+    - previousSibling
+      - 返回当前节点的前一个兄弟节点,没有则返回null.
+    - nextSibling 
+      - 返回其父节点的 childNodes 列表中紧跟在其后面的节点，如果指定的节点为最后一个节点，则返回 null。
 - 方法
     - appendChild
         - 将一个节点添加到指定父节点的子节点列表末尾。
     - removeChild
     - insertBefore
+      - var insertedNode = parentNode.insertBefore(newNode, referenceNode);
+      - 函数返回被插入过的子节点；当 newNode 是 DocumentFragment 时，返回空 DocumentFragment。
     - replaceChild
     - cloneNode
     - contains
@@ -218,6 +224,12 @@
     - matches(selectorString)
         - 返回true/false,元素是否符合选择器
         - 参数为css选择器字符串
+    - getBoundingClientRect() 
+      - 方法返回元素的大小及其相对于视口的位置。
+    - getClientRects() 
+      - 方法返回一个指向客户端中每一个盒子的边界矩形的矩形集合。
+
+语法
     
 - Events
     - click
@@ -303,6 +315,47 @@
 - 被作为一个轻量版的 Document 使用，用于存储已排好版的或尚未打理好格式的XML片段。
 - 最大的区别是因为 DocumentFragment 不是真实DOM树的一部分，它的变化不会触发 DOM 树的（重新渲染) ，且不会导致性能等问题。
 
+
+### Window
+<mark-check id="windowduixiang"></mark-check>
+
+#### <highlight-box>window事件</highlight-box>
+
+|属性|	描述	|
+| :------| ------: | :------: |
+onload	|一张页面或一幅图像完成加载。	|
+onbeforeunload|	该事件在即将离开页面（刷新或关闭）时触发|
+onunload|	用户退出页面。| 
+onpageshow|	该事件在用户访问页面时触发	|
+onpagehide|	该事件在用户离开当前网页跳转到另外一个页面时触发	|
+onerror	|在加载文档或图像时发生错误。|
+onabort|图像的加载被中断。|
+onhashchange|	该事件在当前 URL 的锚部分发生修改时触发。	 |
+onresize|	窗口或框架被重新调整大小。	|
+onscroll|	当文档被滚动时发生的事件。	|
+
+#### Window方法
+- setTimeout
+```js
+var timeoutID = scope.setTimeout(function[, delay, param1, param2, ...]);// param1, ..., paramN 附加参数，一旦定时器到期，它们会作为参数传递给function 
+var timeoutID = scope.setTimeout(function[, delay]); 
+var timeoutID = scope.setTimeout(code[, delay]);
+```
+- getComputedStyle
+  - 返回的style是一个实时的 CSSStyleDeclaration 对象，当元素的样式更改时，它会自动更新本身。
+```js
+let style = window.getComputedStyle(element, [pseudoElt]);
+```
+- element
+  - 用于获取计算样式的Element。
+- pseudoElt 可选
+  - 指定一个要匹配的伪元素的字符串。必须对普通元素省略（或null）。
+#### Window属性
+- innerWidth
+  - 浏览器视口（viewport）宽度（单位：像素），如果存在垂直滚动条则包括它。
+- innerHeight
+  - 浏览器窗口的视口（viewport）高度（以像素为单位）；如果有水平滚动条，也包括滚动条高度。
+
 ### DOM事件
 - DOM事件(DOM标准)的级别
     |级别|格式|
@@ -367,29 +420,7 @@
     ev.dispatchEvent(eve);
     ```
 
-<mark-check id="windowduixiang"></mark-check>
-- <highlight-box>window对象事件</highlight-box>
 
-|属性|	描述	|
-| :------| ------: | :------: |
-onload	|一张页面或一幅图像完成加载。	|
-onbeforeunload|	该事件在即将离开页面（刷新或关闭）时触发|
-onunload|	用户退出页面。| 
-onpageshow|	该事件在用户访问页面时触发	|
-onpagehide|	该事件在用户离开当前网页跳转到另外一个页面时触发	|
-onerror	|在加载文档或图像时发生错误。|
-onabort|图像的加载被中断。|
-onhashchange|	该事件在当前 URL 的锚部分发生修改时触发。	 |
-onresize|	窗口或框架被重新调整大小。	|
-onscroll|	当文档被滚动时发生的事件。	|
-
-- window对象方法
-    - setTimeout
-    ```js
-    var timeoutID = scope.setTimeout(function[, delay, param1, param2, ...]);// param1, ..., paramN 附加参数，一旦定时器到期，它们会作为参数传递给function 
-    var timeoutID = scope.setTimeout(function[, delay]); 
-    var timeoutID = scope.setTimeout(code[, delay]);
-    ```
 #### 事件冒泡
 ```html
 <body>
@@ -564,6 +595,7 @@ function bindEvent(elem, type, selector, fn) {
 ```
 
 <mark-check id="view2"></mark-check>
+
 ### 对于一个无限下拉加载图片的页面，如何给每个图片绑定事件
 
 使用代理，优点

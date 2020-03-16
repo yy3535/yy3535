@@ -73,6 +73,7 @@ el换成.$mount('#app')是一样的。
 <mark-check id="shuangxiangbangdingyuanli"></mark-check>
 ### observer原理
 <mark-box>
+
 ```js
 //老的原理
 let obj={name:'zfpx',age:9};
@@ -174,6 +175,7 @@ p.name='hello';
    - 手动销毁组件
 
 <mark-check id="template"></mark-check>
+
 ## template
 
 ### <highlight-box>取值表达式{{}}</highlight-box>
@@ -188,6 +190,7 @@ p.name='hello';
    - 取值时放对象，加空格即可 {{ {name:1} }}
 
 <mark-check id="directive"></mark-check>
+
 ## 指令
 ### <highlight-box>v-text</highlight-box>
 
@@ -345,7 +348,23 @@ style
    等价于  <!-- v-model 是 @input + :value 的一个语法糖-->
    <input type='text' v-model="msg"/>
    ```
-
+#### model属性自定义model
+```js
+{
+  model:{
+    prop:'checked',
+    event:'change'
+  }
+}
+```
+#### .sync绑定
+```vue
+<template>
+  <Son1 :money="mny" @update:money="val=>mny=val"></Son1>
+  // 等同于
+  <Son1 :money.sync="mny"></Son1>
+</template>
+```
 #### select,radio和checkbox
 ```js
 //select
@@ -988,7 +1007,7 @@ Vue.component('base-checkbox', {
 ```
 
 #### 将原生事件绑定到组件
-- 使用 v-on 的 .native 修饰符,在一个组件的根元素上直接监听一个原生事件
+- 使用 v-on 的 .native 修饰符,在组件的根元素上直接监听一个原生事件
 ```html
 <base-input v-on:focus.native="onFocus"></base-input>
 ```
@@ -1001,6 +1020,7 @@ Vue.component('base-checkbox', {
 同步
 
 <mark-check id="componentsmessage"></mark-check>
+
 ### 组件间通信
 - 子组件触发父级的方法
   - this.$attrs 获取当前组件所有的属性
@@ -1032,17 +1052,52 @@ Vue.component('base-checkbox', {
 
 - <highlight-box>props emit | $attrs $listeners | $parent $children $ref | $provider $inject | eventBus vuex</highlight-box>
 1. prop和$emit
-父组件向子组件传递通过prop,子组件向父组件传递通过$emit
-2. $attrs和$listeners
-Vue2.4开始提供$attrs和$listeners传递值
-3. $parent,$children
-4. $refs
-获取实例
-5. provider和inject
-父组件通过provider提供变量，子组件通过inject来注入变量
-6. eventBus
-平级组件数据传递，可使用中央事件总线方式
-7. vuex状态管理
+父组件向子组件传递属性和方法通过prop,子组件触发父组件方法，通过$emit调用
+2. 同步数据 v-model .sync
+3. $attrs和$listeners，如果props里用了，attrs就会减少。未使用的会添加在组件的属性中显示出来。如果不希望没有用的属性增加到dom元素上，加上inheritAttrs:false
+Vue2.4开始提供$attrs所有属性和$listeners所有事件方法
+4. $parent,$children,
+衍生出来封装$dispatch(elementUI简化$parent.$parent.$parent这样的操作，只要父级有该方法就执行)，$broadcast($children.$children.$children这样的操作，只要子级有该方法就行)这两个方法
+```JS
+Vue.prototype.$diapatch=function(eventName,value){
+  let parent=this.$parent;
+  while(parent){
+    parent.$emit(eventName,value);
+    parent=parent.$parent;
+  }
+}
+```
+```js
+Vue.prototype.$broadcast=function(eventName,componentName,value){
+  let children=this.$children;
+  function broadcast(children){
+    for(let i=0;i<children.length;i++){
+      let child=children[i];
+      if(componentName===child.$options.name){
+        child.$emit(eventName,value)
+        return;
+      }else{
+        if(child.$children){
+          broadcast(child.$children);
+        }
+      }
+    }
+  }
+  broadcast(children)
+}
+```
+5. $refs
+   - 父组件中给子组件添加ref属性，获取子组件实例
+6. provide和inject
+父组件提供数据，子组件获取数据，但不知道数据是哪里的来源
+7. eventBus
+兄弟组件数据传递，在任何组件中发布，在其他组件中调用。可以任意组件间通信，只适合小规模（大规模不好维护 一呼百应）
+```js
+Vue.prototype.$bus=new Vue({});
+this.$bus.$on()
+this.$bus.$emit()
+```
+8. vuex状态管理 大规模
 
 </mark-box>
 
@@ -1729,95 +1784,54 @@ Vue.directive('focus', {
 
 ### 渲染函数 & JSX
 #### 使用render函数来创建DOM
-- vue实例中，如果有了template，就放弃el，使用template
-<mark-check id="renderdemo"></mark-check>
-- demo:写一个只能通过 level prop 动态生成标题 (heading) 的组件
-```js
-// 之前的写法
-<script type="text/x-template" id="anchored-heading-template">
-  <h1 v-if="level === 1">
-    <slot></slot>
-  </h1>
-  <h2 v-else-if="level === 2">
-    <slot></slot>
-  </h2>
-  <h3 v-else-if="level === 3">
-    <slot></slot>
-  </h3>
-  <h4 v-else-if="level === 4">
-    <slot></slot>
-  </h4>
-  <h5 v-else-if="level === 5">
-    <slot></slot>
-  </h5>
-  <h6 v-else-if="level === 6">
-    <slot></slot>
-  </h6>
-</script>
-<script>
-  Vue.component('anchored-heading', {
-    template: '#anchored-heading-template',
-    props: {
-      level: {
-        type: Number,
-        required: true
-      }
-    }
-  })
-</script>
-```
-```js
-// jsx写法
-Vue.component('anchored-heading', {
-  render: function (createElement) {
-    return createElement(
-      'h' + this.level,   // 标签名称
-      this.$slots.default // 子节点数组
-    )
-  },
-  props: {
-    level: {
-      type: Number,
-      required: true
-    }
-  }
-})
-```
-- 节点、树以及虚拟 DOM
-  - 虚拟DOM
-    - Vue 通过建立一个虚拟 DOM 来追踪自己要如何改变真实 DOM
-    ```JS
-    <!-- `createElement`返回`createNodeDescription` -->
-    return createElement('h1', this.blogTitle)
-    ```
+- 虚拟 DOM
 <mark-check id="createElement"></mark-check>
 - <highlight-box>createElement</highlight-box>
   - <underline-box>返回一个VNode</underline-box>
   - 参数
     - <underline-box>HTML标签名</underline-box>、组件选项对象，或者resolve 了上述任何一种的一个 async 函数{String | Object | Function}
-    - 一个与模板中属性对应的<underline-box>数据对象</underline-box>{Object}
-    - <underline-box>子级虚拟节点</underline-box> (VNodes){String | Array}
-  ```javascript
-  // @returns {VNode}
-  createElement(
-    // 一个 HTML 标签名、组件选项对象，或者resolve 了上述任何一种的一个 async 函数。必填项。
-    'div',
-    // 一个与模板中属性对应的数据对象。可选。
-    {
-    },
-    // 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，也可以使用字符串来生成“文本虚拟节点”。可选。
-    [
-      '先写一些文字',
-      createElement('h1', '一则头条'),
-      createElement(MyComponent, {
-        props: {
-          someProp: 'foobar'
-        }
-      })
-    ]
-  )
+    - <underline-box>数据对象</underline-box>{Object}
+    - <underline-box>子级VNode</underline-box> (VNodes){String | Array}
+  
+  ```js
+  render: function (createElement) {
+    createElement(
+      'div',
+      {},
+      [
+        '先写一些文字',
+        createElement('h1', '一则头条'),
+        createElement(MyComponent, {
+          props: {
+            someProp: 'foobar'
+          }
+        })
+      ]
+    )
+  }
   ```
-- createElement参数--数据对象
+:::tip 返回的虚拟dom对象
+```js
+{
+  tag:'div',
+  props:{},
+  children:[{
+    tag:undefined,
+    props:undefined,
+    children:undefined,
+    text:'hello'
+  }]
+}
+<div>hello</div>
+new Vue({
+  render(h){
+    return h('div',{},'hello')
+  }
+})
+```
+
+:::
+- 数据对象
 
   ```js
   {
@@ -1919,8 +1933,9 @@ Vue.component('anchored-heading', {
     -  scopedSlots 字段向子组件中传递作用域插槽
 
 <mark-check id="jsx"></mark-check>
-#### JSX
-使用一个 Babel 插件，用于在 Vue 中使用 JSX 语法，它可以让我们回到更接近于模板的语法上。比上面简单
+
+#### JSX语法
+使用一个 Babel 插件，用于在 Vue 中使用 JSX 语法
 ```js
 import AnchoredHeading from './AnchoredHeading.vue'
 
@@ -1936,7 +1951,7 @@ new Vue({
 })
 ```
 
-:::warning
+::: warning
 将 h 作为 createElement 的别名是 Vue 生态系统中的一个通用惯例，实际上也是 JSX 所要求的。从 Vue 的 Babel 插件的 3.4.0 版本开始，自动注入 `const h = this.$createElement`，这样你就可以去掉 (h) 参数了。
 :::
 
@@ -3379,6 +3394,34 @@ export default {
   ```
 
 ### vuex原理
+1. vuex文件导出install函数和store类。
+2. 通过Vue.use(vuex)，执行install函数，install中通过vue.mixin混入把根组件上传递的store属性赋值给所有的子组件，同时在根组件的$store上赋值store。
+3. 给this.state赋值，将options.state值放在Vue组件的data中赋给this.state，实现数据变化，视图更新。使用get state(){}类的属性访问器去掉访问state时中间多的一层
+4. 优化封装迭代对象得forEach方法
+5. new ModuleCollection(options)，执行register函数注册模块为树结构，递归调用register，让模块成为如下完整树结构，赋值给this._modules。
+6. installModule(this, this.state, [], this._modules.root) 把模块树结构放到store上去。getter重新定义值为函数执行结果。mutation和action转成拥有state,payload,store等参数的函数，通过发布订阅模式把函数存在store.mutation和store.action上，然后等调用时调用。mutation函数中，mutation执行完后，循环执行_subscribe，加上参数。循环children，递归执行intallModule(store, rootState, path.concat(moduleName), module)
+7. 依次执行插件的函数。插件函数中调用store.subscribe(fn),将fn放入_subscribe中，当mutation任一函数触发时所有订阅执行一遍。
+:::tip
+```js
+let modules=
+{
+  _rawModule:a,
+  _children:{
+    b:{
+      _rawModule:b,
+      _children:{},
+      state:xxx
+    },
+    c:{
+      _rawModule:b,
+      _children:{},
+      state:xxx
+    }
+  },
+  state:xxx
+}
+```
+:::
 ```js
 // vuex.js
 let Vue;
@@ -4289,4 +4332,8 @@ import camelCase from 'lodash/camelCase'
     }
   }
 </style>
+```
+### vue serve
+```js
+
 ```

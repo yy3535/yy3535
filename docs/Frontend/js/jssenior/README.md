@@ -701,3 +701,316 @@ location ~.*\.json {
 2. 判断来源
   - 3001访问的3000 referer判断
 3. token
+
+## 高阶函数
+高阶函数的满足下面的条件之一：
+
+函数作为参数被传递
+函数可以作为返回值被返回
+函数作为参数传递
+为什么要将函数作为参数进行传递，因为这样处理的话，我们可以抽离出一部分容易变化的业务逻辑，将这部分的业务逻辑放在函数的参数中，这样的话我们就可以分离业务代码中变化和不变的部分。我们经常使用的业务场景是回调函数。
+
+回调函数
+回调函数的定义：函数A作为参数（函数引用）传递到另外一个函数B中，并且这个函数B执行函数A，我们叫函数A为回调函数。当A函数没有名字的时候（A为函数表达式的时候），叫做匿名回调函数。
+
+回调函数的不带参数的调用
+当回调函数为普通函数的时候。
+第一种方式：
+```js
+function superFun ( callback ){
+  callback();
+}
+function childFun(){
+  alert('回调函数')
+}
+//调用
+superFun (childFun);
+```
+第二种方式：
+```js
+function superFun ( callback ){
+  eval(callback);
+}
+function childFun(){
+  alert('回调函数')
+}
+//调用
+superFun ('childFun()');
+```
+当回调函数为匿名函数的时候：
+```js
+function superFun( callback ){
+  callback();
+}
+//调用
+superFun(function(){
+  alert('匿名函数作为回调函数');
+})
+```
+当回调函数带有参数的时候
+回调函数为普通函数的时候：
+方式一：
+```js
+function superFun(callback){
+  eval(callback);
+}
+function childFun(param){
+  alert(param);
+}
+//调用的时候
+superFun('childFun("回调函数")');
+```
+方式二：
+```js
+function superFun(callback,param){
+  callback(param);
+}
+function childFun( param ){
+alert(param);
+}
+superFun(childFun ,'回调函数');
+方式三：
+
+function superFun(callback，param){
+  callback(param);
+}
+function childFun(param){
+  alert(param);
+}
+//调用
+superFun(function(param){
+  childFun("param");
+},"回调函数");
+回调函数为匿名函数的时候：
+
+function superFun(callback, param){
+  callback(param);
+}
+superFun(function(param){
+  alert(param);
+},"回调函数");
+```
+函数作为返回值输出
+让函数继续返回一个可执行的函数，意味着运算过程是可延续的。
+
+高阶函数实现AOP
+AOP主要的作用是把一些与核心业务逻辑无关的功能模块抽离出来，这些与业务模块无关的功能模块通常包括日志统计、安全控制、异常处理，把这些功能抽离出来之后，再通过‘动态织入’的方式渗入到逻辑模块中，这样的好处是保持业务模块的内聚性，也可以方便的对日志统计等模块实现功能的复用。
+在JavaScript中实现AOP，都是将一个函数"动态织入"到另外一个函数之中，有的时候我们通过扩展原型方法来实现这一点。
+```js
+Function.prototype.before = function (beforefn) {
+  var _self = this;
+  return function (){
+    beforefn.apply (this, arguments);
+    return _self.apply( this, arguments);
+  }
+};
+
+Function.prototype.after = function (afterfn){
+    var _self = this;
+    return function (){
+      var ret =_self.apply(this, arguments);
+      afterfn.apply (this, arguments);
+      return ret;
+  }
+};
+
+var func = function(){
+  console.log(2);
+};
+
+func = func.before(function(){
+  console.log(1);
+}).after(function(){
+  console.log(3);
+})
+
+func();
+```
+高阶函数的其他应用
+currying
+我们先说一下函数柯里化（function currying），currying又被称为部分求值，一个currying的函数会接受一些参数，接受这些参数之后，函数并不会立即求值，而是继续返回另外一个函数，刚刚被传入的参数在函数中形成闭包后被保存起来，带到函数被真正需要的时候，之前传入的所有的参数会用于被一次性的求值。
+假设我们编写一个计算每月开销的函数，在每一天结束之前，我们要记录今天花掉了多少钱：
+```js
+var monthlyCost = 0;
+var cost = function(money){
+  monthlyCost +=money;
+};
+cost(100);//第1天
+cost(200);//第2天
+cost(300);//第3天
+cost(500);//第30天
+alert(monthlyCost );
+```
+看着一段代码我们发现了我们每一天都会计算截止到今天我们花了多少钱，但是现在的应该用场景是我们并不关注我们每一天花了多少钱，我们仅仅关注我们在月末的时候花了多少钱。也就是说我们只需要在月末的时候计算一次就可以。
+如果我们在前29天仅仅是保存好当天的开销，知道30日我们才计算求值即使按，这样就达到了我们的要求，我们修改一下上面的代码。
+```js
+var cost = (function(){
+  var args = [];
+  return function(){
+    if(arguments.length === 0){
+      var money = 0;
+      for(var i = 0, q = args.length ;i<q ;i++){
+        money += args[i];
+      }
+      return money;
+    }else{
+      [].push.apply(args,arguments);
+    }
+  }
+})();
+
+cost(100);//未真正求值
+cost(200);//未真正求值
+cost(300);//未真正求值
+cost(500);//未真正求值
+
+cost()//月末进行计算
+```
+然后我们来编写一个通用的currying的例子，在currying函数中接受一参数，即将要被currying的函数，在例子中，这个函数的作用遍历本月每一天的开销，并求出他们的总和。
+```js
+var currying = function( fn ){
+  var args = [];
+  return function(){
+    if(arguments.length === 0){
+      return fn.apply(this, args);
+    }else{
+      [].push.apply(args, arguments);
+      return arguments.callee;
+     }
+  }
+};
+var cost = (function(){
+  var money = [];
+  return function(){
+      for(var i = 0, q = args.length ;i<q ;i++){
+          money += args[i];
+      }
+      return money;
+    }
+})();
+var cost = currying( cost );
+cost(100);//未真正求值
+cost(200);//未真正求值
+cost(300);//未真正求值
+
+alert(cost());
+```
+函数的节流
+JavaScript中的函数在大部分的情况下是由用户主动触发的，除非函数本身实现不合理，否则我们在一般的情况下不会遇到和性能相关的问题的，但是在一些特定的场景下可能存在函数被频繁的调用，造成大的性能问题。
+
+window.onresize事件，会有一些和DOM相关的操作，消耗会比较大
+mousemove事件，也会对DOM进行操作，消耗会比较大。
+显示上传进度
+实现函数节流的代码
+主要的理论依据：将即将被执行的函数用setTimeout延迟一段时间再进行执行。如果这次延迟的执行还没有完成，就忽略接下来调用该函数的请求。这个函数一般接受两个参数，第一个但是是需要被延迟执行的函数，第二个参数是延迟执行的时间。
+```js
+var throttle = function ( fn, interval){
+  var _self = fn, //保存需要被严查执行的函数的引用
+       timer,     //定时器
+       firstTime = true; // 是否是第一次被调用
+  return function(){
+    var args = arguments;
+    _me = this;
+
+    if(firstTime){ //如果是第一次进行调用，不需要考虑延迟
+      _self.apply(_me, args);
+      return firstTime = false;
+    }
+    if(timer){ //如果定时器还在，说明前一次的延迟还没有执行完成
+    return false;
+    }
+    timer = setTimeout(function(){ //延迟一段时间的操作
+    clearTimeout(timer);
+    timer = null;
+    _self.apply(_me, args);
+
+    },interval || 500);
+  };
+};
+window.onresize = throttle (function(){
+  console.log(1);
+},500)
+```
+分时函数
+在节流函数中，我们提供了一种函数限制被频繁调用的解决方案，但是有的时候，有一些函数的确是用户主动调用的，但是由于一些客观的原因，这些函数会严重的影响页面的性能。
+举个栗子：创建webQQ的还有列表，列表中通常会有成百上千的好友，如果每一个好友都是一个节点的话，我们渲染这个列表的时候，就要一次性向页面中添加成百上千个节点，在很短的时间向页面添加大量的DOM节点会让浏览器过载，这个时候，我们往往看到浏览器卡顿甚至是假死。
+我们的解决方案是对时间进行拆分，比如说之前是1秒创建1000个节点，编程200毫秒创建8个节点。我们将这个函数命名为timeChunk，这个函数接受3个参数，第一个参数是创建节点时需要的数据，第二个参数是创节点的逻辑函数，第三个参数是每一批创建节点的个数。
+```js
+var timeChunk = function (ary, fn, count){
+  var obj,t;
+  var len = ary.length;
+  var start = function(){
+  for(var i = 0 ;i < Math.min(count || 1 ,ary.length) ; i++){
+    var obj = ary.shift();
+    fn(obj);
+    }
+  };
+return function (){
+  t = setInterval(function(){
+    if(ary.length === 0){ //如果全部的节点都已经被创建好了
+      return clearInterval(t)
+      }
+  start();
+    },200);
+  }
+}
+```
+惰性加载
+我们在进行web开发的过程中，因为浏览器和浏览器之间会存在差异，有一些嗅探工作是不可以被避免的，比如说我们需要一个在各个浏览器中能够通用的事件绑定函数addEvent，我们经常的写法如下：
+```js
+var addEvent = function(elem, type, handler){
+  if(window.addEventListener){
+    return elem.addEventListener(type, handler,false);
+  }
+  if(window.attachEvent){
+   return elem.attachEvent( 'on' +type, handler);
+  }
+};
+```
+这个函数的缺点是，当它每一次被调用的时候都会执行if条件分支，虽然执行这些分支的开销并不大，但是也许有一些方法可以避免程序重复执行的过程。我们的解决方案是将嗅探浏览器的操作提前到代码加载之前，在代码加载的时候，就立即进行判断，以方便让addEvent返回一个包含正确逻辑的函数。
+```js
+var addEvent =(function(){
+  if(window.addEventListener){
+    return function(elem, type, handler){
+      elem.addEventListener(type, handler,false);
+    }
+}
+  if(window.attachEvent){
+    return function(elem, type, handler){
+       elem.attachEvent( 'on' +type, handler);
+    }
+  }
+})();
+```
+但是这样解决也还是存在一定的问题，可能我们从头到尾都没有用到addEvent 这个函数，这样的话，前一次的浏览器的嗅探工作完全是多余的，可以这个操作会增加页面ready的时间。
+我们为了优化这样的操作，引入了惰性载入的函数方案，此时addEvent依旧被声明为一个普通的函数，在函数中依然有以下分支的判断，但是第一次进入分支之后，在函数的内部会重写这个函数，重写之后的函数就是我们所期望的addEvent函数，在下一次再进入这个函数的时候，不再存在条件分支。
+
+```html
+<html>
+  <body>
+    <div id = 'div1'>点击我进行实践的绑定</div>
+    <script>
+        var addEvent = function(elem, type, handler){
+            if(window.addEventListener){
+             addEvent = function(elem, type, handler){
+                elem.addEventListener(type, handler,false);
+              }
+            }else if(window.attachEvent){
+               addEvent = function(elem, type, handler){
+                elem.attachEvent( 'on' +type, handler);
+               }
+          }
+          addEvent (elem, type, handler)；
+        };
+        var div = document.getElementById('div');
+        addEvent(div, 'click', function(){
+        alert(1);
+      });
+        var div = document.getElementById('div');
+        addEvent(div, 'click', function(){
+        alert(2);
+      })
+    </script>
+  </body>
+</html>
+```

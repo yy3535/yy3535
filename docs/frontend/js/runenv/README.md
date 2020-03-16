@@ -160,6 +160,7 @@ Content-Length: 122
 ### 为何要把 JS 放在 body 最后
 
 <mark-check id="onloadDomContentLoaded"></mark-check>
+
 ### `window.onload`和`DOMContentLoaded`区别
 
 ```js
@@ -183,6 +184,14 @@ document.addEventListener('DOMContentLoaded', function () {
 - 静态资源缓存（资源名称加 MD5 戳）
 - 使用 CND 让资源加载更快
 - 使用 SSR 后端渲染，数据直接突出到 HTML 中
+
+
+3. 合并请求：nginxMok ,sprite雪碧图
+4. 缓存 from cache(memory,disk) localstorage 本地缓存策略优化 HTTP头的缓存cache-control:max-age-60
+5. tcp网络连接优化，tcp调优 http/2 keep-alive
+6. 硬件 加大带宽 使用cdn(对象存储)
+7. 资源大小：gzip,webp,image压缩，cookie体积减小
+8. 预加载：dns预解析,多个cdn域名,异步读取js(defer async)
 
 ### <highlight-box>渲染优化</highlight-box>
 
@@ -287,11 +296,9 @@ listNode.appendChild(frag);
 <mark-check id="fangdoujieliu"></mark-check>
 
 #### 防抖和节流
-- 优化高频时间 onscroll oninput resize onkeyup keydown 降低代码执行频率
-- 用户scroll和resize行为导致页面不断地重新渲染，如果在绑定的回调函数中大量操作dom也会出现页面卡顿
-- 要在文字改变时触发一个 change 事件，通过 keyup 来监听。
-- <highlight-box>防抖</highlight-box>
-  - <highlight-box>对于短时间内连续触发的事件（上面的滚动事件），防抖的含义就是让某个时间期限（如上面的1000毫秒）内，事件处理函数只执行一次。只执行最后一次</highlight-box>
+- 防抖和节流的作用都是防止函数多次调用。区别在于，假设一个用户一直触发这个函数，且每次触发函数的间隔小于wait，防抖的情况下只会调用一次，而节流的情况会每隔一定时间（参数wait）调用函数。
+- <highlight-box>防抖(debounce)</highlight-box>
+  - <highlight-box>让某个时间期限（如上面的1000毫秒）内，事件处理函数只执行最后一次</highlight-box>
   - underscore的debounce方法 松手后隔会再执行
 ```js
 var textarea = document.getElementById('text')
@@ -330,7 +337,8 @@ btn.addEventListener('click',debounce(logger,1000,true))
 ```
 
 - <highlight-box>节流(Throttle)</highlight-box>
-  - <highlight-box>保证一段时间内，核心代码只执行一次。函数执行一次后，在某个时间段内暂时失效，过了这段时间后再重新激活（类似于技能冷却时间）。</highlight-box>
+  - <highlight-box>一段时间内，代码只执行一次。</highlight-box>
+  - 执行一次后，暂时失效，过了一段时间后再重新激活
   - underscore库中的throttle方法
 ```js
 var textarea = document.getElementById('text')
@@ -622,22 +630,26 @@ document.addEventListener('DOMContentLoaded', function () {
       | \ddd     | 1到3位八进制数所代表的任意字符      | 三位八进制          |
       | \xhh     | 十六进制所代表的任意字符            | 十六进制            |
 
-      |字符|HTML实体编号|HTML实体名称|
-      |:---:|:---:|:---:|
-      |     "      | \&#34;  | \&quot; |
-      |     &      | \&#38;  | \&amp;  |
-      |     <      | \&#60;  |  \&lt;  |
-      |     >      | \&#62;  |  \&gt;  |
-      | 不断开空格   | \&#160; | \&nbsp; |
+    :::tip HTML Entity
+    一个HTML 实体 是一段文本（“串”），以与符号（开始&）和结束用分号（;）。实体通常用于显示保留字符（否则将被解释为HTML代码）和不可见字符（例如不间断空格）。
 
-    :::tip
-    转义字符串(Escape Sequence)，即字符实体(Character Entity)分成三部分:第一部分是一个&符号，英文叫ampersand;第二部分是实体(Entity)名字或者是#加上实体(Entity)编号;第三部分是一个分号。
+
+        |字符|实体|HTML实体名称|注意|
+        |:---:|:---:|:---:|
+        |     "      | \&quot; |解释为属性值的开始和结束。|
+        |     &      | \&amp;  |解释为实体或字符引用的开始。|
+        |     <      |  \&lt;  |解释为标签的开头|
+        |     >      |  \&gt;  |解释为标签的结尾|
+        | 不断开空格   | \&nbsp; ||
+        
+
+    [HTML保留字符列表](https://html.spec.whatwg.org/multipage/named-characters.html#named-character-references)
     :::
     
-    2. <highlight-box>过滤</highlight-box>
+    1. <highlight-box>过滤</highlight-box>
       - 移除用户上传的DOM属性，如onerror等
       - 移除用户上传的Style节点、Script节点、Iframe节点等。
-    3. <highlight-box>校正</highlight-box>
+    2. <highlight-box>校正</highlight-box>
       - 避免直接对HTML Entity解码
       - 使用DOM Parse转换，矫正不配对的DOM标签
 

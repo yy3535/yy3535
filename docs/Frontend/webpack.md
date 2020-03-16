@@ -43,6 +43,10 @@ mkdir dist
 - npx webpack --mode development
     - 默认production，压缩代码，development，不压缩代码
 :::tip
+- 配置文件只能用commonjs规范（基于node）
+- 修改配置文件名字，需要指定配置文件：`npx webpack --config new-name`
+:::
+:::tip
 ```json
 // package.json
 {
@@ -402,7 +406,7 @@ plugins: [
 |hash|	文件内容的hash,默认是md5生成|
 |emoji|	一个随机的指代文件内容的emoj|
 
-### 编译less和sass
+## 编译less和sass
 安装
 ```md
 npm i less less-loader -D
@@ -578,6 +582,9 @@ npm install --save @babel/runtime
 - 基于eslint:recommend配置进行改进
 - 发现代码错误的规则尽可能多的开启
 - 帮助保持团队的代码风格统一而不要限制开发体验
+```js
+
+```
 ```md
 npm install eslint eslint-loader babel-eslint --save-dev
 ```
@@ -1227,6 +1234,7 @@ npm run generateAnalyzFile
 npm run analyz
 ```
 ## polyfill
+Polyfill 是一块代码（通常是 Web 上的 JavaScript），用来为旧浏览器提供它没有原生支持的较新的功能。
 ### babel-polyfill
 - babel-polyfill是React官方推荐，缺点是体积大
 - babel-polyfill用正确的姿势安装之后，引用方式有三种：
@@ -1242,7 +1250,6 @@ npm run analyz
 ```
 ## libraryTarget 和 library
 当用 Webpack 去构建一个可以被其他模块导入使用的库时需要用到它们
-
 - output.library 配置导出库的名称
 - output.libraryExport 配置要导出的模块中哪些子模块需要被导出。 它只有在 output.libraryTarget 被设置成 commonjs 或者 commonjs2 时使用才有意义
 - output.libraryTarget 配置以何种方式导出库,是字符串的枚举类型，支持以下配置
@@ -1252,11 +1259,6 @@ npm run analyz
 |commonjs|	只能按照commonjs的规范引入我们的库|	被依赖模块需要按照commonjs规范引入|
 |amd|	只能按amd规范引入|	被依赖的模块需要按照amd规范引入|
 |umd|	|可以用script、commonjs、amd引入|	按对应的方式引入|
-
-
-
-
-
 
 ## 打包库和组件
 - webpack还可以用来打包JS库
@@ -1371,7 +1373,7 @@ webpack.config.js
 ```js
 {
         test:/\.css$/,//如果要require或import的文件是css的文件的话
-        //从右向左处理CSS文件,oader是一个函数
+        //从右向左处理CSS文件,loader是一个函数
         use:[{
                 loader:MiniCssExtractPlugin.loader,
                 options:{
@@ -1402,15 +1404,6 @@ webpack.config.js
 +                }]
 +            },
 ```
-## 内联资源
-
-
-
-
-
-
-
-## 参考
 
 
 
@@ -1425,167 +1418,257 @@ webpack.config.js
 
 
 
-:::tip
-- 配置文件只能用commonjs规范（基于node）
-- 修改配置文件名字，需要指定配置文件：`npx webpack --config new-name`
-:::
-
-## 打包优化
-### dll
-- xxx.dll,如react,react-dom,react-router-dom登不需要改动的包做成xxx.dll文件上线直接放上去，体积不变，开发时打包速度明显变快
+## optimize
+### purgecss-webpack-plugin
+- purgecss
+- 可以去除未使用的 css，一般与 glob、glob-all 配合使用
+- 必须和mini-css-extract-plugin配合使用
+- paths路径是绝对路径
+```md
+npm i -D purgecss-webpack-plugin glob
+```
+webpack.config.js
 ```js
-// webpack.react.js
-let path=require('path');
-// webpack内置插件，所以不需要安装
-let webpack=require('webpack/lib/DllPlugin');
++ const glob = require('glob');
++ const PurgecssPlugin = require('purgecss-webpack-plugin');
+
+module.exports = {
+  mode: 'development',
+  plugins: [
++    new PurgecssPlugin({
++      paths: glob.sync(`${path.join(__dirname, 'src')}/**/*`, 
++      {nodir: true}), // 不匹配目录，只匹配文件
++    }),
+  ],
+}
+```
+### DLL
+.dll为后缀的文件称为动态链接库，在一个动态链接库中可以包含给其他模块调用的函数和数据
+
+- 把基础模块独立出来打包到单独的动态连接库里
+- 当需要导入的模块在动态连接库里的时候，模块不能再次被打包，而是去动态连接库里获取
+#### 定义DLL
+- DllPlugin插件： 用于打包出一个个动态连接库
+- DllReferencePlugin: 在配置文件中引入DllPlugin插件打包好的动态连接库
+```js
+const path=require('path');
+const DllPlugin=require('webpack/lib/DllPlugin');
 module.exports={
-    entry:{
+    entry: {
         react:['react','react-dom']
+    },// 把 React 相关模块的放到一个单独的动态链接库
+    output: {
+        path: path.resolve(__dirname,'dist'),// 输出的文件都放到 dist 目录下
+        filename: '[name].dll.js',//输出的动态链接库的文件名称，[name] 代表当前动态链接库的名称
+        library: '_dll_[name]',//存放动态链接库的全局变量名称,例如对应 react 来说就是 _dll_react
     },
-    output:{
-        filename:'_dll_[name].js',
-        path:path.resolve(__dirname,'dist'),
-        // 导出到exports对象上，exports[_dll_a=function(){}()，写this挂到this上
-        libraryTarget:'commonjs',
-        library:'_dll_[name]',
-    },
-    plugins:[
-        // 声明动态链接库
-        new webpack.DllPlugin({
-            // 产生出去的是个json文件
-            name:'_dll_[name]',
-            path:path.resolve(__dirname,'dist','mainfest.json')
+    plugins: [
+        new DllPlugin({
+            // 动态链接库的全局变量名称，需要和 output.library 中保持一致
+            // 该字段的值也就是输出的 manifest.json 文件 中 name 字段的值
+            // 例如 react.manifest.json 中就有 "name": "_dll_react"
+            name: '_dll_[name]',
+            // 描述动态链接库的 manifest.json 文件输出时的文件名称
+            path: path.join(__dirname, 'dist', '[name].manifest.json')
         })
     ]
 }
 ```
+#### 使用动态链接库文件
 ```js
-// webpack.config.js
-let ReferencePlugin=require('webpack/lib/DllReferencePlugin');
-
-plugins:[
-    new ReferencePlugin({
-        mainifest:path.resolve(__diraname,'dist','mainifest.json')
-    })
+const DllReferencePlugin = require('webpack/lib/DllReferencePlugin')
+plugins: [
+  new DllReferencePlugin({
+    manifest:require('./dist/react.manifest.json')
+  })
 ]
-
 ```
+```md
+webpack --config webpack.config.js --mode development
+```
+#### html中使用
 ```html
-// index.html
-<script src='_dll_react.js'></script>
+<script src="react.dll.js"></script>
+<script src="bundle.js"></script>
 ```
-### 多线程打包
+
+### 多进程线程处理
+#### HappyPack
+- 构建需要解析和处理文件,文件读写和计算密集型的操作太多后速度会很慢
+- Node.js 之上的 Webpack 是单线程模型
+- happypack 就能让Webpack把任务分解给多个子线程去并发的执行，子线程处理完后再把结果发送给主进程。
 - 进程里包括线程
 - 进程里包括一条主线程，node中可以开子进程，一般不会超过当前cpu核数(i5 4 i7 8，默认开4个)
 - 较复杂的项目才使用，小项目打包时间会变慢
-```js
-let Happypack=require('happypack');
-module:{
-    rules:[
-        {
-            test:/\.js$/,
-            exclude:/node_modules/,
-            include:path.resolve('src'),
-            use:'happypack/loader?id=js'
-        },
-        {
-            test:/\.css$/,use:'happypack/loader?id=css'
-        }
-    ]
-},
-plugins:[
-    // 多线程打包
-    new Happypack({
-        id:'js',
-        use:{
-            loader:'babel-loader',
-            options:{
-                presets:[
-                    "@babel/preset-env"
-                ]
-            }
-        }
-    }),
-    new Happypack({
-        id:'css',
-        use:['style-loader','css-loader']
-    })
-]
-```
-
-### webpack3需要处理的一些情况(webpack4自动处理)
-- tree shanking(树上的叶子没用的去掉)和把变量尽可能最小化
-  - webpack4
-    - 必须使用import语法，require不支持（所以前端不要使用require语法，可能会导致代码多余）
-    - 生产模式配置了`optimization`并且有配置内容会自动去掉，并且会把变量尽可能最小化，开发模式不会去掉
-  - webpack3
-    - 使用scope hosting工具解决
-```js
-// cakc.js
-let add=(a,b)=>{
-    return 'sum'+(a+b)
-}
-let minus=(a,b)=>{
-    return 'minus'+(a+b)
-}
-export {add,minus}
+```md
+npm i happypack@next -D
 ```
 ```js
-// index.js
-import {add} from './calc';
-```
-
-### 提取公共代码的插件 webpack4 配置优化项 webpack3 使用插件
-- 多入口页面使用。
-```js
-// index.js
-import './a';
-import './b';
-import jquery from jquery;
-```
-```js
-// other.js
-import './a';
-import './b';
-import jquery from jquery;
-```
-```js
-// about.js
-import jquery from jquery;
-```
-```js
-module.exports={
-    optimization:{
-        // 分割代码，缓存用 把a和b打包成一个文件，并缓存下来
-        splitChunks:{
-            cacheGroups:{
-                // 普通模块打包
-                common:{
-                    // 入口中有公共的抽离
-                    chunks:'initial',,
-                    // 只要有字节是公用的就提取
-                    minSize:0,
-                    // 最少重复引用多少次才提取
-                    minChunks:2
-                },
-                // 第三方模块打包
-                vendor:{
-                    // 优先级（先打包第三方模块）
-                    priority:1,
-                    test:/node_modules/,
-                    chunks:'initial',
-                    minSize:0,
-                    minChunks:2,
-                }
-            }
-        }
+const HappyPack = require('happypack');
+rules: [
+    {
+        test: /\.js$/,
+        // 把对 .js 文件的处理转交给 id 为 babel 的 HappyPack 实例
+        use: ['happypack/loader?id=babel'],
+        exclude: path.resolve(__dirname, 'node_modules'),
+    },
+    {
+        test: /\.css$/,
+        // 把对 .css 文件的处理转交给 id 为 css 的 HappyPack 实例
+        use: ['happypack/loader?id=css']
     }
+]
+new Happypack({
+    //ID是标识符的意思，ID用来代理当前的happypack是用来处理一类特定的文件的
+    id: 'js',
+    use: [{
+        loader: 'babel-loader',
+        //options=query都是向插件传递参数的
+        options: {
+            presets: [["@babel/preset-env", { modules: false }], "@babel/preset-react"],
+            plugins: [
+                ["@babel/plugin-proposal-decorators", { "legacy": true }],
+                ["@babel/plugin-proposal-class-properties", { "loose": true }],
+            ]
+        }
+    }]
+}),
+new Happypack({
+    //ID是标识符的意思，ID用来代理当前的happypack是用来处理一类特定的文件的
+    id: 'css',
+    use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+    threads: 4,//你要开启多少个子进程去处理这一类型的文件
+    verbose: true//是否要输出详细的日志 verbose
+})
+```
+#### thread-loader
+把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker 池(worker pool)中运行
+- thread-loader
+```js
+{
+        test: /\.(js)$/,
+        use: [
+           {
+            loader:'thread-loader',
+            options:{
+              workers:3
+            }
+          }, 
+          {
+            loader:'babel-loader'
+          }
+        ],
+      }
+```
+#### webpack-parallel-uglify-plugin
+- webpack默认提供了UglifyJS插件来压缩JS代码，但是它使用的是单线程压缩代码，也就是说多个js文件需要被压缩，它需要一个个文件进行压缩。所以说在正式环境打包压缩代码速度非常慢(因为压缩JS代码需要先把代码解析成用Object抽象表示的AST语法树，再去应用各种规则分析和处理AST，导致这个过程耗时非常大)。
+- 当webpack有多个JS文件需要输出和压缩时候，原来会使用UglifyJS去一个个压缩并且输出，但是ParallelUglifyPlugin插件则会开启多个子进程，把对多个文件压缩的工作分别给多个子进程去完成，但是每个子进程还是通过UglifyJS去压缩代码。无非就是变成了并行处理该压缩了，并行处理多个子任务，效率会更加的提高
+- webpack-parallel-uglify-plugin
+```md
+cnpm i webpack-parallel-uglify-plugin -D
+```
+```js
+let ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
+new ParallelUglifyPlugin({});
+```
+### CDN
+- CDN 又叫内容分发网络，通过把资源部署到世界各地，用户在访问时按照就近原则从离用户最近的服务器获取资源，从而加速资源的获取速度。
+- HTML文件不缓存，放在自己的服务器上，关闭自己服务器的缓存，静态资源的URL变成指向CDN服务器的地址
+- 静态的JavaScript、CSS、图片等文件开启CDN和缓存，并且文件名带上HASH值
+- 为了并行加载不阻塞，把不同的静态资源分配到不同的CDN服务器上
+#### 使用缓存
+- 由于 CDN 服务一般都会给资源开启很长时间的缓存，例如用户从 CDN 上获取到了 index.html 这个文件后， 即使之后的发布操作把 index.html 文件给重新覆盖了，但是用户在很长一段时间内还是运行的之前的版本，这会新的导致发布不能立即生效 解决办法
+- 针对 HTML 文件：不开启缓存，把 HTML 放到自己的服务器上，而不是 CDN 服务上，同时关闭自己服务器上的缓存。自己的服务器只提供 HTML 文件和数据接口。
+- 针对静态的 JavaScript、CSS、图片等文件：开启 CDN 和缓存，上传到 CDN 服务上去，同时给每个文件名带上由文件内容算出的 Hash 值
+- 带上 Hash 值的原因是文件名会随着文件内容而变化，只要文件发生变化其对应的 URL 就会变化，它就会被重新下载，无论缓存时间有多长。
+- 启用CDN之后 相对路径，都变成了绝对的指向 CDN 服务的 URL 地址
+#### 域名限制
+- 同一时刻针对同一个域名的资源并行请求是有限制
+- 可以把这些静态资源分散到不同的 CDN 服务上去
+- 多个域名后会增加域名解析时间
+- 可以通过在 HTML HEAD 标签中 加入<link rel="dns-prefetch" href="http://img.zhufengpeixun.cn">去预解析域名，以降低域名解析带来的延迟
+#### 接入CDN
+要给网站接入 CDN，需要把网页的静态资源上传到 CDN 服务上去，在服务这些静态资源的时候需要通过 CDN 服务提供的 URL 地址去访问
+```json
+    output: {
+        path: path.resolve(__dirname, 'dist'),
++        filename: '[name]_[hash:8].js',
++        publicPath: 'http://img.zhufengpeixun.cn'
+    },
+```
+### Tree Shaking
+- 一个模块可以有多个方法，只要其中某个方法使用到了，则整个文件都会被打到bundle里面去，tree shaking就是只把用到的方法打入bundle,没用到的方法会uglify阶段擦除掉
+- 原理是利用es6模块的特点,只能作为模块顶层语句出现,import的模块名只能是字符串常量
+#### 开启
+- webpack默认支持，在.babelrc里设置module:false即可在production mode下默认开启
+- The 'modules' option must be one of 'false' to indicate no module processing .babelrc
+- 还要注意把devtool设置为null
+```json
+    "presets":[
++        ["@babel/preset-env",{"modules":true}],//转译 ES6 ES7
+        "@babel/preset-react"//转译JSX语法
+    ],
+```
+#### 没有导入和使用
+functions.js
+```js
+function func1(){
+  return 'func1';
+}
+function func2(){
+     return 'func2';
+}
+export {
+  func1,
+  func2
+}
+import {func2} from './functions';
+var result2 = func2();
+console.log(result2);
+```
+#### 代码不会被执行，不可到达
+```js
+if(false){
+ console.log('false')
 }
 ```
-
-## webpack实现动态懒加载js
+#### 代码执行的结果不会被用到
+```js
+import {func2} from './functions';
+func2();
+```
+#### 代码中只会影响死变量，只写不读
+```js
+var aabbcc='aabbcc';
+aabbcc='eeffgg';
+```
+### 代码分割
+#### 代码分割的意义
+- 对于大的Web应用来讲，将所有的代码都放在一个文件中显然是不够有效的，特别是当你的某些代码块是在某些特殊的时候才会被用到。
+- webpack有一个功能就是将你的代码库分割成chunks语块，当代码运行到需要它们的时候再进行加载。 适用的场景
+- 抽离相同代码到一个共享块
+- 脚本懒加载，使得初始下载的代码更小
+#### Entry Points
+Entry Points：入口文件设置的时候可以配置
+这种方法的问题
+如果入口 chunks 之间包含重复的模块(lodash)，那些重复模块都会被引入到各个 bundle 中
+不够灵活，并且不能将核心应用程序逻辑进行动态拆分代码
+```js
+entry: {
+        index: "./src/index.js",
+        login: "./src/login.js"
+}
+```
+#### 动态导入和懒加载
+- 用户当前需要用什么功能就只加载这个功能对应的代码，也就是所谓的按需加载 在给单页应用做按需加载优化时，一般采用以下原则：
+    - 对网站功能进行划分，每一类一个chunk
+    - 对于首次打开页面需要的功能直接加载，尽快展示给用户,某些依赖大量代码的功能点可以按需加载
+    - 被分割出去的代码需要一个按需加载的时机
 - import() 
   - 动态加载js,草案中的方法，现在需要引用插件`@babel/plugin-syntax-dynamic-import`才能使用
+```md
+cnpm i @babel/plugin-syntax-dynamic-import --save-dev
+```
 ```js
 btn.addEventListener('click',function(){
     import('./use').then(data=>{
@@ -1611,7 +1694,9 @@ rules:[
     }
 ]
 ```
-
+```html
+<button id="clickBtn">点我</button>
+```
 - 原理
   - JSONP加载js
   - 第一步 window['webpackJsonp'].push=webpackJsonpCallback;把json的回调挂载window上
@@ -1620,9 +1705,847 @@ rules:[
   - 第四步 __webpack_require__.bind(null,'./src/use.js')引用这个use.js。__webpack_exports__[\"default\"]='hello' exports.default='hello';
   - 第五步 下一次then就可以拿到这个exports对象 通过.default拿到异步加载的结果
 
-## webpack 手写
+#### 提取公共代码
+- 为什么需要提取公共代码
+    大网站有多个页面，每个页面由于采用相同技术栈和样式代码，会包含很多公共代码，如果都包含进来会有问题
+    - 相同的资源被重复的加载，浪费用户的流量和服务器的成本；
+    - 每个页面需要加载的资源太大，导致网页首屏加载缓慢，影响用户体验。
+    - 如果能把公共代码抽离成单独文件进行加载能进行优化，可以减少网络传输流量，降低服务器成本
+- 如何提取
+    - 基础类库，方便长期缓存
+    - 页面之间的公用代码
+    - 各个页面单独生成文件
+    - common-chunk-and-vendor-chunk
+    - webpack将会基于以下条件自动分割代码块:
+        - 新的代码块被共享或者来自node_modules文件夹
+        - 新的代码块大于30kb(在min+giz之前)
+        - 按需加载代码块的请求数量应该<=5
+        - 页面初始化时加载代码块的请求数量应该<=3
+默认配置
+```js
+  optimization: {
+    // 这里放着优化的内容
+    minimizer: [
+      // 表示放优化的插件
+      new TerserWebpackPlugin({
+               parallel:true,//开启多进程并行压缩
+               cache:true//开启缓存
+      }),
+      new OptimizeCssAssetsWebpackPlugin({
+        assetNameRegExp: /\.css$/g, // 指定要压缩的模块的正则
+        // cssnano是PostCSS的CSS优化和分解插件。cssnano采用格式很好的CSS，并通过许多优化，以确保最终的生产环境尽可能小。
+        cssProcessor: require('cssnano'),
+      }),
+    ],
+    splitChunks: {
+        chunks: "all",//默认作用于异步chunk，值为all/initial/async
+        minSize: 30000,  //默认值是30kb,代码块的最小尺寸
+        minChunks: 1,  //被多少模块共享,在分割之前模块的被引用次数
+        maxAsyncRequests: 5,  //按需加载最大并行请求数量
+        maxInitialRequests: 3,  //一个入口的最大并行请求数量
+        name: true,  //打包后的名称，默认是chunk的名字通过分隔符（默认是～）分隔开，如vendor~
+        automaticNameDelimiter:'~',//默认webpack将会使用入口名和代码块的名称生成命名,比如 'vendors~main.js'
+        cacheGroups: { //设置缓存组用来抽取满足不同规则的chunk,下面以生成common为例
+            vendors: {
+              chunks: "initial",
+              name: 'vendors',  //可以通过'name'配置项来控制切割之后代码块的命名,给多个分割之后的代码块分配相同的名称,所有的vendor 模块被放进一个共享的代码块中,不过这会导致多余的代码被下载所以并不推荐
+              test: /node_modules/,//条件
+              priority: -10 ///优先级，一个chunk很可能满足多个缓存组，会被抽取到优先级高的缓存组中,为了能够让自定义缓存组有更高的优先级(默认0),默认缓存组的priority属性为负值.
+            },
+             commons: {
+              chunks: "initial",
+              name: 'commons',
+              minSize: 0,//最小提取字节数
+              minChunks: 1, //最少被几个chunk引用
+              priority: -20,
+              reuseExistingChunk: true//    如果该chunk中引用了已经被抽取的chunk，直接引用该chunk，不会重复打包代码
+            }
+      }
+    },
+    //runtime包含:在模块交互时,连接模块所需的加载和解析逻辑。包括浏览器中的已加载模块的连接，以及懒加载模块的执行逻辑.
+    //设置optimization.runtimeChunk=true ,将每一个入口添加一个只包含runtime的额外代码块.然而设置值为single,只会为所有生成的代码块创建一个共享的runtime文件.runtime:连接模块化应用程序的所有代码.
+    runtimeChunk:{
+        name:'manifest'
+    }
+  },
+```
+- 提取公共代码
+pageA.js
+```js
+import utils1 from './utils1';
+import utils2 from './utils2';
+import $ from 'jquery';
+console.log(utils1,utils2,$);
+pageB.js
+
+import utils1 from './utils1';
+import utils2 from './utils2';
+import $ from 'jquery';
+console.log(utils1,utils2,$);;
+pageC.js
+
+import utils3 from './utils3';
+import utils1 from './utils1';
+import $ from 'jquery';
+console.log(utils1,utils3,$);
+
+    entry: {
+        pageA: './src/pageA',
+        pageB: './src/pageB',
+        pageC: './src/pageC'
+    },
+    output: {
+        path: path.resolve(__dirname,'dist'),
+        filename: '[name].js'
+    },
+  plugins:[
+       new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: 'pageA.html',
+            chunks: ['pageA'],
+            minify: {
+                removeAttributeQuotes: true
+            }
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: 'pageB.html',
+            chunks: ['pageB'],
+            minify: {
+                removeAttributeQuotes: true
+            }
+        }),
+
+
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: 'pageC.html',
+            chunks: ['pageC'],
+            minify: {
+                removeAttributeQuotes: true
+            }
+        })
+    ]
+```
+
+
+### 开启 Scope Hoisting
+- Scope Hoisting 可以让 Webpack 打包出来的代码文件更小、运行的更快， 它又译作 "作用域提升"，是在 Webpack3 中新推出的功能。
+- 初webpack转换后的模块会包裹上一层函数,import会转换成require
+- 代码体积更小，因为函数申明语句会产生大量代码
+- 代码在运行时因为创建的函数作用域更少了，内存开销也随之变小
+- 大量作用域包裹代码会导致体积增大
+- 运行时创建的函数作用域变多，内存开销增大
+- scope hoisting的原理是将所有的模块按照引用顺序放在一个函数作用域里，然后适当地重命名一些变量以防止命名冲突
+- 这个功能在mode为production下默认开启,开发环境要用 webpack.optimize.ModuleConcatenationPlugin插件
+- 也要使用ES6 Module,CJS不支持
+#### 开发环境插件配置
+```js
+module.exports = {
+  resolve: {
+    // 针对 Npm 中的第三方模块优先采用 jsnext:main 中指向的 ES6 模块化语法的文件
+    mainFields: ['jsnext:main', 'browser', 'main']
+  },
+  plugins: [
+    // 开启 Scope Hoisting
+    new webpack.optimize.ModuleConcatenationPlugin(),
+  ],
+};
+```
+#### 代码
+hello.js
+```js
+export default 'Hello';
+```
+index.js
+```js
+import str from './hello.js';
+console.log(str);
+```
+输出的结果main.js
+```js
+"./src/index.js":
+(function(module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+var hello = ('hello');
+console.log(hello);
+ })
+ ```
+函数由两个变成了一个，hello.js 中定义的内容被直接注入到了 main.js 中
+### 用 HMR 提高开发效率
+- HMR 全称是 Hot Module Replacement，即模块热替换
+- Hot Reloading，当代码变更时通知浏览器刷新页面，以避免频繁手动刷新浏览器页面
+- HMR 可以理解为增强版的 Hot Reloading，但不用整个页面刷新，而是局部替换掉部分模块代码并且使其生效
+- 原理是当一个源码发生变化时，只重新编译发生变化的模块，再用新输出的模块替换掉浏览器中对应的老模块
+- 模块热替换技术的优势有：
+    - 实时预览反应更快，等待时间更短。
+    - 不刷新浏览器能保留当前网页的运行状态，例如在使用 Redux 来管理数据的应用中搭配模块热替换能做到代码更新时Redux 中的数据还保持不变
+#### 模块热替换原理
+模块热替换的原理和自动刷新原理类似，都需要往要开发的网页中注入一个代理客户端用于连接 DevServer 和网页
+![hotupdate](./img/webpackhmr.png)
+-  配置
+    - 配置hot
+    - DevServer 默认不会开启模块热替换模式，要开启该模式，只需在启动时带上参数 --hot
+```js
+const webpack = require('webpack');
+module.exports = {
+entry:{
+  main:'./src/index.js',
+},
+plugins: [
+  // 该插件的作用就是实现模块热替换，实际上当启动时带上 `--hot` 参数，会注入该插件，生成 .hot-update.json 文件。
+  new webpack.NamedModulesPlugin(), // 用于启动 HMR 时可以显示模块的相对路径
+  new webpack.HotModuleReplacementPlugin(), // Hot Module Replacement 的插件
+],
+devServer:{
+  // 告诉 DevServer 要开启模块热替换模式
+  hot: true,      
+}  
+};
+```
+> 在启动 Webpack 时带上参数 --hot 其实就是自动为你完成以上配置。
+#### 代码实现
+```js
+import React from 'react';
+import { render } from 'react-dom';
+import App from './App';
+import './index.css';
+render(<App/>, document.getElementById('root'));
+
+// 只有当开启了模块热替换时 module.hot 才存在
+if (module.hot) {
+  // accept 函数的第一个参数指出当前文件接受哪些子模块的替换，这里表示只接受 ./AppComponent 这个子模块
+  // 第2个参数用于在新的子模块加载完毕后需要执行的逻辑
+  module.hot.accept(['./App'], () => {
+    // 新的 AppComponent 加载成功后重新执行下组建渲染逻辑
+    let App=require('./App').default;  
+    render(<App/>, document.getElementById('root'));
+  });
+}
+```
+- module.hot 是当开启模块热替换后注入到全局的 API，用于控制模块热替换的逻辑
+- 当子模块发生更新时，更新事件会一层层往上传递，也就是从App.js文件传递到index.js文件， 直到有某层的文件接受了当前变化的模块
+- 如果事件一直往上抛到最外层都没有文件接受它，就会直接刷新网页
+- .css文件都会触发模块热替换的原因是style-loader会注入用于接受 CSS 的代码
+#### react-hot-loader
+- react-hot-loader
+- webpack-dev-server 已经是热加载，为何还要在 react 项目还要安装 react-hot-loader 呢？
+- 其实这两者的更新是有区别的，webpack-dev-server 的热加载是开发人员修改了代码，代码经过打包，重新刷新了整个页面。而 react-hot-loader 不会刷新整个页面，它只替换了修改的代码，做到了页面的局部刷新。但它需要依赖 webpack 的 HotModuleReplacement 热加载插件
+```md
+npm install --save-dev react-hot-loader
+```
+Add react-hot-loader/babel to your .babelrc:
+```json
+// .babelrc
+{
+  "plugins": ["react-hot-loader/babel"]
+}
+// App.js
+import { hot } from 'react-hot-loader/root';
+const App = () => <div>Hello World!</div>;
+export default hot(App);
+```
+
+【面试】
+- dev-server的原理是什么？描述一下它的具体流程
+
+
 
 
 ## chunk的分割规则
 1. node_moduels单独抽到vendors
 2. import单独取到单独的chunk里
+
+
+## webpack源码解析
+![webpackcode](./img/webpackcode.jpg)
+### webpack执行流程
+| 类型        | 事件名称                     | 类型              | 参数                                  | 说明                                                         |
+| :---------- | :--------------------------- | :---------------- | :------------------------------------ | :----------------------------------------------------------- |
+| compiler    | environment                  | SyncHook          | 空                                    | 设置node环境变量             |
+| compiler    | afterEnvironment             | SyncHook          | 空                                    | 设置环境变量完成                                         |
+| compiler    | entryOption                  | SyncBailHook      | context,entry                         | 解析入口文件                        |
+| compiler    | afterPlugins                 | SyncHook          | compiler                              | 挂在插件结束                                         |
+| compiler    | afterResolvers               | SyncHook          | compiler                              | 在路径解析器初始化后触发   核心作用是将路径转换成绝对路径                                       |
+| compiler    | beforeRun                    | AsyncSeriesHook   | compiler                              | 开始正式编译之前                                             |
+| compiler    | run                          | AsyncSeriesHook   | compiler                              | 开始编译之后，读取 records 之前；监听模式触发watch-run       |
+| compiler    | normalModuleFactory          | SyncHook          | normalModuleFactory                   | NormalModuleFactory 创建普通模块工厂之后                                 |
+| compiler    | contextModuleFactory         | SyncHook          | contextModulefactory                  | ContextModuleFactory 创建上下文模块工厂(类似external)之后                                |
+| compiler    | beforeCompile                | AsyncSeriesHook   | params                                | 开始编译前，compilation 实例化需要的参数创建完毕之后                     |
+| compiler    | compile                      | SyncHook          | params                                | 编译，一次 compilation 编译创建之前                                |
+| compiler    | thisCompilation              | SyncHook          | compilation,params                    | 开始启动编译，触发 compilation 事件之前执行                                |
+| compiler    | compilation                  | SyncHook          | compilation,params                    | 开始创建compilation对象                                    |
+| compiler    | make                         | AsyncParallelHook | compilation                           | 最核心代码，从入口文件开始编译                      |
+| compilation | addEntry                     | SyncHook          | entry,name                            | 添加入口                                                     |
+| compilation | buildModule                  | SyncHook          | module                                | 编译入口模块                                     |
+| compilation | normalModuleLoader           | SyncHook          | loaderContext,module                  | 拿到普通模块 loader，真正（一个接一个地）加载模块图（graph）中所有模块的函数 |
+| compilation | succeedModule                | SyncHook          | module                                | 成功加载模块                                           |
+| compilation | succeedEntry                 | SyncHook          | entry,name,module                     |  入口解析成功                                                            |
+| compilation | finishModules                | AsyncSeriesHook   | modules                               | 完成模块编译                                         |
+| compilation | seal                         | SyncHook          |                                       | 封包，一旦封包后，不能再向内添加新的模块了                     |
+| compilation | optimizeDependenciesBasic    | SyncBailHook      | modules                               | 优化基本依赖项                                    |
+| compilation | optimizeDependencies         | SyncBailHook      | modules                               | 优化依赖项                                          |
+| compilation | optimizeDependenciesAdvanced | SyncBailHook      | modules                               | 优化高级依赖项                                       |
+| compilation | afterOptimizeDependencies    | SyncHook          | modules                               | 优化结束                                                     |
+| compilation | beforeChunks                 | SyncHook          |                                       | 生成chunk                                              |
+| compilation | dependencyReference          | SyncWaterfallHook | dependencyReference,dependency,module | 依赖引用                                                     |
+| compilation | log                          | SyncBailHook      | origin,logEntry                       | 打印日志                                                     |
+| compilation | afterChunks                  | SyncHook          | chunks                                | 完成生成chunk                                               |
+| compilation | optimize                     | SyncHook          |                                       | 优化阶段开始时触发                                           |
+| compilation | optimizeModulesBasic         | SyncBailHook      | modules                               | 基础模块的优化                                               |
+| compilation | optimizeModules              | SyncBailHook      | modules                               | 模块的优化                                                   |
+| compilation | optimizeModulesAdvanced      | SyncBailHook      | modules                               | 高级模块的优化                                               |
+| compilation | afterOptimizeModules         | SyncHook          | modules                               | 模块优化完成                                          |
+| compilation | optimizeChunksBasic          | SyncBailHook      | chunks,chunkGroups                    | 基础chunk优化                                                |
+| compilation | optimizeChunks               | SyncBailHook      | chunks,chunkGroups                    | 优化 chunks                                                  |
+| compilation | optimizeChunksAdvanced       | SyncBailHook      | chunks,chunkGroups                    | 高级chunk优化                                                |
+| compilation | afterOptimizeChunks          | SyncHook          | chunks,chunkGroups                    | chunk 优化完成之后触发                                       |
+| compilation | optimizeTree                 | AsyncSeriesHook   | chunks,modules                        | 异步优化依赖树                                               |
+| compilation | afterOptimizeTree            | SyncHook          | chunks,modules                        | 异步优化依赖树完成时                                         |
+| compilation | optimizeChunkModulesBasic    | SyncBailHook      | chunks,modules                        | 基础优化单个chunk中的 modules 开始                           |
+| compilation | optimizeChunkModules         | SyncBailHook      | chunks,modules                        | 优化单个chunk中的 modules 开始                               |
+| compilation | optimizeChunkModulesAdvanced | SyncBailHook      | chunks,modules                        | 高级优化单个chunk中的 modules 开始                           |
+| compilation | afterOptimizeChunkModules    | SyncHook          | chunks,modules                        | 优化单个chunk中的 modules结束后                              |
+| compilation | shouldRecord                 | SyncBailHook      |                                       | 是否应该记录stats文件                                                 |
+| compilation | reviveModules                | SyncHook          | modules,records                       | 从 records 中恢复模块信息                                    |
+| compilation | optimizeModuleOrder          | SyncHook          | modules                               | 将模块从最重要的到最不重要的进行排序                         |
+| compilation | advancedOptimizeModuleOrder  | SyncHook          | modules                               | 高级将模块从最重要的到最不重要的进行排序                     |
+| compilation | beforeModuleIds              | SyncHook          | modules                               | 处理 modulesId 之前                                          |
+| compilation | moduleIds                    | SyncHook          | modules                               | 处理 modulesId                                               |
+| compilation | optimizeModuleIds            | SyncHook          | modules                               | 优化 modulesId                                               |
+| compilation | afterOptimizeModuleIds       | SyncHook          | modules                               | 优化 modulesId之后                                           |
+| compilation | reviveChunks                 | SyncHook          | chunks,records                        | 从 records 中恢复 chunk 信息                                 |
+| compilation | optimizeChunkOrder           | SyncHook          | chunks                                | 将 chunk 从最重要的到最不重要的进行排序                      |
+| compilation | beforeChunkIds               | SyncHook          | chunks                                | chunk id 优化之前触发                                        |
+| compilation | optimizeChunkIds             | SyncHook          | chunks                                | chunk id 优化开始触发                                        |
+| compilation | afterOptimizeChunkIds        | SyncHook          | chunks                                | chunk id 优化结束触发                                        |
+| compilation | recordModules                | SyncHook          | modules,records                       | 将模块信息存储到 records                                     |
+| compilation | recordChunks                 | SyncHook          | chunks,records                        | 将 chunk 信息存储到 records                                  |
+| compilation | beforeHash                   | SyncHook          |                                       | 生成hash前                                   |
+| compilation | chunkHash                    | SyncHook          | chunk,chunkHash                       | 生成chunkHash                                                |
+| compilation | contentHash                  | SyncHook          | chunk                                 | 生成contentHash                                              |
+| compilation | afterHash                    | SyncHook          |                                       | 生成hash后                                   |
+| compilation | recordHash                   | SyncHook          | records                               | 记录hash到stats文件里                                                     |
+| compilation | beforeModuleAssets           | SyncHook          |                                       | 在生成模块的资源之前                                         |
+| compilation | shouldGenerateChunkAssets    | SyncBailHook      |                                       | 是否要生成chunk资源                                          |
+| compilation | beforeChunkAssets            | SyncHook          |                                       | 在创建 chunk 资源（asset）之前                               |
+| compilation | chunkAsset                   | SyncHook          | chunk,filename                        | 一个 chunk 中的一个资源被添加到编译中                        |
+| compilation | additionalChunkAssets        | SyncHook          | chunks                                | 额外的资源                                        |
+| compilation | record                       | SyncHook          | compilation,records                   | 将 compilation 相关信息存储到 records 中                     |
+| compilation | additionalAssets             | AsyncSeriesHook   |                                       | 为编译（compilation）创建附加资源（asset）                   |
+| compilation | optimizeChunkAssets          | AsyncSeriesHook   | compilation                           | 优化所有 chunk 资源（asset）                                 |
+| compilation | afterOptimizeChunkAssets     | SyncHook          | chunks                                | chunk 资源（asset）已经被优化                                |
+| compilation | optimizeAssets               | AsyncSeriesHook   | assets                                | 优化存储在 compilation.assets 中的所有资源（asset）          |
+| compilation | afterOptimizeAssets          | SyncHook          | assets                                | 优化compilation.assets 中的所有资源（asset）之后             |
+| compilation | needAdditionalSeal           | SyncBailHook      |                                       | 是否需要额外的seal                                           |
+| compilation | afterSeal                    | AsyncSeriesHook   |                                       | 封装之后                                                     |
+| compiler    | afterCompile                 | AsyncSeriesHook   | compilation                           | 完成编译和封存（seal）编译产出之后                           |
+| compiler    | shouldEmit                   | SyncBailHook      | compilation                           | 询问是否要生成文件   |
+| compiler    | emit                         | AsyncSeriesHook   | compilation                           | 生成文件                                   |
+| compiler    | assetEmitted                 | AsyncSeriesHook   | file,content                          | 资源已经生成                                          |
+| compiler    | afterEmit                    | AsyncSeriesHook   | compilation                           | 生成完成                                  |
+| compilation | needAdditionalPass           | SyncBailHook      |                                       | 是否需要额外的                                               |
+| compiler    | done                         | AsyncSeriesHook   | stats                                 | 整个编译完成                                          |
+
+
+### stats对象
+```json
+{
+  "errors": [],// 错误字符串 (error string) 的数组
+  "warnings": [],//警告字符串 (warning string) 的数组
+  "version": "4.39.3",// 用来编译的 webpack 的版本
+  "hash": "3e945ec6b2c56d0b010e",//编译使用的 hash
+  "time": 66, // 编译耗时 (ms)
+  "builtAt": 1567225465347,//编译的时间
+  "publicPath": "",//资源访问路径
+  "outputPath": "C:\\vipdata\\vipproject\\webpack-source\\dist",//webpack输出目录
+  "assetsByChunkName": {//用作映射的 chunk 的名称
+    "lazy": "lazy.bundle.js",//chunk的名字叫lazy,lazy.bundle.js
+    "main": "bundle.js"//chunk的名字叫main,打包出来了bundle.js
+  },
+  "assets": [//asset 对象 (asset objects) 的数组
+    {
+      "name": "bundle.js",//文件名
+      "size": 9043,//大小
+      "chunks": [//包含的代码块
+        "main"
+      ],
+      "chunkNames": [//包含的代码块名称
+        "main"
+      ],
+      "emitted": true//是否要生成
+    },
+    {
+      "name": "lazy.bundle.js", // 输出的文件名
+      "size": 336,// 文件的大小
+      "chunks": [ // 这个 asset 包含的 chunk 的 id
+        "lazy"
+      ],
+      "chunkNames": [// 这个 asset 包含的 chunk
+        "lazy"
+      ],
+      "emitted": true  // 表示这个 asset 是否会让它输出到 output 目录
+    }
+  ],
+  "filteredAssets": 0,// 过滤的资源
+  "entrypoints": {// 入口点
+    "main": {
+      "chunks": [
+        "main"
+      ],
+      "assets": [
+        "bundle.js"
+      ],
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "namedChunkGroups": {
+    "main": {
+      "chunks": [
+        "main"
+      ],
+      "assets": [
+        "bundle.js"
+      ],
+      "children": {},
+      "childAssets": {}
+    },
+    "lazy": {
+      "chunks": [
+        "lazy"
+      ],
+      "assets": [
+        "lazy.bundle.js"
+      ],
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "chunks": [ //chunk 对象 (chunk objects) 的数组
+    {
+      "id": "lazy", // 这个 chunk 的id
+      "rendered": true,// 表示这个 chunk 是否会参与进编译
+      "initial": false, // 是否同步初始化
+      "entry": false,// 表示这个 chunk 是否包含 webpack 的运行时
+      "size": 24,//预估的模块大小
+      "names": [// 包含在这个 chunk 内的 chunk 的名字的数组
+        "lazy"
+      ],
+      "files": [
+        "lazy.bundle.js"
+      ],
+      "hash": "d08a8b502d30324f81e1", // chunkHash
+      "siblings": [],
+      "parents": [// 父 chunk 的 ids
+        "main"
+      ],
+      "children": [],
+      "childrenByOrder": {},
+      "modules": [
+        {
+          "id": "./src/lazy.js",
+          "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\lazy.js",
+          "name": "./src/lazy.js",
+          "index": 2,
+          "index2": 2,
+          "size": 24,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "lazy"
+          ],
+          "issuer": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+          "issuerId": "./src/index.js",
+          "issuerName": "./src/index.js",
+          "issuerPath": [
+            {
+              "id": "./src/index.js",
+              "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+              "name": "./src/index.js",
+              "profile": {
+                "factory": 18,// 工厂创建模块的时间
+                "building": 14// loader编译的时间
+              }
+            }
+          ],
+          "profile": {
+            "factory": 4,
+            "building": 2
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [// 生成 assets 的原因
+            {
+              "moduleId": "./src/index.js",//模块的ID
+              "moduleIdentifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",//唯一标识
+              "module": "./src/index.js",//模块
+              "moduleName": "./src/index.js",//模块名称
+              "type": "import()",//类型
+              "userRequest": "./lazy",//用户请求方式
+              "loc": "2:0-46"//在父模块中的位置
+            }
+          ],
+          "providedExports": null,
+          "optimizationBailout": [],
+          "depth": 1,
+          "source": "module.exports = 'lazy';"
+        }
+      ],
+      "filteredModules": 0,
+      "origins": [
+        {
+          "moduleId": "./src/index.js",// 模块的ID
+          "module": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",// 模块的位置
+          "moduleIdentifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",// 模块的地址
+          "moduleName": "./src/index.js",//模块的相对地址
+          "loc": "2:0-46",
+          "request": "./lazy",
+          "reasons": [] // 具体是哪行生成了这个chunk
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "rendered": true,
+      "initial": true,
+      "entry": true,
+      "size": 162,
+      "names": [
+        "main"
+      ],
+      "files": [
+        "bundle.js"
+      ],
+      "hash": "263cadc0459e8470151b",
+      "siblings": [],
+      "parents": [],
+      "children": [// 自己引用哪些chunk
+        "lazy"
+      ],
+      "childrenByOrder": {}, // 引用的顺序
+      "modules": [
+        {
+          "id": "./src/hello.js",
+          "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\hello.js",
+          "name": "./src/hello.js",
+          "index": 1,
+          "index2": 0,
+          "size": 25,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "main"
+          ],
+          "issuer": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+          "issuerId": "./src/index.js",
+          "issuerName": "./src/index.js",
+          "issuerPath": [
+            {
+              "id": "./src/index.js",
+              "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+              "name": "./src/index.js",
+              "profile": {
+                "factory": 18,
+                "building": 14
+              }
+            }
+          ],
+          "profile": {
+            "factory": 4,
+            "building": 2
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [
+            {
+              "moduleId": "./src/index.js",
+              "moduleIdentifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+              "module": "./src/index.js",
+              "moduleName": "./src/index.js",
+              "type": "cjs require",
+              "userRequest": "./hello",
+              "loc": "1:12-30"
+            }
+          ],
+          "providedExports": null,
+          "optimizationBailout": [],
+          "depth": 1,
+          "source": "module.exports = 'hello';"
+        },
+        {
+          "id": "./src/index.js",
+          "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+          "name": "./src/index.js",
+          "index": 0,
+          "index2": 1,
+          "size": 137,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            "main"
+          ],
+          "issuer": null,
+          "issuerId": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "profile": {
+            "factory": 18,
+            "building": 14
+          },
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [],
+          "reasons": [
+            {
+              "moduleId": null,
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "type": "single entry",
+              "userRequest": "./src/index.js",
+              "loc": "main"
+            }
+          ],
+          "providedExports": null,
+          "optimizationBailout": [],
+          "depth": 0,
+          "source": "let hello = require('./hello');\r\nimport(/* webpackChunkName: \"lazy\" */'./lazy').then(result=>{\r\n    console.log(hello,resut.default)\r\n});"
+        }
+      ],
+      "filteredModules": 0,
+      "origins": [
+        {
+          "module": "",
+          "moduleIdentifier": "",
+          "moduleName": "",
+          "loc": "main",
+          "request": "./src/index.js",
+          "reasons": []
+        }
+      ]
+    }
+  ],
+  "modules": [// 模块对象 (module objects) 的数组
+    {
+      "id": "./src/hello.js",//模块ID
+      "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\hello.js",//webpack内部使用的唯一的标识
+      "name": "./src/hello.js",// 实际文件的地址
+      "index": 1,//索引
+      "index2": 0,//索引
+      "size": 25,// 预估模块的大小 (byte)
+      "cacheable": true,// 表示这个模块是否会被缓存
+      "built": true,// 表示这个模块会参与 Loaders , 解析, 并被编译
+      "optional": false,// 每一个对这个模块的请求都会包裹在 `try... catch` 内
+      "prefetched": false,// 表示这个模块是否会被 prefetched
+      "chunks": [//此模块在哪个代码块内
+        "main"
+      ],
+      "issuer": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",//使用者唯一标识
+      "issuerId": "./src/index.js",//使用者ID
+      "issuerName": "./src/index.js",//使用者名称
+      "issuerPath": [//使用者路径
+        {
+          "id": "./src/index.js",
+          "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+          "name": "./src/index.js",
+          "profile": { //这个模块特有的编译时间数据(ms)
+            "factory": 18,// 解决依赖的时间
+            "building": 14 // 载入和解析的时间
+          }
+        }
+      ],
+      "profile": {
+        "factory": 4,// 解决依赖的时间
+        "building": 2// 载入和解析的时间
+      },
+      "failed": false,//是否失败
+      "errors": 0,// 处理模块时错误的数量
+      "warnings": 0,// 处理模块时警告的数量
+      "assets": [],//在哪个资源内
+      "reasons": [
+        {
+          "moduleId": "./src/index.js",// 模块的 ID
+          "moduleIdentifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",// 模块的地址
+          "module": "./src/index.js",// 所基于模块的相对地址 context
+          "moduleName": "./src/index.js",
+          "type": "cjs require",// 使用的请求的种类 (require或import)
+          "userRequest": "./hello",// 用来 `import` 或者 `require` 的源字符串
+          "loc": "1:12-30" // 导致这个被加入依赖图标的代码行数
+        }
+      ],
+      "providedExports": null,//提供的导出对象
+      "optimizationBailout": [],//失败时的优化
+      "depth": 1,//模块深度
+      "source": "module.exports = 'hello';"// 字符串化的输入
+    },
+    {
+      "id": "./src/index.js",
+      "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+      "name": "./src/index.js",
+      "index": 0,
+      "index2": 1,
+      "size": 137,
+      "cacheable": true,
+      "built": true,
+      "optional": false,
+      "prefetched": false,
+      "chunks": [
+        "main"
+      ],
+      "issuer": null,
+      "issuerId": null,
+      "issuerName": null,
+      "issuerPath": null,
+      "profile": {
+        "factory": 18,
+        "building": 14
+      },
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "assets": [],
+      "reasons": [
+        {
+          "moduleId": null,
+          "moduleIdentifier": null,
+          "module": null,
+          "moduleName": null,
+          "type": "single entry",
+          "userRequest": "./src/index.js",
+          "loc": "main"
+        }
+      ],
+      "providedExports": null,
+      "optimizationBailout": [],
+      "depth": 0,
+      "source": "let hello = require('./hello');\r\nimport(/* webpackChunkName: \"lazy\" */'./lazy').then(result=>{\r\n    console.log(hello,resut.default)\r\n});"
+    },
+    {
+      "id": "./src/lazy.js",
+      "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\lazy.js",
+      "name": "./src/lazy.js",
+      "index": 2,
+      "index2": 2,
+      "size": 24,
+      "cacheable": true,
+      "built": true,
+      "optional": false,
+      "prefetched": false,
+      "chunks": [
+        "lazy"
+      ],
+      "issuer": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+      "issuerId": "./src/index.js",
+      "issuerName": "./src/index.js",
+      "issuerPath": [
+        {
+          "id": "./src/index.js",
+          "identifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+          "name": "./src/index.js",
+          "profile": {
+            "factory": 18,
+            "building": 14
+          }
+        }
+      ],
+      "profile": {
+        "factory": 4,
+        "building": 2
+      },
+      "failed": false,
+      "errors": 0,
+      "warnings": 0,
+      "assets": [],
+      "reasons": [
+        {
+          "moduleId": "./src/index.js",
+          "moduleIdentifier": "C:\\vipdata\\vipproject\\webpack-source\\src\\index.js",
+          "module": "./src/index.js",
+          "moduleName": "./src/index.js",
+          "type": "import()",
+          "userRequest": "./lazy",
+          "loc": "2:0-46"
+        }
+      ],
+      "providedExports": null,
+      "optimizationBailout": [],
+      "depth": 1,
+      "source": "module.exports = 'lazy';"
+    }
+  ],
+  "filteredModules": 0,
+  "logging": {
+    "webpack.buildChunkGraph.visitModules": {
+      "entries": [],
+      "filteredEntries": 5,
+      "debug": false
+    }
+  },
+  "children": []
+}
+```
+
+
+### loader-runner
+- pitch参数
+  - loader2:
+  - request：全部(loader1!loader2!loader3!hello.js)
+  - remindingRequest：剩余的(loader3!hello.js)
+  - previousRequest：之前的(loader1)
+  - currentRequest：从当前出发(loader2!loader3!hello.js)
+  - data：与normal共用的属性
+### loader
+#### inline loader
+- enforce=pre（pre loader）
+- enforce=post（post loader）
+- enforce没有值（normal loader）。
+:::tip
+pre loader 配置：图片压缩
+normal loader 配置：coffee-script转换
+inline loader 配置：bundle loader
+post loader 配置： 代码覆盖率工具
+:::
+- 可以通过给inline Loader加前缀覆盖配置中的任何loaders，preloaders，postLoaders
+
+前缀加 ! 禁用所有的配置中的normal loaders
+```js
+import Styles from '!style-loader!css-loader?modules!./styles.css';
+```
+前缀加 !! 禁用所有的配置loaders (preLoaders, loaders, postLoaders)
+```js
+import Styles from '!!style-loader!css-loader?modules!./styles.css';
+```
+前缀加 -! 禁用配置的 preLoaders 和 loaders ，不禁用 postLoaders
+```js
+import Styles from '-!style-loader!css-loader?modules!./styles.css';
+```
+
+### plugin
+#### 异步
+```js
+class EmitPlugin {
+    constructor(options) {
+        this.options = options;
+    }
+    apply(compiler) {
+        compiler.hooks.emit.tapAsync('EmitPlugin', (compilation, callback) => {
+            setTimeout(()=>{
+              callback();
+            },3000)
+        });
+    }
+}
+module.exports = EmitPlugin;
+```

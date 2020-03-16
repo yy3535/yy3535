@@ -287,6 +287,18 @@ true+true
   0o767 === 503 // true
   ```
 ### Number API[ES6,全局方法移到了Number对象上]
+- Number.toString(radix)
+    - 将数字转为其它进制
+::: 其它进制转为十进制
+parseInt("11",2)
+:::
+::: 二进制计算方法
+![二进制计算](../../img/erjinzhi.jpg)
+任意几个加起来的和是十进制的数字即可。没用到的用0补位。
+- 3：2+1 11
+- 4：4 100
+- 7：4+2+1 111
+:::
 - Number.isFinite()
   - 检查一个数值是否为有限的（finite）
 - Number.isNaN()
@@ -351,13 +363,18 @@ true+true
     // 512
     ```
 ### 运算符
-- 优先级
-    - https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+- [优先级](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)
     - new带参数比new无参数优先级高
 - 求余%
+- 按位操作符
 
+| 运算符 | 用法 | 描述 |
+| ------------------------------------------------------------ | ------- | ------------------------------------------------------------ |
+| [按位与（ AND）](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_AND) | `a & b` | 对于每一个比特位，只有两个操作数相应的比特位都是1时，结果才为1，否则为0。 |
+| [按位或（OR）](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_OR) | `a | b` | 对于每一个比特位，当两个操作数相应的比特位至少有一个1时，结果为1，否则为0。 |
+| [按位异或（XOR）](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_XOR) | `a ^ b` | 对于每一个比特位，当两个操作数相应的比特位有且只有一个1时，结果为1，否则为0。 |
+| [按位非（NOT）](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_NOT) | `~ a`   | 反转操作数的比特位，即0变成1，1变成0。                       |
 ### JSON
-- JSON是一种数据格式。
 - `parse`和`stringify`
 
 ## 原型和原型链
@@ -1241,7 +1258,7 @@ console.log(formatDate)
 - Array​.prototype​.slice(start,end)
   - 返回选定的元素。
   - 包前不包后
-  - start默认为0，负数指倒数开始，end默认到最后
+  - start默认为0，负数指倒数开始，end默认到最后，负数指倒数结束
 :::
 :::warning 添加
 <mark-check id="unshift"></mark-check>
@@ -1859,6 +1876,21 @@ console.log(matches_array);
 <mark-check id="create"></mark-check>
 - Object.create(proto, [propertiesObject])
   - 使用指定的原型对象和属性创建一个新对象。
+
+:::tip Object.create(null)
+使用create创建的对象，没有任何属性,把它当作一个非常纯净的map来使用，我们可以自己定义hasOwnProperty、toString方法,完全不必担心会将原型链上的同名方法覆盖掉
+在我们使用for..in循环的时候会遍历对象原型链上的属性，使用create(null)就不必再对属性进行检查了
+var ns = Object.create(null);
+if (typeof Object.create !== "function") {
+    Object.create = function (proto) {
+        function F() {}
+        F.prototype = proto;
+        return new F();
+    };
+}
+console.log(ns)
+console.log(Object.getPrototypeOf(ns));
+:::
 <mark-check id="defineProperty"></mark-check>
 - Object.defineProperty()
   - 在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。

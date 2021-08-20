@@ -18,7 +18,7 @@ module.exports = {
             { text: '运维', link: '/Operation/' },
             // { text: '关于', link: '/About/' },
             // { text: '待整理', link: '/Todo/' },
-            // { text: '随想', link: '/Thought/' },
+            { text: '错题', link: '/Thought/' },
             { text: 'GitHub', link: 'https://github.com/yy3535/yy3535' },
         ],
         sidebar: {
@@ -148,6 +148,9 @@ module.exports = {
                     "tools"
                 ]
             }],
+            '/Thought/': [
+                { title: 'Thought' }
+            ],
             '/summary/': [{
                 title: '总结',
                 collapsable: false,

@@ -12,7 +12,7 @@
 
 1. 类
 
-   ```
+   ```js
    class Animal{
      constructor(name){
        this.name=name;
@@ -31,7 +31,7 @@
 
    父类公用方法
 
-   ```
+   ```js
    class Dog extends Animal{
      constructor(){
        super("狗")
@@ -64,9 +64,6 @@
 - 减少耦合，部分不让外部访问，管理接口权限
 - 带_开头的都是私有的，业界约定，但es6语法尚不支持，typescript有这种特性
 
->TypeScript
-是js的超级版本，实现了类型的检查
-
 1. 安装
 
 ```
@@ -75,7 +72,7 @@ npm install -g typescript
 
 2. 使用
 
-```
+```ts
 //2.ts
 function greeting(user:string){//类型限制
   return 'hello'+user;
@@ -104,7 +101,7 @@ tsc 2.ts//会出来一个2.js
 
   private 只可在类内使用
 
-  ```
+  ```ts
   //2.ts
   class Person{
     public name:string;
@@ -128,10 +125,10 @@ tsc 2.ts//会出来一个2.js
     }
     getAge(){
       //在子类中可以访问父类的protected属性
-      console.log(`我的名字叫${this.name}`)
+      console.log(`我的名字叫${this.age}`)
     }
     getMoney(){
-      console.log(`我的名字叫${this.name}`)//出错
+      console.log(`我的名字叫${this.money}`)//出错
     }
   }
   let s1=new Student('zfpx',10,100,1);
@@ -167,7 +164,7 @@ tsc 2.ts//会出来一个2.js
 
   对扩展开放，对修改封闭，不能改老代码
 
-  ```
+  ```js
   //request.js
   function checkStatus(response){
     if(response.code>=200&&response.code<300){
@@ -197,7 +194,7 @@ tsc 2.ts//会出来一个2.js
 
   - 子类的函数能覆盖父类同名函数
 
-    ```
+    ```js
     class Animal{
       eat(){
         
@@ -260,7 +257,7 @@ tsc 2.ts//会出来一个2.js
 
   - 依赖抽象而不依赖实现(尽量依赖父类而不依赖子类)，能依赖Person不依赖Women
 
-    ```
+    ```js
     class Person{
       constructor(){}
       buy(){}
@@ -314,7 +311,7 @@ tsc 2.ts//会出来一个2.js
 
    ![简单工厂模式](/img/简单工厂.png)
 
-   ```
+   ```js
    class Plant{
      constructor(name){
        this.name=name;
@@ -345,7 +342,7 @@ tsc 2.ts//会出来一个2.js
 
    简单工厂模式：(用一个类做一个端菜的服务员)
 
-   ```
+   ```js
    class Factory{
      static create(type){
        switch(type)
@@ -373,7 +370,7 @@ tsc 2.ts//会出来一个2.js
 
    1. jQuery
 
-      ```
+      ```js
       class jQuery{
         constructor(selector){
           let elements=Array.from(document.querySelectorAll(selector));
@@ -394,7 +391,7 @@ tsc 2.ts//会出来一个2.js
 
    2. react
 
-      ```
+      ```js
       //虚拟DOM
       let h1=<h1 className="title">hello</h1>;
       //babel编译后变成：let h1=React.createElement('h1',{className:'title'},'hello');
@@ -421,7 +418,7 @@ tsc 2.ts//会出来一个2.js
 
 - 简单工厂模式不符合开闭原则(对修改关闭，对扩展开放，会改到老代码)
 
-```
+```js
 //plant.js
 class Plant{
   constructor(name){
@@ -488,11 +485,9 @@ let orange=settings['orange'].create();
 
 ![](/img/抽象工厂模式2.png)
 
-```
+```js
 //1.method.js
-clsss Factory{
-  
-}
+class Factory{}
 class AppleFactory extends Factory{
   createButton(){//创建按钮
   	return new AppleButton();
@@ -562,7 +557,7 @@ windowsFactory.createButton().render();
 
 ![](/img/单例模式.png)
 
-```
+```js
 //es6的单例写法
 class Window{
   constructor(name){

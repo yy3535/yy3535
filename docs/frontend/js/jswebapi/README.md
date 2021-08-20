@@ -355,6 +355,11 @@ let style = window.getComputedStyle(element, [pseudoElt]);
   - 浏览器视口（viewport）宽度（单位：像素），如果存在垂直滚动条则包括它。
 - innerHeight
   - 浏览器窗口的视口（viewport）高度（以像素为单位）；如果有水平滚动条，也包括滚动条高度。
+  - requestAnimationFrame
+    - 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行
+    ```js
+    window.requestAnimationFrame(callback);
+    ```
 
 ### DOM事件
 - DOM事件(DOM标准)的级别
@@ -370,10 +375,21 @@ let style = window.getComputedStyle(element, [pseudoElt]);
     - 比如点击了左键，左键是怎么传到页面上，就叫事件流
     - 一个事件流分三个阶段：捕获阶段->目标阶段->冒泡阶段。事件通过捕获到达目标阶段，再从目标阶段冒泡上传到window对象
 <mark-check id="shijian"></mark-check>
+
 - 事件绑定具体流程
     - 事件捕获：window->document->html->body->...->目标元素
     - 冒泡流程：目标元素->...->boyd->html->document->window
 
+```js
+target.addEventListener(type, listener, options);
+target.addEventListener(type, listener, useCapture);
+
+```
+- options 可选
+    - 一个指定有关 listener 属性的可选参数对象。可用的选项如下：
+    - capture:  Boolean，表示 listener 会在该类型的事件捕获阶段传播到该 EventTarget 时触发。
+    - once:  Boolean，表示 listener 在添加之后最多只调用一次。如果是 true， listener 会在其被调用之后自动移除。
+    - passive: Boolean，设置为true时，表示 listener 永远不会调用 preventDefault()。如果 listener 仍然调用了这个函数，客户端将会忽略它并抛出一个控制台警告。
 - Event对象
     - 事件类型
         - CAPTURING-PHASE  当前事件阶段为捕获阶段
@@ -520,12 +536,19 @@ bindEvent(div1, 'click', function (e) {
     - screen.width
     - screen.height
   - location
-    - href
-    - protocol
-        - 'http:' 'https:'
-    - pathname 
-        - '/learn/199'
-    - search
+    ```js
+    var url = document.createElement('a');
+    url.href = 'https://developer.mozilla.org/en-US/search?q=URL#search-results-close-container';
+    console.log(url.href);      // https://developer.mozilla.org/en-US/search?q=URL#search-results-close-container
+    console.log(url.protocol);  // https:
+    console.log(url.host);      // developer.mozilla.org
+    console.log(url.hostname);  // developer.mozilla.org
+    console.log(url.port);      // (blank - https assumes port 443)
+    console.log(url.pathname);  // /en-US/search
+    console.log(url.search);    // ?q=URL
+    console.log(url.hash);      // #search-results-close-container 
+    console.log(url.origin);    // https://developer.mozilla.org
+    ```
     - hash
         - onhashchange事件监听变化
   - history
@@ -670,7 +693,7 @@ window.callbackName = function (data) {
 callbackName({x:100, y:200})
 ```
 
-#### 服务器端设置 http header
+#### cors
 ```js
 // server.js
 // express 跨域
@@ -692,6 +715,60 @@ response.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS"
 response.setHeader("Access-Control-Allow-Credentials", "true");
 ```
 
+虽然设置 CORS 和前端没什么关系，但是通过这种方式解决跨域问题的话，会在发送请求时出现两种情况，分别为简单请求和复杂请求。
+
+- 简单请求
+- 
+以 Ajax 为例，当满足以下条件时，会触发简单请求
+
+使用下列方法之一：
+
+- GET
+
+- HEAD
+
+- POST
+
+Content-Type 的值仅限于下列三者之一：
+
+- text/plain
+
+- multipart/form-data
+
+- application/x-www-form-urlencoded
+
+请求中的任意 XMLHttpRequestUpload 对象均没有注册任何事件监听器； XMLHttpRequestUpload 对象可以使用 XMLHttpRequest.upload 属性访问。
+
+- 复杂请求
+
+那么很显然，不符合以上条件的请求就肯定是复杂请求了。
+
+对于复杂请求来说，首先会发起一个预检请求，该请求是 option 方法的，通过该请求来知道服务端是否允许跨域请求。
+
+对于预检请求来说，如果你使用过 Node 来设置 CORS 的话，可能会遇到过这么一个坑。
+
+以下以 express 框架举例：
+```js
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials'
+  )
+  next()
+})
+```
+该请求会验证你的 Authorization 字段，没有的话就会报错。
+
+当前端发起了复杂请求后，你会发现就算你代码是正确的，返回结果也永远是报错的。因为预检请求也会进入回调中，也会触发 next 方法，因为预检请求并不包含 Authorization 字段，所以服务端会报错。
+
+想解决这个问题很简单，只需要在回调中过滤 option 方法即可
+```js
+res.statusCode = 204
+res.setHeader('Content-Length', '0')
+res.end()
+```
 ## websocket
 - 使用
 ```js

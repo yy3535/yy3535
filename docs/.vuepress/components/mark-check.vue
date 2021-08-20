@@ -19,17 +19,17 @@
 <style lang="scss" scoped>
   .check {
     position: absolute;
-    left:350px;
+    left:0;
     z-index:10;
     input{
       display:none;
     }
     input+label{
       background:url(./imgs/check.png) left center no-repeat;
-      background-size:50px 50px;
-      height:50px;
+      background-size:30px 30px;
+      height:30px;
       display: block;
-      padding-left:50px;
+      padding-left:30px;
       user-select: none;
       color:red;
     }

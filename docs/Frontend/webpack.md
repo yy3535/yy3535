@@ -2549,3 +2549,7 @@ class EmitPlugin {
 }
 module.exports = EmitPlugin;
 ```
+
+## 实现小型打包工具
+- 将 ES6 转换为 ES5
+- 支持在 JS 文件中 import CSS 文件

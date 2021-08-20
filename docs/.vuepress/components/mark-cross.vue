@@ -13,7 +13,7 @@
 <style lang="scss" scoped>
   .mark-cross{
     position: absolute;
-    left:400px;
+    left:0;
     z-index:10;
     color:red;
     font-weight: bold;

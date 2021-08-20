@@ -6,13 +6,30 @@
 - react源码(单独的一门课)
 - react+dva+umi+antd
 
-## react_jsx
+## 基本使用
 ```js
 npm install create-react-app -g
 create-react-app react-lesson
 ```
-- 有jsx语法，Babel 会把 JSX 转译成一个名为 React.createElement() 函数调用,返回虚拟节点，然后放入页面中
-- React.createElement()
+- render函数模板
+- ReactDOM.render将节点渲染到页面
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+function Welcome(props){
+  return (<h1 className="title">hello</h1>);
+}
+class Welcome extends React.Component{
+  render(){
+    return (<h1 className="title">hello</h1>);
+  }
+}
+ReactDOM.render(Welcome,document.getElementById('root'))
+```
+
+## react_jsx
+- jsx是语法糖，替代了`React.createElement`(Babel转译)。
+- React.createElement()返回虚拟DOM对象，
 ```js
 React.createElement(
   type,
@@ -42,15 +59,14 @@ console.log(element)
  */
 ```
 - jsx和js区别
-  1. 根据<来判断是一个html元素 根据{}判断是一个js语法
-  2. js中有很多关键字，所以要以小驼峰命名法命名，class用className代替
+  1. `<`放html {}内嵌js表达式，可以使用三元表达式，函数等，只要有返回值即可
+  2. 关键字重复的，特例：`class`用`className`代替,`for`用`htmlFor`代替
   3. react相邻的jsx元素 react元素 必须被一个标签所包裹
   4. style标签 必须是一个对象元素
   5. 注释问题 {// /** */}
   6. dangerouslySetInnerHTML 会执行代码，要确保内容是安全的
-  7. {}可以使用三元表达式，函数等，只要有返回值即可
-  8. onclick=>onClick onchange=>onChange 函数加括号
-  10. 可以直接渲染数组，如果想渲染对象 需要转化成字符串格式
+  7. onclick=>onClick onchange=>onChange 函数加括号
+  8.  可以直接渲染数组，如果想渲染对象 需要转化成字符串格式
 ```js
 import React from 'react';
 import {render} from 'react-dom';
@@ -504,15 +520,12 @@ ReactDOM.render(<Counter></Counter>,window.root);
   - static getDerivedStateFromProps()
   - render()
   - componentDidMount()
-  - UNSAFE_componentWillMount()
 - 更新
   - static getDerivedStateFromProps()
   - shouldComponentUpdate()
   - render()
   - getSnapshotBeforeUpdate()
   - componentDidUpdate()
-  - UNSAFE_componentWillUpdate()
-  - UNSAFE_componentWillReceiveProps()
 - 卸载
   - componentWillUnmount()
 - 错误处理
@@ -943,9 +956,34 @@ class Page extends Component{
 }
 ```
 ## 组件
-- 需要返回一个并且仅能返回一个React元素
-- 必须大写字母开头
+- 返回一个ReactElement
+- 名称大写字母开头
+### Props属性
+```js
+import React from 'react';
+
+class NameCard extends React.Component {
+  render(){
+    const {name,number,isHuman,tags}=this.props;
+    return (
+      <div>
+        <h4>{name}</h4>
+        <p>{number}</p>
+      </div>
+    )
+  }
+}
+```
+#### Props的只读性
+- 所有 React 组件都必须像纯函数一样保护它们的 props 不被更改。
+:::tip 纯函数
+- 不会尝试更改入参，且多次调用下相同的入参始终返回相同的结果。
+- 不能影响作用域之外的变量
+:::
+
+
 ### 函数组件
+- 没有生命周期，也没有state，就使用函数组件
 ```js
 // 函数组件
 function School(props) {
@@ -980,14 +1018,42 @@ class Clock extends React.Component{
 ReactDOM.render(<Clock a="1"></Clock>,window.root)
 ```
 
-### Props的只读性
-- 所有 React 组件都必须像纯函数一样保护它们的 props 不被更改。
-:::tip 纯函数
-- 不会尝试更改入参，且多次调用下相同的入参始终返回相同的结果。
-- 不能影响作用域之外的变量
-:::
-### setState
+
+
+### State状态
+- 动态的，可修改
+- 更新状态的唯一方法`this.setState`
+```js
+import React from 'react;
+class LikesButton extends React.Component {
+  constructo(props){
+    super(props);
+    this.state={
+      likes:0
+    }
+    this.increaseLikes=this.increaseLikes.bind(this)
+  }
+  increaseLikes(){
+    this.setState({
+      likes:++this.state.likes
+    })
+    this.state.likes++;
+  }
+  render(){
+    return (
+      <div>
+        <button onClick={this.increaseLikes}>
+          {this.state.likes}
+        </button>
+      </div>
+    )
+  }
+}
+export default LikesButton
+```
+#### this.setState
 - 批量处理状态：多次setState会把所有的状态合并到一起，只渲染一次。如果希望渲染多次，使用定时器包裹
+- 参数为对象
 ```js
 import React,{Component} from 'react';
 import ReactDOM from 'react-dom';
@@ -1011,11 +1077,31 @@ class Counter extends Component{
 }
 ReactDOM.render(<Counter n={100}></Counter>,window.root)
 ```
+- 参数为函数
+```js
+...
+  handleClickOnLikeButton () {
+    this.setState((prevState) => {
+      return { count: 0 }
+    })
+    this.setState((prevState) => {
+      return { count: prevState.count + 1 } // 上一个 setState 的返回是 count 为 0，当前返回 1
+    })
+    this.setState((prevState) => {
+      return { count: prevState.count + 2 } // 上一个 setState 的返回是 count 为 1，当前返回 3
+    })
+    // 最后的结果是 this.state.count 为 3
+  }
+...
+```
 :::tip 批量更新原理，为什么加了settimeout就不会批量更新了
 - 因为setState是利用事务来进行批量更新的，把中间所有的setState都执行完再去更新。但setTimeout是异步，所以会先执行事务的close，再执行setTimeout中的更新方法。导致批量更新的flag为false。
 :::
 
-### 受控和非受控
+### Forms
+
+
+#### 受控和非受控
 - 受控和非受控 表单元素（双向绑定）
 - 输入内容，可以把数据更新到原有数据中
 - 数据变化了 视图跟着更新
@@ -1089,13 +1175,15 @@ ReactDOM.render(<Control></Control>,window.root)
   - props
   - state
 ### 组件间通信
-- 父亲->儿子—>孙子 单向数据流，一层一层，不能跳过
-- 要修改传的值
+- 兄弟之间通过父级来通信(prop传递数据)
+  - 父亲->儿子—>孙子 单向数据流，一层一层，不能跳过
+  - 绑定事件和触发事件来修改
   - 传递一个函数 回调里放的是修改的功能 子组件调用函数即可改变父组件数据
-- 兄弟之间通过父级来通信
-- 绑定事件和触发事件来修改
-- context api 定义一些数据 直接消费父级数据
-
+-  跨级通信（context provider提供数据 consumer使用数据）
+### react思想与其他异同
+- 状态提升(利用父级来放数据)
+- 自上而下的数据流(需要传函数来修改数据)
+- 和双向绑定的区别(更容易定位问题，bug更少)
 ## react-router
 ### 分类
 - HashRouter
@@ -3651,8 +3739,8 @@ function Counter(){
 
 }
 ```
-### effect
-- 副作用
+### useEffect
+- 第一次渲染和每次渲染之后都会执行
 
 
 ### hooks特点

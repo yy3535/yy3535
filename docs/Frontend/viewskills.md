@@ -512,14 +512,15 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
 
 
 ### 【重要,手写】跨域通信的几种方式
+- 如果协议、域名或者端口有一个不同就是跨域，Ajax 请求会失败。
+- 主要是用来防止 CSRF 攻击的。简单点说，CSRF 攻击是利用用户的登录态发起恶意请求。
 
 <mark-check></mark-check>
 
 - jsonp
-    - 优点：容易
-    - 缺点：
-        - 只能发送get请求（引用别人的东西，不支持post put delete）
-        - 不安全 xss攻击（别人的脚本里有一些攻击代码，现在很多网站为了安全已经不用了）
+    - 兼容性好
+    - 只能发送get请求(引用别人的js文件)
+    - 不安全 xss攻击（别人的脚本里有一些攻击代码，现在很多网站为了安全已经不用了）
     ```js
     // 引用别人的包
     jsonp({
@@ -890,15 +891,27 @@ for(var i=0;i<4;i++){
 <link rel="dns-prefetch" href="//host_name_to_prefetch.com">
 
 ```
+## 监控
+### 页面埋点
+PV / UV
+停留时长
+流量来源
+用户交互
 
-## 错误监控
+实现思路大致可以分为两种，分别为手写埋点和无埋点的方式。
+### 性能监控
+直接使用浏览器自带的 Performance API ,一行代码我们就可以获得页面中各种详细的性能相关信息。
+```js
+performance.getEntriesByType('navigation')
+```
+### 错误监控
 
-### 前端错误的分类
+#### 前端错误的分类
 - 即时运行错误：代码错误
 - 资源加载错误
 
 
-### 每种错误的捕获方式
+#### 每种错误的捕获方式
 - 即时运行错误的捕获方式
     - try...catch
     - window.onerror
@@ -925,7 +938,7 @@ for(var i=0;i<4;i++){
 - 如何处理才能拿到详细信息（两步）：
     1. （前端）在script标签增加crossorigin属性
     2. （后端）设置js资源响应头Access-Control-Allow-Origin:*// *也可以改成具体域名
-### 上报错误的原理
+#### 上报错误的原理
 - 采用Ajax通信的方式上报
 - 利用Image对象上报（所有的错误监控体系都是利用image对象上报的）
 ```html

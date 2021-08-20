@@ -87,7 +87,8 @@ let Gender={};
 })(Gender);
 console.log(Gender);
 ```
-### 常数枚举
+### 常量枚举
+- 提升性能
 ```ts
 const enum Colors {
     Red,
@@ -803,7 +804,7 @@ class Animal{
 }
 class Cat extends Animal{
     speak(word:string):string{
-        return '猫叫:'+word;
+        return '猫叫:'+super.speak();
     }
 }
 let cat = new Cat();

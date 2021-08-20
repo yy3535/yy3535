@@ -10,19 +10,19 @@
 - HTTP报文的组成部分
   - 请求报文
       - 请求行
-        - http方法
-        - 页面地址
+        - 请求方法
+        - URL
         - http协议以及版本
-      - 请求头
+      - 首部
         - key,value值告诉服务端我要哪些内容，哪些类型
       - 空行
         - 请求头和请求体的分割
-      - 请求体
+      - 主体
         - 数据部分
 ```md
 <!-- 请求行 -->
 POST /search HTTP/1.1  
-<!-- 请求头 -->
+<!-- 首部 -->
 Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-excel, application/vnd.ms-powerpoint, 
 application/msword, application/x-silverlight, application/x-shockwave-flash, */*  
 Referer: <a href="http://www.google.cn/">http://www.google.cn/</a>  
@@ -39,9 +39,9 @@ hl=zh-CN&source=hp&q=domety
 ```
   - 响应报文
       - 状态行
-      - 响应头
+      - 首部
       - 空行
-      - 响应体
+      - 主体
 ```md
 <!-- 状态行 -->
 HTTP/1.1 200 OK
@@ -80,6 +80,11 @@ Content-Length: 122
   - GET产生的URL可以被收藏，而POST不可以(可不记)
   - GET请求只能进行url编码，而POST支持多种编码方式(可记可不记)
   - GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息(了解)
+  - 【总结】
+    - Get 请求能缓存，Post 不能
+    - Post 相对 Get 安全一点点，因为Get 请求都包含在 URL 里（当然你想写到 body 里也是可以的），且会被浏览器保存历史纪录。Post 不会，但是在抓包的情况下都是一样的。
+    - URL有长度限制，会影响 Get 请求，但是这个长度限制是浏览器规定的，不是 RFC 规定的
+    - Post 支持更多的编码类型且不对数据类型限制
 - HTTP状态码
 
   | 状态  | 含义    |      |
@@ -125,6 +130,32 @@ Content-Length: 122
     - 管线化不会影响响应到来的顺序
     - http/1.1要求服务端支持管线化，但并不要求服务端对响应进行管线化处理，只要求对管线化的请求不失败即可
     - 因为以上服务端问题，开启管线化可能并不会大幅度提升性能，而且很多服务器和代理程序对管线化支持并不好，因此Chrome和Firefox默认并未开启管线化支持
+### UDP和TCP
+- UDP
+1.面向无连接
+2.有单播，多播，广播的功能
+3.UDP 是面向报文的
+4.不可靠性
+5.头部开销小，传输数据报文时是很高效的。
+- TCP
+  1. TCP 连接过程(三次握手)
+  2. TCP 断开链接（四次挥手）
+  3. 特点
+  - 面向连接
+  - 仅支持单播传输
+  - 面向字节流
+  - 可靠传输
+  - 提供拥塞控制
+  - TCP 提供全双工通信
+- 总结
+  - TCP 向上层提供面向连接的可靠服务 ，UDP 向上层提供无连接不可靠服务。
+  - 虽然 UDP 并没有 TCP 传输来的准确，但是也能在很多实时性要求高的地方有所作为
+  - 对数据准确性要求高，速度可以相对较慢的，可以选用 TCP
+
+
+
+
+
 
 ## 页面加载
 
@@ -806,6 +837,33 @@ router.get('/getComment',function(req,res,next){
 module.exports = router;
 
 ```
+- CSP
+- 
+CSP 本质上就是建立白名单，开发者明确告诉浏览器哪些外部资源可以加载和执行。我们只需要配置规则，如何拦截是由浏览器自己实现的。我们可以通过这种方式来尽量减少 XSS 攻击。
+
+通常可以通过两种方式来开启 CSP：
+
+- 设置 HTTP Header 中的 Content-Security-Policy
+- 设置 meta 标签的方式 <meta http-equiv="Content-Security-Policy">
+
+这里以设置 HTTP Header 来举例
+
+只允许加载本站资源
+```http
+Content-Security-Policy: default-src ‘self’
+```
+只允许加载 HTTPS 协议图片
+```http
+Content-Security-Policy: img-src https://*
+```
+允许加载任何来源框架
+```http
+Content-Security-Policy: child-src 'none'
+```
+当然可以设置的属性远不止这些，你可以通过查阅 文档 的方式来学习，这里就不过多赘述其他的属性了。
+
+对于这种方式来说，只要开发者配置了正确的规则，那么即使网站存在漏洞，攻击者也不能执行它的攻击代码，并且 CSP 的兼容性也不错。
+
 - CSRF
   - 基本概念和缩写
     - Cross-site request forgery，【记】跨站请求伪造

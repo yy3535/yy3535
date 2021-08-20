@@ -30,6 +30,7 @@
   - **null**：0
   <mark-check id="zhuanhuan"></mark-check>
   - **对象**：
+  - 对象在转换类型的时候，会调用内置的 [[ToPrimitive]] 函数，对于该函数来说，算法逻辑一般来说如下：
     1. 调用valueOf()
     2. 调用toString()
     3. 报错
@@ -258,7 +259,7 @@ true+true
 - ===
   - 不做类型转换，类型不同的一定不等。
 
-::: tip ===
+:::tip ===
 - 类型不同:[不相等] 
 - 数值，
   - 没有NaN:相等
@@ -269,7 +270,7 @@ true+true
 -  引用类型比较，进行“指针地址”比较，(都引用同一个对象或函数:[相等])
 :::
 
-::: tip ==
+:::tip ==
 -  如果两个值类型相同，和 === 一样
 -  如果两个值类型不同，转换成number再比较
   -  null和undefined比较相等，null和undefined和其他如空字符串，false，0比较，都不等。 
@@ -289,10 +290,10 @@ true+true
 ### Number API[ES6,全局方法移到了Number对象上]
 - Number.toString(radix)
     - 将数字转为其它进制
-::: 其它进制转为十进制
+:::tip 其它进制转为十进制
 parseInt("11",2)
 :::
-::: 二进制计算方法
+:::tip 二进制计算方法
 ![二进制计算](../../img/erjinzhi.jpg)
 任意几个加起来的和是十进制的数字即可。没用到的用0补位。
 - 3：2+1 11
@@ -316,6 +317,8 @@ parseInt("11",2)
   - 判断一个整数是否落在这个范围之内。
   - Number.MAX_SAFE_INTEGER（范围上限）
   - Number.MIN_SAFE_INTEGER（范围下限）
+- Number.prototype.toFixed(digits) 
+  - 保存到小数点后第几位
 
 ### Math对象
 
@@ -563,6 +566,7 @@ Child5.prototype.constructor=Child5;// 覆盖自雷的原型对象
     - 全局中this指向window
     - 构造函数中
         - 指向当前实例对象
+    - 其它：指向调用它的对象
     - 用于`call` `apply` `bind`
         - 调用时指定this的指向
 :::warning 注意
@@ -777,12 +781,15 @@ li[i].onclick=function(){ alert(n);
 }
 这是我们常用的写法，很明显，这样就运行了子函数，就会弹出结果。
 这个闭包还有第二种写法:
-```jss
-window.onload=function(){ varli=document.getElementsByTagName("li"); for(vari=0;i<li.length;i++){
-(function(n){ li[i].onclick=function(){
-alert(n); }
-})(i);
-} }
+```js
+window.onload=function(){ 
+    var li=document.getElementsByTagName("li"); 
+    for(vari=0;i<li.length;i++){
+        (function(n){ li[i].onclick=function(){
+            alert(n); }
+        })(i);
+    }
+}
 ```
 因为要用到循环里的变量，所以用一个闭包把下面的代码包起来，并传给一个形 参 n,调用时传实参 i,这个 i就是 for循环里的 i。
 
@@ -1162,6 +1169,7 @@ new Date(dateString);
 new Date(year, monthIndex [, day [, hours [, minutes [, seconds [, milliseconds]]]]]);
 ```
 <mark-check id="date2"></mark-check>
+
 ```js
 Date.now()  // 返回自 1970-1-1 00:00:00  UTC（世界标准时间）至今所经过的毫秒数。
 var dt = new Date()
@@ -1169,7 +1177,8 @@ var dt = new Date()
 dt.getTime()  // 返回从1970-1-1 00:00:00 UTC（协调世界时）到该日期经过的毫秒数，
 dt.getFullYear()  // 年
 dt.getMonth()  // 月（0 - 11）
-dt.getDate()  // 日（0 - 31）
+dt.getDate()  // 日（1 - 31）
+dt.getDay() // 星期(0-6)
 dt.getHours()  // 小时（0 - 23）
 dt.getMinutes()  // 分钟（0 - 59）
 dt.getSeconds()  // 秒（0 - 59）
@@ -1281,6 +1290,7 @@ console.log(formatDate)
 <mark-check id="sort"></mark-check>
 - Array​.prototype​.sort()
   - 默认从小到大arr.sort()
+  - 改变原数组
     ```js
     arr.sort(function(a, b) {
             // 从小到大排序
@@ -1316,131 +1326,6 @@ console.log(formatDate)
   - 第一个函数返回总值和每一项的计算，对数组进行计算后得到结果
   - 第二个参数是第一次调用callback函数时的第一个参数的值。 如果没有提供初始值，则将使用数组中的第一个元素。 在没有初始值的空数组上调用 reduce 将报错。
 
-<mark-check id="qiuhe"></mark-check>
-
-```js
-// 数组里所有值得和
-var sum = [0, 1, 2, 3].reduce(function (accumulator, currentValue) {
-    return accumulator + currentValue;
-}, 0);
-// 和为 6
-var total = [ 0, 1, 2, 3 ].reduce(
-    ( acc, cur ) => acc + cur,
-    0
-);
-```
-
-<mark-check id="leijia"></mark-check>
-
-```js
-// 累加对象数组里的值
-var initialValue = 0;
-var sum = [{x: 1}, {x:2}, {x:3}].reduce(
-    (accumulator, currentValue) => accumulator + currentValue.x
-    ,initialValue
-);
-console.log(sum) // logs 6
-```
-
-<mark-check id="erwei2yiwei"></mark-check>
-
-```js
-// 将二维数组转化为一维
-var flattened = [[0, 1], [2, 3], [4, 5]].reduce(
-    ( acc, cur ) => acc.concat(cur),
-    []
-);
-```
-
-<mark-check id="cishu"></mark-check>
-
-```js
-// 计算数组中每个元素出现的次数
-var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
-
-var countedNames = names.reduce(function (allNames, name) { 
-if (name in allNames) {
-    allNames[name]++;
-}
-else {
-    allNames[name] = 1;
-}
-return allNames;
-}, {});
-// countedNames is:
-// { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
-```
-
-<absolute-box><strong>判断对象是否包含一个属性，两种方法：</strong><br/>1. object[key]<br/>2. key in object<br/></absolute-box>
-
-<mark-check id="fenlei"></mark-check>
-
-```js
-// 按属性对object分类
-var people = [
-    { name: 'Alice', age: 21 },
-    { name: 'Max', age: 20 },
-    { name: 'Jane', age: 20 }
-];
-
-function groupBy(objectArray, property) {
-return objectArray.reduce(function (acc, obj) {
-    var key = obj[property];
-    if (!acc[key]) {
-    acc[key] = [];
-    }
-    acc[key].push(obj);
-    return acc;
-}, {});
-}
-
-var groupedPeople = groupBy(people, 'age');
-// groupedPeople is:
-// { 
-//   20: [
-//     { name: 'Max', age: 20 }, 
-//     { name: 'Jane', age: 20 }
-//   ], 
-//   21: [{ name: 'Alice', age: 21 }] 
-// }
-```
-
-<absolute-box>合并数组：<br/>1. [...arr1,...arr2]<br/>2. arr1.concat(arr2,arr3,...arrn);</absolute-box>
-
-<mark-check id="listofbooks"></mark-check>
-
-```js
-// 使用扩展运算符和initialValue绑定包含在对象数组中的数组
-
-// friends - 对象数组
-// where object field "books" - list of favorite books 
-var friends = [{
-name: 'Anna',
-books: ['Bible', 'Harry Potter'],
-age: 21
-}, {
-name: 'Bob',
-books: ['War and peace', 'Romeo and Juliet'],
-age: 26
-}, {
-name: 'Alice',
-books: ['The Lord of the Rings', 'The Shining'],
-age: 18
-}];
-
-// allbooks - list which will contain all friends' books +  
-// additional list contained in initialValue
-var allbooks = friends.reduce(function(prev, curr) {
-return [...prev, ...curr.books];
-}, ['Alphabet']);
-
-// allbooks = [
-//   'Alphabet', 'Bible', 'Harry Potter', 'War and peace', 
-//   'Romeo and Juliet', 'The Lord of the Rings',
-//   'The Shining'
-// ]
-```
-
 <mark-check id="checkQuchong"></mark-check>
 
 ```js
@@ -1453,55 +1338,6 @@ let result = arr.sort().reduce((init, current) => {
     return init;
 }, []);
 console.log(result); //[1,2,3,4,5]
-```
-
-<mark-check id="yunxingPromise"></mark-check>
-
-```js
-// 按顺序运行Promise
-/**
- * Runs promises from array of functions that can return promises
-* in chained manner
-*
-* @param {array} arr - promise arr
-* @return {Object} promise object
-*/
-function runPromiseInSequence(arr, input) {
-return arr.reduce(
-    (promiseChain, currentFunction) => promiseChain.then(currentFunction),
-    Promise.resolve(input)
-);
-}
-
-// promise function 1
-function p1(a) {
-return new Promise((resolve, reject) => {
-    resolve(a * 5);
-});
-}
-
-// promise function 2
-function p2(a) {
-return new Promise((resolve, reject) => {
-    resolve(a * 2);
-});
-}
-
-// function 3  - will be wrapped in a resolved promise by .then()
-function f3(a) {
-return a * 3;
-}
-
-// promise function 4
-function p4(a) {
-return new Promise((resolve, reject) => {
-    resolve(a * 4);
-});
-}
-
-const promiseArr = [p1, p2, f3, p4];
-runPromiseInSequence(promiseArr, 10)
-.then(console.log);   // 1200
 ```
 - Array​.prototype​.reduce​Right()
 :::
@@ -1711,9 +1547,9 @@ function push(array, ...items) {
 | 功能       |                                  ES5 API |                                                                        ES6 API |
 | :--------- | ---------------------------------------: | -----------------------------------------------------------------------------: |
 | 查找       |              indexOf,lastIndexOf,charAt, |                  includes,startsWith,endsWith |
-| 合并，切割 | concat,splite,slice[),subString[),subStr |                                                                                |
+| 合并，切割 | concat,splite,slice[),subString[) |                                                                                |
 | 匹配       |                     match,replace,search |                                                                       matchAll |
-| 格式化     |      toLowerCase,toUpperCase,trim,repeat | padStart,padEnd,trimStart,trimEnd |
+| 格式化     |      toLowerCase,toUpperCase,trim,repeat,charCodeAt | padStart,padEnd,trimStart,trimEnd |
 
 ### 查找
 - charAt()
@@ -1739,9 +1575,6 @@ function push(array, ...items) {
   - 提取字符串的某个部分，并以新的字符串返回被提取的部分。
 - substring(start,stop)
   - 提取字符串中介于两个指定下标之间的字符。返回一个字符串在开始索引到结束索引之间的一个子集
-- substr(start[, length])
-  - 提取字符串
-
 
 ### 匹配
 <mark-check id="replace"></mark-check>
@@ -1846,7 +1679,7 @@ console.log(matches_array);
     ```
 - toString()
 - valueOf()
-
+- charCodeAt(index) 单个字符转ascll码的index
 ## 内置对象-对象常用 API
 ### 属性
 <mark-check id="shuxingming"></mark-check>
@@ -2169,7 +2002,7 @@ f.name // "f"
     [1,2,3].map(x => x * x);
     ```
 - 注意点
-  - 函数体内的this对象，就是函数定义生效时所在的对象，例如new一个实例的时候。而不是使用时所在的对象。 在箭头函数中，this指向是固定的
+  - this看定义
   - 不可以当作构造函数(就是不可以使用new命令)
   - 没有arguments,可以用 rest 参数代替。
 - 不适用的场合

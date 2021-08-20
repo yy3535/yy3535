@@ -3043,7 +3043,10 @@ function hasScore(json) {
 ```
 
 ### 【9】实现一个promise,实现promise.all，实现promise.race
-
+1. 一个类里面有一个变量保存promise状态，new的时候传入一个函数，函数的参数里包含两个方法resolve和reject，在promise初始化时定义了。当new promise异步成功后执行定义的resolve方法，传入成功值，失败调用reject方法，传入失败值。立即执行new传入的函数。
+2. then函数的作用是返回一个新的promise，在里面判断目前的promise状态，成功就调用原promise的成功，失败调用原promise的失败，等待就把原成功和原失败存起来(存的时候函数包一下把参数传进去)，等成功后调用。这样通过一个变量和发布订阅就实现了发送请求和得到请求结果的分离。
+3. 原promise的成功函数执行时出错就执行新promise的失败，成功就执行新promise的成功。其它也是如此
+4. resolvePromise(promise2,x,resolve,reject),执行promise2的resolve，即执行新promise成功时，要先判断原promise成功函数的返回值x是不是一个promise(判断是对象或者函数，并且有then属性即认为是promise)。加上异步以保证能拿到promise2传过去。是promise，就执行它的then方法，按then的结果来判断promise2的状态。
 ```js
 let Promise=require('./promise')
 let p=new Promise(function(resolve,reject){

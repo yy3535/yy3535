@@ -1206,11 +1206,11 @@ class Server {
         res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,DELETE,OPTIONS,POST');
         // 允许的跨域头
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type,token');
-        // options的发送间隔，如果请求不是get或者post，并且带请求头的话，在请求前，会先发一个options请求，来确认能不能访问（预检查），然后再发送请求
+        // options的发送间隔，如果请求不是get或者post，并且带请求头的话(复杂请求)，在请求前，会先发一个options请求，来是否支持跨域（预检查），然后再发送请求
         res.setHeader('Access-Control-Max-age', 10);
         // 允许前端访问 强制跨域携带cookie
         res.setHeader('Access-Control-Allow-Credentials', true);
-        // options不进行处理
+        // options不进行处理（解决options出错问题）
         if (method === 'options') {
             res.end(); // 可以访问
         }
@@ -1588,12 +1588,12 @@ module.exports = Server;
     ```
   - 对比缓存 
     - last-modified(服务端)) if-modified-since(客户端)
-    - Etag(服务端) if-none-match(客户端)
-      - If-Modified-Since
+        - If-Modified-Since
         - 第一次访问时，请求头的last-modified最后修改时间8：00
       以后请求时，带着这个时间，发现变成了10：00就返回新的文件
         - If-Modified-Since 是浏览器自己携带的，如果服务器设置过last-modified，下次请求就会带上这个头
         - 缺陷：如果文件没改，时间变了 时间精确到秒，可能会有问题
+    - Etag(服务端) if-none-match(客户端)
       - Etag 实体内容
         - 根据文件内容算出一个唯一的值 md5 
         - 方式比较靠谱，精确，但不能对大文件进行etag 一般用文件的大小和文件的最后修改时间来组成etag
@@ -2865,7 +2865,37 @@ let read=util.promisify(fs.readFile);
 ```
 - Util.inherits();
   - 继承方法，构造函数，继承原型上的公有属性(原理`Object.setPrototypefOf()`)
+### readline模块
+- createInterface({input,output})
+  - setPrompt(str) 设置提示文字
+  - prompt() 提供输入时显示提示文字
+  - on('line',callback) 输入后回车的回调
+```js
+function getNumber(str, char) {
+    let res = str.split('').reduce((acc, cur) => {
+        if (cur === char) acc++;
+        return acc;
+    }, 0);
+    console.log(res);
+}
 
+let readline = require('readline');
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+const rl = readline.createInterface(process.stdin, process.stdout);
+rl.setPrompt('Test> ');
+rl.prompt();
+let arr = []
+rl.on('line', (str) => {
+    arr.push(str);
+    if (arr.length === 2) {
+        getNumber(...arr);
+    }
+    rl.prompt();
+})
+```
 ## 手写一个common.js规范
 - 读取文件规则
   - 会默认添加后缀名.js，找不到再.json，找不到再.node

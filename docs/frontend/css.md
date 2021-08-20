@@ -962,6 +962,18 @@ tr td:last-child {
             //640px以内進行一個自適應
             ```
             :::
+
+            ```js
+                (function(){
+                    function refreshRem(){
+                        <!-- 屏幕宽度750，1rem=100px iphone6 1rem=50px -->
+                        <!-- 默认的16px是默认值 16不好计算 -->
+                        document.documentElement.style.fontSize=document.documentElement.clientWidth/750*100+'px';
+                    }
+                    refreshRem();
+                    window.addEventListener('resize',refreshRem,false);
+                })();
+            ```
         - 媒体查询
             - @media screen [not|only]? and (media feature) { CSS-Code; }
                 - media feature :max(min)-height (width),为了实现向上兼容,常用min-width,从小写到大
@@ -1806,6 +1818,7 @@ $bgColor:red;
 ```
 
 <mark-check id="mixinheextend"></mark-check>
+
 - <highlight-box>css模块化</highlight-box>
     - 可以把css拆成很多部分再引入,结构清晰，方便维护 
     - css预处理器会把模块化引入的css合成一个文件，解决了文件太细碎后加载的性能问题。
@@ -1817,6 +1830,12 @@ $bgColor:red;
 @import "article";
 @import "dialog";
 @import "./footer";
+// CSS Module 有一个:export关键字，它在功能上等同于 ES6 的关键字export，即导出一个 js 对象。
+:export {
+  name: "less";
+  mainColor: @mainColor;
+  fontSize: @fontSize;
+}
 ```
 
 
@@ -1972,3 +1991,37 @@ $column:200px;
     - 编译成随机字符串/加上自定义属性
 - sketch自动生成渐变色，做设计稿
 :::
+
+- 单位
+
+1.em
+
+在做手机端的时候经常会用到的做字体的尺寸单位
+
+说白了 em就相当于“倍”，比如设置当前的div的字体大小为1.5em，则当前的div的字体大小为：当前div继承的字体大小*1.5
+
+但是当div进行嵌套的时候，em始终是按照当前div继承的字体大小来缩放，参照后面的例子。
+
+2.rem
+
+这里的r就是root的意思，意思是相对于根节点来进行缩放，当有嵌套关系的时候，嵌套关系的元素的字体大小始终按照根节点的字体大小进行缩放。
+
+参照后面给的demo
+
+3.vh
+
+vh就是当前屏幕可见高度的1%，也就是说
+
+height:100vh == height:100%;
+
+但是有个好处是当元素没有内容时候，设置height:100%该元素不会被撑开，
+
+但是设置height:100vh，该元素会被撑开屏幕高度一致。
+
+4.vw
+
+vw就是当前屏幕宽度的1%
+
+补充一句，当设置width:100%，被设置元素的宽度是按照父元素的宽度来设置，
+
+但是100vw是相对于屏幕可见宽度来设置的，所以会出现50vw 比50%大的情况

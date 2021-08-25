@@ -144,7 +144,7 @@ module.exports = {
                 collapsable: false,
                 children: [
                     "git",
-                    "commands",
+                    "unix-linux-shell",
                     "tools"
                 ]
             }],

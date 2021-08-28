@@ -156,7 +156,7 @@
    - Prerender预渲染优化SEO(单页面对搜索引擎不友好，使用预渲染优化)![预渲染](codingfishman.github.io/2016/05/06/prerender预渲染优化SEO/)
 2. 工作原理
    - History API(更加优雅，但对浏览器有要求)
-    ![historyapi](./img/historyapi.jpg)
+    <!-- ![historyapi](./img/historyapi.jpg) -->
     - window.history.pushState()注册路由
     - 
    - Hash（不优雅，但兼容性最好）

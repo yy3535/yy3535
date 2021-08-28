@@ -157,7 +157,8 @@ module.exports = {
                 children: [
                     "summary",
                     "xdf",
-                    "aboutme"
+                    "aboutme",
+                    "project"
                 ]
             }],
         }

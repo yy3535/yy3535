@@ -151,7 +151,7 @@ module.exports = {
             '/Thought/': [
                 { title: 'Thought' }
             ],
-            '/summary/': [{
+            '/Summary/': [{
                 title: '总结',
                 collapsable: false,
                 children: [

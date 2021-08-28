@@ -34,7 +34,7 @@
     - layout.js 公共布局
     - public.js(引入common.js和layout.js)
     - util.js
-    ![模块化设计](./img/module-design.jpg)
+    <!-- ![模块化设计](./img/module-design.jpg) -->
 2. CSS模块化设计
 #### 自适应方案设计
 
@@ -70,7 +70,7 @@
     - 抽象成列表（横向/纵向）
 
 3. 具体方案
-![css模块化](./img/css-modules.jpg)
+<!-- ![css模块化](./img/css-modules.jpg) -->
 - reset.scss 重置默认样式
 - layout.scss 布局样式
 - element.scss 列表，按钮等功能性的东西
@@ -162,7 +162,7 @@
    - Hash（不优雅，但兼容性最好）
      - 使用location.hash修改路由
      - 目标页面监听hashchange事件
-    ![hash](./img/hash.png)
+    <!-- ![hash](./img/hash.png) -->
     
 3. 面试
    - spa做了哪些事情？

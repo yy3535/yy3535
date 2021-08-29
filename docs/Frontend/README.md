@@ -2,4 +2,4 @@
 # 前端
 
 
-<qisi-cat></qisi-cat>
+<QisiCat></QisiCat>

@@ -1,4 +1,4 @@
-# 【3. JS-WEB-API】
+# JS-WEB-API
 [[toc]]
 
 ## DOM操作
@@ -482,7 +482,7 @@ bindEvent(body, 'click', function (e) {
     <a href="#">a4</a>
 </div>
 <button>点击增加一个 a 标签</button>
-<script>
+<!-- <script>
     var div1 = document.getElementById('div1')
     div1.addEventListener('click', function (e) {
         var target = e.target
@@ -490,7 +490,7 @@ bindEvent(body, 'click', function (e) {
             alert(target.innerHTML)
         }
     })
-</script>
+</script> -->
 ```
 ```javascript
 // 通用事件绑定函数

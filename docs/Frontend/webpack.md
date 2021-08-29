@@ -1,4 +1,4 @@
-# 【8. webpack】
+# webpack
 [webpack](https://www.webpackjs.com/guides/production/)
 ## 什么是WebPack
 - 代码转换：TypeScript 编译成 JavaScript、SCSS 编译成 CSS 等。

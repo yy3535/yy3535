@@ -1,4 +1,4 @@
-# 【1. HTML和css】
+# HTML和css
 
 [[toc]]
 
@@ -1260,71 +1260,8 @@ transform: translateX(10px) rotate(10deg) translateY(5px);
 ```
 - 应用
     - 3D卡片，3D相册
-```html
+```
 <!-- 立方体 -->
-<style>
-    .container {
-            margin:50px;
-            padding: 10px;
-            border: 1px solid red;
-            width: 200px;
-            height: 200px;
-            position: relative;
-            /* 眼睛到物体的距离 */
-            perspective: 500px;
-        }
-        
-        #cube {
-            width: 200px;
-            height: 200px;
-            transform-style: preserve-3d;
-            transform: translateZ(-100px);
-            transition: transform 1s;
-        }
-        
-        #cube div {
-            width: 200px;
-            height: 200px;
-            position: absolute;
-            line-height: 200px;
-            font-size: 50px;
-            text-align: center;
-        }
-        
-        #cube:hover {
-            transform: translateZ(-100px) rotateX(90deg) rotateY(90deg);
-        }
-        
-        .front {
-            transform: translateZ(100px);
-            background: rgba(255, 0, 0, .3);
-        }
-        
-        .back {
-            transform: translateZ(-100px) rotateY(180deg);
-            background: rgba(0, 255, 0, .3);
-        }
-        
-        .left {
-            transform: translateX(-100px) rotateY(-90deg);
-            background: rgba(0, 0, 255, .3);
-        }
-        
-        .right {
-            transform: translateX(100px) rotateY(90deg);
-            background: rgba(255, 255, 0, .3);
-        }
-        
-        .top {
-            transform: translateY(-100px) rotateX(-90deg);
-            background: rgba(255, 0, 255, .3);
-        }
-        
-        .bottom {
-            transform: translateY(100px) rotateX(90deg);
-            background: rgba(0, 255, 255, .3);
-        }
-</style>
 <body>
     <div class="container">
         <div id="cube">
@@ -1405,7 +1342,7 @@ transform: translateX(10px) rotate(10deg) translateY(5px);
 :::
 <mark-check id="transition-demo"></mark-check>
 ```html
-<style>
+<!-- <style>
     .container{
         width:100px;
         height:100px;
@@ -1415,7 +1352,7 @@ transform: translateX(10px) rotate(10deg) translateY(5px);
     .container:hover{
         width:800px;
     }
-</style>
+</style> -->
 ```
 ### 关键帧动画
 - 相当于多个补间动画

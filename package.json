@@ -4,15 +4,20 @@
         "build": "vuepress build docs"
     },
     "devDependencies": {
+        "@vue/component-compiler-utils": "^3.2.2",
+        "@vuepress/plugin-register-components": "^1.8.2",
         "node-sass": "^6.0.1",
+        "postcss": "^8.3.6",
         "sass-loader": "^10.2.0",
-        "vuepress": "^1.8.2",
-        "webpack": "^4.46.0",
+        "vuepress": "^2.0.0-beta.24",
+        "webpack": "^5.51.1",
         "webpack-dev-middleware": "^3.6.0"
     },
     "dependencies": {
         "body-parser": "^1.19.0",
         "express": "^4.17.0",
-        "jsonwebtoken": "^8.5.1"
+        "jsonwebtoken": "^8.5.1",
+        "vuepress-theme-ting": "^2.0.2",
+        "vuepress-theme-yuu": "^3.1.1"
     }
 }

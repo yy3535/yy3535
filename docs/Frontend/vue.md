@@ -1,4 +1,4 @@
-# 【7. vue】
+# vue
 
 [[toc]]
 
@@ -26,6 +26,7 @@ vue+components+vue-router+vuex+vue-cli
 
 ### vm=new Vue({})配置
 <mark-check id="newvue"></mark-check>
+
 ```js
 let vm=new Vue({
     //范围 
@@ -319,7 +320,7 @@ Vue.config.keyCodes={
 ### <highlight-box>v-bind</highlight-box>或: 绑定属性
 
 ```html
-<input type='text' :value="msg"/>
+<!-- <input type='text' :value="msg"/> -->
 ```
 
 - 绑定属性
@@ -344,9 +345,9 @@ style
 ### <highlight-box>v-model</highlight-box>
 #### input
    ```html
-   <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/>
+   <!-- <input type='text' :value="msg" @input="e=>{msg=e.target.value}"/> -->
    等价于  <!-- v-model 是 @input + :value 的一个语法糖-->
-   <input type='text' v-model="msg"/>
+   <!-- <input type='text' v-model="msg"/> -->
    ```
 #### model属性自定义model
 ```js
@@ -412,7 +413,7 @@ data:{
 
 ### <highlight-box>v-slot</highlight-box>
 
-### v-pre</highlight-box>
+### <highlight-box>v-pre</highlight-box>
 - 内容不编译
 
 ### <highlight-box>v-cloak</highlight-box>
@@ -503,9 +504,11 @@ var vm = new Vue({
 ```
 
 ### computed实现双向绑定
-```html
-全选：<input type="checkbox" v-model="checkAll">
-<input type="checkbox" v-for="(item,key) in checks" v-model="item.value" :key="key">
+```vue
+<template>
+  <input type="checkbox" v-model="checkAll">
+  <input type="checkbox" v-for="(item,key) in checks" v-model="item.value" :key="key">
+</template>
 <script>
   data:{
     checks:[{value:true},{value:false},{value:true},]
@@ -1800,9 +1803,9 @@ Vue.directive('focus', {
 - demo:自定义只取长度为三的字符串的指令且双向绑定的指令
 ```html
 <div id="app">
-    <input type="text" v-split.3.xxx="msg">
+    <!-- <input type="text" v-split.3.xxx="msg"> -->
 </div>
-<script>
+<!-- <script>
     Vue.directive('split',{
         bind(el,binding,vnode){
             let ctx=vnode.context;//当前指令所在的组件
@@ -1822,7 +1825,7 @@ Vue.directive('focus', {
             msg:'a'
         }
     })
-</script>
+</script> -->
 ```
 
 
@@ -2073,15 +2076,15 @@ export default {
   <template>
     <div>
       <!-- :value="now" @input="val=>now=val" -->
-      <DataPicker v-model="now"></DataPicker>
+      <!-- <DataPicker v-model="now"></DataPicker> -->
     </div>
   </template>
 
   <script>
-  import DataPicker from './date-picker';
+  // import DataPicker from './date-picker';
     export default {
       components:{
-        DataPicker
+        // DataPicker
       },
       data(){
         return {
@@ -2095,7 +2098,9 @@ export default {
 
   </style>
   ```
-  ```js
+
+  ```vue
+
   // date-picker.vue
   <template>
     <div v-click-outside>
@@ -2336,7 +2341,7 @@ export default {
 
 </style>
 ```
-```js
+```vue
 // Message.vue
 <template>
   <div class="messages" v-if="messages.length">
@@ -2539,40 +2544,14 @@ Vue.mixin({
 
 <mark-check id="filter"></mark-check>
 ### 过滤器(filter)
-- `message | filterA`
+<!-- - `message | filterA` -->
 - <highlight-box>可被用于一些常见的文本格式化</highlight-box>
 - <highlight-box>可用在两个地方：双花括号插值和 v-bind 表达式</highlight-box>
 - 可用computed替代(过滤器只改变数据的展示形式 不改变原数据)
 - 过滤器函数中的this是window，所以不能用this
-- 过滤器可以串联：`{{ message | filterA | filterB }}`
+<!-- - 过滤器可以串联：`{{ message | filterA | filterB }}` -->
 <mark-check id="filterdemo"></mark-check>
 - demo:字符串前两个数字变大写
-```html
-<div id="app">
-    {{name | capitalize(2)}}
-</div>
-<script>
-    // 全局过滤器
-    Vue.filter('capitalize',function(value,len){
-        return value.slice(0,len).toUpperCase()+value.slice(len);
-    })
-    let vm=new Vue({
-        el:'#app',
-        data:{
-            flag:false,
-            name:'zfjq'
-        },
-        // 局部过滤器
-        filters: {
-          capitalize: function (value) {
-            if (!value) return ''
-            value = value.toString()
-            return value.charAt(0).toUpperCase() + value.slice(1)
-          }
-        }
-    })
-</script>
-```
 
 ## vue-cli 3.0
 
@@ -2648,7 +2627,7 @@ module.exports={
 }
 ```
 
-```html
+```vue
 <!-- HelloWorld.vue -->
 <template>
   <div class="hello">
@@ -2679,7 +2658,7 @@ export default {
 使用语言设置
 less/
 
-```html
+```vue
 <style scoped lang="less">
 @import '../assets/common.less';
 .hello{
@@ -2709,7 +2688,7 @@ npm run build，出现dist目录
 - 注意：子组件中的this.observer.define拦截，而this.timer不需要。直接赋值就行了。
 - h5的requestAnimationFrame、cancelAnimationFrame代替setTimeout
 
-```html
+```vue
 <!-- App.vue -->
 <template>
   <div id="app">
@@ -2762,7 +2741,7 @@ export default {
 </style>
 ```
 
-```html
+```vue
 <!-- ScrollBall.vue -->
 <template>
     <div class="ball" :style="style" :id="ballId">
@@ -2970,7 +2949,7 @@ new Vue({
 
 ### 在Vue实例模板中显示路由视图
 - 一个路由一个组件
-```html
+```vue
 <!-- App.vue -->
 <template>
   <div id="app">

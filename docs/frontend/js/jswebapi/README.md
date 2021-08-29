@@ -207,7 +207,7 @@
     - scrollTop
         ![scrollTop](../../img/scrollTop.png)
     - scrollLeft
-        ![scrollHeight](../../img/scrollHeight.png)
+        <!-- ![scrollHeight](../../img/scrollHeight.png) -->
 - Methods
     - getElementsByClassName()
     - getElementsByTagName()

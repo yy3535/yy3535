@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "dev": "vuepress dev docs",
-        "build": "vuepress build docs"
+        "docs:dev": "vuepress dev docs",
+        "docs:build": "vuepress build docs"
     },
     "devDependencies": {
         "@vue/component-compiler-utils": "^3.2.2",

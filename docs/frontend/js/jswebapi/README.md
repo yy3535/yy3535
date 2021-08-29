@@ -205,7 +205,7 @@
     - scrollWidth
     - scrollHeight
     - scrollTop
-        ![scrollTop](../../img/scrollTop.png)
+        <!-- ![scrollTop](../../img/scrollTop.png) -->
     - scrollLeft
         <!-- ![scrollHeight](../../img/scrollHeight.png) -->
 - Methods

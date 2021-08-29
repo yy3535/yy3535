@@ -16,7 +16,7 @@
 - XHTML(XML)
     - 要求比较严格(所有的属性必须有值等)
 - HTML5
-![html版本](./img/HTML_version.png)
+<!-- ![html版本](./img/HTML_version.png) -->
 
 ### HTML常见元素
 - header

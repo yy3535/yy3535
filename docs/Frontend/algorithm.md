@@ -1486,6 +1486,7 @@ export default (tasks, n) => {
   - 数组可以充当队列，可以充当堆栈，但是不能充当链表
 
 <mark-cross></mark-cross>
+
 ### ㉑ 排序链表
 ```js
 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。

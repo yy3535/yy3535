@@ -1,4 +1,6 @@
 const {path} =require('@vuepress/utils')
+const { defaultTheme } = require('@vuepress/theme-default')
+const {registerComponentsPlugin} = require('@vuepress/plugin-register-components')
 module.exports= {
     // base: '/',
     title: 'yy3535',
@@ -6,16 +8,12 @@ module.exports= {
     head: [
         ['link', { rel: 'icon', href: '/img/favicon.ico' }],
     ],
-    // theme: 'ting',
     plugins: [  
-        [
-            '@vuepress/register-components',
-            {
-                componentsDir: path.resolve(__dirname, './components'),
-            },
-        ],
+        registerComponentsPlugin({
+            componentsDir: path.resolve(__dirname, './components'),
+        })
     ],
-    themeConfig: {
+    theme:defaultTheme({
         //导航栏徽标
         logo: '/img/logo.jpg',
         editLinkText: "编辑此页",
@@ -26,7 +24,7 @@ module.exports= {
             { text: '运维', link: '/Operation/' },
             { text: '关于', link: '/About/' },
             // { text: '待整理', link: '/Todo/' },
-            { text: '错题', link: '/Thought/' },
+            { text: 'ARTS', link: '/Thought/' },
             { text: 'GitHub', link: 'https://github.com/yy3535/yy3535' },
         ],
         sidebar: {
@@ -100,5 +98,5 @@ module.exports= {
             }],
         },
         sidebarDepth:0
-    }
+    })
 }

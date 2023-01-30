@@ -153,7 +153,7 @@
    - 前后端分离(前后端代码不耦合)
    - 减轻服务器压力（当一个应用操作比较复杂，有十几个页面的时候，每个用户操作几个页面只需要请求一次）
    - 增强用户体验（不存在多次下载页面的时间，只有接口的时间）
-   - Prerender预渲染优化SEO(单页面对搜索引擎不友好，使用预渲染优化)![预渲染](codingfishman.github.io/2016/05/06/prerender预渲染优化SEO/)
+   - Prerender预渲染优化SEO(单页面对搜索引擎不友好，使用预渲染优化)![预渲染](https://love.fishman.wang/2016/05/06/prerender%E9%A2%84%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96SEO/)
 2. 工作原理
    - History API(更加优雅，但对浏览器有要求)
     <!-- ![historyapi](./img/historyapi.jpg) -->

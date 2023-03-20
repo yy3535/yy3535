@@ -85,6 +85,9 @@ $ git branch -r
 - 列出所有本地分支和远程分支
 $ git branch -a
 
+- 从远程某个分支拉取一个新分支
+$ git checkout -b newbranch origin/oldbranchname
+
 - 新建一个分支，但依然停留在当前分支
 $ git branch [branch-name]
 
@@ -216,6 +219,9 @@ $ git reflog
 - 下载远程仓库的所有变动
 $ git fetch [remote]
 
+- 修剪远程分支(删除被其它终端删除了的远程分支)
+$ git remote prune origin
+
 - 显示所有远程仓库
 $ git remote -v
 
@@ -238,6 +244,8 @@ $ git push [remote] --force
 $ git push [remote] --all
 
 ## 九、撤销
+- 撤销上一个commit,但保留代码在暂存区，不撤销git add
+git reset --soft HEAD^
 
 - 恢复暂存区的指定文件到工作区
 $ git checkout [file]
@@ -269,7 +277,12 @@ $ git revert [commit]
 
 - 暂时将未提交的变化移除，稍后再移入
 $ git stash
+$ git stash save "save message" 备注名
 $ git stash pop
+$ git stash list
+$ git stash apply stash@{$num} 应用某个存储,但不会把存储从存储列表中删除
+$ git stash drop stash@{$num} 丢弃stash@{$num}存储，从列表中删除这个存储
+$ git stash clear 删除所有缓存的stash
 
 ## 十、其他
 

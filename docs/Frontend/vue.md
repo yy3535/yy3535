@@ -4519,3 +4519,7 @@ module: {
 
 
 
+
+## vue项目实战
+### dialog封装
+- [JSDialog](https://www.h5w3.com/237366.html)

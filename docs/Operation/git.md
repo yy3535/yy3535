@@ -112,6 +112,9 @@ $ git branch --set-upstream [branch] [remote-branch]
 - 合并指定分支到当前分支
 $ git merge [branch]
 
+- 取消merge状态
+$ git merge --abort
+
 - 选择一个commit，合并进当前分支
 $ git cherry-pick [commit]
 
@@ -363,3 +366,9 @@ $ ssh-keygen -t rsa -C "email@github.com" #github注册的邮箱
 3.按命令行提示找到公钥地址。跳转文件夹是访达菜单中的前往-前往文件夹，显示隐藏文件夹按`shift+command+.`。文件权限右击文件-显示简介-解锁-修改为只读。将公钥复制到github上。
 4. `ssh -T git@github.com`测试，显示success则配置成功可以clone了
 5. 显示`Permission denied(publickey)`，使用`ssh -vT git@github.com`来查看错误log，注意其中的查找公钥地址。将公钥复制到它查找的地址中即可。
+
+
+### 统计代码量
+```js
+git log --format='%aN' | sort -u | while read name; do echo -en "$name\t"; git log  --since=2023-01-01 --until=2023-03-31 --author="$name" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -; done
+```

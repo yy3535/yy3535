@@ -57,7 +57,9 @@
 
 ————— 环
 
-![eventloop](./imgs/event-loop-browser.jpg)
+<!-- ![eventloop](./imgs/event-loop-browser.jpg) -->
+<!-- ![图片1](./imgs/event-loop-browser.jpg) -->
+
 
 ```js
 // 宏任务微任务执行顺序
@@ -125,6 +127,7 @@ console.log('script end')
 - stack:栈，代码执行放在栈里，后进先出
 - 队列，先进先出
 - 栈，后进先出
+
 ```js
 // 队列
 push+shift
@@ -134,6 +137,8 @@ push+pop
 :::
 - 浏览器为什么是单线程的？
   - 防止同时操作dom
+
+
   
 ### node安装
 - npm包管理器
@@ -150,6 +155,8 @@ push+pop
   // window切换版本
   nvm-windows
   ```
+
+
 ### node start
 
 - global可以直接访问global，没有window的概念
@@ -189,6 +196,7 @@ Object[global]{
 - node中打印this是{}
   - 因为node的文件默认在外面套了一层函数，在函数运行时把this指向改变了
 
+
 #### console
 ```js
 //1 标准输出
@@ -204,18 +212,22 @@ process.stdin.on('data',function(data){
   console.log(data.toString())//0 表示标准输入
 })
 ```
-
 #### process
   
   - process.cwd()
     - 当前工作目录(current working directory) 。在哪执行文件 就可以打印出位置
   - process.env 
     - environment
-    :::tip
+
+    <!-- :::tip
     往命令行的process.env注入内容：window:set a=1 mac:export a=1
     - 命令行中可设置当前的process.env.NODE_ENV为’production‘，只在当前命令行生效
+    ::: -->
+    ::: tip
+    这是一个提示
     :::
-  - process.argv
+
+    - process.argv
     - arguments，一个数组，前两个是固定的路径，后面是node命令行执行时以空格分开的参数
     ```js
     node 1.node.js --port 3000

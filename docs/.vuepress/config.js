@@ -1,8 +1,9 @@
-const {path} =require('@vuepress/utils')
-const { defaultTheme } = require('@vuepress/theme-default')
-const {registerComponentsPlugin} = require('@vuepress/plugin-register-components')
-module.exports= {
-    // base: '/',
+import { defineUserConfig } from 'vuepress'
+import path from 'path'
+import { defaultTheme } from '@vuepress/theme-default'
+import { registerComponentsPlugin } from '@vuepress/plugin-register-components'
+
+export default defineUserConfig({
     title: 'yy3535',
     description: 'yy3535的笔记',
     head: [
@@ -99,4 +100,4 @@ module.exports= {
         },
         sidebarDepth:0
     })
-}
+})
